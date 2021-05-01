@@ -18,20 +18,7 @@ public class Lib : MonoBehaviour
     void Start()
     {
 
-        /*SkinnedMeshRenderer twin = cube.GetComponent(typeof(SkinnedMeshRenderer)) as SkinnedMeshRenderer;
 
-        Material material;
-
-        if (twin != null) {
-            material = twin.materials[0];
-            if (material != null)
-            {
-                Texture2D skin = (Texture2D) material.mainTexture;
-                Texture2D skinnew = AddFindingTexture(skin, (Texture2D)materialNew.mainTexture, 0, 0);
-                twin.materials[0].mainTexture = skinnew;
-                SaveTexture(skinnew);
-            };
-        }*/
     }
 
     public void SaveTexture(Texture2D tex)
@@ -65,23 +52,6 @@ public class Lib : MonoBehaviour
         meshFinding.vertices = new Vector3[] { x1, x2, x3 };
         meshFinding.triangles = new int[] { 0, 1, 2 };
 
-
-        /*   Vector3[] normals = new Vector3[3]
-               {
-                           -Vector3.forward,
-                           -Vector3.forward,
-                           -Vector3.forward
-               };
-           meshFinding.normals = normals;
-
-           Vector2[] uv = new Vector2[3]
-               {
-                   new Vector2(0, 0),
-                   new Vector2(1, 0),
-                   new Vector2(0, 1)
-
-               };
-           meshFinding.uv = uv; */
 
         meshFilterFinding.mesh = meshFinding;
         (finding.AddComponent(typeof(MeshCollider)) as MeshCollider).sharedMesh = meshFinding;
