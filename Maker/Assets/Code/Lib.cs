@@ -21,6 +21,11 @@ public class Lib : MonoBehaviour
 
     }
 
+    void OnMouseDrag()
+    {
+        Debug.Log("OnMouseDrag");
+    }
+
     public void SaveTexture(Texture2D tex)
     {
 
@@ -97,20 +102,22 @@ public class Lib : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(0))
         {
-            print("The Left mouse button was pressed");
+
 
 
             RaycastHit hit;
             if (!Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out hit))
+            {
                 return;
+            }
 
-            Debug.Log("Update Mouse 1");
+
+
 
             MeshCollider meshCollider = hit.collider as MeshCollider;
             if (meshCollider == null || meshCollider.sharedMesh == null)
                 return;
 
-            Debug.Log("Update MeshCollider yes");
 
             Mesh mesh = meshCollider.sharedMesh;
             Vector3[] vertices = mesh.vertices;
