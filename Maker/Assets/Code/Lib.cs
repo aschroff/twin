@@ -21,11 +21,6 @@ public class Lib : MonoBehaviour
 
     }
 
-    void OnMouseDrag()
-    {
-        Debug.Log("OnMouseDrag");
-    }
-
     public void SaveTexture(Texture2D tex)
     {
 
@@ -71,6 +66,15 @@ public class Lib : MonoBehaviour
     void Update()
     {
 
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            cam.fieldOfView--;
+        }
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            cam.fieldOfView++;
+        }
+
 
         if (Input.touchCount == 1)
         {
@@ -100,7 +104,7 @@ public class Lib : MonoBehaviour
 
         }
 
-        else if (Input.GetMouseButtonDown(0))
+        else if (Input.GetMouseButtonDown(2))
         {
 
 
@@ -110,8 +114,6 @@ public class Lib : MonoBehaviour
             {
                 return;
             }
-
-
 
 
             MeshCollider meshCollider = hit.collider as MeshCollider;

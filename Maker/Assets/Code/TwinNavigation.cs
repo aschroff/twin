@@ -11,6 +11,8 @@ public class TwinNavigation : MonoBehaviour
     private float CameraZDistance;
     private Vector3 mPrevPos = Vector3.zero;
     private Vector3 mPosDelta = Vector3.zero;
+    private Vector3 TouchVector;
+    private Vector3 OriginalPlace;
 
 
     void Start()
@@ -39,19 +41,25 @@ public class TwinNavigation : MonoBehaviour
         mPrevPos = Input.mousePosition;
     }
 
+    private void OnMouseDown()
+    {
+         TouchVector = Input.mousePosition;
+         OriginalPlace = this.transform.position;
+    }
+
+
     private void OnMouseDrag()
     {
-        Debug.Log("Drag");
+        
 
         Vector3 ScreenPosition =
             new Vector3(Input.mousePosition.x, Input.mousePosition.y, CameraZDistance); //z axis added to screen point 
         Vector3 NewWorldPosition =
             mainCamera.ScreenToWorldPoint(ScreenPosition); //Screen point converted to world point
-
-
-
-        this.transform.position = NewWorldPosition;
-
+        Vector3 TouchPosition = new Vector3(TouchVector.x, TouchVector.y, CameraZDistance); //z axis added to screen point 
+        Vector3 TouchPositionWorld =
+            mainCamera.ScreenToWorldPoint(TouchPosition); //Screen point converted to world point
+        this.transform.position = OriginalPlace + NewWorldPosition - TouchPositionWorld;
 
     }
 
