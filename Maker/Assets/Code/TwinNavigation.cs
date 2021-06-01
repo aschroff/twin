@@ -43,7 +43,8 @@ public class TwinNavigation : MonoBehaviour
 
     private void OnMouseDown()
     {
-         TouchVector = Input.mousePosition;
+        Debug.Log("TwinNavigation - OnMouseDown");
+        TouchVector = Input.mousePosition;
          OriginalPlace = this.transform.position;
     }
 

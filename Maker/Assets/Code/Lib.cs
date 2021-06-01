@@ -68,16 +68,19 @@ public class Lib : MonoBehaviour
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
+            Debug.Log("Lib - Mouse ScrollWheel");
             cam.fieldOfView--;
         }
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
+            Debug.Log("Lib - Mouse ScrollWheel");
             cam.fieldOfView++;
         }
 
 
-        if (Input.touchCount == 1)
+        if ((Input.touchCount == 1) && (Input.GetTouch(0).tapCount < 2))
         {
+            Debug.Log("Lib - touchCount == 1");
             Touch touch = Input.GetTouch(0);
 
             Vector3 Rotation = new Vector3();
@@ -89,6 +92,7 @@ public class Lib : MonoBehaviour
         }
         else if (Input.touchCount == 2)
         {
+            Debug.Log("Lib - touchCount == 2");
             Touch touch1 = Input.GetTouch(0);
             Touch touch2 = Input.GetTouch(1);
             Vector2 Touch1PrevPos = touch1.position - touch1.deltaPosition;
@@ -104,9 +108,9 @@ public class Lib : MonoBehaviour
 
         }
 
-        else if (Input.GetMouseButtonDown(2))
+        else if ((Input.GetMouseButtonDown(2)) | ((Input.touchCount ==1) && (Input.GetTouch(0).tapCount == 2)))
         {
-
+            Debug.Log("Lib - GetMouseButtonDown(2)");
 
 
             RaycastHit hit;
