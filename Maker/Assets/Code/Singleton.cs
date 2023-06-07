@@ -27,6 +27,9 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
             Instance = (T)this;
     }
 
+    /// <summary>
+    ///     Destroy method
+    /// </summary>
     protected virtual void OnDestroy()
     {
         if (Instance == this)
