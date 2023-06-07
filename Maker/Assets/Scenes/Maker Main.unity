@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44866383, g: 0.4975556, b: 0.5696324, a: 1}
+  m_IndirectSpecularColor: {r: 0.4486552, g: 0.49754894, b: 0.5696343, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -104,7 +104,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -117,7 +117,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -128,7 +128,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 276700311}
     m_Modifications:
     - target: {fileID: 8923318066386265646, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
@@ -276,7 +276,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
 --- !u!1 &61663221
 GameObject:
@@ -419,6 +421,8 @@ GameObject:
   - component: {fileID: 176169927}
   - component: {fileID: 176169929}
   - component: {fileID: 176169928}
+  - component: {fileID: 176169931}
+  - component: {fileID: 176169930}
   m_Layer: 0
   m_Name: Filling
   m_TagString: Untagged
@@ -497,8 +501,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  requiredButtons: 33
-  requiredKey: 0
   guiLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -507,12 +509,14 @@ MonoBehaviour:
   normalDirection: 0
   normalRelativeTo: 0
   customTransform: {fileID: 0}
+  storeStates: 1
+  priority: 0
+  requiredButtons: 0
+  requiredKey: 0
   normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
-  storeStates: 1
   showPreview: 1
-  priority: 0
   frequency: 5
   interval: 5
   connector:
@@ -521,6 +525,33 @@ MonoBehaviour:
     connectHits: 1
     clipConnected: 0
   fillSpacing: 5
+--- !u!114 &176169930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176169926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa6a2e1ea59e834e8cf8e11ef807759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+--- !u!114 &176169931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176169926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c177d0d6658fb48be9cdb7159ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 1
+  keys: 43010000
 --- !u!1 &180869427
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,7 +717,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 276700311}
     m_Modifications:
     - target: {fileID: 8923318066386265646, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
@@ -826,7 +857,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
 --- !u!1 &264263599
 GameObject:
@@ -1287,6 +1320,8 @@ GameObject:
   - component: {fileID: 321005189}
   - component: {fileID: 321005188}
   - component: {fileID: 321005187}
+  - component: {fileID: 321005191}
+  - component: {fileID: 321005190}
   m_Layer: 0
   m_Name: Bump Blend
   m_TagString: Untagged
@@ -1372,8 +1407,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  requiredButtons: 33
-  requiredKey: 0
   guiLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -1382,12 +1415,14 @@ MonoBehaviour:
   normalDirection: 0
   normalRelativeTo: 0
   customTransform: {fileID: 0}
+  storeStates: 0
+  priority: 0
+  requiredButtons: 0
+  requiredKey: 0
   normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
-  storeStates: 0
   showPreview: 0
-  priority: 0
   frequency: 1
   interval: 5
   connector:
@@ -1415,6 +1450,33 @@ MonoBehaviour:
 
     Blend'
   clone: {fileID: 0}
+--- !u!114 &321005190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321005185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa6a2e1ea59e834e8cf8e11ef807759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+--- !u!114 &321005191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321005185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c177d0d6658fb48be9cdb7159ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 0
+  keys: 43010000
 --- !u!1 &321565006
 GameObject:
   m_ObjectHideFlags: 0
@@ -1446,9 +1508,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -1841,6 +1911,8 @@ GameObject:
   - component: {fileID: 359059570}
   - component: {fileID: 359059569}
   - component: {fileID: 359059568}
+  - component: {fileID: 359059572}
+  - component: {fileID: 359059571}
   m_Layer: 0
   m_Name: Delete
   m_TagString: Untagged
@@ -1919,8 +1991,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  requiredButtons: 33
-  requiredKey: 0
   guiLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -1929,12 +1999,14 @@ MonoBehaviour:
   normalDirection: 0
   normalRelativeTo: 0
   customTransform: {fileID: 0}
+  storeStates: 1
+  priority: 0
+  requiredButtons: 0
+  requiredKey: 0
   normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
-  storeStates: 1
   showPreview: 1
-  priority: 0
   frequency: 5
   interval: 5
   connector:
@@ -1960,6 +2032,33 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 0, a: 1}
   overrideName: 
   clone: {fileID: 0}
+--- !u!114 &359059571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359059566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa6a2e1ea59e834e8cf8e11ef807759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+--- !u!114 &359059572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359059566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c177d0d6658fb48be9cdb7159ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 1
+  keys: 43010000
 --- !u!1 &405160795
 GameObject:
   m_ObjectHideFlags: 0
@@ -2978,6 +3077,8 @@ GameObject:
   - component: {fileID: 499919836}
   - component: {fileID: 499919835}
   - component: {fileID: 499919834}
+  - component: {fileID: 499919838}
+  - component: {fileID: 499919837}
   m_Layer: 0
   m_Name: Paint Dynamic Decal
   m_TagString: Untagged
@@ -3048,8 +3149,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  requiredButtons: 33
-  requiredKey: 0
   guiLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -3058,12 +3157,14 @@ MonoBehaviour:
   normalDirection: 0
   normalRelativeTo: 1
   customTransform: {fileID: 0}
+  storeStates: 0
+  priority: 0
+  requiredButtons: 0
+  requiredKey: 0
   normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
-  storeStates: 0
   showPreview: 1
-  priority: 0
   frequency: 3
   interval: 0
   connector:
@@ -3086,6 +3187,33 @@ Transform:
   m_Father: {fileID: 701643923}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &499919837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499919833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa6a2e1ea59e834e8cf8e11ef807759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+--- !u!114 &499919838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499919833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c177d0d6658fb48be9cdb7159ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 1
+  keys: 43010000
 --- !u!1 &514244622
 GameObject:
   m_ObjectHideFlags: 0
@@ -3314,7 +3442,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 1012370618}
     m_Modifications:
     - target: {fileID: 8923318066386265646, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
@@ -3454,7 +3582,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
 --- !u!1 &546617275
 GameObject:
@@ -3530,6 +3660,8 @@ GameObject:
   - component: {fileID: 554961452}
   - component: {fileID: 554961451}
   - component: {fileID: 554961450}
+  - component: {fileID: 554961454}
+  - component: {fileID: 554961453}
   m_Layer: 0
   m_Name: Red
   m_TagString: Untagged
@@ -3608,8 +3740,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  requiredButtons: 33
-  requiredKey: 0
   guiLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -3618,12 +3748,14 @@ MonoBehaviour:
   normalDirection: 0
   normalRelativeTo: 0
   customTransform: {fileID: 0}
+  storeStates: 1
+  priority: 0
+  requiredButtons: 0
+  requiredKey: 0
   normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
-  storeStates: 1
   showPreview: 1
-  priority: 0
   frequency: 5
   interval: 5
   connector:
@@ -3649,6 +3781,33 @@ MonoBehaviour:
   color: {r: 1, g: 0, b: 0, a: 1}
   overrideName: 
   clone: {fileID: 0}
+--- !u!114 &554961453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554961448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa6a2e1ea59e834e8cf8e11ef807759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+--- !u!114 &554961454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554961448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c177d0d6658fb48be9cdb7159ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 1
+  keys: 43010000
 --- !u!1 &567358540
 GameObject:
   m_ObjectHideFlags: 0
@@ -3875,7 +4034,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 1851032621}
     m_Modifications:
     - target: {fileID: 8923318066386265646, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
@@ -4015,7 +4174,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
 --- !u!224 &598563294 stripped
 RectTransform:
@@ -4213,6 +4374,8 @@ GameObject:
   - component: {fileID: 618633823}
   - component: {fileID: 618633825}
   - component: {fileID: 618633824}
+  - component: {fileID: 618633827}
+  - component: {fileID: 618633826}
   m_Layer: 0
   m_Name: sample
   m_TagString: Untagged
@@ -4298,8 +4461,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  requiredButtons: 33
-  requiredKey: 0
   guiLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -4308,12 +4469,14 @@ MonoBehaviour:
   normalDirection: 2
   normalRelativeTo: 1
   customTransform: {fileID: 0}
+  storeStates: 1
+  priority: 0
+  requiredButtons: 0
+  requiredKey: 0
   normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
-  storeStates: 1
   showPreview: 1
-  priority: 0
   frequency: 3
   interval: 0
   connector:
@@ -4321,6 +4484,33 @@ MonoBehaviour:
     hitLimit: 30
     connectHits: 0
     clipConnected: 0
+--- !u!114 &618633826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618633822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa6a2e1ea59e834e8cf8e11ef807759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+--- !u!114 &618633827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618633822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c177d0d6658fb48be9cdb7159ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 1
+  keys: 43010000
 --- !u!1 &648246033
 GameObject:
   m_ObjectHideFlags: 0
@@ -4406,7 +4596,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 61663222}
     m_Modifications:
     - target: {fileID: 8923318066386265646, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
@@ -4558,7 +4748,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
 --- !u!1 &684130169
 GameObject:
@@ -4946,7 +5138,7 @@ LightingSettings:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Settings.lighting
-  serializedVersion: 5
+  serializedVersion: 6
   m_GIWorkflowMode: 0
   m_EnableBakedLightmaps: 1
   m_EnableRealtimeLightmaps: 1
@@ -4955,7 +5147,7 @@ LightingSettings:
   m_AlbedoBoost: 1
   m_IndirectOutputScale: 1
   m_UsingShadowmask: 0
-  m_BakeBackend: 0
+  m_BakeBackend: 2
   m_LightmapMaxSize: 1024
   m_BakeResolution: 40
   m_Padding: 2
@@ -5002,6 +5194,7 @@ LightingSettings:
   m_PVRFilteringAtrousPositionSigmaAO: 1
   m_PVRTiledBaking: 0
   m_NumRaysToShootPerTexel: -1
+  m_RespectSceneVisibilityWhenBakingGI: 0
 --- !u!1 &814653237
 GameObject:
   m_ObjectHideFlags: 0
@@ -5087,7 +5280,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 276700311}
     m_Modifications:
     - target: {fileID: 8923318066386265646, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
@@ -5223,7 +5416,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
 --- !u!224 &834064342 stripped
 RectTransform:
@@ -5613,6 +5808,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   coordinate: 0
+  constrain: 0
+  constrainThreshold: 5
   multiplier: 1
   onDelta:
     m_PersistentCalls:
@@ -5691,6 +5888,8 @@ GameObject:
   - component: {fileID: 947410048}
   - component: {fileID: 947410047}
   - component: {fileID: 947410046}
+  - component: {fileID: 947410050}
+  - component: {fileID: 947410049}
   m_Layer: 0
   m_Name: Cyan
   m_TagString: Untagged
@@ -5769,8 +5968,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  requiredButtons: 33
-  requiredKey: 0
   guiLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -5779,12 +5976,14 @@ MonoBehaviour:
   normalDirection: 0
   normalRelativeTo: 0
   customTransform: {fileID: 0}
+  storeStates: 1
+  priority: 0
+  requiredButtons: 0
+  requiredKey: 0
   normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
-  storeStates: 1
   showPreview: 1
-  priority: 0
   frequency: 0
   interval: 12
   connector:
@@ -5810,6 +6009,33 @@ MonoBehaviour:
   color: {r: 0, g: 1, b: 1, a: 1}
   overrideName: 
   clone: {fileID: 0}
+--- !u!114 &947410049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947410044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa6a2e1ea59e834e8cf8e11ef807759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+--- !u!114 &947410050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947410044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c177d0d6658fb48be9cdb7159ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 1
+  keys: 43010000
 --- !u!1 &974356428
 GameObject:
   m_ObjectHideFlags: 0
@@ -6423,6 +6649,8 @@ GameObject:
   - component: {fileID: 1092951650}
   - component: {fileID: 1092951649}
   - component: {fileID: 1092951648}
+  - component: {fileID: 1092951652}
+  - component: {fileID: 1092951651}
   m_Layer: 0
   m_Name: Original
   m_TagString: Untagged
@@ -6501,8 +6729,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  requiredButtons: 33
-  requiredKey: 0
   guiLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -6511,12 +6737,14 @@ MonoBehaviour:
   normalDirection: 0
   normalRelativeTo: 0
   customTransform: {fileID: 0}
+  storeStates: 0
+  priority: 0
+  requiredButtons: 0
+  requiredKey: 0
   normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
-  storeStates: 0
   showPreview: 1
-  priority: 0
   frequency: 5
   interval: 5
   connector:
@@ -6542,12 +6770,39 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 1, a: 1}
   overrideName: 
   clone: {fileID: 0}
+--- !u!114 &1092951651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1092951646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa6a2e1ea59e834e8cf8e11ef807759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+--- !u!114 &1092951652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1092951646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c177d0d6658fb48be9cdb7159ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 1
+  keys: 43010000
 --- !u!1001 &1116113267
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 276700311}
     m_Modifications:
     - target: {fileID: 8923318066386265646, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
@@ -6683,7 +6938,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
 --- !u!1 &1122002953
 GameObject:
@@ -7598,9 +7855,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -7692,6 +7957,7 @@ MonoBehaviour:
   sensitivity: 1
   damping: -1
   inertia: 0
+  defaultPosition: {x: 0, y: 0, z: 0}
   remainingDelta: {x: 0, y: 0, z: 0}
 --- !u!1 &1380396368
 GameObject:
@@ -7865,6 +8131,8 @@ GameObject:
   - component: {fileID: 1403929791}
   - component: {fileID: 1403929790}
   - component: {fileID: 1403929789}
+  - component: {fileID: 1403929793}
+  - component: {fileID: 1403929792}
   m_Layer: 0
   m_Name: Yellow
   m_TagString: Untagged
@@ -7943,8 +8211,6 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  requiredButtons: 33
-  requiredKey: 0
   guiLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -7953,12 +8219,14 @@ MonoBehaviour:
   normalDirection: 0
   normalRelativeTo: 0
   customTransform: {fileID: 0}
+  storeStates: 1
+  priority: 0
+  requiredButtons: 0
+  requiredKey: 0
   normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
-  storeStates: 1
   showPreview: 1
-  priority: 0
   frequency: 5
   interval: 5
   connector:
@@ -7984,6 +8252,33 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 0, a: 1}
   overrideName: 
   clone: {fileID: 0}
+--- !u!114 &1403929792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403929787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa6a2e1ea59e834e8cf8e11ef807759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+--- !u!114 &1403929793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403929787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c177d0d6658fb48be9cdb7159ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preview: 1
+  keys: 43010000
 --- !u!1 &1423435054
 GameObject:
   m_ObjectHideFlags: 0
@@ -9675,6 +9970,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -11002,7 +11298,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 276700311}
     m_Modifications:
     - target: {fileID: 8923318066386265646, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
@@ -11146,7 +11442,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc0549ab540e5544ca836e9d9901efd1, type: 3}
 --- !u!1 &2113548679
 GameObject:
@@ -12705,9 +13003,17 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2055600104949221669}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 4
+  serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3226173293770572294, guid: ca5b8dbe331d6264380c6e4c91e30d88, type: 3}
@@ -12865,6 +13171,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   coordinate: 0
+  constrain: 0
+  constrainThreshold: 5
   multiplier: 1
   onDelta:
     m_PersistentCalls:
@@ -12948,6 +13256,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -12981,6 +13290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
