@@ -28,7 +28,7 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
     }
 
     /// <summary>
-    ///     Destroy method
+    ///     Destroy method that sets the singleton to null
     /// </summary>
     protected virtual void OnDestroy()
     {
