@@ -10,6 +10,7 @@ public class MoveMode : MonoBehaviour
     [SerializeField] GameObject body;
     [SerializeField] GameObject cam;
     [SerializeField] GameObject Tools;
+    [SerializeField] GameObject Touch;
     void Start()
     {
         
@@ -17,7 +18,7 @@ public class MoveMode : MonoBehaviour
 
     private void OnEnable()
     {
-        
+        Touch.SetActive(true);
         LeanMultiUpdate lmu = (LeanMultiUpdate)body.GetComponent("LeanMultiUpdate");
         LeanPinchCamera lpc = (LeanPinchCamera)cam.GetComponent("LeanPinchCamera");
         LeanDragCamera ldc = (LeanDragCamera)cam.GetComponent("LeanDragCamera");

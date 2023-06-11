@@ -4,7 +4,7 @@ using PaintIn3D;
 using UnityEngine;
 
 
-public class EditMarkerMode : MonoBehaviour
+public class EditStickerMode : MonoBehaviour
 {
     public GameObject twin;
     [SerializeField] MainMode selectImage;
@@ -18,7 +18,7 @@ public class EditMarkerMode : MonoBehaviour
 
     private void OnEnable()
     {
-        UIController.ShowUI("EditMarker");
+        UIController.ShowUI("EditSticker");
         Touch.SetActive(false);
 
     }
