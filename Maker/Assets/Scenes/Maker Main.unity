@@ -1934,7 +1934,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 278258918}
-  - component: {fileID: 278258919}
+  - component: {fileID: 278258920}
   m_Layer: 0
   m_Name: Buttons
   m_TagString: Untagged
@@ -1960,33 +1960,17 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -20, y: 983.99976}
-  m_SizeDelta: {x: -554, y: 100}
-  m_Pivot: {x: 0.5, y: 0}
---- !u!114 &278258919
-MonoBehaviour:
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
+  m_Pivot: {x: 0, y: 0}
+--- !u!222 &278258920
+CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 278258917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 4
-  m_StartCorner: 0
-  m_StartAxis: 1
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 0, y: 0}
-  m_Constraint: 2
-  m_ConstraintCount: 1
+  m_CullTransparentMesh: 1
 --- !u!1 &312999715
 GameObject:
   m_ObjectHideFlags: 0
@@ -3559,7 +3543,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Edit twin
+  m_Text: Tools
 --- !u!222 &393775598
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4097,7 +4081,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 437830295}
-  - component: {fileID: 437830296}
+  - component: {fileID: 437830297}
   m_Layer: 5
   m_Name: Bottom
   m_TagString: Untagged
@@ -4124,33 +4108,17 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 560}
-  m_SizeDelta: {x: 60, y: 400}
+  m_AnchoredPosition: {x: 0, y: 400}
+  m_SizeDelta: {x: 0, y: 400}
   m_Pivot: {x: 1, y: 1}
---- !u!114 &437830296
-MonoBehaviour:
+--- !u!222 &437830297
+CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437830294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 4
-  m_StartCorner: 0
-  m_StartAxis: 1
-  m_CellSize: {x: 50, y: 100}
-  m_Spacing: {x: 110, y: 0}
-  m_Constraint: 2
-  m_ConstraintCount: 1
+  m_CullTransparentMesh: 1
 --- !u!1 &438555157
 GameObject:
   m_ObjectHideFlags: 0
@@ -6845,11 +6813,11 @@ RectTransform:
   m_Father: {fileID: 437830295}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 86.734344, y: -200}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 50, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &629250453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7358,7 +7326,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Edit twin
+  m_Text: Tools
 --- !u!222 &648246036
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12241,19 +12209,19 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1173445983}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.00028659354}
-  m_LocalScale: {x: 0.74999845, y: 0.74999845, z: 1.0332041}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2137389570}
   m_Father: {fileID: 278258918}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 149.73428, y: -49.99994}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 15, y: 20}
   m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &1173445985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13187,7 +13155,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Edit twin
+  m_Text: Tools
 --- !u!222 &1248841457
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14722,7 +14690,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Edit twin
+  m_Text: Tools
 --- !u!222 &1453772306
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18987,7 +18955,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Edit twin
+  m_Text: Tools
 --- !u!222 &1924946840
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -20291,7 +20259,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Edit twin
+  m_Text: Tools
 --- !u!222 &2105128079
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -20451,7 +20419,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Edit twin
+  m_Text: Tools
 --- !u!222 &2133926251
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -20487,7 +20455,7 @@ RectTransform:
   m_GameObject: {fileID: 2137389569}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1173445984}
@@ -20531,7 +20499,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Tools
+  m_Text: <Tools
 --- !u!222 &2137389572
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -21987,7 +21955,7 @@ MonoBehaviour:
     index: 0
   undoRedo: 1
   stateLimit: 10
-  saveLoad: 0
+  saveLoad: 1
   saveName: Twin
   width: 512
   height: 512
