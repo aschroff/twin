@@ -79,7 +79,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Text!
+  m_Text: Red
 --- !u!1 &3130653636745741583
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,6 +408,7 @@ GameObject:
   - component: {fileID: 5811805595156870609}
   - component: {fileID: 5811805595156870608}
   - component: {fileID: 5811805595156870611}
+  - component: {fileID: 7713547849145849555}
   m_Layer: 5
   m_Name: Scroll tool button and text
   m_TagString: Untagged
@@ -468,7 +469,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5811805595156870189}
   m_Enabled: 1
-  m_Alpha: 0.5
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -488,3 +489,16 @@ MonoBehaviour:
   urlTarget: 
   isolateTarget: {fileID: 0}
   isolateToggle: 0
+--- !u!114 &7713547849145849555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5811805595156870189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41a33995fc1ee4a438f9bcb2ed624fec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 

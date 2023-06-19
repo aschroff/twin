@@ -63,7 +63,7 @@ public class DataPersistenceManager : MonoBehaviour
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode) 
     {
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
-        LoadGame();
+        LoadConfig();
 
         // start up the auto saving coroutine
         if (autoSaveCoroutine != null) 
@@ -78,7 +78,7 @@ public class DataPersistenceManager : MonoBehaviour
         // update the profile to use for saving and loading
         this.selectedProfileId = newProfileId;
         // load the game, which will use that profile, updating our game data accordingly
-        LoadGame();
+        LoadConfig();
     }
 
     public void DeleteProfileData(string profileId) 
@@ -88,7 +88,7 @@ public class DataPersistenceManager : MonoBehaviour
         // initialize the selected profile id
         InitializeSelectedProfileId();
         // reload the game so that our data matches the newly selected profile id
-        LoadGame();
+        LoadConfig();
     }
 
     private void InitializeSelectedProfileId() 
@@ -101,12 +101,12 @@ public class DataPersistenceManager : MonoBehaviour
         }
     }
 
-    public void NewGame() 
+    public void NewConfig() 
     {
         this.configData = new ConfigData();
     }
 
-    public void LoadGame()
+    public void LoadConfig()
     {
         // return right away if data persistence is disabled
         if (disableDataPersistence) 
@@ -120,7 +120,7 @@ public class DataPersistenceManager : MonoBehaviour
         // start a new game if the data is null and we're configured to initialize data for debugging purposes
         if (this.configData == null && initializeDataIfNull) 
         {
-            NewGame();
+            NewConfig();
         }
 
         // if no data can be loaded, don't continue
@@ -137,7 +137,7 @@ public class DataPersistenceManager : MonoBehaviour
         }
     }
 
-    public void SaveGame()
+    public void SaveConfig()
     {
         // return right away if data persistence is disabled
         if (disableDataPersistence) 
@@ -167,7 +167,7 @@ public class DataPersistenceManager : MonoBehaviour
 
     private void OnApplicationQuit() 
     {
-        SaveGame();
+        SaveConfig();
     }
 
     private List<IDataPersistence> FindAllDataPersistenceObjects() 
@@ -194,8 +194,8 @@ public class DataPersistenceManager : MonoBehaviour
         while (true) 
         {
             yield return new WaitForSeconds(autoSaveTimeSeconds);
-            SaveGame();
-            Debug.Log("Auto Saved Game");
+            SaveConfig();
+            Debug.Log("Auto Saved Config");
         }
     }
 }

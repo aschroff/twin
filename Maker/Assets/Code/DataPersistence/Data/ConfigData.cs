@@ -8,14 +8,14 @@ public class ConfigData
     public long lastUpdated;
     public int sampleInteger;
     public Vector3 sampleVector;
-    public SerializableDictionary<string, bool> sampleDictonary;
+    public SerializableDictionary<string, string> itemTexts;
     public AttributesData sampleAttributesData;
 
     public ConfigData() 
     {
         this.sampleInteger = 0;
         sampleVector = Vector3.zero;
-        sampleDictonary = new SerializableDictionary<string, bool>();
+        itemTexts = new SerializableDictionary<string, string>();
         sampleAttributesData = new AttributesData();
     }
 }
