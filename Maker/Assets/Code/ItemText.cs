@@ -25,11 +25,12 @@ public class Item : MonoBehaviour, IDataPersistence
     }
 
     public void LoadData(ConfigData data)
-    {
+    {       
         if (textItem == null)
         {
             setText();
         }
+        Debug.Log("Loading" + textItem.text + " - " + this.id);
         data.itemTexts.TryGetValue(id, out text);
         if (text != null)
        {
