@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using UnityEngine.SceneManagement;
+
 
 public class DataPersistenceManager : MonoBehaviour
 {
@@ -23,7 +23,7 @@ public class DataPersistenceManager : MonoBehaviour
     private List<IDataPersistence> dataPersistenceObjects;
     private FileDataHandler dataHandler;
 
-    private string selectedProfileId = "";
+    private string selectedProfileId = "default";
 
     private Coroutine autoSaveCoroutine;
 
@@ -50,28 +50,14 @@ public class DataPersistenceManager : MonoBehaviour
         InitializeSelectedProfileId();
     }
 
-    private void OnEnable() 
+    private void Start()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable() 
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    public void OnSceneLoaded(Scene scene, LoadSceneMode mode) 
-    {
+        this.dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadConfig();
-
-        // start up the auto saving coroutine
-        if (autoSaveCoroutine != null) 
-        {
-            StopCoroutine(autoSaveCoroutine);
-        }
-        autoSaveCoroutine = StartCoroutine(AutoSave());
     }
+
+    
 
     public void ChangeSelectedProfileId(string newProfileId) 
     {
@@ -173,6 +159,8 @@ public class DataPersistenceManager : MonoBehaviour
     private List<IDataPersistence> FindAllDataPersistenceObjects() 
     {
         // FindObjectsofType takes in an optional boolean to include inactive gameobjects
+        IEnumerable<MonoBehaviour> temp = FindObjectsOfType<MonoBehaviour>(true);
+
         IEnumerable<IDataPersistence> dataPersistenceObjects = FindObjectsOfType<MonoBehaviour>(true)
             .OfType<IDataPersistence>();
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Item : MonoBehaviour, IDataPersistence
 {
@@ -12,16 +13,27 @@ public class Item : MonoBehaviour, IDataPersistence
         id = System.Guid.NewGuid().ToString();
     }
 
-    private GameObject visual;
-    private string text = "";
+    private InputField textItem;
+    private string text;
 
+
+
+    private void setText()
+    {
+        textItem = this.GetComponentInChildren<InputField>();
+
+    }
 
     public void LoadData(ConfigData data)
     {
-        data.itemTexts.TryGetValue(id, out text);
-        if (text != "")
+        if (textItem == null)
         {
-            visual.gameObject.SetActive(false);
+            setText();
+        }
+        data.itemTexts.TryGetValue(id, out text);
+        if (text != null)
+       {
+            textItem.text = text;
         }
     }
 
@@ -31,15 +43,11 @@ public class Item : MonoBehaviour, IDataPersistence
         {
             data.itemTexts.Remove(id);
         }
-        data.itemTexts.Add(id, text);
+        data.itemTexts.Add(id, textItem.text);
     }
 
     
 
-    private void SetText()
-    {
-        text = "";
-        visual.gameObject.SetActive(false);
-    }
+ 
 
 }
