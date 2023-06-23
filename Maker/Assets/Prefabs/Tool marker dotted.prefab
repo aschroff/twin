@@ -9,6 +9,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6189070076008326443, guid: 77669cffa082b469dacf69474cc186e2, type: 3}
+      propertyPath: interval
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6189070076008326443, guid: 77669cffa082b469dacf69474cc186e2, type: 3}
+      propertyPath: frequency
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6189070076008326443, guid: 77669cffa082b469dacf69474cc186e2, type: 3}
       propertyPath: connector.connectHits
       value: 0
       objectReference: {fileID: 0}
