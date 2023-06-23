@@ -153,6 +153,7 @@ public class DataPersistenceManager : MonoBehaviour
 
     private void OnApplicationQuit() 
     {
+        Debug.Log("Quit -> Saved Config");
         SaveConfig();
     }
 
@@ -186,4 +187,5 @@ public class DataPersistenceManager : MonoBehaviour
             Debug.Log("Auto Saved Config");
         }
     }
+
 }
