@@ -14,7 +14,6 @@ public class Sticker : MonoBehaviour
     {
         Debug.Log("SelectAndUseNewTexture " + this.name);
 		SelectTexture(1024);
-		//setTexture();
 
 	}
 
@@ -25,7 +24,12 @@ public class Sticker : MonoBehaviour
 		{
 			GameObject icon = this.transform.Find("Icon").gameObject;
 			Image iconImage = icon.GetComponent<Image>();
-			Sprite sprite = Sprite.Create(loadedTexture, new Rect(0, 0, 512, 512), new Vector2());
+			//int width = Mathf.Min(loadedTexture.width, 512);
+			//int height = Mathf.Min(loadedTexture.height, 512);
+			int width = loadedTexture.width;
+			int height = loadedTexture.height;
+
+			Sprite sprite = Sprite.Create(loadedTexture, new Rect(0, 0, width, height), new Vector2(0.5f, 0.5f), 100.0f);
 			iconImage.sprite = sprite;
 			CwDemoButton button = gameObject.GetComponent<CwDemoButton>();
 			GameObject tool = button.IsolateTarget.gameObject;
