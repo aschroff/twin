@@ -17,6 +17,12 @@ public class Item : MonoBehaviour, IDataPersistence
     private string text;
 
 
+    public string getId()
+    {
+        return this.id;
+
+    }
+
 
     private void setText()
     {
