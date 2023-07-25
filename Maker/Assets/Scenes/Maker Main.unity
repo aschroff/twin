@@ -18459,6 +18459,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 701643923}
     m_Modifications:
+    - target: {fileID: 5113187665111241745, guid: e338fa0fb4b67499eabd35a2a760b9dd, type: 3}
+      propertyPath: wrapping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113187665111241745, guid: e338fa0fb4b67499eabd35a2a760b9dd, type: 3}
+      propertyPath: normalBack
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113187665111241745, guid: e338fa0fb4b67499eabd35a2a760b9dd, type: 3}
+      propertyPath: normalFade
+      value: 0.043
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113187665111241745, guid: e338fa0fb4b67499eabd35a2a760b9dd, type: 3}
+      propertyPath: normalFront
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5113187665111241746, guid: e338fa0fb4b67499eabd35a2a760b9dd, type: 3}
       propertyPath: m_Name
       value: Black Tool Paint Dynamic Decal
