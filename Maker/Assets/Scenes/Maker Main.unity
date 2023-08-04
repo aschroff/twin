@@ -6077,7 +6077,7 @@ GameObject:
   - component: {fileID: 570454566}
   - component: {fileID: 570454565}
   - component: {fileID: 570454564}
-  - component: {fileID: 570454563}
+  - component: {fileID: 570454567}
   m_Layer: 5
   m_Name: DeleteSize
   m_TagString: Untagged
@@ -6108,20 +6108,6 @@ RectTransform:
   m_AnchoredPosition: {x: 200, y: 125.00003}
   m_SizeDelta: {x: 75, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &570454563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 570454561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a65b1faae6e7348dcb5c0e120c695113, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameObjectText: {fileID: 1508877353}
-  multiplicator: 10
 --- !u!114 &570454564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6195,9 +6181,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 570454563}
-        m_TargetAssemblyTypeName: SetFontSize, Assembly-CSharp
-        m_MethodName: SetFontSizeOFText
+      - m_Target: {fileID: 570454567}
+        m_TargetAssemblyTypeName: SetRadius, Assembly-CSharp
+        m_MethodName: SetRadiusOfPaint
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6246,6 +6232,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 570454561}
   m_CullTransparentMesh: 1
+--- !u!114 &570454567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570454561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cafdc340413c4e4694df57bd1078198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameObjectText: {fileID: 1092951646}
+  multiplicator: 0.01
 --- !u!1001 &599419217
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12595,9 +12595,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1313742849}
-        m_TargetAssemblyTypeName: SetFontSize, Assembly-CSharp
-        m_MethodName: SetFontSizeOFText
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: SetRadius, Assembly-CSharp
+        m_MethodName: SetRadiusOfPaint
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12655,11 +12655,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1313742844}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a65b1faae6e7348dcb5c0e120c695113, type: 3}
+  m_Script: {fileID: 11500000, guid: 7cafdc340413c4e4694df57bd1078198, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameObjectText: {fileID: 1508877353}
-  multiplicator: 10
+  gameObjectText: {fileID: 1092951646}
+  multiplicator: 0.00001
 --- !u!1001 &1313965906
 PrefabInstance:
   m_ObjectHideFlags: 0
