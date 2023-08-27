@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class Item : MonoBehaviour, IDataPersistence
 {
-    [SerializeField] private string id;
+    [SerializeField] public string id;
+    [SerializeField] public bool persistent = true;
 
     [ContextMenu("Generate guid for id")]
-    private void GenerateGuid()
+    protected void GenerateGuid()
     {
         id = System.Guid.NewGuid().ToString();
     }
@@ -31,7 +32,8 @@ public class Item : MonoBehaviour, IDataPersistence
     }
 
     public void LoadData(ConfigData data)
-    {       
+    {
+        if (persistent == false) return;
         if (textItem == null)
         {
             setText();
@@ -46,6 +48,7 @@ public class Item : MonoBehaviour, IDataPersistence
 
     public void SaveData(ConfigData data)
     {
+        if (persistent == false) return;
         if (data.itemTexts.ContainsKey(id))
         {
             data.itemTexts.Remove(id);

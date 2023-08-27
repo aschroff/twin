@@ -9,16 +9,35 @@ public class PartManager : P3dCommandSerialization
 
 	/// <summary>Aggregates single commands by the same tool created in a single sequence</summary>
 	[SerializeField] protected List<PartData> parts = new List<PartData>();
+	[SerializeField] public List<GroupData> groups;
 	[SerializeField] public bool startNewPart = true;
+	[SerializeField] public bool startNewGroup = true;
+	[SerializeField] public GroupData currentGroup;
 	[SerializeField] public GameObject listTools;
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
-	private P3dPaintableTexture lastTexture; 
+	private P3dPaintableTexture lastTexture;
+
+
+	[System.Serializable]
+	public class CommandDataTwin
+	{
+		public string id;
+		public CommandData data;
+	}
 
 	[System.Serializable]
 	public class PartData
 		{
-			public List<CommandData> partCommands = new List<CommandData>();
+			public List<CommandDataTwin> partCommands = new List<CommandDataTwin>();
+			public string id;
+	}
+
+	[System.Serializable]
+	public class GroupData
+	{
+		public List<PartData> groupParts = new List<PartData>();
+		public Group group;
 	}
 
 	private void setActiveTool()
@@ -33,19 +52,21 @@ public class PartManager : P3dCommandSerialization
 	}
 
 
-	public void addCommand(CommandData commandData)
+	public void addCommand(CommandDataTwin commandData)
 		{
 			if (startNewPart == true) {
 				PartData newPart = new PartData();
+				newPart.id = System.Guid.NewGuid().ToString();
 				newPart.partCommands.Add(commandData);
 				parts.Add(newPart);
+				HandleNewPart(newPart);
 				startNewPart = false;
 				setActiveTool();
 				lastActiveTool = activeTool;
-				lastTexture = commandData.PaintableTexture;
+				lastTexture = commandData.data.PaintableTexture;
 				return;
 			}
-			if (commandData.PaintableTexture != lastTexture)
+			if (commandData.data.PaintableTexture != lastTexture)
             {
 				startNewPart = true;
 				addCommand(commandData);
@@ -87,9 +108,64 @@ public class PartManager : P3dCommandSerialization
 			// Ignore preview paint commands
 			if (command.Preview == false)
 			{
-				addCommand(commandDatas[^1]);
+				CommandDataTwin newCommand = new CommandDataTwin();
+				newCommand.data = commandDatas[^1];
+				newCommand.id = System.Guid.NewGuid().ToString();
+				addCommand(newCommand);
 			}
 		}
 	}
 
+	private void HandleNewPart(PartData newPart)
+	{
+			currentGroup.groupParts.Add(newPart);
+	}
+
+	public GroupData StartNewGroup(Group group)
+	{
+		if (groups == null)
+		{
+			groups = new List<GroupData>();
+			GroupData firstGroup = new GroupData();
+			firstGroup.group = group;
+			groups.Add(firstGroup);
+			currentGroup = firstGroup;
+			return firstGroup;
+		}
+		else 
+		{
+			GroupData nextGroup = new GroupData();
+			nextGroup.group = group;
+			groups.Add(nextGroup);
+			currentGroup = nextGroup;
+			return nextGroup;
+		}
+	}
+
+	public GroupData addGroup(Group group)
+	{
+			GroupData nextGroup = new GroupData();
+			nextGroup.group = group;
+			groups.Add(nextGroup);
+			currentGroup = nextGroup;
+			return nextGroup;
+		
+	}
+	public PartData addPart(GroupData groupdata, string id)
+	{
+		PartData newPart = new PartData();
+		newPart.id = id;
+		parts.Add(newPart);
+		groupdata.groupParts.Add(newPart);
+		return newPart;
+
+	}
+	public CommandDataTwin addCommand(PartData partdata, string id)
+	{
+		CommandDataTwin newCommand = new CommandDataTwin();
+		newCommand.id = id;
+		partdata.partCommands.Add(newCommand);
+		return newCommand;
+
+	}
 }
