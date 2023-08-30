@@ -42,7 +42,10 @@ public class GroupManager : MonoBehaviour, IDataPersistence
 
     public void SaveData(ConfigData data)
     {
-       foreach (PartManager.GroupData group in partmanager.groups)
+        data.groupList.Clear();
+        data.partList.Clear();
+        data.commandList.Clear();
+        foreach (PartManager.GroupData group in partmanager.groups)
         {
             if (group.group.persistent == true) {
                 data.groupList.Add(group.group.id);
@@ -55,7 +58,8 @@ public class GroupManager : MonoBehaviour, IDataPersistence
                     }
                 }
             }
-        } 
+        }
+        partmanager.SerializeAndDeserialize();
     }
 
     void Start()

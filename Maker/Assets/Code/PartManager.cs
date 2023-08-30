@@ -4,7 +4,7 @@ using UnityEngine;
 using PaintIn3D;
 
 
-public class PartManager : P3dCommandSerialization
+public class PartManager : P3dCommandSerialization, IDataPersistence
 {
 
 	/// <summary>Aggregates single commands by the same tool created in a single sequence</summary>
@@ -28,9 +28,9 @@ public class PartManager : P3dCommandSerialization
 
 	[System.Serializable]
 	public class PartData
-		{
-			public List<CommandDataTwin> partCommands = new List<CommandDataTwin>();
-			public string id;
+	{
+		public List<CommandDataTwin> partCommands = new List<CommandDataTwin>();
+		public string id;
 	}
 
 	[System.Serializable]
@@ -41,7 +41,7 @@ public class PartManager : P3dCommandSerialization
 	}
 
 	private void setActiveTool()
-    {
+	{
 		foreach (Transform child in listTools.transform)
 		{
 			if (child.gameObject.activeSelf == true)
@@ -53,39 +53,40 @@ public class PartManager : P3dCommandSerialization
 
 
 	public void addCommand(CommandDataTwin commandData)
+	{
+		if (startNewPart == true)
 		{
-			if (startNewPart == true) {
-				PartData newPart = new PartData();
-				newPart.id = System.Guid.NewGuid().ToString();
-				newPart.partCommands.Add(commandData);
-				parts.Add(newPart);
-				HandleNewPart(newPart);
-				startNewPart = false;
-				setActiveTool();
-				lastActiveTool = activeTool;
-				lastTexture = commandData.data.PaintableTexture;
-				return;
-			}
-			if (commandData.data.PaintableTexture != lastTexture)
-            {
-				startNewPart = true;
-				addCommand(commandData);
-				return;
-            }
+			PartData newPart = new PartData();
+			newPart.id = System.Guid.NewGuid().ToString();
+			newPart.partCommands.Add(commandData);
+			parts.Add(newPart);
+			HandleNewPart(newPart);
+			startNewPart = false;
 			setActiveTool();
-			if (lastActiveTool != activeTool)
-			{
-				startNewPart = true;
-				addCommand(commandData);
-				return;
-			}
-			parts[^1].partCommands.Add(commandData);
+			lastActiveTool = activeTool;
+			lastTexture = commandData.data.PaintableTexture;
+			return;
+		}
+		if (commandData.data.PaintableTexture != lastTexture)
+		{
+			startNewPart = true;
+			addCommand(commandData);
+			return;
+		}
+		setActiveTool();
+		if (lastActiveTool != activeTool)
+		{
+			startNewPart = true;
+			addCommand(commandData);
+			return;
+		}
+		parts[^1].partCommands.Add(commandData);
 
-			
+
 	}
 
 
-    protected virtual void OnEnable()
+	protected virtual void OnEnable()
 	{
 		P3dPaintableTexture.OnAddCommandGlobal += HandleAddCommandGlobal;
 	}
@@ -96,9 +97,9 @@ public class PartManager : P3dCommandSerialization
 	}
 
 	public int count_parts()
-		{
-			return commandDatas.Count;
-		}
+	{
+		return commandDatas.Count;
+	}
 
 	private void HandleAddCommandGlobal(P3dPaintableTexture paintableTexture, P3dCommand command)
 	{
@@ -118,7 +119,7 @@ public class PartManager : P3dCommandSerialization
 
 	private void HandleNewPart(PartData newPart)
 	{
-			currentGroup.groupParts.Add(newPart);
+		currentGroup.groupParts.Add(newPart);
 	}
 
 	public GroupData StartNewGroup(Group group)
@@ -132,7 +133,7 @@ public class PartManager : P3dCommandSerialization
 			currentGroup = firstGroup;
 			return firstGroup;
 		}
-		else 
+		else
 		{
 			GroupData nextGroup = new GroupData();
 			nextGroup.group = group;
@@ -144,12 +145,12 @@ public class PartManager : P3dCommandSerialization
 
 	public GroupData addGroup(Group group)
 	{
-			GroupData nextGroup = new GroupData();
-			nextGroup.group = group;
-			groups.Add(nextGroup);
-			currentGroup = nextGroup;
-			return nextGroup;
-		
+		GroupData nextGroup = new GroupData();
+		nextGroup.group = group;
+		groups.Add(nextGroup);
+		currentGroup = nextGroup;
+		return nextGroup;
+
 	}
 	public PartData addPart(GroupData groupdata, string id)
 	{
@@ -167,5 +168,16 @@ public class PartManager : P3dCommandSerialization
 		partdata.partCommands.Add(newCommand);
 		return newCommand;
 
+	}
+
+	public void SaveData(ConfigData data)
+	{
+		var json = JsonUtility.ToJson(this);
+		data.commandDetails = json;
+	}
+	public void LoadData(ConfigData data)
+	{
+		var json = data.commandDetails;
+		JsonUtility.FromJsonOverwrite(json, this);
 	}
 }
