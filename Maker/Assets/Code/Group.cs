@@ -18,7 +18,8 @@ public class Group : Item
         if (this.persistent == false) {
             this.persistent = true;
             this.GenerateGuid();
-            groupdata = partmanager.StartNewGroup(this);
+            groupdata = partmanager.StartNewGroup(this);            
+            groupdata.id = this.id;
             groupmanager.createNewNonpersistentGroup();
         }
         foreach (Outline child in groupparent.GetComponentsInChildren<Outline>())
@@ -30,6 +31,7 @@ public class Group : Item
             child.enabled = true;
         }
         partmanager.currentGroup = groupdata;
+        partmanager.currentGroup.name = this.transform.GetComponentInChildren<InputField>().text;
 
     }
 

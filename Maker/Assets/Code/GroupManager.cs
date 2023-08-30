@@ -2,65 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
-public class GroupManager : MonoBehaviour, IDataPersistence
+public class GroupManager : MonoBehaviour
 {
     [SerializeField] public PartManager partmanager;
     [SerializeField] public GameObject prefab;
 
-    public void LoadData(ConfigData data)
+    public void build()
     {
         bool tempListening = partmanager.Listening;
         partmanager.Listening = false;
-        List<string> groupList = data.groupList;
-        SerializableDictionary<string, string> partList = data.partList;
-        SerializableDictionary<string, string> commandList = data.commandList;
-        foreach (string idGroup in groupList) 
+        foreach (PartManager.GroupData groupdata in partmanager.groups) 
         {
-            Group group = createPersistentGroup(idGroup);
-
-            foreach (string idPart in partList.Keys)
-            {
-                if (partList.ContainsKey(idPart) && partList[idPart] == idGroup)
-                {
-                    PartManager.PartData partdata = partmanager.addPart(group.groupdata, idPart);
-                    foreach (string idCommand in commandList.Keys)
-                    {
-                        if(commandList.ContainsKey(idCommand) && commandList[idCommand] == idPart)
-                        {
-                            partmanager.addCommand(partdata, idCommand);
-                        }
-                    }
-                }
-                
-            }
-
-            
+            Group group = createPersistentGroup(groupdata);
+            group.gameObject.transform.GetComponentInChildren<InputField>().text = groupdata.name;
         }
         partmanager.Listening = tempListening;
     }
 
-    public void SaveData(ConfigData data)
-    {
-        data.groupList.Clear();
-        data.partList.Clear();
-        data.commandList.Clear();
-        foreach (PartManager.GroupData group in partmanager.groups)
-        {
-            if (group.group.persistent == true) {
-                data.groupList.Add(group.group.id);
-                foreach (PartManager.PartData part in group.groupParts)
-                {
-                    data.partList.Add(part.id, group.group.id);
-                    foreach (PartManager.CommandDataTwin command in part.partCommands)
-                    {
-                        data.commandList.Add(command.id, part.id);
-                    }
-                }
-            }
-        }
-        partmanager.SerializeAndDeserialize();
-    }
 
     void Start()
     {
@@ -71,11 +31,10 @@ public class GroupManager : MonoBehaviour, IDataPersistence
     {
         createGroup();
     }
-    public Group createPersistentGroup(string id)
+    public Group createPersistentGroup(PartManager.GroupData groupdata)
     {
         Group group = createGroup();
-        group.id = id;
-        PartManager.GroupData groupdata = partmanager.addGroup(group);
+        group.id = groupdata.id;
         group.groupdata = groupdata;
         group.persistent = true;
         return group;

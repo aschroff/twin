@@ -14,6 +14,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	[SerializeField] public bool startNewGroup = true;
 	[SerializeField] public GroupData currentGroup;
 	[SerializeField] public GameObject listTools;
+	[SerializeField] public GameObject groupmanagerGameobject;
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
 	private P3dPaintableTexture lastTexture;
@@ -38,6 +39,9 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	{
 		public List<PartData> groupParts = new List<PartData>();
 		public Group group;
+		public string id;
+		public string name;
+		public bool visible;
 	}
 
 	private void setActiveTool()
@@ -179,5 +183,8 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	{
 		var json = data.commandDetails;
 		JsonUtility.FromJsonOverwrite(json, this);
-	}
+		GroupManager groupmanager = groupmanagerGameobject.GetComponent<GroupManager>();
+		groupmanager.build();
+
+    }
 }
