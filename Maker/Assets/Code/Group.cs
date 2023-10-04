@@ -10,9 +10,9 @@ public class Group : Item
     [SerializeField] public GameObject groupparent;
 
 
-    // Start is called before the first frame update
     public void HandleEdit()
     {
+        Debug.Log("HandleEdit");
         GroupManager groupmanager = groupparent.GetComponentInChildren<GroupManager>();
         PartManager partmanager = groupmanager.partmanager;
         if (this.persistent == false) {
@@ -32,8 +32,26 @@ public class Group : Item
         }
         partmanager.currentGroup = groupdata;
         partmanager.currentGroup.name = this.transform.GetComponentInChildren<InputField>().text;
-
+        Debug.Log("HandledEdit");
     }
 
+    
+    public void HandleClick()
+    {
+        Debug.Log("HandleClick");
+        GroupManager groupmanager = groupparent.GetComponentInChildren<GroupManager>();
+        bool boolOn = this.gameObject.GetComponentInChildren<Toggle>().isOn;
+        groupdata.visible = boolOn;
+        PartManager partmanager = groupmanager.partmanager;
+        groupmanager.Refresh();
+        Debug.Log("HandledClick");
+    }
+    public void HandleDelete()
+    {
+        Debug.Log("HandleDelete");
+        GroupManager groupmanager = groupparent.GetComponentInChildren<GroupManager>();
+        groupmanager.DeleteGroup(groupdata, this.gameObject);
+        Debug.Log("HandledDelete");
+    }
 
 }

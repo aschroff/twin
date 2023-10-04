@@ -18,6 +18,7 @@ public class GroupManager : MonoBehaviour
             Group group = createPersistentGroup(groupdata);
             group.gameObject.transform.GetComponentInChildren<InputField>().text = groupdata.name;
         }
+        //this.Refresh();
         partmanager.Listening = tempListening;
     }
 
@@ -36,7 +37,9 @@ public class GroupManager : MonoBehaviour
         Group group = createGroup();
         group.id = groupdata.id;
         group.groupdata = groupdata;
+        group.groupdata.group = group;
         group.persistent = true;
+        //TODO persistent visible flag
         return group;
     }
     public Group createGroup()
@@ -48,5 +51,34 @@ public class GroupManager : MonoBehaviour
         groupcomponent.groupparent = this.gameObject;
         return groupcomponent;
     }
+    public void DeleteGroup(PartManager.GroupData groupdata, GameObject gameobjectGroup)
+    {
+        groupdata.group.persistent = false;
+        partmanager.deleteGroup(groupdata);
+        //gameobjectGroup.SetActive(false);
+        Destroy(gameobjectGroup);
+        this.Refresh();
+    }
+    public void Refresh()
+    {
+        partmanager.Erase();
+        /*foreach (Toggle child in this.GetComponentsInChildren<Toggle>())
+        {
+            Group group_for_child = child.transform.parent.GetComponent<Group>();
+            if (group_for_child.persistent == true && child.isOn == true && group_for_child.groupdata != null)
+            {
+                //partmanager.Apply(group_for_child.groupdata);
+                group_for_child.groupdata.visible = true;
+
+            }
+            else
+            {
+                group_for_child.groupdata.visible = false;
+            }
+
+        }*/
+        partmanager.Refresh();
+    }
+
 
 }
