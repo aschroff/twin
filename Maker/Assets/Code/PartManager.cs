@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PaintIn3D;
 using System.Linq;
+using System;
 
 public class PartManager : P3dCommandSerialization, IDataPersistence
 {
@@ -15,10 +16,12 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	[SerializeField] public GroupData currentGroup;
 	[SerializeField] public PartData currentPart;
 	[SerializeField] public GameObject listTools;
+	[SerializeField] public GameObject maker;
 	[SerializeField] public GameObject groupmanagerGameobject;
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
 	private P3dPaintableTexture lastTexture;
+	[SerializeField] public bool temp_skiploading = false;
 
 
 	[System.Serializable]
@@ -197,11 +200,22 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	}
 	public void LoadData(ConfigData data)
 	{
-		var json = data.commandDetails;
-		JsonUtility.FromJsonOverwrite(json, this);
+		InteractionController.EnableMode("EditSticker");
+		try
+		{
+			if (temp_skiploading == false)
+			{				
+				var json = data.commandDetails;
+				JsonUtility.FromJsonOverwrite(json, this);
+			}
+		}
+		catch (Exception e)
+        {
+			Erase();
+		}
 		GroupManager groupmanager = groupmanagerGameobject.GetComponent<GroupManager>();
 		groupmanager.build();
-
+		
 	}
 	private P3dCommand Apply(CommandDataTwin commandData)
 	{
@@ -239,6 +253,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 		//last.Pool();
 		return last;
 	}
+	[ContextMenu("Erase texture")]
 	public void Erase()
 	{
 		Debug.Log("Start erase");
@@ -256,6 +271,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 		listening = oldListening;
 		Debug.Log("Erased");
 	}
+	[ContextMenu("Re-paint texture")]
 	public void Refresh()
 	{
 		Debug.Log("Start refresh with +groups: " + groups.Count.ToString());
@@ -352,12 +368,8 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 		}
 		return false;
 	}
-	private void RepairLinks()
-    {
-		
-    }
 
-	[ContextMenu("Clear all")]
+	[ContextMenu("Reset")]
 	public void ClearAll()
 	{
 		base.Clear();
@@ -372,46 +384,6 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 		Refresh();
 	}
 
-	[ContextMenu("Rebuild All Command Test")]
-	public void RebuildAllCommandTest()
-	{
-		// Ignore added commands while this method is running
-		var oldListening = listening;
-
-		listening = false;
-
-		// Loop through all paintable textures, and reset them to their original state
-		foreach (var paintableTexture in P3dPaintableTexture.Instances)
-		{
-			paintableTexture.Clear();
-		}
-		P3dCommand tmpCommand = new P3dCommandDecal();
-		// Randomly pick one command data
-		foreach (CommandData commanddata in commandDatas)
-		{
-			//for (int i = commandDatas.Count - 1; i >= 0; i--)
-			//	{
-			//	CommandData commanddata = commandDatas[i];
-
-			// Make sure it's still valid
-			if (commanddata.PaintableTexture != null)
-			{
-				// Convert the command to world space
-				var command = commanddata.LocalCommand.SpawnCopyWorld(commanddata.PaintableTexture.transform);
-
-				// Apply it to its paintable texture
-				commanddata.PaintableTexture.AddCommand(command);
-
-				// Pool
-				//command.Pool();
-
-				tmpCommand = command;
-
-			}
-		}
-		tmpCommand.Pool();
-		// Revert listening state
-		listening = oldListening;
-	}
+	
 
 }

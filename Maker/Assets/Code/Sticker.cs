@@ -10,13 +10,17 @@ public class Sticker : MonoBehaviour
 	[SerializeField] private Texture2D loadedTexture;
 
 	//[System.Obsolete]
-    public void SelectAndUseNewTexture()
+	public void SelectAndUseNewTexture()
     {
         Debug.Log("SelectAndUseNewTexture " + this.name);
 		SelectTexture(1024);
 
 	}
 
+	private GameObject FolderHash()
+    {
+		return this.transform.parent.gameObject.GetComponent<StickerRepo>().folderHash;
+    }
 
 	private void setTexture()
 	{
@@ -35,6 +39,8 @@ public class Sticker : MonoBehaviour
 			GameObject tool = button.IsolateTarget.gameObject;
 			P3dPaintDecal sticker = tool.GetComponent<P3dPaintDecal>();
 			sticker.Texture = loadedTexture;
+
+
 		}
 	}
 
@@ -49,6 +55,7 @@ public class Sticker : MonoBehaviour
 			loadedTexture.LoadImage(imageBytes);
 
 			setTexture();
+			RegisterTexture();
 		}
 		
 
@@ -73,6 +80,7 @@ public class Sticker : MonoBehaviour
 					loadedTexture = texture;
 					SaveTexture();
 					setTexture();
+					RegisterTexture();
 
 				}
 			}
@@ -96,5 +104,59 @@ public class Sticker : MonoBehaviour
 	}
 
 
+	private void RegisterTexture()
+
+
+	{
+		string hash = this.gameObject.GetComponent<Item>().getId();
+		if (is_registered(hash) == false)
+		{
+			Debug.Log("Start Register");
+			GameObject decalhash = Instantiate(Resources.Load("Decal Hash", typeof(GameObject))) as GameObject;
+			decalhash.transform.SetParent(FolderHash().transform);
+			Debug.Log("INstantiated");
+			P3dTextureHash textureHash = decalhash.GetComponent<P3dTextureHash>();
+			Debug.Log("tex hash created");
+			textureHash.Texture = loadedTexture;
+			Debug.Log("Texture assigned " + hash);
+			int intHash = this.gameObject.GetComponent<Item>().getHash();
+			Debug.Log("hash" + intHash.ToString());
+			textureHash.Hash = new P3dHash(intHash);
+			Debug.Log("Key assigned");
+		}
+	}
+
+	public bool IsInstanceOfPrefabWithName(GameObject obj, string name)
+	{
+		TwinPrefab twinPrefab = obj.GetComponent<TwinPrefab>();
+		if (twinPrefab != null)
+		{
+			return twinPrefab.IsInstanceOfPrefabWithName(name);
+		}
+		return false;
+	}
+
+	private bool is_registered(string hash)
+
+
+	{
+		for (int j = 0; j < FolderHash().transform.childCount; j++) {
+
+			GameObject child = FolderHash().transform.GetChild(j).gameObject;
+			TwinPrefab twinPrefab = child.GetComponent<TwinPrefab>();
+			if (IsInstanceOfPrefabWithName(child, "Decal Hash"))
+            {
+				P3dTextureHash hashPrefab = child.GetComponent<P3dTextureHash>();
+
+				if (hashPrefab.Hash.ToString() == hash)
+				{
+					Debug.Log("found");
+					return true;
+				};
+            }
+
+		}
+		return false;
+	}
 }
 
