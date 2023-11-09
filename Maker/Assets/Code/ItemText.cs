@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,7 @@ public class Item : MonoBehaviour, IDataPersistence
     protected void GenerateGuid()
     {
         id = System.Guid.NewGuid().ToString();
+        
     }
 
     private InputField textItem;
@@ -24,6 +26,11 @@ public class Item : MonoBehaviour, IDataPersistence
 
     }
 
+    public int getHash()
+    {
+        return this.id.ToCharArray().Sum(x => x) % 100;
+
+    }
 
     private void setText()
     {

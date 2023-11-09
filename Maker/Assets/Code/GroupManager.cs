@@ -8,7 +8,6 @@ public class GroupManager : MonoBehaviour
 {
     [SerializeField] public PartManager partmanager;
     [SerializeField] public GameObject prefab;
-
     public void build()
     {
         bool tempListening = partmanager.Listening;
