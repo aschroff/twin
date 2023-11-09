@@ -24,6 +24,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	[SerializeField] public bool temp_skiploading = false;
 
 
+
 	[System.Serializable]
 	public class CommandDataTwin
 	{
@@ -271,6 +272,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 		listening = oldListening;
 		Debug.Log("Erased");
 	}
+  
 	[ContextMenu("Re-paint texture")]
 	public void Refresh()
 	{
@@ -384,6 +386,5 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 		Refresh();
 	}
 
-	
 
 }
