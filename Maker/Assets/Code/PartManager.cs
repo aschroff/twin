@@ -293,7 +293,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 			
 		}
 		if (last != null) {
-			last.Pool();
+			//last.Pool();
 			Debug.Log("Pooled");
 		}
 		listening = oldListening;
