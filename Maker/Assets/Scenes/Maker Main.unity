@@ -12866,12 +12866,12 @@ RectTransform:
   - {fileID: 966358856}
   - {fileID: 1306386895}
   - {fileID: 1379153737}
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_Father: {fileID: 1851032621}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 200, y: 125.00003}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 75, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1313742846
@@ -12947,9 +12947,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SetRadius, Assembly-CSharp
-        m_MethodName: SetRadiusOfPaint
+      - m_Target: {fileID: 1313742849}
+        m_TargetAssemblyTypeName: SetFontSize, Assembly-CSharp
+        m_MethodName: SetFontSizeOFText
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13007,11 +13007,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1313742844}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cafdc340413c4e4694df57bd1078198, type: 3}
+  m_Script: {fileID: 11500000, guid: a65b1faae6e7348dcb5c0e120c695113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameObjectText: {fileID: 1092951646}
-  multiplicator: 0.00001
+  folderTexttools: {fileID: 701643922}
+  multiplicator: 0.1
 --- !u!1001 &1313965906
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18674,6 +18674,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1313742845}
   - {fileID: 335421361}
   - {fileID: 1063931682}
   m_Father: {fileID: 1162962733}
