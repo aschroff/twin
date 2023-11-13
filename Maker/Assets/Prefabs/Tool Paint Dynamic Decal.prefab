@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5113187665111241745}
   - component: {fileID: 5113187665111241749}
   - component: {fileID: 5113187665111241750}
+  - component: {fileID: 7157286155102523460}
   m_Layer: 0
   m_Name: Tool Paint Dynamic Decal
   m_TagString: Untagged
@@ -33,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5113187665111241744
 MonoBehaviour:
@@ -148,3 +149,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: 0
+--- !u!114 &7157286155102523460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5113187665111241746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Tool Paint Dynamic Decal
