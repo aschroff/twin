@@ -9,12 +9,12 @@ public class DataPersistenceManager : MonoBehaviour
     [Header("Debugging")]
     [SerializeField] private bool disableDataPersistence = false;
     [SerializeField] private bool initializeDataIfNull = false;
-    [SerializeField] private bool overrideSelectedProfileId = false;
-    [SerializeField] private string testSelectedProfileId = "test";
+    
 
     [Header("File Storage Config")]
     [SerializeField] private string fileName;
     [SerializeField] private bool useEncryption;
+    [SerializeField] private string selectedProfileId = "default";
 
     [Header("Auto Saving Configuration")]
     [SerializeField] private float autoSaveTimeSeconds = 60f;
@@ -22,8 +22,6 @@ public class DataPersistenceManager : MonoBehaviour
     private ConfigData configData;
     private List<IDataPersistence> dataPersistenceObjects;
     private FileDataHandler dataHandler;
-
-    private string selectedProfileId = "default";
 
     private Coroutine autoSaveCoroutine;
 
@@ -80,11 +78,6 @@ public class DataPersistenceManager : MonoBehaviour
     private void InitializeSelectedProfileId() 
     {
         this.selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId();
-        if (overrideSelectedProfileId) 
-        {
-            this.selectedProfileId = testSelectedProfileId;
-            Debug.LogWarning("Overrode selected profile id with test id: " + testSelectedProfileId);
-        }
     }
 
     public void NewConfig() 

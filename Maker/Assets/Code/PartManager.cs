@@ -16,7 +16,6 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	[SerializeField] public GroupData currentGroup;
 	[SerializeField] public PartData currentPart;
 	[SerializeField] public GameObject listTools;
-	[SerializeField] public GameObject maker;
 	[SerializeField] public GameObject groupmanagerGameobject;
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
