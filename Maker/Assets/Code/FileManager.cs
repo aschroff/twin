@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class FileManager : MonoBehaviour
 {
     [SerializeField] public DataPersistenceManager dataManager;
-    private Dictionary<string> profiles = new Dictionary<string>();
+    private Dictionary<string, string> profiles = new Dictionary<string, string>();
 
     // Start is called before the first frame update
     void Start()
