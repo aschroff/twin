@@ -35,6 +35,10 @@ public class FileManager : MonoBehaviour
         configData.transform.localScale = prefab.transform.localScale;
         Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
         text.text = entry.Key;
+        Button button = configData.transform.Find("Delete").GetComponentInChildren<Button>();
+        button.onClick.AddListener(() => { dataManager.DeleteProfileData(entry.Key); });
+        button = configData.transform.Find("Select").GetComponentInChildren<Button>();
+        button.onClick.AddListener(() => { dataManager.ChangeSelectedProfileId(entry.Key); });
         return entry.Value;
     }
 }
