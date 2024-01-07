@@ -33,6 +33,9 @@ public class FileManager : MonoBehaviour
         GameObject configData = Instantiate(prefab);
         configData.transform.SetParent(this.transform, false);
         configData.transform.localScale = prefab.transform.localScale;
+        Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
+        text.text = entry.Key;
         return entry.Value;
     }
 }
+

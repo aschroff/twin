@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="422d22e4-3cfc-4649-ba5c-073e32550110" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/FileManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Maker Main.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Maker Main.unity" afterDir="false" />
     </list>
@@ -17,8 +18,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Code/FileManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Users/andreasschroff/Documents/Dev/Unity/Twin/twin/Maker/Assets/Scenes/Maker Main.unity" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8e41707dd51a474e94dbbadbc1bcf2bf1dec00/52/cff9f2ce/LayoutDataStore.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -100,7 +102,7 @@
       <workItem from="1704566661473" duration="764000" />
       <workItem from="1704567542772" duration="982000" />
       <workItem from="1704569792909" duration="2233000" />
-      <workItem from="1704622343210" duration="615000" />
+      <workItem from="1704622343210" duration="3283000" />
     </task>
     <servers />
   </component>
@@ -118,6 +120,19 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Code/FileManager.cs</url>
+          <line>15</line>
+          <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="15" containingFunctionPresentation="Method 'Start'">
+            <startOffsets>
+              <option value="444" />
+            </startOffsets>
+            <endOffsets>
+              <option value="532" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Code/FileManager.cs</url>
           <line>32</line>
           <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="32" containingFunctionPresentation="Method 'createConfigEntry'">
             <startOffsets>
@@ -127,9 +142,17 @@
               <option value="905" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="1" />
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="UNITY_DEBUG_RUN_CONFIGURATION">
+        <watch expression="configData.transform.Find(&quot;Name&quot;).GetComponent&lt;Text&gt;()" language="C#" />
+        <watch expression="  configData.transform.Find(&quot;Name&quot;)" language="C#" />
+        <watch expression="  configData.transform.Find(&quot;Name&quot;).gameObject" language="C#" />
+        <watch expression="  configData.transform.Find(&quot;Name&quot;).gameObject.transform.Find(&quot;Text&quot;)" language="C#" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
