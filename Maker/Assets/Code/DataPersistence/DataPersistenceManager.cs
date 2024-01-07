@@ -67,12 +67,14 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void DeleteProfileData(string profileId) 
     {
+        if (profileId == selectedProfileId)
+        {
+            return;
+        }
+        
         // delete the data for this profile id
         dataHandler.Delete(profileId);
-        // initialize the selected profile id
-        InitializeSelectedProfileId();
-        // reload the game so that our data matches the newly selected profile id
-        LoadConfig();
+        
     }
 
     private void InitializeSelectedProfileId() 

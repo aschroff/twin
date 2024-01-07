@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="422d22e4-3cfc-4649-ba5c-073e32550110" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/FileManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Scroll two buttons and read only text.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Scroll two buttons and read only text.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Maker Main.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Maker Main.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +103,7 @@
       <workItem from="1704566661473" duration="764000" />
       <workItem from="1704567542772" duration="982000" />
       <workItem from="1704569792909" duration="2233000" />
-      <workItem from="1704622343210" duration="5485000" />
+      <workItem from="1704622343210" duration="10035000" />
     </task>
     <servers />
   </component>
@@ -121,16 +121,42 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Code/FileManager.cs</url>
-          <line>32</line>
-          <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="32" containingFunctionPresentation="Method 'createConfigEntry'">
+          <line>45</line>
+          <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="44" containingFunctionPresentation="Method 'Delete'">
             <startOffsets>
-              <option value="861" />
+              <option value="972" />
             </startOffsets>
             <endOffsets>
-              <option value="905" />
+              <option value="1018" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="4" />
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Code/FileManager.cs</url>
+          <line>74</line>
+          <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="70" containingFunctionPresentation="Method 'Remove'">
+            <startOffsets>
+              <option value="2138" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2148" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs</url>
+          <line>69</line>
+          <properties documentPath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" initialLine="69" containingFunctionPresentation="Method 'DeleteProfileData'">
+            <startOffsets>
+              <option value="2082" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2117" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

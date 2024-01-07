@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using UnityEngine;
 using System.Linq;
+using Lean.Transition;
 using UnityEngine.UI;
 
 public class FileManager : MonoBehaviour
@@ -13,10 +15,7 @@ public class FileManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
-        {
-            createConfigEntry(entry);
-        }
+        Create();
     }
 
     // Update is called once per frame
@@ -25,9 +24,32 @@ public class FileManager : MonoBehaviour
         if (this.isActiveAndEnabled == true)
         {
             Debug.Log("__");
-        } 
+        }
     }
-    
+
+    void Refresh()
+    {
+        Delete();
+        Create();
+    }
+
+    private void Create()
+    {
+        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
+        {
+            createConfigEntry(entry);
+        }
+    }
+
+    private void Delete()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform childTransform = transform.GetChild(i);
+            Destroy(childTransform.gameObject);
+        }
+    }
+
     public ConfigData createConfigEntry(KeyValuePair<string, ConfigData> entry)
     {
         GameObject configData = Instantiate(prefab);
@@ -36,10 +58,20 @@ public class FileManager : MonoBehaviour
         Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
         text.text = entry.Key;
         Button button = configData.transform.Find("Delete").GetComponentInChildren<Button>();
-        button.onClick.AddListener(() => { dataManager.DeleteProfileData(entry.Key); });
+        button.onClick.AddListener(() => { Remove(entry.Key); });
         button = configData.transform.Find("Select").GetComponentInChildren<Button>();
-        button.onClick.AddListener(() => { dataManager.ChangeSelectedProfileId(entry.Key); });
+        button.onClick.AddListener(() => { Select(entry.Key);  });
         return entry.Value;
     }
-}
 
+    private void Select(string profile)
+    {
+        dataManager.ChangeSelectedProfileId(profile);
+    }
+
+    private void Remove(string profile)
+    {
+        dataManager.DeleteProfileData(profile);
+        Refresh();
+    }
+}
