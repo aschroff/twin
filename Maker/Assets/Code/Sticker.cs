@@ -38,13 +38,7 @@ public class Sticker : ItemHash
 
 		}
 	}
-
-	private void Awake()
-	{
-		Debug.Log("Awake called.");
-		handleAwake();
-		
-	}
+	
 	
 	public override void handleAwake()
 	{
@@ -110,8 +104,8 @@ public class Sticker : ItemHash
 
 
 	{
-		string hash = this.gameObject.GetComponent<Item>().getId();
-		if (is_registered(hash) == false)
+		int intHash = this.gameObject.GetComponent<Item>().getHash();
+		if (is_registered(intHash) == false)
 		{
 			Debug.Log("Start Register");
 			GameObject decalhash = Instantiate(Resources.Load("Decal Hash", typeof(GameObject))) as GameObject;
@@ -120,8 +114,8 @@ public class Sticker : ItemHash
 			P3dTextureHash textureHash = decalhash.GetComponent<P3dTextureHash>();
 			Debug.Log("tex hash created");
 			textureHash.Texture = loadedTexture;
-			Debug.Log("Texture assigned " + hash);
-			int intHash = this.gameObject.GetComponent<Item>().getHash();
+			//Debug.Log("Texture assigned " + hash);
+			//int intHash = this.gameObject.GetComponent<Item>().getHash();
 			Debug.Log("hash" + intHash.ToString());
 			textureHash.Hash = new P3dHash(intHash);
 			Debug.Log("Key assigned");
@@ -138,19 +132,18 @@ public class Sticker : ItemHash
 		return false;
 	}
 
-	private bool is_registered(string hash)
+	private bool is_registered(int hash)
 
 
 	{
 		for (int j = 0; j < FolderHash().transform.childCount; j++) {
 
 			GameObject child = FolderHash().transform.GetChild(j).gameObject;
-			TwinPrefab twinPrefab = child.GetComponent<TwinPrefab>();
 			if (IsInstanceOfPrefabWithName(child, "Decal Hash"))
             {
 				P3dTextureHash hashPrefab = child.GetComponent<P3dTextureHash>();
 
-				if (hashPrefab.Hash.ToString() == hash)
+				if (hashPrefab.Hash.ToString() == hash.ToString())
 				{
 					Debug.Log("found");
 					return true;
@@ -158,6 +151,7 @@ public class Sticker : ItemHash
             }
 
 		}
+		Debug.Log("not found");
 		return false;
 	}
 }

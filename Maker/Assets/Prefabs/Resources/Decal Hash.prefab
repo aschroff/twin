@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2191595414080983693}
   - component: {fileID: 2191595414080983682}
+  - component: {fileID: 9159841980210260075}
   m_Layer: 0
   m_Name: Decal Hash
   m_TagString: Untagged
@@ -24,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2191595414080983683}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2191595414080983682
 MonoBehaviour:
@@ -47,3 +48,16 @@ MonoBehaviour:
   texture: {fileID: 2800000, guid: 1d9dd891b0518b14b8d1508ca636e259, type: 3}
   hash:
     v: 1724996525
+--- !u!114 &9159841980210260075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191595414080983683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Decal Hash

@@ -6,16 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="422d22e4-3cfc-4649-ba5c-073e32550110" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/DataPersistence/IDataPersistence.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/DataPersistence/IDataPersistence.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/FileManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/Group.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Group.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/ItemText.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/ItemText.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/PartManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/PartManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/Sticker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Sticker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/StickerRepo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/StickerRepo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Resources/Decal Hash.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/Decal Hash.prefab" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,10 +81,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="20453">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="21611">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="20453" />
+      <option name="pid" value="21611" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -115,6 +107,7 @@
       <workItem from="1704735526909" duration="579000" />
       <workItem from="1704992364394" duration="2449000" />
       <workItem from="1705151851321" duration="6750000" />
+      <workItem from="1705163709527" duration="4866000" />
     </task>
     <servers />
   </component>
@@ -144,19 +137,6 @@
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Code/FileManager.cs</url>
-          <line>66</line>
-          <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="70" containingFunctionPresentation="Method 'Remove'">
-            <startOffsets>
-              <option value="1979" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1989" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs</url>
           <line>69</line>
           <properties documentPath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" initialLine="69" containingFunctionPresentation="Method 'DeleteProfileData'">
@@ -170,17 +150,17 @@
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Code/FileManager.cs</url>
-          <line>60</line>
-          <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="68" containingFunctionPresentation="Method 'Select'">
+          <url>file://$PROJECT_DIR$/Assets/Code/Sticker.cs</url>
+          <line>137</line>
+          <properties documentPath="$PROJECT_DIR$/Assets/Code/Sticker.cs" initialLine="137" containingFunctionPresentation="Method 'is_registered'">
             <startOffsets>
-              <option value="1824" />
+              <option value="3613" />
             </startOffsets>
             <endOffsets>
-              <option value="1869" />
+              <option value="3614" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="10" />
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
