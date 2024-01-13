@@ -22,9 +22,15 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	private P3dPaintableTexture lastTexture;
 	[SerializeField] public bool temp_skiploading = false;
 
-
+	public GameObject relatedGameObject()
+	{
+		return this.gameObject;
+	}
+	
 
 	[System.Serializable]
+	
+	
 	public class CommandDataTwin
 	{
 		public string id;
@@ -200,7 +206,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	}
 	public void LoadData(ConfigData data)
 	{
-		InteractionController.EnableMode("EditSticker");
+		//InteractionController.EnableMode("EditSticker");
 		try
 		{
 			if (temp_skiploading == false)

@@ -7,8 +7,15 @@
     <list default="true" id="422d22e4-3cfc-4649-ba5c-073e32550110" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/DataPersistence/IDataPersistence.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/DataPersistence/IDataPersistence.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/FileManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Maker Main.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Maker Main.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/Group.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Group.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/ItemText.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/ItemText.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/PartManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/PartManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/Sticker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Sticker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/StickerRepo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/StickerRepo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,8 +26,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Code/FileManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Code/ItemHash.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8e41707dd51a474e94dbbadbc1bcf2bf1dec00/52/cff9f2ce/LayoutDataStore.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
@@ -37,6 +44,7 @@
     &quot;Attach to Unity Editor.Attach to Unity Editor.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.25761774&quot;,
     &quot;git-widget-placeholder&quot;: &quot;TWIN-45B-Config-data-can-be-saved-and-loaded&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -81,10 +89,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="6532">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="20453">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="6532" />
+      <option name="pid" value="20453" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -104,6 +112,9 @@
       <workItem from="1704567542772" duration="982000" />
       <workItem from="1704569792909" duration="2233000" />
       <workItem from="1704622343210" duration="10035000" />
+      <workItem from="1704735526909" duration="579000" />
+      <workItem from="1704992364394" duration="2449000" />
+      <workItem from="1705151851321" duration="6750000" />
     </task>
     <servers />
   </component>
@@ -121,26 +132,26 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Code/FileManager.cs</url>
-          <line>45</line>
+          <line>37</line>
           <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="44" containingFunctionPresentation="Method 'Delete'">
             <startOffsets>
-              <option value="972" />
+              <option value="813" />
             </startOffsets>
             <endOffsets>
-              <option value="1018" />
+              <option value="859" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Code/FileManager.cs</url>
-          <line>74</line>
+          <line>66</line>
           <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="70" containingFunctionPresentation="Method 'Remove'">
             <startOffsets>
-              <option value="2138" />
+              <option value="1979" />
             </startOffsets>
             <endOffsets>
-              <option value="2148" />
+              <option value="1989" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="8" />
@@ -157,6 +168,19 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Code/FileManager.cs</url>
+          <line>60</line>
+          <properties documentPath="$PROJECT_DIR$/Assets/Code/FileManager.cs" initialLine="68" containingFunctionPresentation="Method 'Select'">
+            <startOffsets>
+              <option value="1824" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1869" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

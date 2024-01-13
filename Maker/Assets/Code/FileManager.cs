@@ -17,15 +17,7 @@ public class FileManager : MonoBehaviour
     {
         Create();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (this.isActiveAndEnabled == true)
-        {
-            Debug.Log("__");
-        }
-    }
+    
 
     void Refresh()
     {

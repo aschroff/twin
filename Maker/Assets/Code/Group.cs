@@ -9,6 +9,10 @@ public class Group : Item
     [SerializeField] public PartManager.GroupData groupdata = null;
     [SerializeField] public GameObject groupparent;
 
+    public GameObject relatedGameObject()
+    {
+        return this.gameObject;
+    }
 
     public void HandleEdit()
     {

@@ -4,7 +4,7 @@ using PaintIn3D;
 using CW.Common;
 using System.IO;
 
-public class Sticker : MonoBehaviour
+public class Sticker : ItemHash
 
 {
 	[SerializeField] private Texture2D loadedTexture;
@@ -16,11 +16,6 @@ public class Sticker : MonoBehaviour
 		SelectTexture(1024);
 
 	}
-
-	private GameObject FolderHash()
-    {
-		return this.transform.parent.gameObject.GetComponent<StickerRepo>().folderHash;
-    }
 
 	private void setTexture()
 	{
@@ -44,8 +39,16 @@ public class Sticker : MonoBehaviour
 		}
 	}
 
-	private void Start()
+	private void Awake()
 	{
+		Debug.Log("Awake called.");
+		handleAwake();
+		
+	}
+	
+	public override void handleAwake()
+	{
+		Debug.Log("Handle Awake called.");
 		string fullPath = Path.Combine(Application.persistentDataPath, this.gameObject.GetComponent<Item>().getId() + ".png");
 
 		if (File.Exists(fullPath))
@@ -55,10 +58,9 @@ public class Sticker : MonoBehaviour
 			loadedTexture.LoadImage(imageBytes);
 
 			setTexture();
-			RegisterTexture();
+			Register();
 		}
 		
-
 	}
 
 	private void SelectTexture(int maxSize)
@@ -80,7 +82,7 @@ public class Sticker : MonoBehaviour
 					loadedTexture = texture;
 					SaveTexture();
 					setTexture();
-					RegisterTexture();
+					Register();
 
 				}
 			}
@@ -104,7 +106,7 @@ public class Sticker : MonoBehaviour
 	}
 
 
-	private void RegisterTexture()
+	private void Register()
 
 
 	{
