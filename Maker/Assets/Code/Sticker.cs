@@ -43,7 +43,7 @@ public class Sticker : ItemHash
 	public override void handleAwake()
 	{
 		Debug.Log("Handle Awake called.");
-		string fullPath = Path.Combine(Application.persistentDataPath, this.gameObject.GetComponent<Item>().getId() + ".png");
+		string fullPath = Path.Combine(Application.persistentDataPath, profile(),this.gameObject.GetComponent<Item>().getId() + ".png");
 
 		if (File.Exists(fullPath))
 		{
@@ -90,7 +90,7 @@ public class Sticker : ItemHash
 
 	{
 
-		string fullPath = Path.Combine(Application.persistentDataPath, this.gameObject.GetComponent<Item>().getId() + ".png");
+		string fullPath = Path.Combine(Application.persistentDataPath, profile(),this.gameObject.GetComponent<Item>().getId() + ".png");
 		byte[] textureBytes = loadedTexture.EncodeToPNG();
 		File.WriteAllBytes(fullPath, textureBytes);
 		NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(
@@ -153,6 +153,21 @@ public class Sticker : ItemHash
 		}
 		Debug.Log("not found");
 		return false;
+	}
+
+	private string profile()
+	{
+		DataPersistenceManager dataPersistenceManager = this.transform.parent.gameObject.GetComponent<StickerRepo>().dataPersistenceManager;
+		return dataPersistenceManager.selectedProfileId;
+
+	}
+
+	public override void handleCopy(string oldProfile, string newProfile)
+	{
+		string oldPath = Path.Combine(Application.persistentDataPath, oldProfile,this.gameObject.GetComponent<Item>().getId() + ".png");
+		string newPath = Path.Combine(Application.persistentDataPath, oldProfile,this.gameObject.GetComponent<Item>().getId() + ".png");
+		File.Copy(oldPath, newPath);
+		handleAwake();
 	}
 }
 

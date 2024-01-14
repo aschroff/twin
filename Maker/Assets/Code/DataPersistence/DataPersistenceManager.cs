@@ -15,7 +15,7 @@ public class DataPersistenceManager : MonoBehaviour
     [Header("File Storage Config")]
     [SerializeField] private string fileName;
     [SerializeField] private bool useEncryption;
-    [SerializeField] private string selectedProfileId = "default";
+    [SerializeField] public string selectedProfileId = "default";
 
     [Header("Auto Saving Configuration")]
     [SerializeField] private float autoSaveTimeSeconds = 60f;
@@ -92,6 +92,7 @@ public class DataPersistenceManager : MonoBehaviour
     {
         SaveConfig();
         NewConfig();
+        HandleConfigCopy(selectedProfileId, newProfile);
         selectedProfileId = newProfile;
         LoadConfig();
     }
@@ -193,6 +194,16 @@ public class DataPersistenceManager : MonoBehaviour
         }
     }
     
+    public void HandleConfigCopy(string oldProfile, string newProfile)
+    {
+       
+        // push the loaded data to all other scripts that need it
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            handleCopy(dataPersistenceObj, oldProfile, newProfile);
+        }
+    }
+    
     private void handlePostLoad(IDataPersistence persistentObject){
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)
@@ -207,5 +218,19 @@ public class DataPersistenceManager : MonoBehaviour
             }
         }
     }
-
+    private void handleCopy(IDataPersistence persistentObject, string oldProfile, string newProfile){
+        MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
+        foreach(MonoBehaviour component in components)
+        {
+            Debug.Log("Post processing for component");
+            if(component is ItemHash) 
+            {
+                Debug.Log("Found a component that inherits from ItemHash.");
+                ItemHash hashComponent = component as ItemHash;
+                hashComponent.handleCopy(oldProfile, newProfile);
+                break;
+            }
+        }
+    }
+    
 }

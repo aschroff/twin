@@ -53,6 +53,10 @@ public class FileManager : MonoBehaviour
         button.onClick.AddListener(() => { Remove(entry.Key); });
         button = configData.transform.Find("Select").GetComponentInChildren<Button>();
         button.onClick.AddListener(() => { Select(entry.Key);  });
+        if (entry.Key == dataManager.selectedProfileId)
+        {
+            configData.transform.Find("Select").gameObject.SetActive(false); 
+        }
         return entry.Value;
     }
 

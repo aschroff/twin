@@ -10,5 +10,6 @@ public abstract class ItemHash : MonoBehaviour
     }
 
     public abstract void handleAwake();
+    public abstract void handleCopy(string oldProfile, string newProfile);
 
 }
