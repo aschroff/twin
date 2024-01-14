@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="422d22e4-3cfc-4649-ba5c-073e32550110" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Maker/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/Sticker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Sticker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Resources/Decal Hash.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Resources/Decal Hash.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Maker Main.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Maker Main.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +18,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Code/ConfigManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Code/FileManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Code/ItemHash.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8e41707dd51a474e94dbbadbc1bcf2bf1dec00/52/cff9f2ce/LayoutDataStore.cs" root0="SKIP_HIGHLIGHTING" />
@@ -37,7 +38,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.25761774&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;TWIN-45B-Config-data-can-be-saved-and-loaded&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;TWIN-56-New-empty-config-data-can-be-created&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -81,10 +82,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="21611">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="21611" />
+      <option name="pid" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -108,6 +109,7 @@
       <workItem from="1704992364394" duration="2449000" />
       <workItem from="1705151851321" duration="6750000" />
       <workItem from="1705163709527" duration="4866000" />
+      <workItem from="1705225588514" duration="3679000" />
     </task>
     <servers />
   </component>
@@ -138,13 +140,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs</url>
-          <line>69</line>
+          <line>70</line>
           <properties documentPath="$PROJECT_DIR$/Assets/Code/DataPersistence/DataPersistenceManager.cs" initialLine="69" containingFunctionPresentation="Method 'DeleteProfileData'">
             <startOffsets>
-              <option value="2082" />
+              <option value="2096" />
             </startOffsets>
             <endOffsets>
-              <option value="2117" />
+              <option value="2131" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="9" />

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -85,6 +86,14 @@ public class DataPersistenceManager : MonoBehaviour
     public void NewConfig() 
     {
         this.configData = new ConfigData();
+    }
+    
+    public void createNewConfig(String newProfile) 
+    {
+        SaveConfig();
+        NewConfig();
+        selectedProfileId = newProfile;
+        LoadConfig();
     }
 
     public void LoadConfig()
