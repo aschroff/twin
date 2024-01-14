@@ -165,9 +165,12 @@ public class Sticker : ItemHash
 	public override void handleCopy(string oldProfile, string newProfile)
 	{
 		string oldPath = Path.Combine(Application.persistentDataPath, oldProfile,this.gameObject.GetComponent<Item>().getId() + ".png");
-		string newPath = Path.Combine(Application.persistentDataPath, oldProfile,this.gameObject.GetComponent<Item>().getId() + ".png");
-		File.Copy(oldPath, newPath);
-		handleAwake();
+		if (File.Exists(oldPath))
+		{
+			string newPath = Path.Combine(Application.persistentDataPath, newProfile, this.gameObject.GetComponent<Item>().getId() + ".png");
+			File.Copy(oldPath, newPath);
+			handleAwake();
+		}
 	}
 }
 

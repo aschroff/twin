@@ -19,7 +19,7 @@ public class FileManager : MonoBehaviour
     }
     
 
-    void Refresh()
+    public void Refresh()
     {
         Delete();
         Create();
@@ -63,6 +63,7 @@ public class FileManager : MonoBehaviour
     private void Select(string profile)
     {
         dataManager.ChangeSelectedProfileId(profile);
+        Refresh();
     }
 
     private void Remove(string profile)

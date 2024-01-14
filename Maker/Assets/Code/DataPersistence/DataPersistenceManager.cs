@@ -92,9 +92,12 @@ public class DataPersistenceManager : MonoBehaviour
     {
         SaveConfig();
         NewConfig();
-        HandleConfigCopy(selectedProfileId, newProfile);
+        string oldProfile = selectedProfileId;
         selectedProfileId = newProfile;
         LoadConfig();
+        SaveConfig();
+        HandleConfigCopy(oldProfile, selectedProfileId);
+
     }
 
     public void LoadConfig()
