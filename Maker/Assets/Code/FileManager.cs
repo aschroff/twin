@@ -1,23 +1,69 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using UnityEngine;
 using System.Linq;
+using Lean.Transition;
 using UnityEngine.UI;
 
 public class FileManager : MonoBehaviour
 {
+    [SerializeField] public GameObject prefab;
     [SerializeField] public DataPersistenceManager dataManager;
     private Dictionary<string, string> profiles = new Dictionary<string, string>();
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        Create();
+    }
+    
+
+    void Refresh()
+    {
+        Delete();
+        Create();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Create()
     {
-        
+        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
+        {
+            createConfigEntry(entry);
+        }
+    }
+
+    private void Delete()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform childTransform = transform.GetChild(i);
+            Destroy(childTransform.gameObject);
+        }
+    }
+
+    public ConfigData createConfigEntry(KeyValuePair<string, ConfigData> entry)
+    {
+        GameObject configData = Instantiate(prefab);
+        configData.transform.SetParent(this.transform, false);
+        configData.transform.localScale = prefab.transform.localScale;
+        Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
+        text.text = entry.Key;
+        Button button = configData.transform.Find("Delete").GetComponentInChildren<Button>();
+        button.onClick.AddListener(() => { Remove(entry.Key); });
+        button = configData.transform.Find("Select").GetComponentInChildren<Button>();
+        button.onClick.AddListener(() => { Select(entry.Key);  });
+        return entry.Value;
+    }
+
+    private void Select(string profile)
+    {
+        dataManager.ChangeSelectedProfileId(profile);
+    }
+
+    private void Remove(string profile)
+    {
+        dataManager.DeleteProfileData(profile);
+        Refresh();
     }
 }

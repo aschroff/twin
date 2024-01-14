@@ -16,6 +16,11 @@ public class Item : MonoBehaviour, IDataPersistence
         
     }
 
+    public GameObject relatedGameObject()
+    {
+        return this.gameObject;
+    }
+
     private InputField textItem;
     private string text;
 

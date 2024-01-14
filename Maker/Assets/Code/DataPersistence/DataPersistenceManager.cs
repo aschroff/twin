@@ -67,12 +67,14 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void DeleteProfileData(string profileId) 
     {
+        if (profileId == selectedProfileId)
+        {
+            return;
+        }
+        
         // delete the data for this profile id
         dataHandler.Delete(profileId);
-        // initialize the selected profile id
-        InitializeSelectedProfileId();
-        // reload the game so that our data matches the newly selected profile id
-        LoadConfig();
+        
     }
 
     private void InitializeSelectedProfileId() 
@@ -113,6 +115,7 @@ public class DataPersistenceManager : MonoBehaviour
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {
             dataPersistenceObj.LoadData(configData);
+            handlePostLoad(dataPersistenceObj);
         }
     }
 
@@ -178,6 +181,21 @@ public class DataPersistenceManager : MonoBehaviour
             yield return new WaitForSeconds(autoSaveTimeSeconds);
             SaveConfig();
             Debug.Log("Auto Saved Config");
+        }
+    }
+    
+    private void handlePostLoad(IDataPersistence persistentObject){
+        MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
+        foreach(MonoBehaviour component in components)
+        {
+            Debug.Log("Post processing for component");
+            if(component is ItemHash) 
+            {
+                Debug.Log("Found a component that inherits from ItemHash.");
+                ItemHash hashComponent = component as ItemHash;
+                hashComponent.handleAwake();
+                break;
+            }
         }
     }
 
