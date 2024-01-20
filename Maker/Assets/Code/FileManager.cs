@@ -49,10 +49,19 @@ public class FileManager : MonoBehaviour
         configData.transform.localScale = prefab.transform.localScale;
         Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
         text.text = entry.Key;
-        Button button = configData.transform.Find("Delete").GetComponentInChildren<Button>();
-        button.onClick.AddListener(() => { Remove(entry.Key); });
-        button = configData.transform.Find("Select").GetComponentInChildren<Button>();
-        button.onClick.AddListener(() => { Select(entry.Key);  });
+        Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
+        Button buttonSelect = configData.transform.Find("Select").GetComponentInChildren<Button>();
+        if (dataManager.selectedProfileId == entry.Key)
+        {            
+            buttonDelete.interactable = false ;
+            buttonSelect.interactable = false ; 
+        }
+        else
+        {
+            buttonDelete.onClick.AddListener(() => { Remove(entry.Key); });
+            buttonSelect.onClick.AddListener(() => { Select(entry.Key); });
+        }
+
         return entry.Value;
     }
 

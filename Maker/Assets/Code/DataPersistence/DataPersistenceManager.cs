@@ -15,7 +15,7 @@ public class DataPersistenceManager : MonoBehaviour
     [Header("File Storage Config")]
     [SerializeField] private string fileName;
     [SerializeField] private bool useEncryption;
-    [SerializeField] private string selectedProfileId = "default";
+    [SerializeField] public string selectedProfileId = "default";
 
     [Header("Auto Saving Configuration")]
     [SerializeField] private float autoSaveTimeSeconds = 60f;
