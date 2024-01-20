@@ -68,6 +68,7 @@ public class FileManager : MonoBehaviour
     private void Select(string profile)
     {
         dataManager.ChangeSelectedProfileId(profile);
+        Refresh();
     }
 
     private void Remove(string profile)

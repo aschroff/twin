@@ -130,6 +130,7 @@ public class DataPersistenceManager : MonoBehaviour
         {
             dataPersistenceObj.LoadData(configData);
             handlePostLoad(dataPersistenceObj);
+            handleChange(dataPersistenceObj);
         }
     }
 
