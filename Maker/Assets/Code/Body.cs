@@ -5,11 +5,15 @@ using UnityEngine;
 
 public class Body : ItemFile, IDataPersistence
 {
-   public override void handleChange(string Profile)
+   public override void handleChange(string profile)
    {
       P3dPaintableTexture texture = this.gameObject.transform.GetComponent<P3dPaintableTexture>();
-      texture.SaveName = Profile;
+      texture.SaveName = profile;
       texture.Load();
+   }
+   public override void handleDelete(string profile)
+   {
+      P3dPaintableTexture.ClearSave(profile);
    }
    public GameObject relatedGameObject()
    {
