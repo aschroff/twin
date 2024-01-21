@@ -9,6 +9,7 @@ public class Body : ItemFile, IDataPersistence
    {
       P3dPaintableTexture texture = this.gameObject.transform.GetComponent<P3dPaintableTexture>();
       texture.SaveName = Profile;
+      texture.Load();
    }
    public GameObject relatedGameObject()
    {
