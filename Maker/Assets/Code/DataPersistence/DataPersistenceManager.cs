@@ -81,6 +81,12 @@ public class DataPersistenceManager : MonoBehaviour
         // delete the data for this profile id
         dataHandler.Delete(profileId);
         
+        
+        // push the loaded data to all other scripts that need it
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            handleDelete(dataPersistenceObj, profileId);
+        }
     }
 
     private void InitializeSelectedProfileId() 
@@ -229,5 +235,18 @@ public class DataPersistenceManager : MonoBehaviour
             }
         }
     }    
-    
+    private void handleDelete(IDataPersistence persistentObject, string deleteProfileID){
+        MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
+        foreach(MonoBehaviour component in components)
+        {
+            Debug.Log("Delete for components with profile dependent (file) name");
+            if(component is ItemFile) 
+            {
+                Debug.Log("Found a component that inherits from ItemFile.");
+                ItemFile fileComponent = component as ItemFile;
+                fileComponent.handleDelete(deleteProfileID);
+                break;
+            }
+        }
+    }    
 }
