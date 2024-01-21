@@ -22887,6 +22887,7 @@ GameObject:
   - component: {fileID: 7070591404331664923}
   - component: {fileID: 7070591404331664925}
   - component: {fileID: 7070591404331664926}
+  - component: {fileID: 7070591404331664927}
   m_Layer: 0
   m_Name: f_avg
   m_TagString: Untagged
@@ -25025,6 +25026,18 @@ MonoBehaviour:
   yawMax: 45
   currentPitch: 0
   currentYaw: 0
+--- !u!114 &7070591404331664927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2055600104949221669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a56845f1b842e4d6196f92afe96e7d70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &7149715263756333413
 Canvas:
   m_ObjectHideFlags: 0
@@ -25218,7 +25231,7 @@ MonoBehaviour:
         m_Text: Keys
         m_Image: {fileID: 0}
         m_Tooltip: 
-        m_TextWithWhitespace: 
+        m_TextWithWhitespace: "Keys\u200B"
       headerHeight: 18
       footerHeight: 13
       slideEasing: 0.15

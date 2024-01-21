@@ -15,7 +15,7 @@ public class DataPersistenceManager : MonoBehaviour
     [Header("File Storage Config")]
     [SerializeField] private string fileName;
     [SerializeField] private bool useEncryption;
-    [SerializeField] private string selectedProfileId = "default";
+    [SerializeField] public string selectedProfileId = "default";
 
     [Header("Auto Saving Configuration")]
     [SerializeField] private float autoSaveTimeSeconds = 60f;
@@ -64,6 +64,11 @@ public class DataPersistenceManager : MonoBehaviour
         this.selectedProfileId = newProfileId;
         // load the game, which will use that profile, updating our game data accordingly
         LoadConfig();
+        // push the loaded data to all other scripts that need it
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            handleChange(dataPersistenceObj);
+        }
     }
 
     public void DeleteProfileData(string profileId) 
@@ -125,6 +130,7 @@ public class DataPersistenceManager : MonoBehaviour
         {
             dataPersistenceObj.LoadData(configData);
             handlePostLoad(dataPersistenceObj);
+            handleChange(dataPersistenceObj);
         }
     }
 
@@ -205,7 +211,23 @@ public class DataPersistenceManager : MonoBehaviour
                 hashComponent.handleAwake();
                 break;
             }
+           
         }
     }
 
+    private void handleChange(IDataPersistence persistentObject){
+        MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
+        foreach(MonoBehaviour component in components)
+        {
+            Debug.Log("Name change for components with profile dependent (file) name");
+            if(component is ItemFile) 
+            {
+                Debug.Log("Found a component that inherits from ItemFile.");
+                ItemFile fileComponent = component as ItemFile;
+                fileComponent.handleChange(selectedProfileId);
+                break;
+            }
+        }
+    }    
+    
 }
