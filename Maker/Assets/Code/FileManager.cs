@@ -19,7 +19,7 @@ public class FileManager : MonoBehaviour
     }
     
 
-    void Refresh()
+    public void Refresh()
     {
         Delete();
         Create();
