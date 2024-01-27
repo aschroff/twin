@@ -60,6 +60,7 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void ChangeSelectedProfileId(string newProfileId) 
     {
+        SaveConfig();
         // update the profile to use for saving and loading
         this.selectedProfileId = newProfileId;
         // load the game, which will use that profile, updating our game data accordingly
