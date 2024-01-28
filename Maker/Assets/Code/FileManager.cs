@@ -54,7 +54,7 @@ public class FileManager : MonoBehaviour
         if (dataManager.selectedProfileId == entry.Key)
         {            
             buttonDelete.interactable = false ;
-            buttonSelect.interactable = false ; 
+            buttonSelect.interactable = false ;
         }
         else
         {
