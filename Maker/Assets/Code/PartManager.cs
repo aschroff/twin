@@ -20,7 +20,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
 	private P3dPaintableTexture lastTexture;
-	[SerializeField] public bool temp_skiploading = false;
+	//[SerializeField] public bool temp_skiploading = false;
 
 	public GameObject relatedGameObject()
 	{
@@ -209,11 +209,11 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 		//InteractionController.EnableMode("EditSticker");
 		try
 		{
-			if (temp_skiploading == false)
-			{				
+			//if (temp_skiploading == false)
+			//{				
 				var json = data.commandDetails;
 				JsonUtility.FromJsonOverwrite(json, this);
-			}
+			//}
 		}
 		catch (Exception e)
         {

@@ -880,6 +880,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   folderHash: {fileID: 2138586145}
+  dataManager: {fileID: 0}
+  defaultTexture: {fileID: 0}
 --- !u!1 &102360509
 GameObject:
   m_ObjectHideFlags: 0
@@ -1940,6 +1942,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   folderHash: {fileID: 2138586145}
+  dataManager: {fileID: 0}
+  defaultTexture: {fileID: 0}
 --- !u!114 &231083723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17259,6 +17263,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   folderHash: {fileID: 2138586145}
+  dataManager: {fileID: 609004393}
+  defaultTexture: {fileID: 2800000, guid: 1a64493268c154d0cba13e2bf1e8c728, type: 3}
 --- !u!4 &1551648120 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9033962145179322566, guid: fd08f0af82206482c99a2c977ef6fbc4, type: 3}
@@ -18942,7 +18948,7 @@ MonoBehaviour:
     id: 
   listTools: {fileID: 701643922}
   groupmanagerGameobject: {fileID: 9387464}
-  temp_skiploading: 1
+  temp_skiploading: 0
   references:
     version: 2
     RefIds: []
@@ -20357,6 +20363,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1165a092-866b-45ad-98f3-9d2b5aede883
   persistent: 1
+  defaultValue: 
 --- !u!1001 &1875440628
 PrefabInstance:
   m_ObjectHideFlags: 0

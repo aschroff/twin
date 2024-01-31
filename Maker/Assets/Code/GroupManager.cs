@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 
-public class GroupManager : MonoBehaviour
+public class GroupManager : ItemFile, IDataPersistence
 {
     [SerializeField] public PartManager partmanager;
     [SerializeField] public GameObject prefab;
@@ -20,11 +20,29 @@ public class GroupManager : MonoBehaviour
         //this.Refresh();
         partmanager.Listening = tempListening;
     }
+    
+    
+    public void clear()
+    {
+        bool tempListening = partmanager.Listening;
+        for (int j = 0; j < this.transform.childCount; j++) {
+            GameObject child = this.transform.GetChild(j).gameObject;
+            Destroy(child);
+        }
+        Debug.Log("not found");
+        partmanager.Listening = tempListening;
+    }
 
-
+    public void rebuild()
+    {
+        clear();
+        build();
+        this.createNewNonpersistentGroup();
+    }
+    
     void Start()
     {
-        this.createNewNonpersistentGroup();
+        //this.createNewNonpersistentGroup();
     }
 
     public void createNewNonpersistentGroup()
@@ -78,6 +96,29 @@ public class GroupManager : MonoBehaviour
         }*/
         partmanager.Refresh();
     }
+    
+    public override void handleChange(string profile)
+    {
+        rebuild();
+    }
+    public override void handleDelete(string profile)
+    {
+        
+    }
+    
+    public void LoadData(ConfigData data)
+    {
+     
+    }
 
+    public void SaveData(ConfigData data)
+    {
+      
+    }
+    
+    public GameObject relatedGameObject()
+    {
+        return this.gameObject;
+    }
 
 }

@@ -10,6 +10,7 @@ public class Body : ItemFile, IDataPersistence
       P3dPaintableTexture texture = this.gameObject.transform.GetComponent<P3dPaintableTexture>();
       texture.Save();
       texture.SaveName = profile;
+      texture.Clear();
       texture.Load();
    }
    public override void handleDelete(string profile)
