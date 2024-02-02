@@ -108,6 +108,18 @@ public class DataPersistenceManager : MonoBehaviour
         LoadConfig();
     }
 
+    public void saveAsConfig(String newProfile) 
+    {
+        SaveConfig();
+        selectedProfileId = newProfile;
+        SaveConfig();
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            dataPersistenceObj.LoadData(configData);
+            handleCopyChange(dataPersistenceObj);
+        }
+    }
+    
     public void LoadConfig()
     {
         // return right away if data persistence is disabled
@@ -235,7 +247,22 @@ public class DataPersistenceManager : MonoBehaviour
                 break;
             }
         }
-    }    
+    }   
+    
+    private void handleCopyChange(IDataPersistence persistentObject){
+        MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
+        foreach(MonoBehaviour component in components)
+        {
+            Debug.Log("Name change for components with profile dependent (file) name");
+            if(component is ItemFile) 
+            {
+                Debug.Log("Found a component that inherits from ItemFile.");
+                ItemFile fileComponent = component as ItemFile;
+                fileComponent.handleCopyChange(selectedProfileId);
+                break;
+            }
+        }
+    }  
     private void handleDelete(IDataPersistence persistentObject, string deleteProfileID){
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)

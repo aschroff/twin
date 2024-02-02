@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 
-public class GroupManager : ItemFile, IDataPersistence
+public class GroupManager : MonoBehaviour, IDataPersistence
 {
     [SerializeField] public PartManager partmanager;
     [SerializeField] public GameObject prefab;
@@ -97,11 +97,15 @@ public class GroupManager : ItemFile, IDataPersistence
         partmanager.Refresh();
     }
     
-    public override void handleChange(string profile)
+    public  void handleChange(string profile)
     {
         rebuild();
     }
-    public override void handleDelete(string profile)
+    public  void handleCopyChange(string profile)
+    {
+        rebuild();
+    }
+    public  void handleDelete(string profile)
     {
         
     }
