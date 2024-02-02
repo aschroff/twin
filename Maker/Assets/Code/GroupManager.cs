@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 
-public class GroupManager : MonoBehaviour, IDataPersistence
+public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
 {
     [SerializeField] public PartManager partmanager;
     [SerializeField] public GameObject prefab;
@@ -79,21 +79,6 @@ public class GroupManager : MonoBehaviour, IDataPersistence
     public void Refresh()
     {
         partmanager.Erase();
-        /*foreach (Toggle child in this.GetComponentsInChildren<Toggle>())
-        {
-            Group group_for_child = child.transform.parent.GetComponent<Group>();
-            if (group_for_child.persistent == true && child.isOn == true && group_for_child.groupdata != null)
-            {
-                //partmanager.Apply(group_for_child.groupdata);
-                group_for_child.groupdata.visible = true;
-
-            }
-            else
-            {
-                group_for_child.groupdata.visible = false;
-            }
-
-        }*/
         partmanager.Refresh();
     }
     
