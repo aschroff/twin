@@ -5,7 +5,7 @@ using PaintIn3D;
 using System.Linq;
 using System;
 
-public class PartManager : P3dCommandSerialization, IDataPersistence
+public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 {
 
 	/// <summary>Aggregates single commands by the same tool created in a single sequence</summary>
@@ -212,7 +212,15 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 			//if (temp_skiploading == false)
 			//{				
 				var json = data.commandDetails;
-				JsonUtility.FromJsonOverwrite(json, this);
+				if (json == "")
+				{
+					ClearAll();
+				}
+				else
+				{
+					JsonUtility.FromJsonOverwrite(json, this);
+				}
+				
 			//}
 		}
 		catch (Exception e)
@@ -392,4 +400,18 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	}
 
 
+	public  void handleChange(string profile)
+	{
+		
+	}
+	public  void handleCopyChange(string profile)
+	{
+
+	}
+	public  void handleDelete(string profile)
+	{
+        
+	}
+	
+	
 }

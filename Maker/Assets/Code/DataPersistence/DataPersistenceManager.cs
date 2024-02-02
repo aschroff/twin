@@ -116,6 +116,9 @@ public class DataPersistenceManager : MonoBehaviour
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {
             dataPersistenceObj.LoadData(configData);
+        }
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
             handleCopyChange(dataPersistenceObj);
         }
     }
@@ -148,7 +151,13 @@ public class DataPersistenceManager : MonoBehaviour
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {
             dataPersistenceObj.LoadData(configData);
+        }
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
             handlePostLoad(dataPersistenceObj);
+        }
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
             handleChange(dataPersistenceObj);
         }
     }
