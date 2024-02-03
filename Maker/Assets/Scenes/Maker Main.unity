@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 9387470}
   m_Layer: 5
   m_Name: Panel
-  m_TagString: Untagged
+  m_TagString: Groupmanager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7368,7 +7368,7 @@ MonoBehaviour:
   initializeDataIfNull: 1
   fileName: ConfigTwin
   useEncryption: 0
-  selectedProfileId: T1
+  selectedProfileId: Leer
   autoSaveTimeSeconds: 60
 --- !u!4 &609004394
 Transform:
@@ -8315,7 +8315,7 @@ GameObject:
   - component: {fileID: 701643923}
   m_Layer: 0
   m_Name: Tools
-  m_TagString: Untagged
+  m_TagString: Tools
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14174,7 +14174,7 @@ PrefabInstance:
     - target: {fileID: 4651128864676467209, guid: 92d8282992a504584b36ed89854a7b54, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 1d9dd891b0518b14b8d1508ca636e259, type: 3}
+      objectReference: {fileID: 21300000, guid: 1a64493268c154d0cba13e2bf1e8c728, type: 3}
     - target: {fileID: 4651128864676467209, guid: 92d8282992a504584b36ed89854a7b54, type: 3}
       propertyPath: m_Color.a
       value: 1
@@ -19188,8 +19188,6 @@ MonoBehaviour:
   currentPart:
     partCommands: []
     id: 
-  listTools: {fileID: 701643922}
-  groupmanagerGameobject: {fileID: 9387464}
   references:
     version: 2
     RefIds: []
@@ -25508,6 +25506,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 701643923}
     m_Modifications:
+    - target: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      propertyPath: texture
+      value: 
+      objectReference: {fileID: 2800000, guid: 1a64493268c154d0cba13e2bf1e8c728, type: 3}
     - target: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
       propertyPath: m_RootOrder
       value: 0

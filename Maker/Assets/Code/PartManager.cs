@@ -15,12 +15,17 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	[SerializeField] public bool startNewGroup = true;
 	[SerializeField] public GroupData currentGroup;
 	[SerializeField] public PartData currentPart;
-	[SerializeField] public GameObject listTools;
-	[SerializeField] public GameObject groupmanagerGameobject;
+	private GameObject listTools;
+	private GameObject groupmanagerGameobject;
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
 	private P3dPaintableTexture lastTexture;
 	//[SerializeField] public bool temp_skiploading = false;
+
+	private void Start()
+	{
+		listTools = GameObject.FindGameObjectsWithTag("Tools")[0];
+	}
 
 	public GameObject relatedGameObject()
 	{
@@ -211,25 +216,22 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		{
 			//if (temp_skiploading == false)
 			//{				
-				var json = data.commandDetails;
-				if (json == "")
-				{
-					ClearAll();
-				}
-				else
-				{
-					JsonUtility.FromJsonOverwrite(json, this);
-				}
-				
+			var json = data.commandDetails;
+			if (json == "")
+			{
+				ClearAll();
+			}
+			else
+			{
+				JsonUtility.FromJsonOverwrite(json, this);
+			}
+
 			//}
 		}
 		catch (Exception e)
-        {
+		{
 			Erase();
 		}
-		GroupManager groupmanager = groupmanagerGameobject.GetComponent<GroupManager>();
-		groupmanager.build();
-		
 	}
 	private P3dCommand Apply(CommandDataTwin commandData)
 	{
@@ -411,6 +413,15 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	public  void handleDelete(string profile)
 	{
         
+	}
+
+	private GameObject GetGroupmanager()
+	{
+		if (groupmanagerGameobject == null)
+		{
+			groupmanagerGameobject = GameObject.FindGameObjectsWithTag("Groupmanager")[0];
+		}
+		return groupmanagerGameobject;
 	}
 	
 	
