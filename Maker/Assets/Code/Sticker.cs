@@ -5,7 +5,7 @@ using CW.Common;
 using System.IO;
 using System.Runtime.InteropServices;
 
-public class Sticker : ItemHash
+public class Sticker : ItemHash, ItemFile
 
 {
 	[SerializeField] private Texture2D loadedTexture;
@@ -205,5 +205,29 @@ public class Sticker : ItemHash
 			this.gameObject.GetComponent<Item>().getId() + ".png");
 		
 	}
+	
+	
+	public  void handleChange(string profile)
+	{
+
+	}
+   
+	public  void handleCopyChange(string profile)
+	{
+		Texture2D defaultTexture = this.transform.parent.gameObject.GetComponent<StickerRepo>().defaultTexture;
+		if (loadedTexture != defaultTexture)
+		{
+			SaveTexture();
+		}
+	}
+	public  void handleDelete(string profile)
+	{
+		P3dPaintableTexture.ClearSave(profile);
+	}
+	public GameObject relatedGameObject()
+	{
+		return this.gameObject;
+	}
+	
 }
 
