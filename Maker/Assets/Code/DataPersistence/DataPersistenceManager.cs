@@ -123,6 +123,20 @@ public class DataPersistenceManager : MonoBehaviour
         }
     }
     
+    public void ResetApp()
+    {
+        selectedProfileId = "default-temp-for-deleting";
+        foreach (KeyValuePair<string, ConfigData> profile in GetAllProfilesGameData()  )
+        {
+            DeleteProfileData(profile.Key);
+
+        }
+        NewConfig();
+        selectedProfileId = "default";
+        LoadConfig();
+        SaveConfig();
+    }
+    
     public void LoadConfig()
     {
         // return right away if data persistence is disabled

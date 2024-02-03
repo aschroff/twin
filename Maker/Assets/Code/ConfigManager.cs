@@ -26,5 +26,13 @@ public class ConfigManager : MonoBehaviour
         fileManager.Refresh();
         InteractionController.EnableMode("Main");
     }
+    
+    public void ResetApp()
+    {
+        Text origin = newNameOrigin.GetComponent<Text>();
+        dataPersistenceManager.ResetApp();
+        fileManager.Refresh();
+        InteractionController.EnableMode("Main");
+    }
 
 }
