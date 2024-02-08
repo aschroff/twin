@@ -36,6 +36,7 @@ public class Group : Item
         }
         partmanager.currentGroup = groupdata;
         partmanager.currentGroup.name = this.transform.GetComponentInChildren<InputField>().text;
+        UpdateCurrent(partmanager.currentGroup.name);
         Debug.Log("HandledEdit");
     }
 
@@ -49,6 +50,7 @@ public class Group : Item
         PartManager partmanager = groupmanager.partmanager;
         groupmanager.Refresh();
         Debug.Log("HandledClick");
+
     }
     public void HandleDelete()
     {
@@ -56,6 +58,13 @@ public class Group : Item
         GroupManager groupmanager = groupparent.GetComponentInChildren<GroupManager>();
         groupmanager.DeleteGroup(groupdata, this.gameObject);
         Debug.Log("HandledDelete");
+    }
+
+    private void UpdateCurrent(string current)
+    {
+        GameObject currentGroupTextGameObject = GameObject.FindGameObjectsWithTag("CurrentGroup")[0];
+        Text currentGroupText = currentGroupTextGameObject.GetComponent<Text>();
+        currentGroupText.text = current;
     }
 
 }
