@@ -211,7 +211,6 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	}
 	public void LoadData(ConfigData data)
 	{
-		//InteractionController.EnableMode("EditSticker");
 		try
 		{
 			//if (temp_skiploading == false)

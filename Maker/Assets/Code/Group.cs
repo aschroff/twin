@@ -62,9 +62,14 @@ public class Group : Item
 
     private void UpdateCurrent(string current)
     {
-        GameObject currentGroupTextGameObject = GameObject.FindGameObjectsWithTag("CurrentGroup")[0];
-        Text currentGroupText = currentGroupTextGameObject.GetComponent<Text>();
-        currentGroupText.text = current;
-    }
+        foreach (GameObject currentGroupTextGameObject in GameObject.FindGameObjectsWithTag("CurrentGroup"))
+        {
+            Text currentGroupText = currentGroupTextGameObject.GetComponent<Text>();
+            currentGroupText.text = current;
+        }
 
+        
+    }
 }
+
+
