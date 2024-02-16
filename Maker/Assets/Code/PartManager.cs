@@ -202,8 +202,8 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	public void SaveData(ConfigData data)
 	{
-		currentPart = null;
-		currentGroup = null;
+		//currentPart = null;
+		//currentGroup = null;
 		startNewGroup = true;
 		startNewPart = true;
 		var json = JsonUtility.ToJson(this);
