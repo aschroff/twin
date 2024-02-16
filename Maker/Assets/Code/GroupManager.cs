@@ -81,6 +81,11 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         partmanager.Erase();
         partmanager.Refresh();
     }
+
+    public void Show(bool visible)
+    {
+        this.gameObject.transform.parent.gameObject.SetActive(visible);
+    }
     
     public  void handleChange(string profile)
     {
