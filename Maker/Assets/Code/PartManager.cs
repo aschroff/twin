@@ -13,7 +13,12 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	[SerializeField] public List<GroupData> groups;
 	[SerializeField] public bool startNewPart = true;
 	[SerializeField] public bool startNewGroup = true;
-	[SerializeField] public GroupData currentGroup;
+	[SerializeField] private GroupData CurrentGroup;
+	public GroupData currentGroup 
+	{
+		get { return CurrentGroup; }
+		set { SetCurrentGroup(value); }
+	}
 	[SerializeField] public PartData currentPart;
 	private GameObject listTools;
 	private GameObject groupmanagerGameobject;
@@ -22,6 +27,11 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	private P3dPaintableTexture lastTexture;
 	//[SerializeField] public bool temp_skiploading = false;
 
+	private void SetCurrentGroup(GroupData value)
+	{
+		CurrentGroup = value;
+	}
+	
 	private void Start()
 	{
 		listTools = GameObject.FindGameObjectsWithTag("Tools")[0];
@@ -143,9 +153,9 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	private void HandleNewPart(PartData newPart)
 	{
-		if (currentGroup != null)
+		if (CurrentGroup != null)
         {
-			currentGroup.groupParts.Add(newPart);
+			CurrentGroup.groupParts.Add(newPart);
 		}
 		
 	}
@@ -158,7 +168,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			GroupData firstGroup = new GroupData();
 			firstGroup.group = group;
 			groups.Add(firstGroup);
-			currentGroup = firstGroup;
+			CurrentGroup = firstGroup;
 			return firstGroup;
 		}
 		else
@@ -167,7 +177,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			nextGroup.group = group;
 			nextGroup.visible = true;
 			groups.Add(nextGroup);
-			currentGroup = nextGroup;
+			CurrentGroup = nextGroup;
 			return nextGroup;
 		}
 		startNewPart = true;
@@ -178,7 +188,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		GroupData nextGroup = new GroupData();
 		nextGroup.group = group;
 		groups.Add(nextGroup);
-		currentGroup = nextGroup;
+		CurrentGroup = nextGroup;
 		return nextGroup;
 
 	}
@@ -203,7 +213,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	public void SaveData(ConfigData data)
 	{
 		//currentPart = null;
-		//currentGroup = null;
+		//CurrentGroup = null;
 		startNewGroup = true;
 		startNewPart = true;
 		var json = JsonUtility.ToJson(this);
@@ -317,9 +327,9 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		Debug.Log("Removing group: " + groupData.id);
 		string id = groupData.id;
-		if (currentGroup == groupData)
+		if (CurrentGroup == groupData)
         {
-			currentGroup = null;
+			CurrentGroup = null;
         }
 		foreach (PartData part in groupData.groupParts)
         {
@@ -338,7 +348,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		{
 			currentPart = null;
 		}
-		else if ((currentPart != null) && (currentGroup != null ))
+		else if ((currentPart != null) && (CurrentGroup != null ))
 		{
 			//Debug.Log("Current part: " + currentPart.id.ToString());
 			Debug.Log("To be deleted part: " + partData.id.ToString());
@@ -390,7 +400,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		base.Clear();
 		groups.Clear();
-		currentGroup = null;
+		CurrentGroup = null;
 		currentPart = null;
 	}
 	[ContextMenu("Clear and refresh all")]
