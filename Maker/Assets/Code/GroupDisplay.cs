@@ -8,7 +8,15 @@ public class GroupDisplay : MonoBehaviour
     private void OnEnable()
     {
         Text currentGroupText = this.gameObject.GetComponent<Text>();
-        currentGroupText.text = partmanager.currentGroup.name;
+        if (partmanager.currentGroup != null)
+        {
+            currentGroupText.text = partmanager.currentGroup.name;  
+        }
+        else
+        {
+            currentGroupText.text = "<no group>";
+        }
+        
     }
 
 }
