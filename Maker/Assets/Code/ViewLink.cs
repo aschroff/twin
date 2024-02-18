@@ -15,4 +15,9 @@ public class ViewLink : MonoBehaviour
     {
         manager.select(link);
     }
+    
+    public void HandleEdit(string name)
+    {
+        link.name = name;
+    }
 }

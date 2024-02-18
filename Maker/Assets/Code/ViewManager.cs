@@ -52,7 +52,7 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         viewObject.transform.localScale = prefab.transform.localScale;
         viewObject.GetComponent<ViewLink>().link = view;
         viewObject.GetComponent<ViewLink>().manager = this;
-        viewObject.GetComponentInChildren<Text>().text = view.name;
+        viewObject.GetComponentInChildren<InputField>().text = view.name;
     }
     public void createView()
     {
