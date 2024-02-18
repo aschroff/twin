@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Lean.Common;
+using Lean.Touch;
 using UnityEngine.UI;
 
 public class ViewManager : MonoBehaviour, IDataPersistence
@@ -61,7 +62,8 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         view.yaw = control.Yaw;
         view.pitch = control.Pitch;
         view.positionCamera = mainCamera.transform.position;
-        view.sizeCamera = mainCamera.GetComponent<Camera>().orthographicSize;
+        LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
+        view.sizeCamera = camera.Zoom;
         views.Add(view);
         displayView(view);
     }                                                                            
@@ -110,7 +112,8 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         control.Yaw = view.yaw;
         control.Pitch =  view.pitch;
         mainCamera.transform.position = view.positionCamera;
-        view.sizeCamera = mainCamera.GetComponent<Camera>().orthographicSize;
+        LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
+        camera.Zoom = view.sizeCamera;
     }
     
 }
