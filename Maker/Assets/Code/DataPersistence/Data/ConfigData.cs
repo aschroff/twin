@@ -14,6 +14,7 @@ public class ConfigData
     public SerializableDictionary<string, string> commandList;
     public AttributesData sampleAttributesData;
     public string commandDetails;
+    public string views;
 
     public ConfigData() 
     {
