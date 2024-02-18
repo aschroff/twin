@@ -26,5 +26,6 @@ public class ConfigData
         commandList = new SerializableDictionary<string, string>();
         sampleAttributesData = new AttributesData();
         commandDetails = "";
+        views = "";
     }
 }

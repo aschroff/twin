@@ -72,7 +72,17 @@ public class ViewManager : MonoBehaviour, IDataPersistence
     
     public void LoadData(ConfigData data)
     {
-        JsonUtility.FromJsonOverwrite(data.views, this);
+        
+        var json = data.views;
+        if (json == "")
+        {
+            views.Clear();
+        }
+        else
+        {
+            JsonUtility.FromJsonOverwrite(json, this);
+        }
+        
         rebuild();
     }
 
@@ -102,4 +112,5 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         mainCamera.transform.position = view.positionCamera;
         view.sizeCamera = mainCamera.GetComponent<Camera>().orthographicSize;
     }
+    
 }
