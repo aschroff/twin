@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class EditTextMode : MonoBehaviour
 {
-    public GameObject twin;
     [SerializeField] MainMode selectImage;
     [SerializeField] GameObject Touch;
 

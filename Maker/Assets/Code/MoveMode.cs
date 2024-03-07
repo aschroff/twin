@@ -5,7 +5,6 @@ using Lean.Touch;
 
 public class MoveMode : MonoBehaviour
 {
-    public GameObject twin;
     [SerializeField] MainMode selectImage;
     [SerializeField] GameObject body;
     [SerializeField] GameObject cam;

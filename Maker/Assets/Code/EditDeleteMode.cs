@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EditDeleteMode : MonoBehaviour
 {
-public GameObject twin;
 [SerializeField] MainMode selectImage;
 [SerializeField] GameObject Touch;
 
