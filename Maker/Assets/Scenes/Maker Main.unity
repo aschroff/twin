@@ -28677,6 +28677,7 @@ GameObject:
   - component: {fileID: 7866754541126039731}
   - component: {fileID: 7866754541126039735}
   - component: {fileID: 7866754541126039734}
+  - component: {fileID: 7866754541126039737}
   m_Layer: 0
   m_Name: SMPLX-mesh-female
   m_TagString: Untagged
@@ -28868,6 +28869,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 6082304513724478328, guid: abc4a5123fc9f774a9666ecc3409f029, type: 3}
+--- !u!114 &7866754541126039737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7866754541126039730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a56845f1b842e4d6196f92afe96e7d70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7925466847632151133
 GameObject:
   m_ObjectHideFlags: 0
