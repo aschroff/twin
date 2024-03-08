@@ -27135,6 +27135,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3954658502618913660}
   - component: {fileID: 3167107118929309058}
+  - component: {fileID: 4443386350580023751}
   m_Layer: 0
   m_Name: smplx-female
   m_TagString: Body
@@ -27142,6 +27143,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &4443386350580023751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4443386350580023750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfec417f1956c4ef48e47556c6ca285f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4522418301976085559
 MonoBehaviour:
   m_ObjectHideFlags: 0
