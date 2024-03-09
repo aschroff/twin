@@ -82,7 +82,7 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         }
         else
         {
-            JsonUtility.FromJsonOverwrite(json, this);
+            JsonUtility.FromJsonOverwrite(json, views);
         }
         
         rebuild();
@@ -90,7 +90,7 @@ public class ViewManager : MonoBehaviour, IDataPersistence
 
     public void SaveData(ConfigData data)
     {
-        data.views = JsonUtility.ToJson(this);
+        data.views = JsonUtility.ToJson(views);
     }
     
     public GameObject relatedGameObject()
