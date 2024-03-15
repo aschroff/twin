@@ -68,7 +68,7 @@ public class Sticker : ItemHash, ItemFile
 	{
 		NativeGallery.Permission permission = NativeGallery.GetImageFromGallery((path) =>
 		{
-			Debug.Log("Image path: " + path);
+		Debug.Log("Image path: " + path);
 			if (path != null)
 			{
 				// Create Texture from selected image
@@ -85,6 +85,15 @@ public class Sticker : ItemHash, ItemFile
 					setTexture();
 					Register();
 
+					/*resetModification
+					for (int j = 0; j < FolderHash().transform.childCount; j++)
+					{
+
+						GameObject child = FolderHash().transform.GetChild(j).gameObject;
+						child.transform.SetPositionAndRotation(child.transform.localPosition, Quaternion.Euler(0, 0, 0));
+
+
+					}*/
 				}
 			}
 		});
@@ -93,7 +102,6 @@ public class Sticker : ItemHash, ItemFile
 	}
 
 	private void SaveTexture()
-
 
 	{
 
