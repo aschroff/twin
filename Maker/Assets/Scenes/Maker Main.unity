@@ -24146,17 +24146,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77669cffa082b469dacf69474cc186e2, type: 3}
---- !u!114 &1987463792 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4239298271117699269, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
-  m_PrefabInstance: {fileID: 487951940}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1999737988
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28518,7 +28507,8 @@ PrefabInstance:
       propertyPath: m_FontData.m_FontStyle
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3271379933332837056, guid: f058704b56a674af49165211b4fbe7e8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -29566,7 +29556,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1987463792}
+  m_TargetGraphic: {fileID: 8923318066494690320}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -29582,6 +29572,17 @@ MonoBehaviour:
           m_StringArgument: EditDelete
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8923318066494690320 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3271379933332837062, guid: f058704b56a674af49165211b4fbe7e8, type: 3}
+  m_PrefabInstance: {fileID: 6247539656344782533}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231191593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &9001025286887641911
 Transform:
   m_ObjectHideFlags: 0
