@@ -5,7 +5,7 @@ using PaintIn3D;
 using System.Linq;
 using System;
 
-public class PartManager : P3dCommandSerialization, IDataPersistence
+public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 {
 
 	/// <summary>Aggregates single commands by the same tool created in a single sequence</summary>
@@ -13,14 +13,29 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	[SerializeField] public List<GroupData> groups;
 	[SerializeField] public bool startNewPart = true;
 	[SerializeField] public bool startNewGroup = true;
-	[SerializeField] public GroupData currentGroup;
+	[SerializeField] private GroupData CurrentGroup;
+	public GroupData currentGroup 
+	{
+		get { return CurrentGroup; }
+		set { SetCurrentGroup(value); }
+	}
 	[SerializeField] public PartData currentPart;
-	[SerializeField] public GameObject listTools;
-	[SerializeField] public GameObject groupmanagerGameobject;
+	private GameObject listTools;
+	private GameObject groupmanagerGameobject;
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
 	private P3dPaintableTexture lastTexture;
-	[SerializeField] public bool temp_skiploading = false;
+	//[SerializeField] public bool temp_skiploading = false;
+
+	private void SetCurrentGroup(GroupData value)
+	{
+		CurrentGroup = value;
+	}
+	
+	private void Start()
+	{
+		listTools = GameObject.FindGameObjectsWithTag("Tools")[0];
+	}
 
 	public GameObject relatedGameObject()
 	{
@@ -138,9 +153,9 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 
 	private void HandleNewPart(PartData newPart)
 	{
-		if (currentGroup != null)
+		if (CurrentGroup != null)
         {
-			currentGroup.groupParts.Add(newPart);
+			CurrentGroup.groupParts.Add(newPart);
 		}
 		
 	}
@@ -153,7 +168,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 			GroupData firstGroup = new GroupData();
 			firstGroup.group = group;
 			groups.Add(firstGroup);
-			currentGroup = firstGroup;
+			CurrentGroup = firstGroup;
 			return firstGroup;
 		}
 		else
@@ -162,7 +177,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 			nextGroup.group = group;
 			nextGroup.visible = true;
 			groups.Add(nextGroup);
-			currentGroup = nextGroup;
+			CurrentGroup = nextGroup;
 			return nextGroup;
 		}
 		startNewPart = true;
@@ -173,7 +188,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 		GroupData nextGroup = new GroupData();
 		nextGroup.group = group;
 		groups.Add(nextGroup);
-		currentGroup = nextGroup;
+		CurrentGroup = nextGroup;
 		return nextGroup;
 
 	}
@@ -197,8 +212,8 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 
 	public void SaveData(ConfigData data)
 	{
-		currentPart = null;
-		currentGroup = null;
+		//currentPart = null;
+		//CurrentGroup = null;
 		startNewGroup = true;
 		startNewPart = true;
 		var json = JsonUtility.ToJson(this);
@@ -206,22 +221,26 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	}
 	public void LoadData(ConfigData data)
 	{
-		//InteractionController.EnableMode("EditSticker");
 		try
 		{
-			if (temp_skiploading == false)
-			{				
-				var json = data.commandDetails;
+			//if (temp_skiploading == false)
+			//{				
+			var json = data.commandDetails;
+			if (json == "")
+			{
+				ClearAll();
+			}
+			else
+			{
 				JsonUtility.FromJsonOverwrite(json, this);
 			}
+
+			//}
 		}
 		catch (Exception e)
-        {
+		{
 			Erase();
 		}
-		GroupManager groupmanager = groupmanagerGameobject.GetComponent<GroupManager>();
-		groupmanager.build();
-		
 	}
 	private P3dCommand Apply(CommandDataTwin commandData)
 	{
@@ -308,9 +327,9 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	{
 		Debug.Log("Removing group: " + groupData.id);
 		string id = groupData.id;
-		if (currentGroup == groupData)
+		if (CurrentGroup == groupData)
         {
-			currentGroup = null;
+			CurrentGroup = null;
         }
 		foreach (PartData part in groupData.groupParts)
         {
@@ -329,7 +348,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 		{
 			currentPart = null;
 		}
-		else if ((currentPart != null) && (currentGroup != null ))
+		else if ((currentPart != null) && (CurrentGroup != null ))
 		{
 			//Debug.Log("Current part: " + currentPart.id.ToString());
 			Debug.Log("To be deleted part: " + partData.id.ToString());
@@ -381,7 +400,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	{
 		base.Clear();
 		groups.Clear();
-		currentGroup = null;
+		CurrentGroup = null;
 		currentPart = null;
 	}
 	[ContextMenu("Clear and refresh all")]
@@ -392,4 +411,27 @@ public class PartManager : P3dCommandSerialization, IDataPersistence
 	}
 
 
+	public  void handleChange(string profile)
+	{
+		
+	}
+	public  void handleCopyChange(string profile)
+	{
+
+	}
+	public  void handleDelete(string profile)
+	{
+        
+	}
+
+	private GameObject GetGroupmanager()
+	{
+		if (groupmanagerGameobject == null)
+		{
+			groupmanagerGameobject = GameObject.FindGameObjectsWithTag("Groupmanager")[0];
+		}
+		return groupmanagerGameobject;
+	}
+	
+	
 }

@@ -3,8 +3,9 @@ using UnityEngine.UI;
 using PaintIn3D;
 using CW.Common;
 using System.IO;
+using System.Runtime.InteropServices;
 
-public class Sticker : ItemHash
+public class Sticker : ItemHash, ItemFile
 
 {
 	[SerializeField] private Texture2D loadedTexture;
@@ -43,7 +44,7 @@ public class Sticker : ItemHash
 	public override void handleAwake()
 	{
 		Debug.Log("Handle Awake called.");
-		string fullPath = Path.Combine(Application.persistentDataPath, this.gameObject.GetComponent<Item>().getId() + ".png");
+		string fullPath = get_path();
 
 		if (File.Exists(fullPath))
 		{
@@ -53,6 +54,12 @@ public class Sticker : ItemHash
 
 			setTexture();
 			Register();
+		}
+		else
+		{
+			Unregister();
+			loadedTexture = this.transform.parent.gameObject.GetComponent<StickerRepo>().defaultTexture;
+			setTexture();
 		}
 		
 	}
@@ -98,7 +105,7 @@ public class Sticker : ItemHash
 
 	{
 
-		string fullPath = Path.Combine(Application.persistentDataPath, this.gameObject.GetComponent<Item>().getId() + ".png");
+		string fullPath = get_path();
 		byte[] textureBytes = loadedTexture.EncodeToPNG();
 		File.WriteAllBytes(fullPath, textureBytes);
 		NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(
@@ -130,6 +137,18 @@ public class Sticker : ItemHash
 		}
 	}
 
+	private void Unregister()
+	
+	{
+		int intHash = this.gameObject.GetComponent<Item>().getHash();
+		if (is_registered(intHash) == true)
+		{
+			Debug.Log("Start Unregister");
+			Destroy(get_registration(intHash));
+			Debug.Log("End Unregister");
+		}
+	}
+	
 	public bool IsInstanceOfPrefabWithName(GameObject obj, string name)
 	{
 		TwinPrefab twinPrefab = obj.GetComponent<TwinPrefab>();
@@ -162,5 +181,61 @@ public class Sticker : ItemHash
 		Debug.Log("not found");
 		return false;
 	}
+
+	private GameObject get_registration(int hash)
+
+
+	{
+		for (int j = 0; j < FolderHash().transform.childCount; j++) {
+
+			GameObject child = FolderHash().transform.GetChild(j).gameObject;
+			if (IsInstanceOfPrefabWithName(child, "Decal Hash"))
+			{
+				P3dTextureHash hashPrefab = child.GetComponent<P3dTextureHash>();
+
+				if (hashPrefab.Hash.ToString() == hash.ToString())
+				{
+					Debug.Log("found");
+					return child;
+				};
+			}
+
+		}
+		Debug.Log("not found");
+		return null;
+	}
+	
+	private string get_path()
+	{   
+		DataPersistenceManager dataManager = this.transform.parent.gameObject.GetComponent<StickerRepo>().dataManager;
+		string profile = dataManager.selectedProfileId;
+		return Path.Combine(Application.persistentDataPath,profile,
+			this.gameObject.GetComponent<Item>().getId() + ".png");
+		
+	}
+	
+	
+	public  void handleChange(string profile)
+	{
+
+	}
+   
+	public  void handleCopyChange(string profile)
+	{
+		Texture2D defaultTexture = this.transform.parent.gameObject.GetComponent<StickerRepo>().defaultTexture;
+		if (loadedTexture != defaultTexture)
+		{
+			SaveTexture();
+		}
+	}
+	public  void handleDelete(string profile)
+	{
+		P3dPaintableTexture.ClearSave(profile);
+	}
+	public GameObject relatedGameObject()
+	{
+		return this.gameObject;
+	}
+	
 }
 

@@ -8,6 +8,7 @@ public class Item : MonoBehaviour, IDataPersistence
 {
     [SerializeField] public string id;
     [SerializeField] public bool persistent = true;
+    [SerializeField] public string defaultValue = "";
 
     [ContextMenu("Generate guid for id")]
     protected void GenerateGuid()
@@ -55,6 +56,10 @@ public class Item : MonoBehaviour, IDataPersistence
         if (text != null)
        {
             textItem.text = text;
+        }
+        else
+        {
+            textItem.text = defaultValue;
         }
     }
 

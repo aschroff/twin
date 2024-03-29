@@ -108,6 +108,35 @@ public class DataPersistenceManager : MonoBehaviour
         LoadConfig();
     }
 
+    public void saveAsConfig(String newProfile) 
+    {
+        SaveConfig();
+        selectedProfileId = newProfile;
+        SaveConfig();
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            dataPersistenceObj.LoadData(configData);
+        }
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            handleCopyChange(dataPersistenceObj);
+        }
+    }
+    
+    public void ResetApp()
+    {
+        selectedProfileId = "default-temp-for-deleting";
+        foreach (KeyValuePair<string, ConfigData> profile in GetAllProfilesGameData()  )
+        {
+            DeleteProfileData(profile.Key);
+
+        }
+        NewConfig();
+        selectedProfileId = "default";
+        LoadConfig();
+        SaveConfig();
+    }
+    
     public void LoadConfig()
     {
         // return right away if data persistence is disabled
@@ -136,7 +165,13 @@ public class DataPersistenceManager : MonoBehaviour
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {
             dataPersistenceObj.LoadData(configData);
+        }
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
             handlePostLoad(dataPersistenceObj);
+        }
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
             handleChange(dataPersistenceObj);
         }
     }
@@ -235,7 +270,22 @@ public class DataPersistenceManager : MonoBehaviour
                 break;
             }
         }
-    }    
+    }   
+    
+    private void handleCopyChange(IDataPersistence persistentObject){
+        MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
+        foreach(MonoBehaviour component in components)
+        {
+            Debug.Log("Name change for components with profile dependent (file) name");
+            if(component is ItemFile) 
+            {
+                Debug.Log("Found a component that inherits from ItemFile.");
+                ItemFile fileComponent = component as ItemFile;
+                fileComponent.handleCopyChange(selectedProfileId);
+                break;
+            }
+        }
+    }  
     private void handleDelete(IDataPersistence persistentObject, string deleteProfileID){
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)

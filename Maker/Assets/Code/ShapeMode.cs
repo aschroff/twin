@@ -1,14 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using PaintIn3D;
 using UnityEngine;
 
 
-public class EditMarkerMode : MonoBehaviour
+public class ShapeMode : MonoBehaviour
 {
     [SerializeField] MainMode selectImage;
     [SerializeField] GameObject Touch;
-
 
     void Start()
     {
@@ -17,7 +15,7 @@ public class EditMarkerMode : MonoBehaviour
 
     private void OnEnable()
     {
-        UIController.ShowUI("EditMarker");
+        UIController.ShowUI("Shape");
         Touch.SetActive(false);
 
     }

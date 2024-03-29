@@ -4,16 +4,20 @@ using PaintIn3D;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProfileDisplay : ItemFile, IDataPersistence
+public class ProfileDisplay : MonoBehaviour, ItemFile, IDataPersistence
 {
 
-    public override void handleChange(string profile)
+    public  void handleChange(string profile)
     {
         Text text = this.gameObject.transform.GetComponent<Text>();
         text.text = "(" + profile +")";
     }
+    public  void handleCopyChange(string profile)
+    {
+        handleChange(profile);
+    }
 
-    public override void handleDelete(string profile)
+    public  void handleDelete(string profile)
     {
         
     }
