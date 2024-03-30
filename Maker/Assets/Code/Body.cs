@@ -24,6 +24,12 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
    public  void handleDelete(string profile)
    {
       P3dPaintableTexture.ClearSave(profile);
+      P3dPaintableTexture texture = this.gameObject.transform.GetComponent<P3dPaintableTexture>();
+      if (texture.SaveName == profile)
+      {
+         texture.Clear();
+      }
+      
    }
    public GameObject relatedGameObject()
    {
