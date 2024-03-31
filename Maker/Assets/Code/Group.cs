@@ -21,6 +21,7 @@ public class Group : Item
         PartManager partmanager = groupmanager.partmanager;
         if (this.persistent == false) {
             this.persistent = true;
+            groupmanager.setButtons(this.gameObject, true);
             this.GenerateGuid();
             groupdata = partmanager.StartNewGroup(this);            
             groupdata.id = this.id;

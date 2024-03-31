@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
 {
+    private string childTagSelector = "GroupSelector"; 
+    private string childTagDelete = "GroupDelete"; 
     [SerializeField] public PartManager partmanager;
     [SerializeField] public GameObject prefab;
     public void build()
@@ -45,13 +47,25 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         //this.createNewNonpersistentGroup();
     }
 
+    public void setButtons(GameObject group, bool value)
+    {
+        Transform[] allChildren = group.GetComponentsInChildren<Transform>(true);
+        foreach (Transform child in allChildren)
+        {
+            if ((child.gameObject.tag == childTagDelete) || (child.gameObject.tag == childTagSelector))
+            {
+                child.gameObject.SetActive(value);
+            }
+        }
+    }
+
     public void createNewNonpersistentGroup()
     {
-        createGroup();
+        createGroup(false);
     }
     public Group createPersistentGroup(PartManager.GroupData groupdata)
     {
-        Group group = createGroup();
+        Group group = createGroup(true);
         group.id = groupdata.id;
         group.groupdata = groupdata;
         group.groupdata.group = group;
@@ -59,11 +73,13 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         //TODO persistent visible flag
         return group;
     }
-    public Group createGroup()
+    public Group createGroup(bool buttons)
     {
         GameObject group = Instantiate(prefab);
         group.transform.SetParent(this.transform, false);
         group.transform.localScale = prefab.transform.localScale;
+        setButtons(group, buttons);
+        
         Group groupcomponent = group.GetComponent<Group>();
         groupcomponent.groupparent = this.gameObject;
         return groupcomponent;
