@@ -518,24 +518,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 206654724}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
 --- !u!4 &40101836 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
   m_PrefabInstance: {fileID: 40101835}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &40101837 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 40101835}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &43755529
 GameObject:
   m_ObjectHideFlags: 0
@@ -1885,6 +1877,24 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4239298271117699265, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
   m_PrefabInstance: {fileID: 2016782304}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &206654720 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 40101835}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &206654724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206654720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1001 &213902323
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2431,24 +2441,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1800566128}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
 --- !u!4 &241036498 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
   m_PrefabInstance: {fileID: 241036497}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &241036499 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 241036497}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &255602297 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1150721589122173839, guid: 92d8282992a504584b36ed89854a7b54, type: 3}
@@ -2861,24 +2863,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1002516119}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
 --- !u!4 &297424541 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
   m_PrefabInstance: {fileID: 297424540}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &297424542 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 297424540}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &301394688
 GameObject:
   m_ObjectHideFlags: 0
@@ -3097,6 +3091,7 @@ GameObject:
   - component: {fileID: 312999719}
   - component: {fileID: 312999718}
   - component: {fileID: 312999723}
+  - component: {fileID: 312999724}
   m_Layer: 5
   m_Name: Vertical Button
   m_TagString: Untagged
@@ -3249,9 +3244,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 618633824}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
+      - m_Target: {fileID: 312999724}
+        m_TargetAssemblyTypeName: StickerEditHandler, Assembly-CSharp
+        m_MethodName: FlipStickerVertical
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3261,114 +3256,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1120859195}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1762048067}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1910086862}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 297424542}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 40101837}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1722336768}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1937604780}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1016462306}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 241036499}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipVertical
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+--- !u!114 &312999724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312999715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ec13b6733a04f788795cb548cc0f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  folderTools: {fileID: 701643922}
 --- !u!1 &314751347
 GameObject:
   m_ObjectHideFlags: 0
@@ -4665,7 +4565,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1754855359}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
 --- !u!4 &378956401 stripped
 Transform:
@@ -5199,6 +5102,7 @@ GameObject:
   - component: {fileID: 423348650}
   - component: {fileID: 423348649}
   - component: {fileID: 423348654}
+  - component: {fileID: 423348655}
   m_Layer: 5
   m_Name: Shrink Button
   m_TagString: Untagged
@@ -5351,10 +5255,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 618633824}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
+      - m_Target: {fileID: 423348655}
+        m_TargetAssemblyTypeName: StickerEditHandler, Assembly-CSharp
+        m_MethodName: ShrinkSticker
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5363,114 +5267,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1120859195}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.6667
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1762048067}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.6667
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1910086862}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.6667
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 297424542}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.6667
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 40101837}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.6667
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1722336768}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.6667
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1937604780}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.6667
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1016462306}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.6667
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 241036499}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0.6667
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+--- !u!114 &423348655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423348646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ec13b6733a04f788795cb548cc0f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  folderTools: {fileID: 701643922}
 --- !u!1001 &423592409
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6852,6 +6661,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5811805595156870610, guid: 6f61bfacf81ea4275acd6be2003e7aee, type: 3}
   m_PrefabInstance: {fileID: 525061963}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &528057609 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 1278059268}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &536062388
 GameObject:
   m_ObjectHideFlags: 0
@@ -8063,17 +7877,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
   m_PrefabInstance: {fileID: 8306256389819307809}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &618633824 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 8306256389819307809}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &629250451
 GameObject:
   m_ObjectHideFlags: 0
@@ -12749,6 +12552,24 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1 &1002516115 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 297424540}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1002516119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002516115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1 &1010431342
 GameObject:
   m_ObjectHideFlags: 0
@@ -12948,24 +12769,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2047456720}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
 --- !u!4 &1016462305 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
   m_PrefabInstance: {fileID: 1016462304}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1016462306 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 1016462304}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1035758941
 GameObject:
   m_ObjectHideFlags: 0
@@ -14207,17 +14020,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1100942044}
   m_CullTransparentMesh: 0
---- !u!114 &1120859195 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 378956400}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1122002953
 GameObject:
   m_ObjectHideFlags: 0
@@ -15187,7 +14989,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1910086866}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
 --- !u!1 &1292681598
 GameObject:
@@ -17019,6 +16824,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5811805595156870610, guid: 6f61bfacf81ea4275acd6be2003e7aee, type: 3}
   m_PrefabInstance: {fileID: 1363927791}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1369354306 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 1937604778}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1371836756
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18537,6 +18347,7 @@ GameObject:
   - component: {fileID: 1497201406}
   - component: {fileID: 1497201405}
   - component: {fileID: 1497201410}
+  - component: {fileID: 1497201411}
   m_Layer: 5
   m_Name: Left Button
   m_TagString: Untagged
@@ -18689,10 +18500,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 618633824}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
+      - m_Target: {fileID: 1497201411}
+        m_TargetAssemblyTypeName: StickerEditHandler, Assembly-CSharp
+        m_MethodName: TurnStickerToTheLeft
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -18701,114 +18512,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1120859195}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1762048067}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1910086862}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 297424542}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 40101837}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1722336768}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1937604780}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1016462306}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 241036499}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+--- !u!114 &1497201411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497201402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ec13b6733a04f788795cb548cc0f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  folderTools: {fileID: 701643922}
 --- !u!1 &1508877353
 GameObject:
   m_ObjectHideFlags: 0
@@ -19451,6 +19167,7 @@ GameObject:
   - component: {fileID: 1569873426}
   - component: {fileID: 1569873425}
   - component: {fileID: 1569873430}
+  - component: {fileID: 1569873431}
   m_Layer: 5
   m_Name: Right Button
   m_TagString: Untagged
@@ -19603,10 +19320,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 618633824}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
+      - m_Target: {fileID: 1569873431}
+        m_TargetAssemblyTypeName: StickerEditHandler, Assembly-CSharp
+        m_MethodName: TurnStickerToTheRight
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -19615,114 +19332,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1120859195}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: -45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1762048067}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: -45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1910086862}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: -45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 297424542}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: -45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 40101837}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: -45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1722336768}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: -45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1937604780}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: -45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1016462306}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: -45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 241036499}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: IncrementAngle
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: -45
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+--- !u!114 &1569873431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569873422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ec13b6733a04f788795cb548cc0f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  folderTools: {fileID: 701643922}
 --- !u!1 &1581564115
 GameObject:
   m_ObjectHideFlags: 0
@@ -21280,24 +20902,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1951444983}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
 --- !u!4 &1722336767 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
   m_PrefabInstance: {fileID: 1722336766}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1722336768 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 1722336766}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1753083898
 GameObject:
   m_ObjectHideFlags: 0
@@ -21391,6 +21005,24 @@ Transform:
   - {fileID: 2138586146}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1754855355 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 378956400}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1754855359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754855355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1 &1759961119
 GameObject:
   m_ObjectHideFlags: 0
@@ -21471,17 +21103,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
   m_PrefabInstance: {fileID: 1899906964}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1762048067 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 1899906964}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1764914415
 GameObject:
   m_ObjectHideFlags: 0
@@ -21564,6 +21185,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectImage: {fileID: 1216887054}
   Touch: {fileID: 1616260168}
+--- !u!1 &1800566124 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 241036497}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1800566128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800566124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1 &1800972775
 GameObject:
   m_ObjectHideFlags: 0
@@ -21579,6 +21218,7 @@ GameObject:
   - component: {fileID: 1800972779}
   - component: {fileID: 1800972778}
   - component: {fileID: 1800972777}
+  - component: {fileID: 1800972783}
   m_Layer: 5
   m_Name: Expand Button
   m_TagString: Untagged
@@ -21650,118 +21290,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 618633824}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1120859195}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1762048067}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1910086862}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 297424542}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 40101837}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1722336768}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1937604780}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1016462306}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 1.5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 241036499}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: MultiplyScale
-        m_Mode: 4
+      - m_Target: {fileID: 1800972783}
+        m_TargetAssemblyTypeName: StickerEditHandler, Assembly-CSharp
+        m_MethodName: ExpandSticker
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -21851,6 +21383,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1800972775}
   m_CullTransparentMesh: 0
+--- !u!114 &1800972783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800972775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ec13b6733a04f788795cb548cc0f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  folderTools: {fileID: 701643922}
 --- !u!1 &1804132621
 GameObject:
   m_ObjectHideFlags: 0
@@ -22818,6 +22363,24 @@ MonoBehaviour:
   id: 1165a092-866b-45ad-98f3-9d2b5aede883
   persistent: 1
   defaultValue: 
+--- !u!1 &1856478754 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 1899906964}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1856478758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856478754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1001 &1875440628
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23242,6 +22805,7 @@ GameObject:
   - component: {fileID: 1891119113}
   - component: {fileID: 1891119112}
   - component: {fileID: 1891119111}
+  - component: {fileID: 1891119117}
   m_Layer: 5
   m_Name: Horizontal Button
   m_TagString: Untagged
@@ -23313,117 +22877,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 618633824}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1120859195}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1762048067}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1910086862}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 297424542}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 40101837}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1722336768}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1937604780}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1016462306}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 241036499}
-        m_TargetAssemblyTypeName: PaintIn3D.P3dPaintDecal, PaintIn3D
-        m_MethodName: FlipHorizontal
+      - m_Target: {fileID: 1891119117}
+        m_TargetAssemblyTypeName: StickerEditHandler, Assembly-CSharp
+        m_MethodName: FlipStickerHorizontal
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -23514,6 +22970,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891119109}
   m_CullTransparentMesh: 0
+--- !u!114 &1891119117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1891119109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ec13b6733a04f788795cb548cc0f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  folderTools: {fileID: 701643922}
 --- !u!224 &1894167484 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3563408563250384507, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
@@ -23704,7 +23173,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1856478758}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
 --- !u!1001 &1903543069
 PrefabInstance:
@@ -23789,17 +23261,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
   m_PrefabInstance: {fileID: 1278059268}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1910086862 stripped
+--- !u!114 &1910086866
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 1278059268}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 528057609}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1 &1917438890
 GameObject:
   m_ObjectHideFlags: 0
@@ -23980,24 +23454,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1937604784}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
 --- !u!4 &1937604779 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8306256390425415038, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
   m_PrefabInstance: {fileID: 1937604778}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1937604780 stripped
+--- !u!114 &1937604784
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8306256390425414977, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
-  m_PrefabInstance: {fileID: 1937604778}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1369354306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36498e7e45483f478ff74ab3f1cb21c, type: 3}
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1 &1938109806
 GameObject:
   m_ObjectHideFlags: 0
@@ -24085,6 +23564,24 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!1 &1951444979 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 1722336766}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1951444983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951444979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1001 &1974811887
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24631,6 +24128,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+--- !u!1 &2047456716 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 1016462304}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2047456720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2047456716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1001 &2056658742
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29455,8 +28970,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8306256389819307811}
   m_SourcePrefab: {fileID: 100100000, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+--- !u!1 &8306256389819307810 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8306256390425415039, guid: 8cb18defebbce431cb8b34f8341fd32b, type: 3}
+  m_PrefabInstance: {fileID: 8306256389819307809}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8306256389819307811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8306256389819307810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477f6f5749f7470b9a6e953b2976bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Tool Sticker
 --- !u!1 &8498899899882479882
 GameObject:
   m_ObjectHideFlags: 0
