@@ -6,7 +6,6 @@ using UnityEngine;
 public class ConfigData
 {
     public long lastUpdated;
-    public int sampleInteger;
     public Vector3 sampleVector;
     public SerializableDictionary<string, string> itemTexts;
     public List<string> groupList;
@@ -22,7 +21,6 @@ public class ConfigData
 
     public ConfigData() 
     {
-        this.sampleInteger = 0;
         sampleVector = Vector3.zero;
         itemTexts = new SerializableDictionary<string, string>();
         groupList = new List<string>();
