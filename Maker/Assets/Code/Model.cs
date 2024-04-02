@@ -6,6 +6,8 @@ public class Model : MonoBehaviour
 {
     private SMPLX model;
     private string model_info;
+    private SMPLX.HandPose handPose;
+    private SMPLX.BodyPose bodyPose;
     void Awake() 
     {
         model = this.gameObject.transform.GetComponent<SMPLX>();
@@ -14,6 +16,10 @@ public class Model : MonoBehaviour
         int shapes, expressions, poseCorrectives;
         model.GetModelInfo(out shapes, out expressions, out poseCorrectives);
         model_info = string.Format("Model: {0} beta shapes, {1} expressions, {2} pose correctives", shapes, expressions, poseCorrectives);
+        handPose = SMPLX.HandPose.Flat;
+        bodyPose = SMPLX.BodyPose.T;  
+        model.SetHandPose(handPose);
+        model.SetBodyPose(bodyPose); 
     }
 
     public void overall_random()
@@ -35,16 +41,30 @@ public class Model : MonoBehaviour
         
     }
     
-    public void t_arms()
+    public void toggle_hands()
     {
-        model.SetBodyPose(SMPLX.BodyPose.T);
-        
+        if (handPose == SMPLX.HandPose.Flat)
+        {
+            handPose = SMPLX.HandPose.Relaxed;
+        }
+        else
+        {
+            handPose = SMPLX.HandPose.Flat;
+        }
+        model.SetHandPose(handPose);
     }
     
-    public void flat_hands()
+    public void toggle_arms()
     {
-        model.SetHandPose(SMPLX.HandPose.Flat);
-        
+        if (bodyPose == SMPLX.BodyPose.A)
+        {
+            bodyPose = SMPLX.BodyPose.T;
+        }
+        else
+        {
+            bodyPose = SMPLX.BodyPose.A;
+        }
+        model.SetBodyPose(bodyPose); 
     }
     
     public void reset()
