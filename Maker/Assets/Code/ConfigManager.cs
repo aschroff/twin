@@ -13,7 +13,7 @@ public class ConfigManager : MonoBehaviour
     {
         Text origin = newNameOrigin.GetComponent<Text>();
         dataPersistenceManager.createNewConfig(origin.text);
-        origin.text = "";
+        origin.transform.parent.gameObject.GetComponent<InputField>().text = "TwinName";
         //textbox should be cleared
         dataPersistenceManager.SaveConfig();
         fileManager.Refresh();
@@ -24,7 +24,7 @@ public class ConfigManager : MonoBehaviour
     {
         Text origin = newNameOrigin.GetComponent<Text>();
         dataPersistenceManager.saveAsConfig(origin.text);
-        origin.text = "";
+        origin.transform.parent.gameObject.GetComponent<InputField>().text = "TwinName";
         //textbox should be cleared
         dataPersistenceManager.SaveConfig();
         fileManager.Refresh();
