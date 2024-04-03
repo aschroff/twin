@@ -13,6 +13,8 @@ public class ConfigManager : MonoBehaviour
     {
         Text origin = newNameOrigin.GetComponent<Text>();
         dataPersistenceManager.createNewConfig(origin.text);
+        origin.text = "";
+        //textbox should be cleared
         dataPersistenceManager.SaveConfig();
         fileManager.Refresh();
         InteractionController.EnableMode("Main");
@@ -22,6 +24,8 @@ public class ConfigManager : MonoBehaviour
     {
         Text origin = newNameOrigin.GetComponent<Text>();
         dataPersistenceManager.saveAsConfig(origin.text);
+        origin.text = "";
+        //textbox should be cleared
         dataPersistenceManager.SaveConfig();
         fileManager.Refresh();
         InteractionController.EnableMode("Main");
