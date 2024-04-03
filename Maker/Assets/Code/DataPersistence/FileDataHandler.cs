@@ -283,15 +283,7 @@ public class FileDataHandler
         }
 
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
-
         //check for Existence
-        if (File.Exists(fullPath))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return File.Exists(fullPath);
     }
 }
