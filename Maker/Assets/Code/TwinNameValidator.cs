@@ -4,14 +4,14 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 
-    //invalid fodername characters are colon(":"), the dot(".") at the start of the word(".*"),
-    // the maximum input length is 255 characters and it is not allowed to be empty or named after an extisting folder
 public class TwinNameValidator : MonoBehaviour
 { 
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
 
     private InputField nameInputField;
-    private static readonly string nameRegex = "^(?!.*:)(?!^\\.)(?!^\\s*$)[^\\n\\r]{1,255}$";
+    private static readonly string nameRegex = "^[a-zA-Z0-9_()-]{1,11}$";
+    //Regex which only allows string that are made out of the characters a-z, A-Z, 0-9 and "_", "(", ")","-"
+    //with the minimum length of 1 and the maximum length of 14
 
 
     private void Start()
@@ -23,60 +23,28 @@ public class TwinNameValidator : MonoBehaviour
     private void ValidateInput(string input)
     {
         EnableButtons(false);
-        if (!Regex.IsMatch(input, nameRegex))
+        if (Regex.IsMatch(input, nameRegex) && !dataPersistenceManager.ExistsProfileId(input))
         {
-            EnableButtons(false);
-            char invalidingInput = ParseInvalidCharacter(input);
-            string errorMessage = CreateErrorMessage(invalidingInput);
-            DisplayErrorMessage(errorMessage);
-            Debug.Log("InvalidUserInput: " + input);
-        }
-        else if (dataPersistenceManager.ExistsProfileId(input))
-        {
-            EnableButtons(false);
-            DisplayErrorMessage("This twin name is already taken.");
-            Debug.Log("ExistingFolderName: " + input);
-        }
-        else
-        {
+            //input matches regex
             DisplayErrorMessage("");
             EnableButtons(true);
             Debug.Log("InputValid: " + input + ", Button interactable.");
             //enable the button
         }
-    }
-
-    private char ParseInvalidCharacter(string input) {
-        if (input.Contains(":"))
+        else if (dataPersistenceManager.ExistsProfileId(input) && !input.Contains("."))
         {
-            return ':';
-        }
-        else if (string.IsNullOrWhiteSpace(input))
-        {
-            return ' ';
-        }
-        else if (input[0] == '.')
-        {
-            return '.';
+            //dot is excluded because of ".", ".." and ".DS_Store" (shown when "ls -a" in folder: Maker)
+            //input is already a foldername
+           EnableButtons(false);
+           DisplayErrorMessage("This twin name is already taken.");
+           Debug.Log("ExistingFolderName: " + input); 
+            
         }
         else
         {
-            return 'l'; //l for too long
-        }
-    }
-
-    private string CreateErrorMessage(char invalidingWordPart) {
-        switch (invalidingWordPart) {
-            case ':':
-                return "Colons(:) within the name of the twin is not allowed.";
-            case '.':
-                return "A dot(.) at the start of the name of the twin is not allowed.";
-            case ' ':
-                return "The Name of the twin must not be empty or must not consits only of whitespaces.";
-            case 'l':
-                return "Your name of the twin is too long. Maximum is 255 chracters.";
-            default:
-                return "This is not a valid name for a new twin.";
+            EnableButtons(false);
+            DisplayErrorMessage("Twin name can only contain following characters: a-z, A-Z, 0-9 and \"_\", \"(\", \")\",\" - \". With length between 1 and 14.");
+            Debug.Log("InvalidUserInput: " + input);
         }
     }
 
