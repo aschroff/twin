@@ -8,9 +8,10 @@ public class ToolTracker : MonoBehaviour
 {
     GameObject myButton;
 
-    private static GameObject[] toolNameDisplays = null;
-    // Start is called before the first frame update
-    void Start()
+    private GameObject[] toolNameDisplays = null;
+
+
+    private void OnEnable()
     {
         if (toolNameDisplays == null)
         {
@@ -18,22 +19,25 @@ public class ToolTracker : MonoBehaviour
         }
         CwDemoButton[] objectsWithToolButton = GameObject.FindObjectsOfType<CwDemoButton>();
 
-        // Iterate through all GameObjects with a Rigidbody component
+        
         foreach (CwDemoButton button in objectsWithToolButton)
         {
-            // Check if the mass of the Rigidbody is 10
+       
             if (button.IsolateTarget == this.transform)
             {
                 myButton = button.gameObject;
             }
         }
-    }
 
-    private void OnEnable()
-    {
+        Debug.Log("setting tool");
+
         foreach (GameObject toolNameDisplay in toolNameDisplays)
         {
+            Debug.Log("old value tool" + toolNameDisplay.GetComponent<Text>().text);
             toolNameDisplay.GetComponent<Text>().text = myButton.GetComponentInChildren<InputField>().text;
+            Debug.Log("new value tool" + toolNameDisplay.GetComponent<Text>().text);
+            Debug.Log("really set: " +myButton.GetComponentInChildren<InputField>().text);
+
         }
     }
 }
