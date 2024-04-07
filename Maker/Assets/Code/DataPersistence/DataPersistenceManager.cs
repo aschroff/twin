@@ -299,5 +299,8 @@ public class DataPersistenceManager : MonoBehaviour
                 break;
             }
         }
-    }    
+    }
+    public bool ExistsProfileId(string profileId) {
+        return dataHandler.Exists(profileId);
+    }
 }

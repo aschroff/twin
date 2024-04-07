@@ -273,4 +273,17 @@ public class FileDataHandler
 
         return success;
     }
+
+    public bool Exists(string profileId)
+    {
+        // base case - if the profileId is null, return right away
+        if (profileId == null)
+        {
+            return false;
+        }
+
+        string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
+        //check for Existence
+        return File.Exists(fullPath);
+    }
 }
