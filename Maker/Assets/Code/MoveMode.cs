@@ -29,7 +29,7 @@ public class MoveMode : MonoBehaviour
         lmu.enabled = true;
         ldc.enabled = false;
         lpc.enabled = false;
-        for (int i = Tools.transform.childCount - 1; i >= 1; i--)
+        for (int i = Tools.transform.childCount - 1; i >= 0; i--)
         {
             Tools.transform.GetChild(i).gameObject.SetActive(false);
             Debug.Log(Tools.transform.GetChild(i).gameObject);
