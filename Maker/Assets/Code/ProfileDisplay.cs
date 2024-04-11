@@ -10,7 +10,7 @@ public class ProfileDisplay : MonoBehaviour, ItemFile, IDataPersistence
     public  void handleChange(string profile)
     {
         Text text = this.gameObject.transform.GetComponent<Text>();
-        text.text = "(" + profile +")";
+        text.text = profile;
     }
     public  void handleCopyChange(string profile)
     {
