@@ -34,8 +34,8 @@ public class Sticker : ItemHash, ItemFile
 			CwDemoButton button = gameObject.GetComponent<CwDemoButton>();
 			GameObject tool = button.IsolateTarget.gameObject;
 			P3dPaintDecal sticker = tool.GetComponent<P3dPaintDecal>();
-			sticker.Texture = loadedTexture;
 
+			sticker.Texture = loadedTexture;
 
 		}
 	}
@@ -84,6 +84,15 @@ public class Sticker : ItemHash, ItemFile
 					SaveTexture();
 					setTexture();
 					Register();
+
+
+					CwDemoButton button = gameObject.GetComponent<CwDemoButton>();
+					GameObject tool = button.IsolateTarget.gameObject;
+					P3dPaintDecal sticker = tool.GetComponent<P3dPaintDecal>();
+					//resetting size and angle of sticker so edits of previous sticker aren't applied when changing sticker picture
+					sticker.Angle = 0f;
+					sticker.Scale = new Vector3(0.2f, 0.2f, 0.2f);
+					
 
 				}
 			}
