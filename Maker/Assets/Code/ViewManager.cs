@@ -116,4 +116,14 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         camera.Zoom = view.sizeCamera;
     }
     
+    public void setDefaultPosition()
+    {
+        LeanPitchYaw control = body.GetComponent<LeanPitchYaw>();
+        control.Yaw = 0.0f;
+        control.Pitch =  0.0f;
+        mainCamera.transform.position = new Vector3(x: 0.0f, y: 0.5f, z: 1.0f);
+        LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
+        camera.Zoom = 2.0f; 
+    }
+    
 }
