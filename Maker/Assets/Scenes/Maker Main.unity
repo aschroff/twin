@@ -7296,6 +7296,30 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: Shape
       objectReference: {fileID: 0}
+    - target: {fileID: 2939841663354252985, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2939841663354252985, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2939841663354252985, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2939841663354252985, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2939841663354252985, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2939841663354252985, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3050775286356326930, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -28885,7 +28909,7 @@ MonoBehaviour:
   localMaskChannel: 0
   shaderKeyword: 
   hash:
-    v: 0
+    v: 1665315984
   isDummy: 0
   output: 
   activated: 0
@@ -28907,7 +28931,7 @@ MonoBehaviour:
   includeScale: 1
   useMesh: 0
   hash:
-    v: 0
+    v: 1828835067
   activation: 2
   baseScale: {x: 0, y: 0, z: 0}
   otherRenderers: []
