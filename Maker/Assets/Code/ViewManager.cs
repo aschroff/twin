@@ -25,6 +25,8 @@ public class ViewManager : MonoBehaviour, IDataPersistence
     [SerializeField] public GameObject mainCamera;
     [SerializeField] public GameObject body;
     
+    private bool cameraEnabled = true;
+    
     public void build()
     {
         foreach (View view in views)
@@ -116,6 +118,8 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         control.Pitch =  view.pitch;
         mainCamera.transform.position = new Vector3(view.positionCamera_x, view.positionCamera_y, view.positionCamera_z);
         LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
+        cameraEnabled = camera.enabled;
+        camera.enabled = true;
         camera.Zoom = view.sizeCamera;
     }
     
@@ -127,6 +131,12 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         mainCamera.transform.position = new Vector3(x: 0.0f, y: 0.5f, z: 1.0f);
         LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
         camera.Zoom = 2.0f; 
+    }
+
+    void LateUpdate()
+    {
+        LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
+        camera.enabled = cameraEnabled; 
     }
     
 }
