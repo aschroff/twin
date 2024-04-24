@@ -9,10 +9,11 @@ using UnityEngine.UI;
 public class ViewManager : MonoBehaviour, IDataPersistence
 {
     [System.Serializable]
-    public class View
-    {
+    public class View  {
         public string name;
-        public Vector3 positionCamera;
+        public float positionCamera_x;
+        public float positionCamera_y;
+        public float positionCamera_z;
         public float sizeCamera;
         public float pitch;
         public float yaw;
@@ -61,7 +62,9 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         LeanPitchYaw control = body.GetComponent<LeanPitchYaw>();
         view.yaw = control.Yaw;
         view.pitch = control.Pitch;
-        view.positionCamera = mainCamera.transform.position;
+        view.positionCamera_x = mainCamera.transform.position.x;
+        view.positionCamera_y = mainCamera.transform.position.y;
+        view.positionCamera_z = mainCamera.transform.position.z;
         LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
         view.sizeCamera = camera.Zoom;
         views.Add(view);
@@ -82,7 +85,7 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         }
         else
         {
-            JsonUtility.FromJsonOverwrite(json, views);
+            JsonUtility.FromJsonOverwrite(json, this);
         }
         
         rebuild();
@@ -90,7 +93,7 @@ public class ViewManager : MonoBehaviour, IDataPersistence
 
     public void SaveData(ConfigData data)
     {
-        data.views = JsonUtility.ToJson(views);
+        data.views = JsonUtility.ToJson(this);
     }
     
     public GameObject relatedGameObject()
@@ -111,7 +114,7 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         LeanPitchYaw control = body.GetComponent<LeanPitchYaw>();
         control.Yaw = view.yaw;
         control.Pitch =  view.pitch;
-        mainCamera.transform.position = view.positionCamera;
+        mainCamera.transform.position = new Vector3(view.positionCamera_x, view.positionCamera_y, view.positionCamera_z);
         LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
         camera.Zoom = view.sizeCamera;
     }
