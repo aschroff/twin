@@ -18,9 +18,10 @@ public class TwinNameValidator : MonoBehaviour
     {   
         nameInputField = this.GetComponent<InputField>();
         nameInputField.onValueChanged.AddListener(ValidateInput);
+        nameInputField.onEndEdit.AddListener(ValidateInput);
     }
 
-    private void ValidateInput(string input)
+    public void ValidateInput(string input)
     {
         EnableButtons(false);
         if (Regex.IsMatch(input, nameRegex) && !dataPersistenceManager.ExistsProfileId(input))
