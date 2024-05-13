@@ -87,7 +87,15 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         }
         else
         {
+            GameObject prefab_save = prefab;
+            GameObject mainCamera_save = this.mainCamera;
+            GameObject body_save = body;
+
             JsonUtility.FromJsonOverwrite(json, this);
+            
+            prefab = prefab_save; 
+            mainCamera = mainCamera_save;
+            body = body_save;
         }
         
         rebuild();
