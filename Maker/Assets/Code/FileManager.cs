@@ -10,6 +10,7 @@ public class FileManager : MonoBehaviour
 {
     [SerializeField] public GameObject prefab;
     [SerializeField] public DataPersistenceManager dataManager;
+    [SerializeField] public GameObject inputFieldName;
     private Dictionary<string, string> profiles = new Dictionary<string, string>();
 
     // Start is called before the first frame update
@@ -69,11 +70,12 @@ public class FileManager : MonoBehaviour
     {
         dataManager.ChangeSelectedProfileId(profile);
         Refresh();
-    }
+       }
 
     private void Remove(string profile)
     {
         dataManager.DeleteProfileData(profile);
         Refresh();
+        inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
     }
 }

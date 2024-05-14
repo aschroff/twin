@@ -23,7 +23,7 @@ public class MainMode : MonoBehaviour
         for (int i = Tools.transform.childCount - 1; i >= 1; i--)
         {
             Tools.transform.GetChild(i).gameObject.SetActive(false);
-            Debug.Log(Tools.transform.GetChild(i).gameObject);
+            //Debug.Log(Tools.transform.GetChild(i).gameObject);
 
         }
 
