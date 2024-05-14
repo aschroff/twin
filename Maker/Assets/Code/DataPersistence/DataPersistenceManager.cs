@@ -301,6 +301,9 @@ public class DataPersistenceManager : MonoBehaviour
         }
     }
     public bool ExistsProfileId(string profileId) {
+        if (dataHandler == null) {
+            return false;
+        }
         return dataHandler.Exists(profileId);
     }
 }

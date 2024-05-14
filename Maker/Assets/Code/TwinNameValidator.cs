@@ -49,6 +49,12 @@ public class TwinNameValidator : MonoBehaviour
         }
     }
 
+    public void ValidateInput()
+    {
+        string input = nameInputField.text;
+        ValidateInput(input);
+    }
+
     private void DisplayErrorMessage(string errorMessage) {
         GameObject errorMessageArea = this.transform.parent.Find("UserMessage").gameObject;
         Text errorMessageDisplay = errorMessageArea.GetComponent<Text>();
