@@ -99,8 +99,32 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     }
 
     public void Show(bool visible)
+    {   
+        RectTransform recttransform = this.gameObject.transform.parent.GetComponent<RectTransform>();
+        float width = recttransform.rect.width;
+        if (visible & recttransform.anchoredPosition.x  >= 0)
+        {
+            
+        }
+        else if (!visible  & recttransform.anchoredPosition.x  >= 0)
+        {
+            recttransform.anchoredPosition += new Vector2(-width, 0);
+        }  
+        else if (!visible & recttransform.anchoredPosition.x  < 0)
+        {
+            
+        } 
+        else if (visible  & recttransform.anchoredPosition.x  < 0)
+        {
+            recttransform.anchoredPosition += new Vector2(width, 0);
+        }  
+    }
+
+    public void toggleShow()
     {
-        this.gameObject.transform.parent.gameObject.SetActive(visible);
+        RectTransform recttransform = this.gameObject.transform.parent.GetComponent<RectTransform>();
+        bool newVisible = (recttransform.anchoredPosition.x < 0);
+        Show(newVisible);
     }
     
     public  void handleChange(string profile)
