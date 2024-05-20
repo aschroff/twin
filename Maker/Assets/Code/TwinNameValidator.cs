@@ -49,8 +49,10 @@ public class TwinNameValidator : MonoBehaviour
         }
     }
 
-    public bool CheckInput(string input) {
-        return Regex.IsMatch(input, nameRegex) && !dataPersistenceManager.ExistsProfileId(input);
+    public void ValidateInput()
+    {
+        string input = nameInputField.text;
+        ValidateInput(input);
     }
 
     private void DisplayErrorMessage(string errorMessage) {

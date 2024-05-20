@@ -72,10 +72,6 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         views.Add(view);
         displayView(view);
     }                                                                            
-    public void Show(bool visible)
-    {
-        this.gameObject.transform.parent.gameObject.SetActive(visible);
-    }
     
     public void LoadData(ConfigData data)
     {
@@ -145,6 +141,36 @@ public class ViewManager : MonoBehaviour, IDataPersistence
     {
         LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
         camera.enabled = cameraEnabled; 
+    }
+    
+    
+    public void Show(bool visible)
+    {   
+        RectTransform recttransform = this.gameObject.transform.parent.GetComponent<RectTransform>();
+        float width = recttransform.rect.width;
+        if (visible & recttransform.anchoredPosition.x  <= 0)
+        {
+            
+        }
+        else if (!visible  & recttransform.anchoredPosition.x  <= 0)
+        {
+            recttransform.anchoredPosition += new Vector2(width, 0);
+        }  
+        else if (!visible & recttransform.anchoredPosition.x  > 0)
+        {
+            
+        } 
+        else if (visible  & recttransform.anchoredPosition.x  > 0)
+        {
+            recttransform.anchoredPosition += new Vector2(-width, 0);
+        }  
+    }
+
+    public void toggleShow()
+    {
+        RectTransform recttransform = this.gameObject.transform.parent.GetComponent<RectTransform>();
+        bool newVisible = (recttransform.anchoredPosition.x > 0);
+        Show(newVisible);
     }
     
 }
