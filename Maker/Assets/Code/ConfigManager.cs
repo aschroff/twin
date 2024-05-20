@@ -13,17 +13,22 @@ public class ConfigManager : MonoBehaviour
     public void newConfig()
     {
         Text origin = newNameOrigin.GetComponent<Text>();
+        // getting the name of the new created Twin
 
-        GameObject NewTwin = this.transform.parent.Find("New").gameObject;
+        GameObject NewTwin = this.transform.parent.GetComponentInChildren<TwinNameValidator>().gameObject;
+        //GameObject NewTwin = this.transform.parent.Find("New").gameObject;
         nameValidator = NewTwin.GetComponentInChildren<TwinNameValidator>();
-     
-        dataPersistenceManager.createNewConfig(origin.text);
-        origin.transform.parent.gameObject.GetComponent<InputField>().text = "TwinName";
+        // getting Component (TwinNameValidator)of Input Field to call CheckInput-Function
 
-        //textbox should be cleared
-        dataPersistenceManager.SaveConfig();
-        fileManager.Refresh();
-        InteractionController.EnableMode("Main");
+        if (nameValidator.CheckInput(origin.text.ToString())) {
+            dataPersistenceManager.createNewConfig(origin.text);
+            origin.transform.parent.gameObject.GetComponent<InputField>().text = "TwinName";
+            //textbox should be cleared
+            dataPersistenceManager.SaveConfig();
+            fileManager.Refresh();
+            InteractionController.EnableMode("Main");
+        }
+        
     }
     
     public void saveAsConfig()
