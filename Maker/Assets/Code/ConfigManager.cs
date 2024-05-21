@@ -13,26 +13,35 @@ public class ConfigManager : MonoBehaviour
     public void newConfig()
     {
         string newTwinNameFromInput = GetTwinNameFromInput();
-        if (CheckInputTwinName(newTwinNameFromInput)) {
+        if (CheckInputTwinName(newTwinNameFromInput))
+        {
             dataPersistenceManager.createNewConfig(newTwinNameFromInput);
             inputField.transform.Find("Text").GetComponent<Text>().text = "TwinName";
             //textbox should be cleared
             dataPersistenceManager.SaveConfig();
             fileManager.Refresh();
             InteractionController.EnableMode("Main");
+        } else {
+            Debug.Log("Twin-Name-Test of New-button push failed!");
         }
         
     }
     
     public void saveAsConfig()
     {
-        Text origin = inputField.GetComponent<Text>();
-        dataPersistenceManager.saveAsConfig(origin.text);
-        origin.transform.parent.gameObject.GetComponent<InputField>().text = "TwinName";
-        //textbox should be cleared
-        dataPersistenceManager.SaveConfig();
-        fileManager.Refresh();
-        InteractionController.EnableMode("Main");
+        string newTwinNameFromInput = GetTwinNameFromInput();
+        if (CheckInputTwinName(newTwinNameFromInput))
+        {
+            Text origin = inputField.GetComponent<Text>();
+            dataPersistenceManager.saveAsConfig(origin.text);
+            inputField.transform.parent.gameObject.GetComponent<InputField>().text = "TwinName";
+            //textbox should be cleared
+            dataPersistenceManager.SaveConfig();
+            fileManager.Refresh();
+            InteractionController.EnableMode("Main");
+        } else {
+            Debug.Log("Twin-Name-Test of saveAs-button push failed!");
+        }
     }
     
     public void ResetApp()
