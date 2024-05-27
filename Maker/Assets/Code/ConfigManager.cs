@@ -32,8 +32,8 @@ public class ConfigManager : MonoBehaviour
         string newTwinNameFromInput = GetTwinNameFromInput();
         if (CheckInputTwinName(newTwinNameFromInput))
         {
-            Text origin = inputField.GetComponent<Text>();
-            dataPersistenceManager.saveAsConfig(origin.text);
+            //Text origin = inputField.GetComponent<Text>();
+            dataPersistenceManager.saveAsConfig(newTwinNameFromInput);
             inputField.transform.parent.gameObject.GetComponent<InputField>().text = "TwinName";
             //textbox should be cleared
             dataPersistenceManager.SaveConfig();
