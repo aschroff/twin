@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 241940ec5cbe3e741a8c67c7dc12cf0f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5381b5d6d58e24defb6cf3647a6526e8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -198,7 +198,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 870f55e03b830874490a495f7543782b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3df6c6a2033704240bb0f48b9e76895c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -339,7 +339,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   link:
     name: 
-    positionCamera: {x: 0, y: 0, z: 0}
+    positionCamera_x: 0
+    positionCamera_y: 0
+    positionCamera_z: 0
     sizeCamera: 0
     pitch: 0
     yaw: 0
