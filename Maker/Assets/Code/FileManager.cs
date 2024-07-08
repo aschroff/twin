@@ -52,7 +52,7 @@ public class FileManager : MonoBehaviour
         Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
         text.text = entry.Key;
         Text currentDate = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
-        currentDate.text = DateTime.Now.ToString("dddd, dd MMM yyyy H:m");  
+        currentDate.text = DateTime.Now.ToString("dddd, dd MMM yyyy H:mm");  
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
         Button buttonSelect = configData.transform.Find("Select").GetComponentInChildren<Button>();
         if (dataManager.selectedProfileId == entry.Key)
