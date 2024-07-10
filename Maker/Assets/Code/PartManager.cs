@@ -323,7 +323,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		listening = oldListening;
 		Debug.Log("Refreshed");
 	}
-	public void deleteGroup(GroupData groupData)
+	public GroupData deleteGroup(GroupData groupData)
 	{
 		Debug.Log("Removing group: " + groupData.id);
 		string id = groupData.id;
@@ -340,6 +340,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		groupData.group = null;
 		groups.Remove(groupData);
 		Debug.Log("Removed group: " + id);
+		return CurrentGroup;
 	}
 	public void deletePart(PartData partData)
 	{
