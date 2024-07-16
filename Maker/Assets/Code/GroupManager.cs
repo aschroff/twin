@@ -87,26 +87,24 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     public void DeleteGroup(PartManager.GroupData groupdata, GameObject gameobjectGroup)
     {
         groupdata.group.persistent = false;
-        PartManager.GroupData group = partmanager.deleteGroup(groupdata); 
+        partmanager.deleteGroup(groupdata); 
      
         Text currentGroupText = null; 
         foreach (GameObject currentGroupTextGameObject in GameObject.FindGameObjectsWithTag("CurrentGroup"))
         {
             currentGroupText = currentGroupTextGameObject.GetComponent<Text>();
+
+            if(partmanager.currentGroup == null) //no group is currently selected
+            {
+                currentGroupText.text = "<no group>";
+            }
+            else //if group is selected, set current group name in overview 
+            {
+                currentGroupText.text = partmanager.currentGroup.name;
+            }
         }
 
-        if(currentGroupText == null)
-        {
-            Debug.Log("Current Group Object couldn't be found");
-        }
-         else if (group == null) //no group is currently selected
-        {
-            currentGroupText.text = "<no group>";
-        } else //if group is selected, set current group name in overview 
-        {
-            currentGroupText.text = partmanager.currentGroup.name;
-        }
-
+        
         //gameobjectGroup.SetActive(false);
         Destroy(gameobjectGroup);
         this.Refresh();
