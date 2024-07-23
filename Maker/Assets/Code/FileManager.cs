@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using Lean.Transition;
 using UnityEngine.UI;
+using System;
 
 public class FileManager : MonoBehaviour
 {
@@ -50,6 +51,8 @@ public class FileManager : MonoBehaviour
         configData.transform.localScale = prefab.transform.localScale;
         Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
         text.text = entry.Key;
+        Text currentDate = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
+        currentDate.text = DateTime.Now.ToString("dddd, dd MMM yyyy H:mm");  
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
         Button buttonSelect = configData.transform.Find("Select").GetComponentInChildren<Button>();
         if (dataManager.selectedProfileId == entry.Key)
