@@ -19,7 +19,7 @@ public class FileManager : MonoBehaviour
     {
         Create();
     }
-    
+
 
     public void Refresh()
     {
@@ -53,18 +53,20 @@ public class FileManager : MonoBehaviour
         Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
         text.text = entry.Key;
         Text currentDate = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
-        currentDate.text = DateTime.Now.ToString("dddd, dd MMM yyyy H:mm");  
+        currentDate.text = DateTime.Now.ToString("ddd, dd'.'MM'.'yy H:mm");
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
         Button buttonSelect = configData.transform.Find("Select").GetComponentInChildren<Button>();
+        Button buttonDetail = configData.transform.Find("DetailsMode").GetComponentInChildren<Button>();
         if (dataManager.selectedProfileId == entry.Key)
-        {            
-            buttonDelete.interactable = false ;
-            buttonSelect.interactable = false ;
+        {
+            buttonDelete.interactable = false;
+            buttonSelect.interactable = false;
         }
         else
         {
             buttonDelete.onClick.AddListener(() => { Remove(entry.Key); });
             buttonSelect.onClick.AddListener(() => { Select(entry.Key); });
+            buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
         }
 
         return entry.Value;
@@ -74,7 +76,7 @@ public class FileManager : MonoBehaviour
     {
         dataManager.ChangeSelectedProfileId(profile);
         Refresh();
-       }
+    }
 
     private void Remove(string profile)
     {
@@ -83,10 +85,15 @@ public class FileManager : MonoBehaviour
         inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
     }
 
-    private void AssignToggleGroup(GameObject PrefabInstance) {
+    private void AssignToggleGroup(GameObject PrefabInstance)
+    {
         ToggleGroup toggleGroup = this.gameObject.GetComponent<ToggleGroup>();
         Toggle singleToggle = PrefabInstance.GetComponentInChildren<Toggle>();
         singleToggle.group = toggleGroup;
+    }
 
+    private void Detail(string profile)
+    {
+        InteractionController.EnableMode("Version");
     }
 }
