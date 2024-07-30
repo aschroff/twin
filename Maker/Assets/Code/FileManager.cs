@@ -47,6 +47,7 @@ public class FileManager : MonoBehaviour
     public ConfigData createConfigEntry(KeyValuePair<string, ConfigData> entry)
     {
         GameObject configData = Instantiate(prefab);
+        AssignToggleGroup(configData);
         configData.transform.SetParent(this.transform, false);
         configData.transform.localScale = prefab.transform.localScale;
         Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
@@ -80,5 +81,12 @@ public class FileManager : MonoBehaviour
         dataManager.DeleteProfileData(profile);
         Refresh();
         inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
+    }
+
+    private void AssignToggleGroup(GameObject PrefabInstance) {
+        ToggleGroup toggleGroup = this.gameObject.GetComponent<ToggleGroup>();
+        Toggle singleToggle = PrefabInstance.GetComponentInChildren<Toggle>();
+        singleToggle.group = toggleGroup;
+
     }
 }
