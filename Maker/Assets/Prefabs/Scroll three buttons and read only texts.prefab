@@ -1153,6 +1153,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5749282961008835991, guid: bffeefd40f2c44ff787f41d1d88b8690, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749282961008835991, guid: bffeefd40f2c44ff787f41d1d88b8690, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749282961008835991, guid: bffeefd40f2c44ff787f41d1d88b8690, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11500000, guid: a43c513eda07bf94db46b159ebbc8b51, type: 3}
+    - target: {fileID: 5749282961008835991, guid: bffeefd40f2c44ff787f41d1d88b8690, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749282961008835991, guid: bffeefd40f2c44ff787f41d1d88b8690, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEditor.MonoScript, UnityEditor.CoreModule
+      objectReference: {fileID: 0}
     - target: {fileID: 8443360486079154860, guid: bffeefd40f2c44ff787f41d1d88b8690, type: 3}
       propertyPath: m_Name
       value: SingleToggle
