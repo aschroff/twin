@@ -55,6 +55,7 @@ public class FileManager : MonoBehaviour
         currentDate.text = DateTime.Now.ToString("ddd, dd'.'MM'.'yy H:mm");  
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
         Button buttonSelect = configData.transform.Find("Select").GetComponentInChildren<Button>();
+        Button buttonDetail = configData.transform.Find("DetailsMode").GetComponentInChildren<Button>();
         if (dataManager.selectedProfileId == entry.Key)
         {            
             buttonDelete.interactable = false ;
@@ -64,6 +65,7 @@ public class FileManager : MonoBehaviour
         {
             buttonDelete.onClick.AddListener(() => { Remove(entry.Key); });
             buttonSelect.onClick.AddListener(() => { Select(entry.Key); });
+            buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
         }
 
         return entry.Value;
@@ -80,5 +82,10 @@ public class FileManager : MonoBehaviour
         dataManager.DeleteProfileData(profile);
         Refresh();
         inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
+    }
+    
+    private void Detail(string profile)
+    {
+        InteractionController.EnableMode("Version");
     }
 }
