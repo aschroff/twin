@@ -88,6 +88,14 @@ public class FileDataHandler
         }
 
         // use Path.Combine to account for different OS's having different path separators
+        if ((data.version != "") && (dataFileName.Contains('.') == false))
+        {
+            dataFileName = dataFileName + "." + data.version;
+        }
+        else if ((data.version != "") && (dataFileName.Contains('.')))
+        {
+            dataFileName = dataFileName.Remove(dataFileName.LastIndexOf(".")) + "." + data.version;
+        }
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
         string backupFilePath = fullPath + backupExtension;
         try 

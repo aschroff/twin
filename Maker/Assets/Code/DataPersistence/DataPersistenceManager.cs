@@ -95,15 +95,15 @@ public class DataPersistenceManager : MonoBehaviour
         this.selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId();
     }
 
-    public void NewConfig() 
+    public void NewConfig(string modelName, string modelVersion = "") 
     {
-        this.configData = new ConfigData();
+        this.configData = new ConfigData(modelName, modelVersion);
     }
     
     public void createNewConfig(String newProfile) 
     {
         SaveConfig();
-        NewConfig();
+        NewConfig(newProfile, "000");
         selectedProfileId = newProfile;
         LoadConfig();
     }
@@ -131,7 +131,7 @@ public class DataPersistenceManager : MonoBehaviour
             DeleteProfileData(profile.Key);
 
         }
-        NewConfig();
+        NewConfig("default", "000");
         selectedProfileId = "default";
         LoadConfig();
         SaveConfig();
@@ -151,7 +151,7 @@ public class DataPersistenceManager : MonoBehaviour
         // start a new game if the data is null and we're configured to initialize data for debugging purposes
         if (this.configData == null && initializeDataIfNull) 
         {
-            NewConfig();
+            NewConfig("empty", "000");
         }
 
         // if no data can be loaded, don't continue
@@ -199,6 +199,8 @@ public class DataPersistenceManager : MonoBehaviour
 
         // timestamp the data so we know when it was last saved
         configData.lastUpdated = System.DateTime.Now.ToBinary();
+        //SHould be filled, only for migration purpose
+        configData.name = selectedProfileId;
 
         // save that data to a file using the data handler
         dataHandler.Save(configData, selectedProfileId);

@@ -17,8 +17,10 @@ public class ConfigData
     public float pitch;
     public Vector3 positionCamera;
     public float sizeCamera;
+    public string name;
+    public string version;
 
-    public ConfigData() 
+    public ConfigData(string modelName, string modelVersion = "")
     {
         itemTexts = new SerializableDictionary<string, string>();
         groupList = new List<string>();
@@ -28,8 +30,10 @@ public class ConfigData
         commandDetails = "";
         views = "";
         yaw = 0.0f;
-        pitch= 0.0f;
+        pitch = 0.0f;
         positionCamera = new Vector3(x: 0.0f, y: 0.5f, z: 1.0f);
         sizeCamera = 2.0f;
+        version = modelVersion;
+        name = modelName;
     }
 }
