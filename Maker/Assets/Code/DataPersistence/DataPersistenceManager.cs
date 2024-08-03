@@ -232,7 +232,23 @@ public class DataPersistenceManager : MonoBehaviour
     {
         return dataHandler.LoadAllProfiles();
     }
+    public Dictionary<string, ConfigData> GetAllProfileNamesGameData() 
+    {
+        Dictionary<string, ConfigData> profiles =  dataHandler.LoadAllProfiles();
+        Dictionary<string, ConfigData> profileDictionary = new Dictionary<string, ConfigData>();
+        foreach (KeyValuePair<string, ConfigData> profile in profiles)
+        {
+            if (profileDictionary.ContainsKey(profile.Value.name))
+            {
+                continue;
+            }
+            profileDictionary.Add(profile.Value.name, profile.Value);
+        }
 
+        return profileDictionary;
+    }
+    
+    
     private IEnumerator AutoSave() 
     {
         while (true) 

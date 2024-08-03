@@ -29,7 +29,7 @@ public class FileManager : MonoBehaviour
 
     private void Create()
     {
-        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
+        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfileNamesGameData())
         {
             createConfigEntry(entry);
         }
@@ -73,7 +73,14 @@ public class FileManager : MonoBehaviour
 
     private void Select(string profile)
     {
-        dataManager.ChangeSelectedProfileId(profile);
+        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfileNamesGameData())
+        {
+            if (entry.Key == profile)
+            {
+                dataManager.ChangeSelectedProfileId(profile+"."+entry.Value.version);
+                break;
+            }
+        }
         Refresh();
        }
 
