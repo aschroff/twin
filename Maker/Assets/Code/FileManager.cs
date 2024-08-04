@@ -51,7 +51,11 @@ public class FileManager : MonoBehaviour
         configData.transform.SetParent(this.transform, false);
         configData.transform.localScale = prefab.transform.localScale;
         Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
-        text.text = entry.Key;
+        text.text = entry.Value.name;
+        Text version = configData.transform.Find("Version").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
+        version.text = entry.Value.version;
+        Text date = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
+        date.text = entry.Value.lastUpdated.ToString();
         Text currentDate = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
         currentDate.text = DateTime.Now.ToString("ddd, dd'.'MM'.'yy H:mm");  
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
