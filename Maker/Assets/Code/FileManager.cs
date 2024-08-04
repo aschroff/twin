@@ -65,19 +65,26 @@ public class FileManager : MonoBehaviour
         date.text = entry.Value.updated;
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
         Button buttonSelect = configData.transform.Find("Select").GetComponentInChildren<Button>();
+        Button buttonUnselect = configData.transform.Find("Unselect").GetComponentInChildren<Button>();
         Button buttonDetail = configData.transform.Find("DetailsMode").GetComponentInChildren<Button>();
-        if (dataManager.selectedProfileId == entry.Key)
+        if (dataManager.selectedProfileId == entry.Value.name+"."+entry.Value.version)
         {            
             buttonDelete.interactable = false ;
-            buttonSelect.interactable = false ;
+            buttonSelect.gameObject.SetActive(true);
+            buttonSelect.interactable = false;
+            buttonUnselect.gameObject.SetActive(false);
+            buttonUnselect.interactable = false;
         }
         else
         {
             buttonDelete.onClick.AddListener(() => { Remove(entry.Key); });
-            buttonSelect.onClick.AddListener(() => { Select(entry.Value.name,entry.Value.version); });
-            buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
+            buttonSelect.gameObject.SetActive(false);
+            buttonSelect.interactable = false;
+            buttonUnselect.gameObject.SetActive(true);
+            buttonUnselect.interactable = true;
+            buttonUnselect.onClick.AddListener(() => { Select(entry.Value.name,entry.Value.version); });
         }
-
+        buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
         buttonDetail.gameObject.SetActive(GetVersionButton());
         
         return entry.Value;
