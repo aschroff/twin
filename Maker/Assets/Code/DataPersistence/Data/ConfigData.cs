@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,7 @@ public class ConfigData
     public float sizeCamera;
     public string name;
     public string version;
+    public string updated;
 
     public ConfigData(string modelName, string modelVersion = "")
     {
@@ -35,5 +37,6 @@ public class ConfigData
         sizeCamera = 2.0f;
         version = modelVersion;
         name = modelName;
+        updated = new DateTime(1969, 4,25, 10,10,00).ToString();
     }
 }

@@ -15,6 +15,13 @@ public class FileManager : MonoBehaviour
     private Dictionary<string, string> profiles = new Dictionary<string, string>();
     [SerializeField] public GameObject inputFieldVersion;
 
+    protected virtual bool GetVersionButton()
+    {
+        return true;
+    } 
+    
+    
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -55,9 +62,7 @@ public class FileManager : MonoBehaviour
         Text version = configData.transform.Find("Version").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
         version.text = entry.Value.version;
         Text date = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
-        date.text = entry.Value.lastUpdated.ToString();
-        Text currentDate = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
-        currentDate.text = DateTime.Now.ToString("ddd, dd'.'MM'.'yy H:mm");  
+        date.text = entry.Value.updated;
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
         Button buttonSelect = configData.transform.Find("Select").GetComponentInChildren<Button>();
         Button buttonDetail = configData.transform.Find("DetailsMode").GetComponentInChildren<Button>();
@@ -69,10 +74,12 @@ public class FileManager : MonoBehaviour
         else
         {
             buttonDelete.onClick.AddListener(() => { Remove(entry.Key); });
-            buttonSelect.onClick.AddListener(() => { Select(entry.Key); });
+            buttonSelect.onClick.AddListener(() => { Select(entry.Value.name,entry.Value.version); });
             buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
         }
 
+        buttonDetail.gameObject.SetActive(GetVersionButton());
+        
         return entry.Value;
     }
 
@@ -81,13 +88,13 @@ public class FileManager : MonoBehaviour
         return dataManager.GetAllProfileNamesGameData();
     }
     
-    private void Select(string profile)
+    private void Select(string profile, string version = "")
     {
-        foreach (KeyValuePair<string, ConfigData> entry in GetProfilesGameData())
+        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
         {
-            if (entry.Key == profile)
+            if (entry.Key == profile+"."+version)
             {
-                dataManager.ChangeSelectedProfileId(profile+"."+entry.Value.version);
+                dataManager.ChangeSelectedProfileId(profile+"."+version);
                 break;
             }
         }

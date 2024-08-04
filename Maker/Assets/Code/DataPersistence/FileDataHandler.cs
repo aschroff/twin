@@ -96,6 +96,7 @@ public class FileDataHandler
         {
             profileId = profileId.Remove(profileId.LastIndexOf(".")) + "." + data.version;
         }
+        data.updated = DateTime.Now.ToString();
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
         string backupFilePath = fullPath + backupExtension;
         try 
