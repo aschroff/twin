@@ -13,6 +13,7 @@ public class FileManager : MonoBehaviour
     [SerializeField] public DataPersistenceManager dataManager;
     [SerializeField] public GameObject inputFieldName;
     private Dictionary<string, string> profiles = new Dictionary<string, string>();
+    [SerializeField] public GameObject inputFieldVersion;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +30,7 @@ public class FileManager : MonoBehaviour
 
     private void Create()
     {
-        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfileNamesGameData())
+        foreach (KeyValuePair<string, ConfigData> entry in GetProfilesGameData())
         {
             createConfigEntry(entry);
         }
@@ -71,9 +72,14 @@ public class FileManager : MonoBehaviour
         return entry.Value;
     }
 
+    public virtual Dictionary<string, ConfigData> GetProfilesGameData()
+    {
+        return dataManager.GetAllProfileNamesGameData();
+    }
+    
     private void Select(string profile)
     {
-        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfileNamesGameData())
+        foreach (KeyValuePair<string, ConfigData> entry in GetProfilesGameData())
         {
             if (entry.Key == profile)
             {

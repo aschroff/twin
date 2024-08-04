@@ -248,6 +248,21 @@ public class DataPersistenceManager : MonoBehaviour
         return profileDictionary;
     }
     
+    public Dictionary<string, ConfigData> GetAllVersionsGameData(string name) 
+    {
+        Dictionary<string, ConfigData> profiles =  dataHandler.LoadAllProfiles();
+        Dictionary<string, ConfigData> profileDictionary = new Dictionary<string, ConfigData>();
+        foreach (KeyValuePair<string, ConfigData> profile in profiles)
+        {
+            if (profile.Value.name == name)
+            {
+                profileDictionary.Add(profile.Value.version, profile.Value);
+            }
+        }
+
+        return profileDictionary;
+    }
+          
     
     private IEnumerator AutoSave() 
     {

@@ -16751,6 +16751,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1809025566}
   m_CullTransparentMesh: 1
+--- !u!1 &1811997042 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9083258261300487937, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+  m_PrefabInstance: {fileID: 5013475286739239983}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1815948850 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1150721589122173839, guid: 92d8282992a504584b36ed89854a7b54, type: 3}
@@ -23995,6 +24000,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -50
       objectReference: {fileID: 0}
+    - target: {fileID: 1872758145371113348, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+      propertyPath: prefab
+      value: 
+      objectReference: {fileID: 2063955909530756666, guid: d58b8466f0d984dcda6dbce2ecee27f3, type: 3}
+    - target: {fileID: 1872758145371113348, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+      propertyPath: dataManager
+      value: 
+      objectReference: {fileID: 609004393}
+    - target: {fileID: 1872758145371113348, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+      propertyPath: inputFieldName
+      value: 
+      objectReference: {fileID: 1811997042}
+    - target: {fileID: 1872758145371113348, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+      propertyPath: inputFieldVersion
+      value: 
+      objectReference: {fileID: 5013475286739239984}
     - target: {fileID: 2287511724039325846, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: dataPersistenceManager
       value: 
@@ -24163,6 +24184,10 @@ PrefabInstance:
       propertyPath: dataManager
       value: 
       objectReference: {fileID: 609004393}
+    - target: {fileID: 5037554182192162691, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 95.23364
+      objectReference: {fileID: 0}
     - target: {fileID: 5570546650419907792, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -24264,6 +24289,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+--- !u!1 &5013475286739239984 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5860135872191314461, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+  m_PrefabInstance: {fileID: 5013475286739239983}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5071467484895378518
 MonoBehaviour:
   m_ObjectHideFlags: 0
