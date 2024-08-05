@@ -88,6 +88,15 @@ public class FileDataHandler
         }
 
         // use Path.Combine to account for different OS's having different path separators
+        if ((data.version != "") && (profileId.Contains('.') == false))
+        {
+            profileId = profileId + "." + data.version;
+        }
+        else if ((data.version != "") && ( profileId.Contains('.')))
+        {
+            profileId = profileId.Remove(profileId.LastIndexOf(".")) + "." + data.version;
+        }
+        data.updated = DateTime.Now.ToString();
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
         string backupFilePath = fullPath + backupExtension;
         try 
@@ -201,7 +210,7 @@ public class FileDataHandler
 
     public string GetMostRecentlyUpdatedProfileId() 
     {
-        string mostRecentProfileId = "default";
+        string mostRecentProfileId = "default.000";
 
         Dictionary<string, ConfigData> profilesGameData = LoadAllProfiles();
         foreach (KeyValuePair<string, ConfigData> pair in profilesGameData) 

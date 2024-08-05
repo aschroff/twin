@@ -13,7 +13,16 @@ public class FileManager : MonoBehaviour
     [SerializeField] public DataPersistenceManager dataManager;
     [SerializeField] public GameObject inputFieldName;
     private Dictionary<string, string> profiles = new Dictionary<string, string>();
+    [SerializeField] public GameObject inputFieldVersion;
+    public string versionProfile;
 
+    protected virtual bool GetVersionButton()
+    {
+        return true;
+    } 
+    
+    
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -29,7 +38,7 @@ public class FileManager : MonoBehaviour
 
     private void Create()
     {
-        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
+        foreach (KeyValuePair<string, ConfigData> entry in GetProfilesGameData())
         {
             createConfigEntry(entry);
         }
@@ -50,30 +59,55 @@ public class FileManager : MonoBehaviour
         configData.transform.SetParent(this.transform, false);
         configData.transform.localScale = prefab.transform.localScale;
         Text text = configData.transform.Find("Name").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
-        text.text = entry.Key;
-        Text currentDate = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
-        currentDate.text = DateTime.Now.ToString("ddd, dd'.'MM'.'yy H:mm");  
+        text.text = entry.Value.name;
+        Text version = configData.transform.Find("Version").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
+        version.text = entry.Value.version;
+        Text date = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
+        date.text = entry.Value.updated;
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
         Button buttonSelect = configData.transform.Find("Select").GetComponentInChildren<Button>();
+        Button buttonUnselect = configData.transform.Find("Unselect").GetComponentInChildren<Button>();
         Button buttonDetail = configData.transform.Find("DetailsMode").GetComponentInChildren<Button>();
-        if (dataManager.selectedProfileId == entry.Key)
+        if (dataManager.selectedProfileId == entry.Value.name+"."+entry.Value.version)
         {            
             buttonDelete.interactable = false ;
-            buttonSelect.interactable = false ;
+            buttonSelect.gameObject.SetActive(true);
+            buttonSelect.interactable = false;
+            buttonUnselect.gameObject.SetActive(false);
+            buttonUnselect.interactable = false;
+
         }
         else
         {
             buttonDelete.onClick.AddListener(() => { Remove(entry.Key); });
-            buttonSelect.onClick.AddListener(() => { Select(entry.Key); });
-            buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
+            buttonSelect.gameObject.SetActive(false);
+            buttonSelect.interactable = false;
+            buttonUnselect.gameObject.SetActive(true);
+            buttonUnselect.interactable = true;
+            buttonUnselect.onClick.AddListener(() => { Select(entry.Value.name,entry.Value.version); });
         }
-
+        buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
+        buttonDetail.gameObject.SetActive(GetVersionButton());
+        
+        
         return entry.Value;
     }
 
-    private void Select(string profile)
+    public virtual Dictionary<string, ConfigData> GetProfilesGameData()
     {
-        dataManager.ChangeSelectedProfileId(profile);
+        return dataManager.GetAllProfileNamesGameData();
+    }
+    
+    private void Select(string profile, string version = "")
+    {
+        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
+        {
+            if (entry.Key == profile+"."+version)
+            {
+                dataManager.ChangeSelectedProfileId(profile+"."+version);
+                break;
+            }
+        }
         Refresh();
        }
 
@@ -86,6 +120,7 @@ public class FileManager : MonoBehaviour
     
     private void Detail(string profile)
     {
+        versionProfile = profile;
         InteractionController.EnableMode("Version");
     }
 }

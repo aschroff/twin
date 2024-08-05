@@ -95,15 +95,28 @@ public class DataPersistenceManager : MonoBehaviour
         this.selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId();
     }
 
-    public void NewConfig() 
+    public void NewConfig(string modelName, string modelVersion = "") 
     {
-        this.configData = new ConfigData();
+        this.configData = new ConfigData(modelName, modelVersion);
     }
     
-    public void createNewConfig(String newProfile) 
+    public void createNewConfig(String newProfile)
     {
+        string version = "";
+        string name = "";
         SaveConfig();
-        NewConfig();
+        if ((newProfile.Contains('.') == false))
+        {
+            version = "000";
+            name = newProfile;
+            newProfile = newProfile + "." + version;
+        }
+        else 
+        {
+            version = newProfile.Split('.').Last();
+            name = newProfile.Remove(newProfile.LastIndexOf(".")) ;
+        }
+        NewConfig(name, version);
         selectedProfileId = newProfile;
         LoadConfig();
     }
@@ -131,7 +144,7 @@ public class DataPersistenceManager : MonoBehaviour
             DeleteProfileData(profile.Key);
 
         }
-        NewConfig();
+        NewConfig("default", "000");
         selectedProfileId = "default";
         LoadConfig();
         SaveConfig();
@@ -151,7 +164,7 @@ public class DataPersistenceManager : MonoBehaviour
         // start a new game if the data is null and we're configured to initialize data for debugging purposes
         if (this.configData == null && initializeDataIfNull) 
         {
-            NewConfig();
+            NewConfig(selectedProfileId, "000");
         }
 
         // if no data can be loaded, don't continue
@@ -160,6 +173,8 @@ public class DataPersistenceManager : MonoBehaviour
             Debug.Log("No data was found. A New Game needs to be started before data can be loaded.");
             return;
         }
+        this.configData.version = selectedProfileId.Split('.').Last();
+        this.configData.name = selectedProfileId.Remove(selectedProfileId.LastIndexOf(".")) ;
 
         // push the loaded data to all other scripts that need it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
@@ -200,6 +215,7 @@ public class DataPersistenceManager : MonoBehaviour
         // timestamp the data so we know when it was last saved
         configData.lastUpdated = System.DateTime.Now.ToBinary();
 
+
         // save that data to a file using the data handler
         dataHandler.Save(configData, selectedProfileId);
     }
@@ -230,7 +246,38 @@ public class DataPersistenceManager : MonoBehaviour
     {
         return dataHandler.LoadAllProfiles();
     }
+    public Dictionary<string, ConfigData> GetAllProfileNamesGameData() 
+    {
+        Dictionary<string, ConfigData> profiles =  dataHandler.LoadAllProfiles();
+        Dictionary<string, ConfigData> profileDictionary = new Dictionary<string, ConfigData>();
+        foreach (KeyValuePair<string, ConfigData> profile in profiles)
+        {
+            if (profileDictionary.ContainsKey(profile.Value.name))
+            {
+                continue;
+            }
+            profileDictionary.Add(profile.Value.name, profile.Value);
+        }
 
+        return profileDictionary;
+    }
+    
+    public Dictionary<string, ConfigData> GetAllVersionsGameData(string name) 
+    {
+        Dictionary<string, ConfigData> profiles =  dataHandler.LoadAllProfiles();
+        Dictionary<string, ConfigData> profileDictionary = new Dictionary<string, ConfigData>();
+        foreach (KeyValuePair<string, ConfigData> profile in profiles)
+        {
+            if (profile.Value.name == name)
+            {
+                profileDictionary.Add(profile.Value.version, profile.Value);
+            }
+        }
+
+        return profileDictionary;
+    }
+          
+    
     private IEnumerator AutoSave() 
     {
         while (true) 
