@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class VersionManager : FileManager
 {
-    
+    [SerializeField] public FileManager fileManager;
     protected override bool GetVersionButton()
     {
         return false;
     } 
     private string GetProfile()
     {
-        string name = dataManager.selectedProfileId;
+        string name = fileManager.versionProfile;
         if ( name.Contains('.'))
         {
             name = name.Remove(name.LastIndexOf("."));

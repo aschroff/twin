@@ -14,6 +14,7 @@ public class FileManager : MonoBehaviour
     [SerializeField] public GameObject inputFieldName;
     private Dictionary<string, string> profiles = new Dictionary<string, string>();
     [SerializeField] public GameObject inputFieldVersion;
+    public string versionProfile;
 
     protected virtual bool GetVersionButton()
     {
@@ -74,6 +75,7 @@ public class FileManager : MonoBehaviour
             buttonSelect.interactable = false;
             buttonUnselect.gameObject.SetActive(false);
             buttonUnselect.interactable = false;
+
         }
         else
         {
@@ -86,6 +88,7 @@ public class FileManager : MonoBehaviour
         }
         buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
         buttonDetail.gameObject.SetActive(GetVersionButton());
+        
         
         return entry.Value;
     }
@@ -117,6 +120,7 @@ public class FileManager : MonoBehaviour
     
     private void Detail(string profile)
     {
+        versionProfile = profile;
         InteractionController.EnableMode("Version");
     }
 }

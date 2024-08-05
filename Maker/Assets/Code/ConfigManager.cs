@@ -9,6 +9,7 @@ public class ConfigManager : MonoBehaviour
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
     [SerializeField] private FileManager fileManager;
     [SerializeField] private GameObject inputField;
+    [SerializeField] private GameObject inputFieldVersion;
 
     /*
      * This methode is responsible, if the button newConfig is pressed in Twin Mode.
@@ -60,19 +61,44 @@ public class ConfigManager : MonoBehaviour
         InteractionController.EnableMode("Main");
     }
 
-    private string GetTwinNameFromInput() {
-        Transform Text = inputField.transform.Find("Text");
-        Text origin = Text.GetComponent<Text>();
-        Debug.Log("Text from Input: " + origin.text.ToString() + ".");//delete after Testing
+    private string GetTwinNameFromInput()
+    {
+        Transform textName = null;
+        Text originName = null;
+        Transform textVersion = null;
+        Text originVersion = null;
+        string twinName = "";
+        if (inputField == null) {
+            Debug.Log("InputField is null");
+        }
+        else
+        {
+            textName = inputField.transform.Find("Text");
+            originName = textName.GetComponent<Text>();
+            twinName = originName.text.ToString();
 
-        return origin.text.ToString();
+                        Debug.Log("Name from Input: " + originName.text.ToString() + ".");
+        }
+
+        if (inputFieldVersion == null)
+        {
+            twinName += "." + "000";
+        }
+        else
+        {
+            textVersion = inputFieldVersion.transform.Find("Text");
+            originVersion = textVersion.GetComponent<Text>();
+            twinName += "." + originVersion.text.ToString();
+            Debug.Log("Version from Input: " + originVersion.text.ToString() + ".");
+        }
+        return twinName;
     }
 
     private bool CheckInputTwinName(string inputForTwinName) {
         // Here I want to acces the the component from the input field
         // this component twinNameValidator 
         TwinNameValidator nameValidator = inputField.GetComponent<TwinNameValidator>();
-        return nameValidator.CheckInput(inputForTwinName);
+        return true; //nameValidator.CheckInput(inputForTwinName);
     }
 
 }

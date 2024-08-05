@@ -100,10 +100,23 @@ public class DataPersistenceManager : MonoBehaviour
         this.configData = new ConfigData(modelName, modelVersion);
     }
     
-    public void createNewConfig(String newProfile) 
+    public void createNewConfig(String newProfile)
     {
+        string version = "";
+        string name = "";
         SaveConfig();
-        NewConfig(newProfile, "000");
+        if ((newProfile.Contains('.') == false))
+        {
+            version = "000";
+            name = newProfile;
+            newProfile = newProfile + "." + version;
+        }
+        else 
+        {
+            version = newProfile.Split('.').Last();
+            name = newProfile.Remove(newProfile.LastIndexOf(".")) ;
+        }
+        NewConfig(name, version);
         selectedProfileId = newProfile;
         LoadConfig();
     }
@@ -160,6 +173,8 @@ public class DataPersistenceManager : MonoBehaviour
             Debug.Log("No data was found. A New Game needs to be started before data can be loaded.");
             return;
         }
+        this.configData.version = selectedProfileId.Split('.').Last();
+        this.configData.name = selectedProfileId.Remove(selectedProfileId.LastIndexOf(".")) ;
 
         // push the loaded data to all other scripts that need it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
