@@ -55,25 +55,29 @@ public class FileManager : MonoBehaviour
         Text currentDate = configData.transform.Find("Date").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
         currentDate.text = DateTime.Now.ToString("ddd, dd'.'MM'.'yy H:mm");
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
-        Button buttonSelect = configData.transform.Find("Select").GetComponentInChildren<Button>();
+        Toggle toggleSelect = configData.transform.Find("SingleToggle").GetComponentInChildren<Toggle>();
         Button buttonDetail = configData.transform.Find("DetailsMode").GetComponentInChildren<Button>();
         if (dataManager.selectedProfileId == entry.Key)
         {
             buttonDelete.interactable = false;
-            buttonSelect.interactable = false;
+            //toggleSelect.isOn = false;
+            //Debug.Log(entry.Key + "is now disabled!");
+
         }
         else
         {
             buttonDelete.onClick.AddListener(() => { Remove(entry.Key); });
-            buttonSelect.onClick.AddListener(() => { Select(entry.Key); });
+            toggleSelect.onValueChanged.AddListener((isOn) => { if (isOn) Select(entry.Key); });
+            //toggleSelect.isOn = true;
             buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
+            //Debug.Log(entry.Key + "is now enabeld!");
         }
 
         return entry.Value;
     }
 
     private void Select(string profile)
-    {
+    {        
         dataManager.ChangeSelectedProfileId(profile);
         Refresh();
     }
