@@ -43,6 +43,7 @@ public class FileManager : MonoBehaviour
             Destroy(childTransform.gameObject);
         }
     }
+    private Dictionary<Toggle, string> toggleEntryMap = new Dictionary<Toggle, string>();
 
     public ConfigData createConfigEntry(KeyValuePair<string, ConfigData> entry)
     {
@@ -57,10 +58,13 @@ public class FileManager : MonoBehaviour
         Button buttonDelete = configData.transform.Find("Delete").GetComponentInChildren<Button>();
         Toggle toggleSelect = configData.transform.Find("SingleToggle").GetComponentInChildren<Toggle>();
         Button buttonDetail = configData.transform.Find("DetailsMode").GetComponentInChildren<Button>();
+        
+        toggleEntryMap[toggleSelect] = entry.Key;
+        
         if (dataManager.selectedProfileId == entry.Key)
         {
             buttonDelete.interactable = false;
-            //toggleSelect.isOn = false;
+            toggleSelect.isOn = true;
             //Debug.Log(entry.Key + "is now disabled!");
 
         }
@@ -76,10 +80,21 @@ public class FileManager : MonoBehaviour
         return entry.Value;
     }
 
+   
+
     private void Select(string profile)
     {        
         dataManager.ChangeSelectedProfileId(profile);
+        UpdateToggleStates();
         Refresh();
+    }
+
+ private void UpdateToggleStates()
+    {
+        foreach (var kvp in toggleEntryMap)
+        {
+            kvp.Key.isOn = kvp.Value == dataManager.selectedProfileId;
+        }
     }
 
     private void Remove(string profile)
