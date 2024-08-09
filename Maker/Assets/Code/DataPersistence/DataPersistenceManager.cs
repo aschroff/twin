@@ -265,6 +265,7 @@ public class DataPersistenceManager : MonoBehaviour
             profileDictionary.Add(profile.Value.name, profile.Value);
         }
 
+
         return profileDictionary;
     }
     
@@ -282,6 +283,7 @@ public class DataPersistenceManager : MonoBehaviour
 
         return profileDictionary;
     }
+
           
     
     private IEnumerator AutoSave() 

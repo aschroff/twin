@@ -103,12 +103,14 @@ public class FileManager : MonoBehaviour
     }
 
     public virtual Dictionary<string, ConfigData> GetProfilesGameData()
+
     {
         return dataManager.GetAllProfileNamesGameData();
     }
     
     private void Select(string profile, string version = "")
     {
+
         foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
         {
             if (entry.Key == profile+"."+version)
