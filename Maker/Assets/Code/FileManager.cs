@@ -21,7 +21,6 @@ public class FileManager : MonoBehaviour
         return true;
     } 
     
-
     void OnDisable()
     {
         Debug.Log("PrintOnDisable: script was disabled");
@@ -31,7 +30,6 @@ public class FileManager : MonoBehaviour
     {
         Refresh();
     }
-
 
     
     // Start is called before the first frame update
@@ -105,12 +103,14 @@ public class FileManager : MonoBehaviour
     }
 
     public virtual Dictionary<string, ConfigData> GetProfilesGameData()
+
     {
         return dataManager.GetAllProfileNamesGameData();
     }
     
     private void Select(string profile, string version = "")
     {
+
         foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
         {
             if (entry.Key == profile+"."+version)
