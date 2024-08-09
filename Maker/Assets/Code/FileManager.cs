@@ -21,6 +21,7 @@ public class FileManager : MonoBehaviour
         return true;
     } 
     
+
     void OnDisable()
     {
         Debug.Log("PrintOnDisable: script was disabled");
@@ -30,6 +31,7 @@ public class FileManager : MonoBehaviour
     {
         Refresh();
     }
+
 
     
     // Start is called before the first frame update
