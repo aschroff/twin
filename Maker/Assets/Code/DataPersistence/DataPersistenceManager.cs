@@ -138,16 +138,17 @@ public class DataPersistenceManager : MonoBehaviour
     
     public void ResetApp()
     {
-        selectedProfileId = "default-temp-for-deleting";
+        selectedProfileId = "default-temp-for-deleting.000";
         foreach (KeyValuePair<string, ConfigData> profile in GetAllProfilesGameData()  )
         {
             DeleteProfileData(profile.Key);
 
         }
         NewConfig("default", "000");
-        selectedProfileId = "default";
-        LoadConfig();
+        selectedProfileId = "default.000";
+        initPersistentObjects();
         SaveConfig();
+        
     }
     
     public void LoadConfig()
@@ -175,6 +176,11 @@ public class DataPersistenceManager : MonoBehaviour
         }
         this.configData.version = selectedProfileId.Split('.').Last();
         this.configData.name = selectedProfileId.Remove(selectedProfileId.LastIndexOf(".")) ;
+        initPersistentObjects();
+    }
+
+    private void initPersistentObjects()
+    {
 
         // push the loaded data to all other scripts that need it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
@@ -190,7 +196,7 @@ public class DataPersistenceManager : MonoBehaviour
             handleChange(dataPersistenceObj);
         }
     }
-
+    
     public void SaveConfig()
     {
         // return right away if data persistence is disabled
@@ -259,6 +265,7 @@ public class DataPersistenceManager : MonoBehaviour
             profileDictionary.Add(profile.Value.name, profile.Value);
         }
 
+
         return profileDictionary;
     }
     
@@ -276,6 +283,7 @@ public class DataPersistenceManager : MonoBehaviour
 
         return profileDictionary;
     }
+
           
     
     private IEnumerator AutoSave() 
