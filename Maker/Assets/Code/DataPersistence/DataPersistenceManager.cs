@@ -275,8 +275,12 @@ public class DataPersistenceManager : MonoBehaviour
         {
             if (profileDictionary.ContainsKey(profile.Value.name))
             {
+                if (profileDictionary[profile.Value.name].lastUpdated < profile.Value.lastUpdated)
+                {
+                    profileDictionary[profile.Value.name] = profile.Value;
+                }
                 continue;
-            }
+            } 
             profileDictionary.Add(profile.Value.name, profile.Value);
         }
 
