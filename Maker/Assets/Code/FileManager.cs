@@ -21,6 +21,11 @@ public class FileManager : MonoBehaviour
         return true;
     } 
     
+    public virtual string GetProfile()
+    {
+        return inputFieldName.transform.Find("Text").GetComponent<Text>().text.ToString();
+    }
+    
     void OnDisable()
     {
         Debug.Log("PrintOnDisable: script was disabled");

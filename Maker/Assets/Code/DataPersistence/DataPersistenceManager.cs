@@ -102,9 +102,9 @@ public class DataPersistenceManager : MonoBehaviour
     
     public void createNewConfig(String newProfile)
     {
+        SaveConfig();
         string version = "";
         string name = "";
-        SaveConfig();
         if ((newProfile.Contains('.') == false))
         {
             version = "000";
@@ -125,6 +125,21 @@ public class DataPersistenceManager : MonoBehaviour
     {
         SaveConfig();
         selectedProfileId = newProfile;
+        string version = "";
+        string name = "";
+        if ((newProfile.Contains('.') == false))
+        {
+            version = "000";
+            name = newProfile;
+            newProfile = newProfile + "." + version;
+        }
+        else 
+        {
+            version = newProfile.Split('.').Last();
+            name = newProfile.Remove(newProfile.LastIndexOf(".")) ;
+        }
+        this.configData.version = version;
+        this.configData.name = name;
         SaveConfig();
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {

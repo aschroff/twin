@@ -71,21 +71,17 @@ public class ConfigManager : MonoBehaviour
         if (inputField == null) {
             Debug.Log("InputField is null");
         }
-        else
+        else if (inputFieldVersion == null)
         {
             textName = inputField.transform.Find("Text");
             originName = textName.GetComponent<Text>();
             twinName = originName.text.ToString();
-
-                        Debug.Log("Name from Input: " + originName.text.ToString() + ".");
-        }
-
-        if (inputFieldVersion == null)
-        {
+            Debug.Log("Name only.Name from Input: " + twinName + ".");
             twinName += "." + "000";
         }
         else
         {
+            twinName = fileManager.GetProfile();
             textVersion = inputFieldVersion.transform.Find("Text");
             originVersion = textVersion.GetComponent<Text>();
             twinName += "." + originVersion.text.ToString();
