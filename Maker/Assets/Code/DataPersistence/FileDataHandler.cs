@@ -367,6 +367,7 @@ public class FileDataHandler
         {
             string profileId = dirInfo.Name;
             string fullPathSource = Path.Combine(templateDirPath, profileId, dataFileName);
+            string fullPathSourceDir = Path.Combine(templateDirPath, profileId);
             string fullPathTargetDir = Path.Combine(dataDirPath, profileId);
             string fullPathTarget = Path.Combine(dataDirPath, profileId, dataFileName);
             string dataToLoad = "";
@@ -379,6 +380,16 @@ public class FileDataHandler
             }
             Directory.CreateDirectory(fullPathTargetDir);
             System.IO.File.WriteAllText(fullPathTarget, dataToLoad);
+            DirectoryInfo dirTemplate = new DirectoryInfo(fullPathSourceDir);
+            foreach (var file in dirTemplate.GetFiles())
+            {
+                if (!file.Name.Contains(".meta") && file.Name.Contains(".png"))
+                {
+                    string fullPathSourceFilePng = Path.Combine(templateDirPath, profileId, file.Name);
+                    string fullPathTargetFilePng = Path.Combine(dataDirPath, profileId, file.Name);
+                    File.Copy(fullPathSourceFilePng, fullPathTargetFilePng, true);
+                }
+            }
         }
             
     }
