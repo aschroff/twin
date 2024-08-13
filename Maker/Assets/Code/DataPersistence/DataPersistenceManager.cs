@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
 
 
 public class DataPersistenceManager : MonoBehaviour
@@ -44,14 +45,14 @@ public class DataPersistenceManager : MonoBehaviour
             Debug.LogWarning("Data Persistence is currently disabled!");
         }
 
-        this.dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+        this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
 
         InitializeSelectedProfileId();
     }
 
     private void Start()
     {
-        this.dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+        this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadConfig();
     }
@@ -157,8 +158,8 @@ public class DataPersistenceManager : MonoBehaviour
         foreach (KeyValuePair<string, ConfigData> profile in GetAllProfilesGameData()  )
         {
             DeleteProfileData(profile.Key);
-
         }
+        this.dataHandler.AllTemplates();
         NewConfig("default", "000");
         selectedProfileId = "default.000";
         initPersistentObjects();
@@ -176,6 +177,34 @@ public class DataPersistenceManager : MonoBehaviour
 
         // load any saved data from a file using the data handler
         this.configData = dataHandler.Load(selectedProfileId);
+
+        // start a new game if the data is null and we're configured to initialize data for debugging purposes
+        if (this.configData == null && initializeDataIfNull) 
+        {
+            NewConfig(selectedProfileId, "000");
+        }
+
+        // if no data can be loaded, don't continue
+        if (this.configData == null) 
+        {
+            Debug.Log("No data was found. A New Game needs to be started before data can be loaded.");
+            return;
+        }
+        this.configData.version = selectedProfileId.Split('.').Last();
+        this.configData.name = selectedProfileId.Remove(selectedProfileId.LastIndexOf(".")) ;
+        initPersistentObjects();
+    }
+    
+    public void LoadConfigFromTemplate()
+    {
+        // return right away if data persistence is disabled
+        if (disableDataPersistence) 
+        {
+            return;
+        }
+
+        // load any saved data from a file using the data handler
+        this.configData = dataHandler.LoadFromTemplate(selectedProfileId);
 
         // start a new game if the data is null and we're configured to initialize data for debugging purposes
         if (this.configData == null && initializeDataIfNull) 
@@ -380,4 +409,5 @@ public class DataPersistenceManager : MonoBehaviour
         }
         return dataHandler.Exists(profileId);
     }
+    
 }
