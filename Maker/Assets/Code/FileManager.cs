@@ -137,6 +137,6 @@ public class FileManager : MonoBehaviour
     private void Detail(string profile)
     {
         versionProfile = profile;
-        InteractionController.EnableMode("Version");
+        InteractionController.EnableMode("Menu");
     }
 }
