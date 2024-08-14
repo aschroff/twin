@@ -7,7 +7,7 @@ using RotaryHeart.Lib.SerializableDictionary;
 [System.Serializable]
 public class InteractionModeDictionary : SerializableDictionaryBase<string, GameObject> { }
 
-public class InteractionController : Singleton<InteractionController>
+public class  InteractionController : Singleton<InteractionController>
 {
     [SerializeField] InteractionModeDictionary interactionModes;
 
