@@ -4,7 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.IO;
+using RotaryHeart.Lib.SerializableDictionary;
 
+[Serializable]
+public class StickerFiles : SerializableDictionaryBase<string, Texture2D> { }
+[Serializable]
+public class Template
+{
+    public TextAsset configFile;
+    public StickerFiles stickerFiles;
+}
+[Serializable]
+public class Templates : SerializableDictionaryBase<string, Template> { }
 
 public class DataPersistenceManager : MonoBehaviour
 {
@@ -20,6 +31,9 @@ public class DataPersistenceManager : MonoBehaviour
 
     [Header("Auto Saving Configuration")]
     [SerializeField] private float autoSaveTimeSeconds = 60f;
+    
+    [Header("Templates")]
+    [SerializeField] private Templates  templates;
 
     private ConfigData configData;
     private List<IDataPersistence> dataPersistenceObjects;
@@ -28,6 +42,7 @@ public class DataPersistenceManager : MonoBehaviour
     private Coroutine autoSaveCoroutine;
 
     public static DataPersistenceManager instance { get; private set; }
+    
 
     private void Awake() 
     {
@@ -173,7 +188,22 @@ public class DataPersistenceManager : MonoBehaviour
         {
             DeleteProfileData(profile.Key);
         }
-        this.dataHandler.AllTemplates();
+        
+        foreach (KeyValuePair<string, Template> template in templates)
+        {
+            string content = template.Value.configFile.text;
+            string path = Path.Combine(Application.persistentDataPath,template.Key);
+            Directory.CreateDirectory(path);
+            System.IO.File.WriteAllText(Path.Combine(Application.persistentDataPath,template.Key, "ConfigTwin"), content);
+            foreach (KeyValuePair<string, Texture2D> stickerFile in template.Value.stickerFiles)
+            {
+                byte[] bytes = stickerFile.Value.EncodeToPNG();
+                File.WriteAllBytes(Path.Combine(Application.persistentDataPath,template.Key, stickerFile.Key + ".png"), bytes);
+            }
+
+            
+        }
+        
         NewConfig("default", "000");
         selectedProfileId = "default.000";
         initPersistentObjects();
