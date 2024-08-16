@@ -6697,6 +6697,114 @@ MonoBehaviour:
   useEncryption: 0
   selectedProfileId: Leer
   autoSaveTimeSeconds: 60
+  templates:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 1
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+        m_TextWithWhitespace: "Keys\u200B"
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 1
+    _keyValues:
+    - LipEdema.twin
+    - Violence.tbd
+    _keys:
+    - LipEdema.twin
+    - Violence.tbd
+    _values:
+    - configFile: {fileID: 4900000, guid: 2cb451d0b3016413fb6aa3d9b125703a, type: 3}
+      stickerFiles:
+        reorderableList:
+          canAdd: 1
+          canRemove: 1
+          draggable: 1
+          expandable: 1
+          multipleSelection: 1
+          isExpanded: 1
+          label:
+            m_Text: Keys
+            m_Image: {fileID: 0}
+            m_Tooltip: 
+            m_TextWithWhitespace: "Keys\u200B"
+          headerHeight: 18
+          footerHeight: 13
+          slideEasing: 0.15
+          verticalSpacing: 2
+          showDefaultBackground: 1
+          elementDisplayType: 0
+          elementNameProperty: 
+          elementNameOverride: 
+          elementIcon: {fileID: 0}
+        reqReferences: {fileID: 0}
+        isExpanded: 1
+        _keyValues:
+        - 09afe588-1af0-4b55-a536-d9c4103573d0
+        - 9e940646-0425-43c2-832b-e6d843a2a1cb
+        - 51d5d7fa-ec4a-49e1-b10c-004f8e42a9fb
+        - 97e1ea50-d992-4627-aa90-ec5b0b85ba41
+        - 23630b2c-b63f-4bb4-878a-c9aa60eaef7d
+        - 12581305-7ddb-4c0b-bad0-a423f4702b08
+        - e8c7c7b0-204d-45d8-8bc1-004f8db9b775
+        _keys:
+        - 09afe588-1af0-4b55-a536-d9c4103573d0
+        - 9e940646-0425-43c2-832b-e6d843a2a1cb
+        - 51d5d7fa-ec4a-49e1-b10c-004f8e42a9fb
+        - 97e1ea50-d992-4627-aa90-ec5b0b85ba41
+        - 23630b2c-b63f-4bb4-878a-c9aa60eaef7d
+        - 12581305-7ddb-4c0b-bad0-a423f4702b08
+        - e8c7c7b0-204d-45d8-8bc1-004f8db9b775
+        _values:
+        - {fileID: 2800000, guid: be8a497cd17aa4af287b0456aea4cecd, type: 3}
+        - {fileID: 2800000, guid: 291315d15ad2f4e4db414c266d825067, type: 3}
+        - {fileID: 2800000, guid: f18e3345bbd6445f09385615800c8b7d, type: 3}
+        - {fileID: 2800000, guid: edbe2f0623dee4df3aaf3f828c992e9a, type: 3}
+        - {fileID: 2800000, guid: c599be5e43ea6464695f5c264735bbb9, type: 3}
+        - {fileID: 2800000, guid: f2082cb237d5d40fdab74ddb8022015e, type: 3}
+        - {fileID: 2800000, guid: 3799b462ccfce4cf3bbcdfd1ea65cb00, type: 3}
+    - configFile: {fileID: 4900000, guid: 0adf22c38698a47a6ae45ab3a81118b2, type: 3}
+      stickerFiles:
+        reorderableList:
+          canAdd: 1
+          canRemove: 1
+          draggable: 1
+          expandable: 1
+          multipleSelection: 1
+          isExpanded: 0
+          label:
+            m_Text: Keys
+            m_Image: {fileID: 0}
+            m_Tooltip: 
+            m_TextWithWhitespace: "Keys\u200B"
+          headerHeight: 18
+          footerHeight: 13
+          slideEasing: 0.15
+          verticalSpacing: 2
+          showDefaultBackground: 1
+          elementDisplayType: 0
+          elementNameProperty: 
+          elementNameOverride: 
+          elementIcon: {fileID: 0}
+        reqReferences: {fileID: 0}
+        isExpanded: 0
+        _keyValues: []
+        _keys: []
+        _values: []
 --- !u!4 &609004394
 Transform:
   m_ObjectHideFlags: 0
@@ -26863,7 +26971,7 @@ MonoBehaviour:
     - 2
     _values:
     - icon: {fileID: 21300000, guid: 9acef65909a7b431dacb5d9301cd115c, type: 3}
-      text: Version
+      text: Versions
       onClick:
         m_PersistentCalls:
           m_Calls:
