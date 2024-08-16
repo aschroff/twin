@@ -7,7 +7,7 @@ using Lean.Transition;
 using UnityEngine.UI;
 using System;
 
-public class FileManager : MonoBehaviour
+public class FileManager : IMenuOwner
 {
     [SerializeField] public GameObject prefab;
     [SerializeField] public DataPersistenceManager dataManager;
@@ -20,6 +20,11 @@ public class FileManager : MonoBehaviour
     {
         return true;
     } 
+    
+    public override string GetRelatedObjectID()
+    {
+        return versionProfile;
+    }
     
     public virtual string GetProfile()
     {
@@ -139,4 +144,21 @@ public class FileManager : MonoBehaviour
         versionProfile = profile;
         InteractionController.EnableMode("Menu");
     }
+    
+    public void RemoveCurrent()
+    {
+        string name = versionProfile;
+        if ( name.Contains('.'))
+        {
+            name = name.Remove(name.LastIndexOf("."));
+        }
+        foreach (KeyValuePair<string, ConfigData> version in dataManager.GetAllVersionsGameData(name))
+        {
+            dataManager.DeleteProfileData(name + "." + version.Key);
+        }
+        Refresh();
+        inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
+        InteractionController.EnableMode("Save");
+    }
+    
 }
