@@ -20,7 +20,7 @@ public class FileManager : MonoBehaviour
     {
         return true;
     } 
-    
+
     public virtual string GetProfile()
     {
         return inputFieldName.transform.Find("Text").GetComponent<Text>().text.ToString();
@@ -137,6 +137,23 @@ public class FileManager : MonoBehaviour
     private void Detail(string profile)
     {
         versionProfile = profile;
-        InteractionController.EnableMode("Version");
+        InteractionController.EnableMode("Menu");
     }
+    
+    public void RemoveCurrent()
+    {
+        string name = versionProfile;
+        if ( name.Contains('.'))
+        {
+            name = name.Remove(name.LastIndexOf("."));
+        }
+        foreach (KeyValuePair<string, ConfigData> version in dataManager.GetAllVersionsGameData(name))
+        {
+            dataManager.DeleteProfileData(name + "." + version.Key);
+        }
+        Refresh();
+        inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
+        InteractionController.EnableMode("Save");
+    }
+    
 }
