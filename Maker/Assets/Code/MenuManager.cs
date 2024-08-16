@@ -4,16 +4,24 @@ using System.Dynamic;
 using UnityEngine;
 using System.Linq;
 using Lean.Transition;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 using RotaryHeart.Lib.SerializableDictionary;
 
+[Serializable]
+/// <summary>
+/// Function definition for a button click event.
+/// </summary>
+public class ButtonClickedEvent : UnityEvent {}
+
 [System.Serializable]
 public class MenuAction 
 {
-    public string action;
     public Sprite icon;
     public string text;
+    public ButtonClickedEvent onClick;
 }
 [System.Serializable]
 public class MenuDictionary : SerializableDictionaryBase<string, MenuAction> { }
@@ -22,12 +30,7 @@ public class MenuManager : MonoBehaviour
 {
     [SerializeField] public GameObject prefab;
     [SerializeField] public MenuDictionary  menu;
-
-   
-    void OnDisable()
-    {
-        Debug.Log("PrintOnDisable: script was disabled");
-    }
+    
 
     void OnEnable()
     {
@@ -80,12 +83,8 @@ public class MenuManager : MonoBehaviour
         imageAction.sprite = action.icon;
         buttonAction.gameObject.SetActive(true);
         buttonAction.interactable = true;
-        buttonAction.onClick.AddListener(() => { Version(); });
+        buttonAction.onClick.AddListener(() => { action.onClick.Invoke(); });
     }
     
-    private void Version()
-    {
-        InteractionController.EnableMode("Version");
-    }
 
 }
