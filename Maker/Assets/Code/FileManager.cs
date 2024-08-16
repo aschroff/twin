@@ -7,7 +7,7 @@ using Lean.Transition;
 using UnityEngine.UI;
 using System;
 
-public class FileManager : IMenuOwner
+public class FileManager : MonoBehaviour
 {
     [SerializeField] public GameObject prefab;
     [SerializeField] public DataPersistenceManager dataManager;
@@ -20,12 +20,7 @@ public class FileManager : IMenuOwner
     {
         return true;
     } 
-    
-    public override string GetRelatedObjectID()
-    {
-        return versionProfile;
-    }
-    
+
     public virtual string GetProfile()
     {
         return inputFieldName.transform.Find("Text").GetComponent<Text>().text.ToString();
