@@ -341,6 +341,19 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		groups.Remove(groupData);
 		Debug.Log("Removed group: " + id);
 	}
+
+	public GroupData trySetCurrentGroupIfEmpty()
+	{
+		if (currentGroup == null)
+		{
+			if (groups.Count > 0)
+			{
+				currentGroup = groups[0];
+				return groups[0];
+			}
+		}
+		return null;
+	}
 	public void deletePart(PartData partData)
 	{
 		Debug.Log("Removing part: " + partData.id);

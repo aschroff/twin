@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using RotaryHeart.Lib.SerializableDictionary;
+using Application = UnityEngine.Application;
 
 [Serializable]
 public class StickerFiles : SerializableDictionaryBase<string, Texture2D> { }
