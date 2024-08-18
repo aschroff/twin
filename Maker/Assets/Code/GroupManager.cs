@@ -14,6 +14,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     [SerializeField] public LeanPulse notification;
     public void build()
     {
+        PartManager.GroupData saveCurrentGroup = partmanager.currentGroup;
         bool tempListening = partmanager.Listening;
         partmanager.Listening = false;
         foreach (PartManager.GroupData groupdata in partmanager.groups) 
@@ -23,6 +24,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         }
         //this.Refresh();
         partmanager.Listening = tempListening;
+        saveCurrentGroup.group.HandleEdit();
     }
     
     
@@ -105,7 +107,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
                 {
                     text.text = "The group " + partmanager.currentGroup.name + " is now selected";
                 }
-                
+                partmanager.currentGroup.group.HandleEdit();
             }
             notification.Pulse();
         }
