@@ -43,7 +43,6 @@ public class Sticker : ItemHash, ItemFile
 	
 	public override void handleAwake()
 	{
-		Debug.Log("Handle Awake called.");
 		string fullPath = get_path();
 
 		if (File.Exists(fullPath))
@@ -179,7 +178,6 @@ public class Sticker : ItemHash, ItemFile
             }
 
 		}
-		Debug.Log("not found");
 		return false;
 	}
 

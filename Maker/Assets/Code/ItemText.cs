@@ -51,7 +51,6 @@ public class Item : MonoBehaviour, IDataPersistence
         {
             setText();
         }
-        Debug.Log("Loading" + textItem.text + " - " + this.id);
         data.itemTexts.TryGetValue(id, out text);
         if (text != null)
        {
