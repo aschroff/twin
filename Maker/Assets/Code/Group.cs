@@ -16,7 +16,6 @@ public class Group : Item
 
     public void HandleEdit()
     {
-        Debug.Log("HandleEdit");
         GroupManager groupmanager = groupparent.GetComponentInChildren<GroupManager>();
         PartManager partmanager = groupmanager.partmanager;
         if (this.persistent == false) {
@@ -38,7 +37,6 @@ public class Group : Item
         partmanager.currentGroup = groupdata;
         partmanager.currentGroup.name = this.transform.GetComponentInChildren<InputField>().text;
         UpdateCurrent(partmanager.currentGroup.name);
-        Debug.Log("HandledEdit");
     }
 
     

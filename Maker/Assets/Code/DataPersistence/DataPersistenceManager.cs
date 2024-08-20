@@ -71,6 +71,7 @@ public class DataPersistenceManager : MonoBehaviour
         this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadConfig();
+        initPersistentObjects();
     }
 
     
@@ -82,11 +83,7 @@ public class DataPersistenceManager : MonoBehaviour
         this.selectedProfileId = newProfileId;
         // load the game, which will use that profile, updating our game data accordingly
         LoadConfig();
-        // push the loaded data to all other scripts that need it
-        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
-        {
-            handleChange(dataPersistenceObj);
-        }
+        initPersistentObjects();
     }
 
     public void DeleteProfileData(string profileId) 
@@ -150,6 +147,7 @@ public class DataPersistenceManager : MonoBehaviour
         NewConfig(name, version);
         selectedProfileId = newProfile;
         LoadConfig();
+        initPersistentObjects();
     }
 
     public void saveAsConfig(String newProfile) 
@@ -235,7 +233,6 @@ public class DataPersistenceManager : MonoBehaviour
         }
         this.configData.version = selectedProfileId.Split('.').Last();
         this.configData.name = selectedProfileId.Remove(selectedProfileId.LastIndexOf(".")) ;
-        initPersistentObjects();
     }
     
     public void LoadConfigFromTemplate()

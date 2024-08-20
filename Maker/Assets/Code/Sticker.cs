@@ -122,18 +122,14 @@ public class Sticker : ItemHash, ItemFile
 		int intHash = this.gameObject.GetComponent<Item>().getHash();
 		if (is_registered(intHash) == false)
 		{
-			Debug.Log("Start Register");
 			GameObject decalhash = Instantiate(Resources.Load("Decal Hash", typeof(GameObject))) as GameObject;
 			decalhash.transform.SetParent(FolderHash().transform);
-			Debug.Log("INstantiated");
 			P3dTextureHash textureHash = decalhash.GetComponent<P3dTextureHash>();
-			Debug.Log("tex hash created");
 			textureHash.Texture = loadedTexture;
 			//Debug.Log("Texture assigned " + hash);
 			//int intHash = this.gameObject.GetComponent<Item>().getHash();
 			Debug.Log("hash" + intHash.ToString());
 			textureHash.Hash = new P3dHash(intHash);
-			Debug.Log("Key assigned");
 		}
 	}
 
@@ -143,9 +139,7 @@ public class Sticker : ItemHash, ItemFile
 		int intHash = this.gameObject.GetComponent<Item>().getHash();
 		if (is_registered(intHash) == true)
 		{
-			Debug.Log("Start Unregister");
 			Destroy(get_registration(intHash));
-			Debug.Log("End Unregister");
 		}
 	}
 	
@@ -172,7 +166,6 @@ public class Sticker : ItemHash, ItemFile
 
 				if (hashPrefab.Hash.ToString() == hash.ToString())
 				{
-					Debug.Log("found");
 					return true;
 				};
             }
@@ -194,13 +187,11 @@ public class Sticker : ItemHash, ItemFile
 
 				if (hashPrefab.Hash.ToString() == hash.ToString())
 				{
-					Debug.Log("found");
 					return child;
 				};
 			}
 
 		}
-		Debug.Log("not found");
 		return null;
 	}
 	
