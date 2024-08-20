@@ -18,10 +18,12 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
    
    public  void handleCopyChange(string profile)
    {
+      Debug.Log("Copy profile: " + profile);
       P3dPaintableTexture texture = this.gameObject.transform.GetComponent<P3dPaintableTexture>();
       texture.Save();
       texture.SaveName = profile;
       texture.Save();
+      Debug.Log("end copy profile");
    }
    public  void handleDelete(string profile)
    {

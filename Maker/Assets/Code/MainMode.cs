@@ -16,7 +16,6 @@ public class MainMode : MonoBehaviour
         LeanMultiUpdate lmu = (LeanMultiUpdate)body.GetComponent("LeanMultiUpdate");
         LeanPinchCamera lpc = (LeanPinchCamera)cam.GetComponent("LeanPinchCamera");
         LeanDragCamera ldc = (LeanDragCamera)cam.GetComponent("LeanDragCamera");
-        Debug.Log("Jo1");
         lmu.enabled = false;
         ldc.enabled = true;
         lpc.enabled = true;

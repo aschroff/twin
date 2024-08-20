@@ -71,6 +71,7 @@ public class DataPersistenceManager : MonoBehaviour
         this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadConfig();
+        initPersistentObjects();
     }
 
     
@@ -82,11 +83,7 @@ public class DataPersistenceManager : MonoBehaviour
         this.selectedProfileId = newProfileId;
         // load the game, which will use that profile, updating our game data accordingly
         LoadConfig();
-        // push the loaded data to all other scripts that need it
-        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
-        {
-            handleChange(dataPersistenceObj);
-        }
+        initPersistentObjects();
     }
 
     public void DeleteProfileData(string profileId) 
@@ -150,6 +147,7 @@ public class DataPersistenceManager : MonoBehaviour
         NewConfig(name, version);
         selectedProfileId = newProfile;
         LoadConfig();
+        initPersistentObjects();
     }
 
     public void saveAsConfig(String newProfile) 
@@ -189,7 +187,6 @@ public class DataPersistenceManager : MonoBehaviour
         {
             DeleteProfileData(profile.Key);
         }
-        
         foreach (KeyValuePair<string, Template> template in templates)
         {
             string content = template.Value.configFile.text;
@@ -204,12 +201,11 @@ public class DataPersistenceManager : MonoBehaviour
 
             
         }
-        
         NewConfig("default", "000");
         selectedProfileId = "default.000";
-        initPersistentObjects();
+        initPersistentObjectsLoadOnly();
         SaveConfig();
-        
+        Debug.Log("End Reset");
     }
     
     public void LoadConfig()
@@ -237,7 +233,6 @@ public class DataPersistenceManager : MonoBehaviour
         }
         this.configData.version = selectedProfileId.Split('.').Last();
         this.configData.name = selectedProfileId.Remove(selectedProfileId.LastIndexOf(".")) ;
-        initPersistentObjects();
     }
     
     public void LoadConfigFromTemplate()
@@ -270,7 +265,6 @@ public class DataPersistenceManager : MonoBehaviour
 
     private void initPersistentObjects()
     {
-
         // push the loaded data to all other scripts that need it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {
@@ -282,7 +276,20 @@ public class DataPersistenceManager : MonoBehaviour
         }
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {
-            handleChange(dataPersistenceObj);
+            handleChange(dataPersistenceObj); 
+        }
+    }
+    
+    private void initPersistentObjectsLoadOnly()
+    {
+        // push the loaded data to all other scripts that need it
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            dataPersistenceObj.LoadData(configData);
+        }
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            handlePostLoad(dataPersistenceObj);
         }
     }
     
@@ -393,10 +400,8 @@ public class DataPersistenceManager : MonoBehaviour
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)
         {
-            Debug.Log("Post processing for component");
             if(component is ItemHash) 
             {
-                Debug.Log("Found a component that inherits from ItemHash.");
                 ItemHash hashComponent = component as ItemHash;
                 hashComponent.handleAwake();
                 break;
@@ -409,10 +414,8 @@ public class DataPersistenceManager : MonoBehaviour
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)
         {
-            Debug.Log("Name change for components with profile dependent (file) name");
             if(component is ItemFile) 
             {
-                Debug.Log("Found a component that inherits from ItemFile.");
                 ItemFile fileComponent = component as ItemFile;
                 fileComponent.handleChange(selectedProfileId);
                 break;
@@ -424,10 +427,8 @@ public class DataPersistenceManager : MonoBehaviour
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)
         {
-            Debug.Log("Name change for components with profile dependent (file) name");
             if(component is ItemFile) 
             {
-                Debug.Log("Found a component that inherits from ItemFile.");
                 ItemFile fileComponent = component as ItemFile;
                 fileComponent.handleCopyChange(selectedProfileId);
                 break;
@@ -438,10 +439,8 @@ public class DataPersistenceManager : MonoBehaviour
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)
         {
-            Debug.Log("Delete for components with profile dependent (file) name");
             if(component is ItemFile) 
             {
-                Debug.Log("Found a component that inherits from ItemFile.");
                 ItemFile fileComponent = component as ItemFile;
                 fileComponent.handleDelete(deleteProfileID);
                 break;

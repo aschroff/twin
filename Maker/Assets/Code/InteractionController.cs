@@ -27,7 +27,7 @@ public class  InteractionController : Singleton<InteractionController>
 
     void _EnableMode(string name)
     {
-        Debug.Log("BUG 20: " + name);
+        Debug.Log("Enable Mode: " + name);
         GameObject modeObject;
         if (interactionModes.TryGetValue(name, out modeObject))
         {

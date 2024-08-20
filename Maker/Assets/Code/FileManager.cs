@@ -26,10 +26,6 @@ public class FileManager : MonoBehaviour
         return inputFieldName.transform.Find("Text").GetComponent<Text>().text.ToString();
     }
     
-    void OnDisable()
-    {
-        Debug.Log("PrintOnDisable: script was disabled");
-    }
 
     void OnEnable()
     {
@@ -115,16 +111,16 @@ public class FileManager : MonoBehaviour
     
     private void Select(string profile, string version = "")
     {
-
+        Debug.Log("Select: " + profile + "." + version);
         foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
         {
             if (entry.Key == profile+"."+version)
             {
                 dataManager.ChangeSelectedProfileId(profile+"."+version);
                 break;
-            }
+             }
         }
-        Refresh();
+         Refresh();
        }
 
     private void Remove(string profile)

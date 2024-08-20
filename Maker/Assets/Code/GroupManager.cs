@@ -24,7 +24,11 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         }
         //this.Refresh();
         partmanager.Listening = tempListening;
-        saveCurrentGroup.group.HandleEdit();
+        if (saveCurrentGroup != null && saveCurrentGroup.group != null)
+        {
+            saveCurrentGroup.group.HandleEdit();
+        }
+        
     }
     
     
@@ -35,7 +39,6 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
             GameObject child = this.transform.GetChild(j).gameObject;
             Destroy(child);
         }
-        Debug.Log("not found");
         partmanager.Listening = tempListening;
     }
 

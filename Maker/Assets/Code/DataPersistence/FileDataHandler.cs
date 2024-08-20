@@ -268,7 +268,6 @@ public class FileDataHandler
                 Debug.LogError("Tried to load profile but something went wrong. ProfileId: " + profileId);
             }
         }
-
         return profileDictionary;
     }
 
