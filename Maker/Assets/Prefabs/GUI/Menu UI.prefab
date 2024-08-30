@@ -313,6 +313,7 @@ GameObject:
   - component: {fileID: 7717540611037764726}
   - component: {fileID: 7304546740629034936}
   - component: {fileID: 215212429875992469}
+  - component: {fileID: 2969929413004709146}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -433,6 +434,103 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 1
+--- !u!114 &2969929413004709146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4296935881090176953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71a2ee58362394a87bfa9bf5e86c0326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2063955909530756666, guid: 5e8b8b1fe9a514c118bd96d7a654c1b8, type: 3}
+  menu:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 1
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+        m_TextWithWhitespace: "Keys\u200B"
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 1
+    _keyValues:
+    - 1
+    - 2
+    - 3
+    _keys:
+    - 1
+    - 2
+    - 3
+    _values:
+    - icon: {fileID: 21300000, guid: 9acef65909a7b431dacb5d9301cd115c, type: 3}
+      text: Versions
+      onClick:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: InteractionController, Assembly-CSharp
+            m_MethodName: EnableMode
+            m_Mode: 5
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: Version
+              m_BoolArgument: 0
+            m_CallState: 2
+    - icon: {fileID: 21300000, guid: 5381b5d6d58e24defb6cf3647a6526e8, type: 3}
+      text: Delete (all versions)...
+      onClick:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: FileManager, Assembly-CSharp
+            m_MethodName: RemoveCurrent
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: Version
+              m_BoolArgument: 0
+            m_CallState: 2
+    - icon: {fileID: 21300000, guid: c68dae29cc56d472d96f1c004e80bbe5, type: 3}
+      text: Export
+      onClick:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: Body, Assembly-CSharp
+            m_MethodName: HandleExport
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: Version
+              m_BoolArgument: 0
+            m_CallState: 2
 --- !u!1 &6776528731429700449
 GameObject:
   m_ObjectHideFlags: 0
