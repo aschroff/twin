@@ -15832,6 +15832,22 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8612250650782278752, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
   m_PrefabInstance: {fileID: 2700943964330160262}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1659967847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659967842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac8cdd8da4f4471aada30e471f1d1572, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  views: []
+  mainCamera: {fileID: 1347838729}
+  body: {fileID: 7866754541126039730}
+  ViewsFile: {fileID: 4900000, guid: b5882bd62f5e47abaa0267b74188425b, type: 3}
 --- !u!1001 &1661219764
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22473,6 +22489,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1511861843}
     m_Modifications:
+    - target: {fileID: 264657167892856726, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 722981551}
+    - target: {fileID: 264657167892856726, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: AddList
+      objectReference: {fileID: 0}
     - target: {fileID: 298922744014361563, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -22531,7 +22555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492182016156904779, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 100
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8492182016156904779, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -22640,7 +22664,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9163018858178978295, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1659967847}
   m_SourcePrefab: {fileID: 100100000, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
 --- !u!4 &2702938982061141346
 Transform:
