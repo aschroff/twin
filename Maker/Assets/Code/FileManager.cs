@@ -14,6 +14,7 @@ public class FileManager : MonoBehaviour
     [SerializeField] public GameObject inputFieldName;
     private Dictionary<string, string> profiles = new Dictionary<string, string>();
     [SerializeField] public GameObject inputFieldVersion;
+    [SerializeField] public Recorder recorder;
     public string versionProfile;
 
     protected virtual bool GetVersionButton()
@@ -150,6 +151,13 @@ public class FileManager : MonoBehaviour
         Refresh();
         inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
         InteractionController.EnableMode("Save");
+    }
+    
+    public void Screenshot()
+    {
+        recorder.name = dataManager.selectedProfileId;
+        recorder.folder = dataManager.selectedProfileId;
+        recorder.Screenshot();
     }
     
 }

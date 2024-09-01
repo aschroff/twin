@@ -67,4 +67,6 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
       byte[] bodyBytes = bodyTexture.GetPngData();
       NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(bodyBytes, "twinAlbum", "export.png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ) );
    }
+   
+
 }
