@@ -152,6 +152,7 @@ public class FileManager : MonoBehaviour
         inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
         InteractionController.EnableMode("Save");
     }
+
     
     public void Screenshot()
     {
@@ -159,5 +160,6 @@ public class FileManager : MonoBehaviour
         recorder.folder = dataManager.selectedProfileId;
         recorder.Screenshot();
     }
+    
     
 }
