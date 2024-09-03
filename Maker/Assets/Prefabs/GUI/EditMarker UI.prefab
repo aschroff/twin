@@ -520,6 +520,7 @@ GameObject:
   - component: {fileID: 2776405431070875525}
   - component: {fileID: 2637507381527996762}
   - component: {fileID: 5790830522394560980}
+  - component: {fileID: 8887808389857693967}
   m_Layer: 5
   m_Name: Frame 2
   m_TagString: Untagged
@@ -543,7 +544,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 15, y: 0}
+  m_AnchoredPosition: {x: 17, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &2637507381527996762
@@ -584,6 +585,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &8887808389857693967
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037580683571638019}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &2325080801234938879
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,6 +608,7 @@ GameObject:
   - component: {fileID: 8992708069154688240}
   - component: {fileID: 7800956397148041575}
   - component: {fileID: 623503387075742318}
+  - component: {fileID: 2104114475326200312}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -659,6 +673,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &2104114475326200312
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2325080801234938879}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &2894199460812719097
 GameObject:
   m_ObjectHideFlags: 0
@@ -670,6 +696,7 @@ GameObject:
   - component: {fileID: 4077706412204746740}
   - component: {fileID: 7999268724075174871}
   - component: {fileID: 5052646769710604295}
+  - component: {fileID: 6181551196749039314}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -734,6 +761,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &6181551196749039314
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2894199460812719097}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &2901529929529359908
 GameObject:
   m_ObjectHideFlags: 0
@@ -745,6 +784,7 @@ GameObject:
   - component: {fileID: 8935764831741623359}
   - component: {fileID: 6547535311292559885}
   - component: {fileID: 3617168044410377110}
+  - component: {fileID: 4811521558582559059}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -809,6 +849,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &4811521558582559059
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2901529929529359908}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &3344040150840697819
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,6 +872,7 @@ GameObject:
   - component: {fileID: 8747645402314384788}
   - component: {fileID: 1717030421297146120}
   - component: {fileID: 9209309120944318514}
+  - component: {fileID: 2680984426647676402}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -884,6 +937,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &2680984426647676402
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3344040150840697819}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &3830016177199958695
 GameObject:
   m_ObjectHideFlags: 0
@@ -1373,6 +1438,7 @@ GameObject:
   - component: {fileID: 6528207350912398330}
   - component: {fileID: 8904951474967131275}
   - component: {fileID: 237232440099575765}
+  - component: {fileID: 6692910134119249990}
   m_Layer: 5
   m_Name: Frame 3
   m_TagString: Untagged
@@ -1396,7 +1462,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 27, y: 0}
+  m_AnchoredPosition: {x: 29, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &8904951474967131275
@@ -1437,6 +1503,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &6692910134119249990
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4776734311842898978}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &4779195858680232269
 GameObject:
   m_ObjectHideFlags: 0
@@ -1448,6 +1526,7 @@ GameObject:
   - component: {fileID: 8417617851138494968}
   - component: {fileID: 791234757508938386}
   - component: {fileID: 2340522150181123736}
+  - component: {fileID: 4443035589613254014}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -1512,6 +1591,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &4443035589613254014
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4779195858680232269}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &5245311751879080768
 GameObject:
   m_ObjectHideFlags: 0
@@ -1523,6 +1614,7 @@ GameObject:
   - component: {fileID: 604376207924688598}
   - component: {fileID: 1184159762539407217}
   - component: {fileID: 2480763692400253234}
+  - component: {fileID: 7100993937794610061}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -1587,6 +1679,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &7100993937794610061
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5245311751879080768}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &5839411898785233806
 GameObject:
   m_ObjectHideFlags: 0
@@ -1673,6 +1777,7 @@ GameObject:
   - component: {fileID: 8656069238013330565}
   - component: {fileID: 5435936502039020186}
   - component: {fileID: 6740085289217424452}
+  - component: {fileID: 7089694263095770257}
   m_Layer: 5
   m_Name: Frame 1
   m_TagString: Untagged
@@ -1696,7 +1801,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 3, y: 0}
+  m_AnchoredPosition: {x: 5, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5435936502039020186
@@ -1737,6 +1842,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &7089694263095770257
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5977790217681966937}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &6185317464262140398
 GameObject:
   m_ObjectHideFlags: 0
@@ -2173,6 +2290,7 @@ GameObject:
   - component: {fileID: 8852677702406837147}
   - component: {fileID: 8985409535953409351}
   - component: {fileID: 2101876398646289031}
+  - component: {fileID: 7009593990627167198}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -2237,6 +2355,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &7009593990627167198
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7593907603390649496}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &7808727714937095649
 GameObject:
   m_ObjectHideFlags: 0
@@ -2248,6 +2378,7 @@ GameObject:
   - component: {fileID: 329521221552930738}
   - component: {fileID: 89427330504250789}
   - component: {fileID: 8856071205634999766}
+  - component: {fileID: 7149757321287514760}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -2312,6 +2443,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &7149757321287514760
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7808727714937095649}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &8184646038801944118
 GameObject:
   m_ObjectHideFlags: 0
@@ -2625,6 +2768,7 @@ GameObject:
   - component: {fileID: 5911924242624667612}
   - component: {fileID: 6871094170058630741}
   - component: {fileID: 3523991870128178448}
+  - component: {fileID: 7169845143424788828}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -2689,6 +2833,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &7169845143424788828
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8764098549991533708}
+  m_Enabled: 1
+  m_Alpha: 0.5
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &8794524390699091337
 GameObject:
   m_ObjectHideFlags: 0
