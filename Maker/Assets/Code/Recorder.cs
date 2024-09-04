@@ -49,6 +49,8 @@ public class Recorder: MonoBehaviour
         File.WriteAllBytes(fullPath, textureBytes);
         
     }
+    
+    
 
 }
     

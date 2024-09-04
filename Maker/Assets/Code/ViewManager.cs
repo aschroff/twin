@@ -43,7 +43,7 @@ public class ViewManager : SceneManagement, IDataPersistence
         viewObject.GetComponent<ViewLink>().manager = this;
         viewObject.GetComponentInChildren<InputField>().text = view.name;
     }
-    public void createView()
+    public View shootView()
     {
         View view = new View();
         LeanPitchYaw control = body.GetComponent<LeanPitchYaw>();
@@ -54,9 +54,15 @@ public class ViewManager : SceneManagement, IDataPersistence
         view.positionCamera_z = mainCamera.transform.position.z;
         LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
         view.sizeCamera = camera.Zoom;
+        return view;
+    }   
+    
+    public void createView()
+    {
+        View view = shootView();
         views.Add(view);
         displayView(view);
-    }                                                                            
+    }   
     
     public void LoadData(ConfigData data)
     {
