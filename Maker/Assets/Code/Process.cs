@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Code;
+using Lean.Gui;
 using UnityEngine;
 
 public class ProcessResult
@@ -38,6 +39,16 @@ public abstract class Process : MonoBehaviour
       return processManager().dataManager;
    }
 
+   protected Body getBody()
+   {
+      return processManager().body;
+   }
+   
+   protected LeanPulse getNotification()
+   {
+      return processManager().notification;
+   }
+   
    public void Handle()
    {
       Execute();
