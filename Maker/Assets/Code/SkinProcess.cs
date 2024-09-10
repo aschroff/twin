@@ -23,9 +23,10 @@ namespace Code
             LeanPulse notification = getNotification();
              
 #if UNITY_EDITOR
-            string message = "Skin saved as " + fullPath;
+            string message = "Skin saved  in application data under ..." + Path.Combine(
+                name, "skin_" + name + ".png");
 #else
-			string message = "Skin saved as " + "skin_" + name + ".png";
+			string message = "Skin saved in Pictures as " + "skin_" + name + ".png";
 #endif
             foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
             {
