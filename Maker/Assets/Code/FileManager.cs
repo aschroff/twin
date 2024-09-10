@@ -97,7 +97,7 @@ public class FileManager : MonoBehaviour
             buttonUnselect.interactable = true;
             buttonUnselect.onClick.AddListener(() => { Select(entry.Value.name,entry.Value.version); });
         }
-        buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
+        buttonDetail.onClick.AddListener(() => { Detail(entry.Key, entry.Value.name,entry.Value.version); });
         buttonDetail.gameObject.SetActive(GetVersionButton());
         
         
@@ -131,8 +131,9 @@ public class FileManager : MonoBehaviour
         inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
     }
     
-    private void Detail(string profile)
+    private void Detail(string profile, string profile_raw, string version = "")
     {
+        Select(profile_raw, version);
         versionProfile = profile;
         InteractionController.EnableMode("Menu");
     }
