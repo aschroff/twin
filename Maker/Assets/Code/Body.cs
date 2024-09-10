@@ -61,12 +61,7 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
    }
    
    
-   public void HandleExport()
-   {
-      P3dPaintableTexture bodyTexture = this.transform.parent.GetComponentInChildren<P3dPaintableTexture>();
-      byte[] bodyBytes = bodyTexture.GetPngData();
-      NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(bodyBytes, "twinAlbum", "export.png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ) );
-   }
+
    
 
 }

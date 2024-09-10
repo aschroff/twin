@@ -133,7 +133,10 @@ public class FileManager : MonoBehaviour
     
     private void Detail(string profile, string profile_raw, string version = "")
     {
-        Select(profile_raw, version);
+        if (dataManager.selectedProfileId != profile_raw + "." + version)
+        {
+            Select(profile_raw, version);
+        }
         versionProfile = profile;
         InteractionController.EnableMode("Menu");
     }
