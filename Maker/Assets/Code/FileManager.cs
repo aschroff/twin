@@ -6,6 +6,7 @@ using System.Linq;
 using Lean.Transition;
 using UnityEngine.UI;
 using System;
+using Lean.Gui;
 
 public class FileManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class FileManager : MonoBehaviour
     private Dictionary<string, string> profiles = new Dictionary<string, string>();
     [SerializeField] public GameObject inputFieldVersion;
     [SerializeField] public Recorder recorder;
+    [SerializeField] public LeanPulse notification;
     public string versionProfile;
 
     protected virtual bool GetVersionButton()
@@ -162,7 +164,7 @@ public class FileManager : MonoBehaviour
     {
         recorder.name = dataManager.selectedProfileId;
         recorder.folder = dataManager.selectedProfileId;
-        recorder.Screenshot();
+        recorder.Screenshot(notification);
     }
     
     

@@ -26,7 +26,7 @@ namespace Code
                 DataPersistenceManager dataManager = getDataManager();
                 recorder.name = dataManager.selectedProfileId + " - " + view.name;
                 recorder.folder = dataManager.selectedProfileId;
-                recorder.Screenshot();
+                recorder.Screenshot(getNotification());
             }
             viewManager.select(currentView);
             
