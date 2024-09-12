@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Code
@@ -21,12 +22,14 @@ namespace Code
             foreach (SceneManagement.View view in getStandardViewManager().views)
             {
                 viewManager.select(view);
-                yield return null;
                 Recorder recorder = getRecorder();
                 DataPersistenceManager dataManager = getDataManager();
                 recorder.name = dataManager.selectedProfileId + " - " + view.name;
                 recorder.folder = dataManager.selectedProfileId;
-                recorder.Screenshot(getNotification());
+                List<GameObject> listActive = recorder.Prepare();
+                yield return new WaitForEndOfFrame();
+                recorder.Do();
+                recorder.Post(listActive, getNotification());
             }
             viewManager.select(currentView);
             
