@@ -31,6 +31,7 @@ namespace Code
                 recorder.Do();
             }
             recorder.Reset(listActive);
+            recorder.name = dataManager.selectedProfileId + " - <view name>";
             recorder.Post(getNotification());
             viewManager.select(currentView);
             

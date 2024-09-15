@@ -69,7 +69,7 @@ public class Recorder: MonoBehaviour
                      
 #if UNITY_EDITOR
         string message = "Screenshot(s) saved  in application data under ..." + Path.Combine(
-            name, "screenshot_" + name + ".png");
+            folder, "screenshot_" + name + ".png");
 #else
 			string message = "Screenshot saved in Pictures as " + "screenshot_" + name + ".png";
 #endif
