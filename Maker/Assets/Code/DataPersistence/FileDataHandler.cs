@@ -273,7 +273,7 @@ public class FileDataHandler
 
     public string GetMostRecentlyUpdatedProfileId() 
     {
-        string mostRecentProfileId = "default.000";
+        string mostRecentProfileId = null;
 
         Dictionary<string, ConfigData> profilesGameData = LoadAllProfiles();
         foreach (KeyValuePair<string, ConfigData> pair in profilesGameData) 
