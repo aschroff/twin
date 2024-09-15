@@ -30,7 +30,8 @@ public class Recorder: MonoBehaviour
         List<GameObject> listActive = Prepare();
         yield return new WaitForEndOfFrame();
         Do();
-        Post(listActive, notification);
+        Reset(listActive);
+        Post(notification);
         
     }
     
@@ -63,16 +64,11 @@ public class Recorder: MonoBehaviour
         NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(textureBytes, "twinAlbum", "screenshot_" + name + ".png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ) );
     }
 
-    public void Post(List<GameObject> ActiveChildren, LeanPulse notification)
+    public void Post(LeanPulse notification)
     {
-        
-        foreach (GameObject activeChild in ActiveChildren)
-        {
-            activeChild.SetActive(true);
-        }
                      
 #if UNITY_EDITOR
-        string message = "Screenshot saved  in application data under ..." + Path.Combine(
+        string message = "Screenshot(s) saved  in application data under ..." + Path.Combine(
             name, "screenshot_" + name + ".png");
 #else
 			string message = "Screenshot saved in Pictures as " + "screenshot_" + name + ".png";
@@ -82,6 +78,15 @@ public class Recorder: MonoBehaviour
             text.text = message;
         }
         notification.Pulse();
+    }
+
+    public void Reset(List<GameObject> ActiveChildren)
+    {
+
+        foreach (GameObject activeChild in ActiveChildren)
+        {
+            activeChild.SetActive(true);
+        }
     }
 
 }
