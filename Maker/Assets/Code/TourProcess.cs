@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Code
@@ -18,16 +19,19 @@ namespace Code
             Debug.Log("Start Screenshots");
             ViewManager viewManager = getViewmanager();
             SceneManagement.View currentView = viewManager.shootView();
+            Recorder recorder = getRecorder();
+            DataPersistenceManager dataManager = getDataManager();
+            List<GameObject> listActive = recorder.Prepare();
             foreach (SceneManagement.View view in getStandardViewManager().views)
             {
                 viewManager.select(view);
-                yield return null;
-                Recorder recorder = getRecorder();
-                DataPersistenceManager dataManager = getDataManager();
                 recorder.name = dataManager.selectedProfileId + " - " + view.name;
                 recorder.folder = dataManager.selectedProfileId;
-                recorder.Screenshot();
+                yield return new WaitForEndOfFrame();
+                recorder.Do();
             }
+            recorder.Reset(listActive);
+            recorder.Post(getNotification());
             viewManager.select(currentView);
             
         }

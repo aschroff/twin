@@ -23245,7 +23245,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5024446580567007249, guid: ac4ccd12dd43d41b69e3afa187dce442, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -300
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5024446580567007249, guid: ac4ccd12dd43d41b69e3afa187dce442, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 5024446580567007249, guid: ac4ccd12dd43d41b69e3afa187dce442, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -23261,7 +23265,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5644402856087870949, guid: ac4ccd12dd43d41b69e3afa187dce442, type: 3}
       propertyPath: m_FontData.m_Alignment
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7674822648729521092, guid: ac4ccd12dd43d41b69e3afa187dce442, type: 3}
       propertyPath: m_Name
@@ -23277,11 +23281,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7903929984934230970, guid: ac4ccd12dd43d41b69e3afa187dce442, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 7903929984934230970, guid: ac4ccd12dd43d41b69e3afa187dce442, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 30
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 7903929984934230970, guid: ac4ccd12dd43d41b69e3afa187dce442, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -26517,6 +26521,10 @@ PrefabInstance:
       propertyPath: dataManager
       value: 
       objectReference: {fileID: 609004393}
+    - target: {fileID: 863189239901329818, guid: 9b80a04d4e56a46c7a1b0f3528542243, type: 3}
+      propertyPath: notification
+      value: 
+      objectReference: {fileID: 94311452}
     - target: {fileID: 1049812278017775036, guid: 9b80a04d4e56a46c7a1b0f3528542243, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0

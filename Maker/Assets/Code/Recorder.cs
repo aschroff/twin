@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using System.IO;
+using Lean.Gui;
+using UnityEngine.UI;
 
 
 public class Recorder: MonoBehaviour
@@ -10,9 +12,9 @@ public class Recorder: MonoBehaviour
     public string name = new string("filename");
     public string folder = new string("foldername");
 
-    public void Screenshot()
+    public void Screenshot(LeanPulse notification)
     {
-        StartCoroutine(TakeAndSave());
+        StartCoroutine(TakeAndSave(notification));
     }
     
     private string get_path()
@@ -22,11 +24,20 @@ public class Recorder: MonoBehaviour
 		
     }
     
-    private IEnumerator TakeAndSave()
+    private IEnumerator TakeAndSave(LeanPulse notification)
     {
         
+        List<GameObject> listActive = Prepare();
+        yield return new WaitForEndOfFrame();
+        Do();
+        Reset(listActive);
+        Post(notification);
+        
+    }
+    
 
-        Texture2D ss = new Texture2D(Screen.width, Screen.height-1200, TextureFormat.RGB24, false);
+    public List<GameObject> Prepare()
+    {
         List<GameObject> ActiveChildren = new List<GameObject>();
         for (int i = this.transform.childCount - 1; i >= 1; i--)
         {
@@ -35,22 +46,48 @@ public class Recorder: MonoBehaviour
             {
                 ActiveChildren.Add(child);
             }
+
             child.SetActive(false);
         }
-        yield return new WaitForEndOfFrame();
+
+        return ActiveChildren;
+    }
+    
+    public void Do()
+    {
+        Texture2D ss = new Texture2D(Screen.width, Screen.height - 1200, TextureFormat.RGB24, false);
         ss.ReadPixels(new Rect(0, 900, Screen.width, Screen.height-1200), 0, 0);
         ss.Apply();
+        string fullPath = get_path();
+        byte[] textureBytes = ss.EncodeToPNG();
+        File.WriteAllBytes(fullPath, textureBytes);
+        NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(textureBytes, "twinAlbum", "screenshot_" + name + ".png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ) );
+    }
+
+    public void Post(LeanPulse notification)
+    {
+                     
+#if UNITY_EDITOR
+        string message = "Screenshot(s) saved  in application data under ..." + Path.Combine(
+            name, "screenshot_" + name + ".png");
+#else
+			string message = "Screenshot saved in Pictures as " + "screenshot_" + name + ".png";
+#endif
+        foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
+        {
+            text.text = message;
+        }
+        notification.Pulse();
+    }
+
+    public void Reset(List<GameObject> ActiveChildren)
+    {
+
         foreach (GameObject activeChild in ActiveChildren)
         {
             activeChild.SetActive(true);
         }
-        string fullPath = get_path();
-        byte[] textureBytes = ss.EncodeToPNG();
-        File.WriteAllBytes(fullPath, textureBytes);
-        
     }
-    
-    
 
 }
     
