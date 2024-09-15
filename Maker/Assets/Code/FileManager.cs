@@ -92,7 +92,7 @@ public class FileManager : MonoBehaviour
         }
         else
         {
-            buttonDelete.onClick.AddListener(() => { Remove(entry.Key); });
+            buttonDelete.onClick.AddListener(() => { Remove(entry.Value.name+"."+entry.Value.version); });
             buttonSelect.gameObject.SetActive(false);
             buttonSelect.interactable = false;
             buttonUnselect.gameObject.SetActive(true);

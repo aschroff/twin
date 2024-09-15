@@ -27599,6 +27599,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2969929413004709146, guid: 2bae4d09f4ede446bae149079859ae5a, type: 3}
+      propertyPath: menu._values.Array.data[1].text
+      value: Delete (all other versions)...
+      objectReference: {fileID: 0}
+    - target: {fileID: 2969929413004709146, guid: 2bae4d09f4ede446bae149079859ae5a, type: 3}
       propertyPath: menu._values.Array.data[2].text
       value: Export skin
       objectReference: {fileID: 0}
@@ -27680,7 +27684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2969929413004709146, guid: 2bae4d09f4ede446bae149079859ae5a, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Screenshot
+      value: RemoveCurrent
       objectReference: {fileID: 0}
     - target: {fileID: 2969929413004709146, guid: 2bae4d09f4ede446bae149079859ae5a, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
