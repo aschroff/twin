@@ -17,7 +17,7 @@ public class Recorder: MonoBehaviour
         StartCoroutine(TakeAndSave(notification));
     }
     
-    private string get_path()
+    public string get_path()
     {   
         return Path.Combine(Application.persistentDataPath,folder,
             "screenshot_" + name + ".png");
