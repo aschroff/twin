@@ -48,6 +48,11 @@ public abstract class Process : MonoBehaviour
    {
       return processManager().notification;
    }
+
+   protected AI getAI()
+   {
+      return processManager().ai;
+   }
    
    public void Handle()
    {
