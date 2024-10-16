@@ -26,7 +26,6 @@ public class Recorder: MonoBehaviour
     
     private IEnumerator TakeAndSave(LeanPulse notification)
     {
-        
         List<GameObject> listActive = Prepare();
         yield return new WaitForEndOfFrame();
         Do();

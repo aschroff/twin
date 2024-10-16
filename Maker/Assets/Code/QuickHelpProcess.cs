@@ -13,12 +13,12 @@ namespace Code
         
         public override ProcessResult Execute()
         {
-           execute();
+           StartCoroutine(execute());
             return new ProcessResult();
         }
         
         
-        private void execute()
+        private IEnumerator execute()
         {
             Recorder recorder = getRecorder();
             DataPersistenceManager dataManager = getDataManager();
@@ -26,8 +26,10 @@ namespace Code
             recorder.folder = dataManager.selectedProfileId;
             LeanPulse notification = getNotification();
             recorder.Screenshot(notification);
+            yield return new WaitForEndOfFrame();
             AI ai = getAI();
             ai.path = recorder.get_path();
+            Debug.Log("Before Call AI");
             CallAI(ai);
         }
 
