@@ -31,7 +31,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3130653636745741582}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -114,7 +113,6 @@ RectTransform:
   - {fileID: 3130653637257006747}
   - {fileID: 3130653635583951346}
   m_Father: {fileID: 5811805595156870610}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -270,7 +268,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5811805595156870610}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -346,7 +343,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3130653636745741582}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -409,6 +405,7 @@ GameObject:
   - component: {fileID: 5811805595156870608}
   - component: {fileID: 5811805595156870611}
   - component: {fileID: 7713547849145849555}
+  - component: {fileID: 5549595549994162097}
   m_Layer: 5
   m_Name: Scroll tool button and text
   m_TagString: Untagged
@@ -431,7 +428,6 @@ RectTransform:
   - {fileID: 3130653636745741582}
   - {fileID: 3130653637074388649}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -502,3 +498,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 2d1d3403-819a-41d1-9332-33b08cc7c17c
+  persistent: 1
+  defaultValue: 
+--- !u!114 &5549595549994162097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5811805595156870189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3256b2bf7818467b9bf42284b6492832, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

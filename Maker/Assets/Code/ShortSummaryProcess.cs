@@ -7,7 +7,7 @@ namespace Code
 {
     public class ShortSummaryProcess: QuickHelpProcess
     {
-        protected override void CallAI(AI ai)
+        protected override void CallAI(AI.AI ai)
         {
             ai.Summary(); 
         }  

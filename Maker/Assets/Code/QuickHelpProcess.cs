@@ -9,7 +9,7 @@ namespace Code
     public abstract class QuickHelpProcess: Process
     {
         
-        protected abstract void CallAI(AI ai);
+        protected abstract void CallAI(AI.AI ai);
         
         public override ProcessResult Execute()
         {
@@ -27,7 +27,7 @@ namespace Code
             LeanPulse notification = getNotification();
             recorder.Screenshot(notification);
             yield return new WaitForEndOfFrame();
-            AI ai = getAI();
+            AI.AI ai = getAI();
             ai.path = recorder.get_path();
             Debug.Log("Before Call AI");
             CallAI(ai);
