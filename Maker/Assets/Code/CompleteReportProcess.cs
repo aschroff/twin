@@ -7,7 +7,7 @@ namespace Code
 {
     public class CompleteReportProcess: QuickHelpProcess
     {
-        protected override void CallAI(AI ai)
+        protected override void CallAI(AI.AI ai)
         {
             ai.CompleteReport(); 
         }  
