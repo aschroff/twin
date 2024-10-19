@@ -22,7 +22,7 @@ namespace Code.AI.PromptGeneration
             foreach (IRoot root in roots)
             {
 
-                    prompt += root.Chapter(help);
+                    prompt += root.Chapter(help) + "\n ";
                 
             }
             return prompt;

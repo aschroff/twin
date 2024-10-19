@@ -12,6 +12,7 @@ namespace Code.AI
             ShortSummary,
             Treatment,
             CompleteReport,
+            Situation
         }
 
         public ISet<Help> Whatever; 
@@ -56,11 +57,32 @@ namespace Code.AI
             prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.Treatment);
             OneShot(prompt, path);
         }
-    
-        private void OneShot(string prompt, string imagePath)
+        
+        public void Situation(string language)
         {
-            string promptWithImage = prompt + "#IMAGEPATH#" + imagePath + "#IMAGEPATHEND#";
-            ChatGPTwin.Request(promptWithImage, parameters, completeCallback: text => {
+
+            string prompt = "Send back the following text ";
+            if (language != "English")
+            {
+                prompt += " translated into " + language +", without any further changes: \n";
+            }
+            else
+            {
+                prompt += ", without any further changes except for correction of spelling mistakes: \n";
+            }
+            prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.Situation);
+            OneShot(prompt);
+        }
+     
+        private void OneShot(string prompt, string imagePath="")
+        {
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                prompt +=  "#IMAGEPATH#" + imagePath + "#IMAGEPATHEND#";              
+            }
+
+            characterDescription.text = "<in progress> ";
+            ChatGPTwin.Request(prompt, parameters, completeCallback: text => {
                 // We've received the full text of the answer, so we can display it in the "You're chatting with" text.
                 characterDescription.text = text;
             }, failureCallback: (errorCode, errorMessage) => {
@@ -70,6 +92,8 @@ namespace Code.AI
                 characterDescription.color = Color.red;
             });
         }
+        
+        
         
         
     }
