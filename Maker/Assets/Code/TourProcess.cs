@@ -7,7 +7,7 @@ namespace Code
     public class TourProcess: Process
     {
 
-        public override ProcessResult Execute()
+        public override ProcessResult Execute(string variant = "")
         {
             StartCoroutine(execute());
             return new ProcessResult();

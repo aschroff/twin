@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Code;
+using Code.AI;
 using Lean.Gui;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public class ProcessResult
 public abstract class Process : MonoBehaviour
 {
    
-   public abstract ProcessResult Execute();
+   public abstract ProcessResult Execute(string variant = "");
 
    private ProcessManager processManager()
    {
@@ -54,8 +55,8 @@ public abstract class Process : MonoBehaviour
       return processManager().ai;
    }
    
-   public void Handle()
+   public void Handle(string variant = "")
    {
-      Execute();
+      Execute(variant);
    }
 }

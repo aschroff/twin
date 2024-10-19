@@ -5,12 +5,15 @@ using UnityEngine;
 
 namespace Code
 {
-    public class CompleteReportProcess: QuickHelpProcess
+    public class SituationProcess: QuickHelpProcess
     {
+        public string language = "English";
         protected override void CallAI(AI.AI ai,string variant = "")
         {
-            ai.CompleteReport(); 
+            ai.Situation(variant); 
         }  
+        
+        
         
     }
 }
