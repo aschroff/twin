@@ -17571,6 +17571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   listening: 1
   commandDatas: []
+  viewManager: {fileID: 722981551}
   groups: []
   startNewPart: 1
   startNewGroup: 1
@@ -17584,6 +17585,14 @@ MonoBehaviour:
   currentPart:
     partCommands: []
     id: 
+    view:
+      name: 
+      positionCamera_x: 0
+      positionCamera_y: 0
+      positionCamera_z: 0
+      sizeCamera: 0
+      pitch: 0
+      yaw: 0
   references:
     version: 2
     RefIds: []
