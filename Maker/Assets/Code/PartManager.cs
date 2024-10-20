@@ -7,13 +7,12 @@ using System;
 
 public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 {
-
-	/// <summary>Aggregates single commands by the same tool created in a single sequence</summary>
-	//[SerializeField] protected List<PartData> parts = new List<PartData>();
+	[SerializeField] public ViewManager viewManager;
 	[SerializeField] public List<GroupData> groups;
 	[SerializeField] public bool startNewPart = true;
 	[SerializeField] public bool startNewGroup = true;
 	[SerializeField] private GroupData CurrentGroup;
+	
 	public GroupData currentGroup 
 	{
 		get { return CurrentGroup; }
@@ -26,7 +25,8 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	private GameObject lastActiveTool;
 	private P3dPaintableTexture lastTexture;
 	//[SerializeField] public bool temp_skiploading = false;
-
+	
+	
 	private void SetCurrentGroup(GroupData value)
 	{
 		if (CurrentGroup != null)
@@ -42,6 +42,17 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	private void Start()
 	{
 		listTools = GameObject.FindGameObjectsWithTag("Tools")[0];
+		InteractionController.OnModeChange += HandleModeChange;
+	}
+	
+	private void HandleModeChange(GameObject modeOld, GameObject modeNew)
+	{
+		List<string> viewChangingModes = new List<string> { "MainMode", "Shape", "MoveMode" };
+		if (modeOld.name.Contains("Edit") && viewChangingModes.Contains(modeNew.name))
+		{
+			Debug.Log(modeOld.name + "-> " + modeNew.name);
+			startNewPart = true;
+		}
 	}
 
 	public GameObject relatedGameObject()
@@ -64,6 +75,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		public List<CommandDataTwin> partCommands = new List<CommandDataTwin>();
 		public string id;
+		public SceneManagement.View view;
 	}
 
 	[System.Serializable]
@@ -91,15 +103,12 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	public void addCommand(CommandDataTwin commandData)
 	{
-		if (startNewPart == true)
+		if (startNewPart)
 		{
 			PartData newPart = new PartData();
 			newPart.id = System.Guid.NewGuid().ToString();
 			newPart.partCommands.Add(commandData);
-			//parts.Add(newPart);
-			currentPart = newPart;
 			HandleNewPart(newPart);
-			startNewPart = false;
 			setActiveTool();
 			lastActiveTool = activeTool;
 			lastTexture = commandData.data.PaintableTexture;
@@ -118,7 +127,6 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			addCommand(commandData);
 			return;
 		}
-		//parts[^1].partCommands.Add(commandData);
 		currentPart.partCommands.Add(commandData);
 
 	}
@@ -161,10 +169,13 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	private void HandleNewPart(PartData newPart)
 	{
+		StoreCurrentPartView();
+		currentPart = newPart;
 		if (CurrentGroup != null)
         {
 			CurrentGroup.groupParts.Add(newPart);
 		}
+		startNewPart = false;
 		
 	}
 
@@ -204,7 +215,6 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		PartData newPart = new PartData();
 		newPart.id = id;
-		//parts.Add(newPart);
 		groupdata.groupParts.Add(newPart);
 		return newPart;
 
@@ -220,8 +230,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	public void SaveData(ConfigData data)
 	{
-		//currentPart = null;
-		//CurrentGroup = null;
+		StoreCurrentPartView();
 		startNewGroup = true;
 		startNewPart = true;
 		var json = JsonUtility.ToJson(this);
@@ -460,6 +469,26 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			groupmanagerGameobject = GameObject.FindGameObjectsWithTag("Groupmanager")[0];
 		}
 		return groupmanagerGameobject;
+	}
+
+	private void StoreCurrentPartView()
+	{
+		if (currentPart != null && viewManager != null)
+		{
+			Debug.Log("Store current part view");
+			currentPart.view = viewManager.shootView();
+		}
+		else
+		{
+			Debug.Log("Cannot store current part view because current part or viewmanager is null");
+		}
+	}
+
+	public void EnforceNewPart()
+	{
+		StoreCurrentPartView();
+		Debug.Log("Enforce new part");
+		startNewPart = true;
 	}
 	
 	

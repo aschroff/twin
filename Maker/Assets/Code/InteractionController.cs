@@ -13,6 +13,16 @@ public class  InteractionController : Singleton<InteractionController>
 
     GameObject currentMode;
 
+        
+    public delegate void ModeChange(GameObject modeOld, GameObject modeNew);
+    public static event ModeChange OnModeChange;
+
+    private static void RaiseModeChange(GameObject modeOld, GameObject modeNew)
+    {
+        OnModeChange?.Invoke(modeOld, modeNew);
+    }
+    
+
     void Awake()
     {
         base.Awake();
@@ -52,7 +62,8 @@ public class  InteractionController : Singleton<InteractionController>
         if (mode == currentMode)
             yield break;
         if (currentMode)
-        {
+        {   
+            RaiseModeChange(currentMode, mode);
             currentMode.SetActive(false);
             yield return null;
         }
