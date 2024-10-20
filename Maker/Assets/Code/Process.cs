@@ -55,6 +55,11 @@ public abstract class Process : MonoBehaviour
       return processManager().ai;
    }
    
+   protected PartManager getPartManager()
+   {
+      return processManager().partManager;
+   }
+   
    public void Handle(string variant = "")
    {
       Execute(variant);

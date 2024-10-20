@@ -303,6 +303,19 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		//last.Pool();
 		return last;
 	}
+	public P3dCommand RefreshPart(PartData partData)
+	{
+		var oldListening = listening;
+		P3dCommand last = null;
+		listening = false;
+		foreach (CommandDataTwin commandData in partData.partCommands)
+		{
+			last = this.Apply(commandData);
+		}
+		listening = oldListening;
+		return last;
+	}
+	
 	[ContextMenu("Erase texture")]
 	public void Erase()
 	{
@@ -446,6 +459,12 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		Erase();
 		Refresh();
+	}
+	
+	public void ClearRefreshPart(PartData partData)
+	{
+		Erase();
+		RefreshPart(partData);
 	}
 
 
