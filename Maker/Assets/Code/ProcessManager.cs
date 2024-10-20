@@ -12,5 +12,6 @@ namespace Code
         [SerializeField] public Body body;
         [SerializeField] public LeanPulse notification;
         [SerializeField] public AI.AI ai;
+        [SerializeField] public PartManager partManager;
     }
 }
