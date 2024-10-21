@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class TwinNameValidator : MonoBehaviour
-{ 
+{
+    [SerializeField] private bool disableValidation = false;
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
 
     private InputField nameInputField;
@@ -15,11 +16,18 @@ public class TwinNameValidator : MonoBehaviour
 
 
     private void Start()
-    {   
-        nameInputField = this.GetComponent<InputField>();
-        nameInputField.onValueChanged.AddListener(ValidateInput);
-        nameInputField.onEndEdit.AddListener(ValidateInput);
+    {
+        if (disableValidation)
+        {
+            Debug.LogWarning("Twin Name Validation is currently disabled!");
+        }
+        else {
+            nameInputField = this.GetComponent<InputField>();
+            nameInputField.onValueChanged.AddListener(ValidateInput);
+            nameInputField.onEndEdit.AddListener(ValidateInput);
+        }
     }
+        
 
     public void ValidateInput(string input)
     {
@@ -57,7 +65,7 @@ public class TwinNameValidator : MonoBehaviour
 
     public bool CheckInput(string input)
     {
-        return true; //Regex.IsMatch(input, nameRegex) && !dataPersistenceManager.ExistsProfileId(input);
+        return Regex.IsMatch(input, nameRegex) && !dataPersistenceManager.ExistsProfileId(input);
     }
 
     private void DisplayErrorMessage(string errorMessage) {
