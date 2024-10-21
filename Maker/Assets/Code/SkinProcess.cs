@@ -10,7 +10,7 @@ namespace Code
     public class SkinProcess: Process
     {
 
-        public override ProcessResult Execute()
+        public override ProcessResult Execute(string variant = "")
         {
             Body body = getBody();
             P3dPaintableTexture bodyTexture = body.gameObject.transform.parent.GetComponentInChildren<P3dPaintableTexture>();
