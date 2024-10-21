@@ -9,16 +9,16 @@ namespace Code
     public abstract class QuickHelpProcess: Process
     {
         
-        protected abstract void CallAI(AI ai);
+        protected abstract void CallAI(AI.AI ai, string variant = "");
         
-        public override ProcessResult Execute()
+        public override ProcessResult Execute(string variant = "")
         {
-           execute();
+           StartCoroutine(execute(variant));
             return new ProcessResult();
         }
         
         
-        private void execute()
+        private IEnumerator execute(string variant = "")
         {
             Recorder recorder = getRecorder();
             DataPersistenceManager dataManager = getDataManager();
@@ -26,9 +26,11 @@ namespace Code
             recorder.folder = dataManager.selectedProfileId;
             LeanPulse notification = getNotification();
             recorder.Screenshot(notification);
-            AI ai = getAI();
+            yield return new WaitForEndOfFrame();
+            AI.AI ai = getAI();
             ai.path = recorder.get_path();
-            CallAI(ai);
+            Debug.Log("Before Call AI");
+            CallAI(ai, variant);
         }
 
 

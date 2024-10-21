@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Code
 {
-    public class TourProcess: Process
+    public class PartsProcess: Process
     {
 
         public override ProcessResult Execute(string variant = "")
@@ -16,22 +16,28 @@ namespace Code
         
         private IEnumerator execute()
         {
-            Debug.Log("Start Screenshots");
+            Debug.Log("Start Screenshots Parts");
             ViewManager viewManager = getViewmanager();
             SceneManagement.View currentView = viewManager.shootView();
             Recorder recorder = getRecorder();
             DataPersistenceManager dataManager = getDataManager();
             List<GameObject> listActive = recorder.Prepare();
-            foreach (SceneManagement.View view in getStandardViewManager().views)
+            PartManager partManager = getPartManager();
+            foreach (PartManager.GroupData group in partManager.groups)
             {
-                viewManager.select(view);
-                recorder.name = dataManager.selectedProfileId + " - " + view.name;
-                recorder.folder = dataManager.selectedProfileId;
-                yield return new WaitForEndOfFrame();
-                recorder.Do();
+                int partCounter = 0;
+                foreach (PartManager.PartData part in group.groupParts)
+                {
+                    partManager.ClearRefreshPart(part);
+                    viewManager.select(part.view);
+                    recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + partCounter;
+                    recorder.folder = dataManager.selectedProfileId;
+                    yield return new WaitForEndOfFrame();
+                    recorder.Do();
+                }
             }
             recorder.Reset(listActive);
-            recorder.name = dataManager.selectedProfileId + " - <view name>";
+            recorder.name = dataManager.selectedProfileId;
             recorder.Post(getNotification());
             viewManager.select(currentView);
             
