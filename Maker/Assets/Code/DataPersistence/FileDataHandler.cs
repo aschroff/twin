@@ -4,17 +4,21 @@ using UnityEngine;
 using System;
 using System.IO;
 
+
+
 public class FileDataHandler
 {
     private string dataDirPath = "";
+    private string templateDirPath = "";
     private string dataFileName = "";
     private bool useEncryption = false;
     private readonly string encryptionCodeWord = "word";
     private readonly string backupExtension = ".bak";
 
-    public FileDataHandler(string dataDirPath, string dataFileName, bool useEncryption) 
+    public FileDataHandler(string dataDirPath, string templateDirPath, string dataFileName, bool useEncryption) 
     {
         this.dataDirPath = dataDirPath;
+        this.templateDirPath = templateDirPath;
         this.dataFileName = dataFileName;
         this.useEncryption = useEncryption;
     }
@@ -29,6 +33,66 @@ public class FileDataHandler
 
         // use Path.Combine to account for different OS's having different path separators
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
+        ConfigData loadedData = null;
+        if (File.Exists(fullPath)) 
+        {
+            try 
+            {
+                // load the serialized data from the file
+                string dataToLoad = "";
+                using (FileStream stream = new FileStream(fullPath, FileMode.Open))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        dataToLoad = reader.ReadToEnd();
+                    }
+                }
+
+                // optionally decrypt the data
+                if (useEncryption) 
+                {
+                    dataToLoad = EncryptDecrypt(dataToLoad);
+                }
+
+                // deserialize the data from Json back into the C# object
+                loadedData = JsonUtility.FromJson<ConfigData>(dataToLoad);
+            }
+            catch (Exception e) 
+            {
+                // since we're calling Load(..) recursively, we need to account for the case where
+                // the rollback succeeds, but data is still failing to load for some other reason,
+                // which without this check may cause an infinite recursion loop.
+                if (allowRestoreFromBackup) 
+                {
+                    Debug.LogWarning("Failed to load data file. Attempting to roll back.\n" + e);
+                    bool rollbackSuccess = AttemptRollback(fullPath);
+                    if (rollbackSuccess)
+                    {
+                        // try to load again recursively
+                        loadedData = Load(profileId, false);
+                    }
+                }
+                // if we hit this else block, one possibility is that the backup file is also corrupt
+                else 
+                {
+                    Debug.LogError("Error occured when trying to load file at path: " 
+                        + fullPath  + " and backup did not work.\n" + e);
+                }
+            }
+        }
+        return loadedData;
+    }
+    
+    public ConfigData LoadFromTemplate(string profileId, bool allowRestoreFromBackup = true) 
+    {
+        // base case - if the profileId is null, return right away
+        if (profileId == null) 
+        {
+            return null;
+        }
+
+        // use Path.Combine to account for different OS's having different path separators
+        string fullPath = Path.Combine(templateDirPath, profileId, dataFileName);
         ConfigData loadedData = null;
         if (File.Exists(fullPath)) 
         {
@@ -204,13 +268,12 @@ public class FileDataHandler
                 Debug.LogError("Tried to load profile but something went wrong. ProfileId: " + profileId);
             }
         }
-
         return profileDictionary;
     }
 
     public string GetMostRecentlyUpdatedProfileId() 
     {
-        string mostRecentProfileId = "default.000";
+        string mostRecentProfileId = null;
 
         Dictionary<string, ConfigData> profilesGameData = LoadAllProfiles();
         foreach (KeyValuePair<string, ConfigData> pair in profilesGameData) 
@@ -294,5 +357,41 @@ public class FileDataHandler
         string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
         //check for Existence
         return File.Exists(fullPath);
+    }
+    
+    public void AllTemplates() 
+    {
+
+        // loop over all directory names in the data directory path
+        IEnumerable<DirectoryInfo> dirInfos = new DirectoryInfo(templateDirPath).EnumerateDirectories();
+        foreach (DirectoryInfo dirInfo in dirInfos) 
+        {
+            string profileId = dirInfo.Name;
+            string fullPathSource = Path.Combine(templateDirPath, profileId, dataFileName);
+            string fullPathSourceDir = Path.Combine(templateDirPath, profileId);
+            string fullPathTargetDir = Path.Combine(dataDirPath, profileId);
+            string fullPathTarget = Path.Combine(dataDirPath, profileId, dataFileName);
+            string dataToLoad = "";
+            using (FileStream stream = new FileStream(fullPathSource, FileMode.Open))
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    dataToLoad = reader.ReadToEnd();
+                }
+            }
+            Directory.CreateDirectory(fullPathTargetDir);
+            System.IO.File.WriteAllText(fullPathTarget, dataToLoad);
+            DirectoryInfo dirTemplate = new DirectoryInfo(fullPathSourceDir);
+            foreach (var file in dirTemplate.GetFiles())
+            {
+                if (!file.Name.Contains(".meta") && file.Name.Contains(".png"))
+                {
+                    string fullPathSourceFilePng = Path.Combine(templateDirPath, profileId, file.Name);
+                    string fullPathTargetFilePng = Path.Combine(dataDirPath, profileId, file.Name);
+                    File.Copy(fullPathSourceFilePng, fullPathTargetFilePng, true);
+                }
+            }
+        }
+            
     }
 }

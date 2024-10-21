@@ -29,7 +29,14 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	private void SetCurrentGroup(GroupData value)
 	{
+		if (CurrentGroup != null)
+		{
+			CurrentGroup.selected = false;
+		}
+		
 		CurrentGroup = value;
+		value.selected = true;
+
 	}
 	
 	private void Start()
@@ -67,6 +74,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		public string id;
 		public string name;
 		public bool visible;
+		public bool selected;
 	}
 
 	private void setActiveTool()
@@ -241,6 +249,14 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		{
 			Erase();
 		}
+
+		foreach (GroupData group in groups)
+		{
+			if (group.selected == true)
+			{
+				currentGroup = group;
+			}
+		}
 	}
 	private P3dCommand Apply(CommandDataTwin commandData)
 	{
@@ -340,6 +356,19 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		groupData.group = null;
 		groups.Remove(groupData);
 		Debug.Log("Removed group: " + id);
+	}
+
+	public GroupData trySetCurrentGroupIfEmpty()
+	{
+		if (currentGroup == null)
+		{
+			if (groups.Count > 0)
+			{
+				currentGroup = groups[0];
+				return groups[0];
+			}
+		}
+		return null;
 	}
 	public void deletePart(PartData partData)
 	{

@@ -9,7 +9,7 @@ public class VersionManager : FileManager
     {
         return false;
     } 
-    private string GetProfile()
+    public override string GetProfile()
     {
         string name = fileManager.versionProfile;
         if ( name.Contains('.'))
@@ -23,4 +23,5 @@ public class VersionManager : FileManager
     {
         return dataManager.GetAllVersionsGameData(GetProfile());
     }
+    
 }

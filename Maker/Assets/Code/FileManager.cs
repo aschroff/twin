@@ -6,6 +6,7 @@ using System.Linq;
 using Lean.Transition;
 using UnityEngine.UI;
 using System;
+using Lean.Gui;
 
 public class FileManager : MonoBehaviour
 {
@@ -14,19 +15,31 @@ public class FileManager : MonoBehaviour
     [SerializeField] public GameObject inputFieldName;
     private Dictionary<string, string> profiles = new Dictionary<string, string>();
     [SerializeField] public GameObject inputFieldVersion;
+    [SerializeField] public Recorder recorder;
+    [SerializeField] public LeanPulse notification;
     public string versionProfile;
 
     protected virtual bool GetVersionButton()
     {
         return true;
     } 
+
+    public virtual string GetProfile()
+    {
+        return inputFieldName.transform.Find("Text").GetComponent<Text>().text.ToString();
+    }
     
-    
+
+    void OnEnable()
+    {
+        Refresh();
+    }
+
     
     // Start is called before the first frame update
     void Start()
     {
-        Create();
+        //Create();
     }
     
 
@@ -79,14 +92,14 @@ public class FileManager : MonoBehaviour
         }
         else
         {
-            buttonDelete.onClick.AddListener(() => { Remove(entry.Key); });
+            buttonDelete.onClick.AddListener(() => { Remove(entry.Value.name+"."+entry.Value.version); });
             buttonSelect.gameObject.SetActive(false);
             buttonSelect.interactable = false;
             buttonUnselect.gameObject.SetActive(true);
             buttonUnselect.interactable = true;
             buttonUnselect.onClick.AddListener(() => { Select(entry.Value.name,entry.Value.version); });
         }
-        buttonDetail.onClick.AddListener(() => { Detail(entry.Key); });
+        buttonDetail.onClick.AddListener(() => { Detail(entry.Key, entry.Value.name,entry.Value.version); });
         buttonDetail.gameObject.SetActive(GetVersionButton());
         
         
@@ -94,21 +107,23 @@ public class FileManager : MonoBehaviour
     }
 
     public virtual Dictionary<string, ConfigData> GetProfilesGameData()
+
     {
         return dataManager.GetAllProfileNamesGameData();
     }
     
     private void Select(string profile, string version = "")
     {
+        Debug.Log("Select: " + profile + "." + version);
         foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
         {
             if (entry.Key == profile+"."+version)
             {
                 dataManager.ChangeSelectedProfileId(profile+"."+version);
                 break;
-            }
+             }
         }
-        Refresh();
+         Refresh();
        }
 
     private void Remove(string profile)
@@ -118,9 +133,39 @@ public class FileManager : MonoBehaviour
         inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
     }
     
-    private void Detail(string profile)
+    private void Detail(string profile, string profile_raw, string version = "")
     {
+        if (dataManager.selectedProfileId != profile_raw + "." + version)
+        {
+            Select(profile_raw, version);
+        }
         versionProfile = profile;
-        InteractionController.EnableMode("Version");
+        InteractionController.EnableMode("Menu");
     }
+    
+    public void RemoveCurrent()
+    {
+        string name = versionProfile;
+        if ( name.Contains('.'))
+        {
+            name = name.Remove(name.LastIndexOf("."));
+        }
+        foreach (KeyValuePair<string, ConfigData> version in dataManager.GetAllVersionsGameData(name))
+        {
+            dataManager.DeleteProfileData(name + "." + version.Key);
+        }
+        Refresh();
+        inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
+        InteractionController.EnableMode("Save");
+    }
+
+    
+    public void Screenshot()
+    {
+        recorder.name = dataManager.selectedProfileId;
+        recorder.folder = dataManager.selectedProfileId;
+        recorder.Screenshot(notification);
+    }
+    
+    
 }

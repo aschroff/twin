@@ -3,7 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
+using RotaryHeart.Lib.SerializableDictionary;
+using Application = UnityEngine.Application;
 
+[Serializable]
+public class StickerFiles : SerializableDictionaryBase<string, Texture2D> { }
+[Serializable]
+public class Template
+{
+    public TextAsset configFile;
+    public StickerFiles stickerFiles;
+}
+[Serializable]
+public class Templates : SerializableDictionaryBase<string, Template> { }
 
 public class DataPersistenceManager : MonoBehaviour
 {
@@ -19,6 +32,9 @@ public class DataPersistenceManager : MonoBehaviour
 
     [Header("Auto Saving Configuration")]
     [SerializeField] private float autoSaveTimeSeconds = 60f;
+    
+    [Header("Templates")]
+    [SerializeField] private Templates  templates;
 
     private ConfigData configData;
     private List<IDataPersistence> dataPersistenceObjects;
@@ -27,6 +43,7 @@ public class DataPersistenceManager : MonoBehaviour
     private Coroutine autoSaveCoroutine;
 
     public static DataPersistenceManager instance { get; private set; }
+    
 
     private void Awake() 
     {
@@ -44,16 +61,17 @@ public class DataPersistenceManager : MonoBehaviour
             Debug.LogWarning("Data Persistence is currently disabled!");
         }
 
-        this.dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+        this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
 
         InitializeSelectedProfileId();
     }
 
     private void Start()
     {
-        this.dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+        this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadConfig();
+        initPersistentObjects();
     }
 
     
@@ -65,11 +83,7 @@ public class DataPersistenceManager : MonoBehaviour
         this.selectedProfileId = newProfileId;
         // load the game, which will use that profile, updating our game data accordingly
         LoadConfig();
-        // push the loaded data to all other scripts that need it
-        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
-        {
-            handleChange(dataPersistenceObj);
-        }
+        initPersistentObjects();
     }
 
     public void DeleteProfileData(string profileId) 
@@ -79,6 +93,20 @@ public class DataPersistenceManager : MonoBehaviour
             return;
         }
         
+        // delete the data for this profile id
+        dataHandler.Delete(profileId);
+        
+        
+        // push the loaded data to all other scripts that need it
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            handleDelete(dataPersistenceObj, profileId);
+        }
+    }
+    
+    public void DeleteAllVersions(string profileId) 
+    {
+       
         // delete the data for this profile id
         dataHandler.Delete(profileId);
         
@@ -102,9 +130,9 @@ public class DataPersistenceManager : MonoBehaviour
     
     public void createNewConfig(String newProfile)
     {
+        SaveConfig();
         string version = "";
         string name = "";
-        SaveConfig();
         if ((newProfile.Contains('.') == false))
         {
             version = "000";
@@ -119,12 +147,28 @@ public class DataPersistenceManager : MonoBehaviour
         NewConfig(name, version);
         selectedProfileId = newProfile;
         LoadConfig();
+        initPersistentObjects();
     }
 
     public void saveAsConfig(String newProfile) 
     {
         SaveConfig();
         selectedProfileId = newProfile;
+        string version = "";
+        string name = "";
+        if ((newProfile.Contains('.') == false))
+        {
+            version = "000";
+            name = newProfile;
+            newProfile = newProfile + "." + version;
+        }
+        else 
+        {
+            version = newProfile.Split('.').Last();
+            name = newProfile.Remove(newProfile.LastIndexOf(".")) ;
+        }
+        this.configData.version = version;
+        this.configData.name = name;
         SaveConfig();
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {
@@ -138,16 +182,30 @@ public class DataPersistenceManager : MonoBehaviour
     
     public void ResetApp()
     {
-        selectedProfileId = "default-temp-for-deleting";
+        selectedProfileId = "default-temp-for-deleting.000";
         foreach (KeyValuePair<string, ConfigData> profile in GetAllProfilesGameData()  )
         {
             DeleteProfileData(profile.Key);
+        }
+        foreach (KeyValuePair<string, Template> template in templates)
+        {
+            string content = template.Value.configFile.text;
+            string path = Path.Combine(Application.persistentDataPath,template.Key);
+            Directory.CreateDirectory(path);
+            System.IO.File.WriteAllText(Path.Combine(Application.persistentDataPath,template.Key, "ConfigTwin"), content);
+            foreach (KeyValuePair<string, Texture2D> stickerFile in template.Value.stickerFiles)
+            {
+                byte[] bytes = stickerFile.Value.EncodeToPNG();
+                File.WriteAllBytes(Path.Combine(Application.persistentDataPath,template.Key, stickerFile.Key + ".png"), bytes);
+            }
 
+            
         }
         NewConfig("default", "000");
-        selectedProfileId = "default";
-        LoadConfig();
+        selectedProfileId = "default.000";
+        initPersistentObjectsLoadOnly();
         SaveConfig();
+        Debug.Log("End Reset");
     }
     
     public void LoadConfig()
@@ -175,7 +233,38 @@ public class DataPersistenceManager : MonoBehaviour
         }
         this.configData.version = selectedProfileId.Split('.').Last();
         this.configData.name = selectedProfileId.Remove(selectedProfileId.LastIndexOf(".")) ;
+    }
+    
+    public void LoadConfigFromTemplate()
+    {
+        // return right away if data persistence is disabled
+        if (disableDataPersistence) 
+        {
+            return;
+        }
 
+        // load any saved data from a file using the data handler
+        this.configData = dataHandler.LoadFromTemplate(selectedProfileId);
+
+        // start a new game if the data is null and we're configured to initialize data for debugging purposes
+        if (this.configData == null && initializeDataIfNull) 
+        {
+            NewConfig(selectedProfileId, "000");
+        }
+
+        // if no data can be loaded, don't continue
+        if (this.configData == null) 
+        {
+            Debug.Log("No data was found. A New Game needs to be started before data can be loaded.");
+            return;
+        }
+        this.configData.version = selectedProfileId.Split('.').Last();
+        this.configData.name = selectedProfileId.Remove(selectedProfileId.LastIndexOf(".")) ;
+        initPersistentObjects();
+    }
+
+    private void initPersistentObjects()
+    {
         // push the loaded data to all other scripts that need it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {
@@ -187,10 +276,23 @@ public class DataPersistenceManager : MonoBehaviour
         }
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
         {
-            handleChange(dataPersistenceObj);
+            handleChange(dataPersistenceObj); 
         }
     }
-
+    
+    private void initPersistentObjectsLoadOnly()
+    {
+        // push the loaded data to all other scripts that need it
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            dataPersistenceObj.LoadData(configData);
+        }
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        {
+            handlePostLoad(dataPersistenceObj);
+        }
+    }
+    
     public void SaveConfig()
     {
         // return right away if data persistence is disabled
@@ -254,10 +356,15 @@ public class DataPersistenceManager : MonoBehaviour
         {
             if (profileDictionary.ContainsKey(profile.Value.name))
             {
+                if (profileDictionary[profile.Value.name].lastUpdated < profile.Value.lastUpdated)
+                {
+                    profileDictionary[profile.Value.name] = profile.Value;
+                }
                 continue;
-            }
+            } 
             profileDictionary.Add(profile.Value.name, profile.Value);
         }
+
 
         return profileDictionary;
     }
@@ -276,6 +383,7 @@ public class DataPersistenceManager : MonoBehaviour
 
         return profileDictionary;
     }
+
           
     
     private IEnumerator AutoSave() 
@@ -292,10 +400,8 @@ public class DataPersistenceManager : MonoBehaviour
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)
         {
-            Debug.Log("Post processing for component");
             if(component is ItemHash) 
             {
-                Debug.Log("Found a component that inherits from ItemHash.");
                 ItemHash hashComponent = component as ItemHash;
                 hashComponent.handleAwake();
                 break;
@@ -308,10 +414,8 @@ public class DataPersistenceManager : MonoBehaviour
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)
         {
-            Debug.Log("Name change for components with profile dependent (file) name");
             if(component is ItemFile) 
             {
-                Debug.Log("Found a component that inherits from ItemFile.");
                 ItemFile fileComponent = component as ItemFile;
                 fileComponent.handleChange(selectedProfileId);
                 break;
@@ -323,10 +427,8 @@ public class DataPersistenceManager : MonoBehaviour
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)
         {
-            Debug.Log("Name change for components with profile dependent (file) name");
             if(component is ItemFile) 
             {
-                Debug.Log("Found a component that inherits from ItemFile.");
                 ItemFile fileComponent = component as ItemFile;
                 fileComponent.handleCopyChange(selectedProfileId);
                 break;
@@ -337,10 +439,8 @@ public class DataPersistenceManager : MonoBehaviour
         MonoBehaviour[] components = persistentObject.relatedGameObject().GetComponents<MonoBehaviour>();
         foreach(MonoBehaviour component in components)
         {
-            Debug.Log("Delete for components with profile dependent (file) name");
             if(component is ItemFile) 
             {
-                Debug.Log("Found a component that inherits from ItemFile.");
                 ItemFile fileComponent = component as ItemFile;
                 fileComponent.handleDelete(deleteProfileID);
                 break;
@@ -353,4 +453,5 @@ public class DataPersistenceManager : MonoBehaviour
         }
         return dataHandler.Exists(profileId);
     }
+    
 }

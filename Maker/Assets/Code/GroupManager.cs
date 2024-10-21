@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Lean.Gui;
 using UnityEngine.UI;
 
 public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
@@ -10,8 +11,10 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     private string childTagDelete = "GroupDelete"; 
     [SerializeField] public PartManager partmanager;
     [SerializeField] public GameObject prefab;
+    [SerializeField] public LeanPulse notification;
     public void build()
     {
+        PartManager.GroupData saveCurrentGroup = partmanager.currentGroup;
         bool tempListening = partmanager.Listening;
         partmanager.Listening = false;
         foreach (PartManager.GroupData groupdata in partmanager.groups) 
@@ -21,6 +24,11 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         }
         //this.Refresh();
         partmanager.Listening = tempListening;
+        if (saveCurrentGroup != null && saveCurrentGroup.group != null)
+        {
+            saveCurrentGroup.group.HandleEdit();
+        }
+        
     }
     
     
@@ -31,7 +39,6 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
             GameObject child = this.transform.GetChild(j).gameObject;
             Destroy(child);
         }
-        Debug.Log("not found");
         partmanager.Listening = tempListening;
     }
 
@@ -87,8 +94,28 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     public void DeleteGroup(PartManager.GroupData groupdata, GameObject gameobjectGroup)
     {
         groupdata.group.persistent = false;
-        partmanager.deleteGroup(groupdata); 
-     
+        partmanager.deleteGroup(groupdata);
+        if (partmanager.currentGroup == null)
+        {
+            if (partmanager.trySetCurrentGroupIfEmpty() == null)
+            {
+                foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
+                {
+                    text.text = "No group selectable because no group is available";
+                }
+            }
+            else
+            {
+                foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
+                {
+                    text.text = "The group " + partmanager.currentGroup.name + " is now selected";
+                }
+                partmanager.currentGroup.group.HandleEdit();
+            }
+            notification.Pulse();
+        }
+        
+        
         Text currentGroupText = null; 
         foreach (GameObject currentGroupTextGameObject in GameObject.FindGameObjectsWithTag("CurrentGroup"))
         {
@@ -103,7 +130,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
                 currentGroupText.text = partmanager.currentGroup.name;
             }
         }
-
+        
         
         //gameobjectGroup.SetActive(false);
         Destroy(gameobjectGroup);
@@ -117,7 +144,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
 
     public void Show(bool visible)
     {   
-        RectTransform recttransform = this.gameObject.transform.parent.GetComponent<RectTransform>();
+        RectTransform recttransform = this.gameObject.transform.parent.transform.parent.GetComponent<RectTransform>();
         float width = recttransform.rect.width;
         if (visible & recttransform.anchoredPosition.x  >= 0)
         {
@@ -139,7 +166,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
 
     public void toggleShow()
     {
-        RectTransform recttransform = this.gameObject.transform.parent.GetComponent<RectTransform>();
+        RectTransform recttransform = this.gameObject.transform.parent.transform.parent.GetComponent<RectTransform>();
         bool newVisible = (recttransform.anchoredPosition.x < 0);
         Show(newVisible);
     }

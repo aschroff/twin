@@ -6,24 +6,9 @@ using Lean.Common;
 using Lean.Touch;
 using UnityEngine.UI;
 
-public class ViewManager : MonoBehaviour, IDataPersistence
+public class ViewManager : SceneManagement, IDataPersistence
 {
-    [System.Serializable]
-    public class View  {
-        public string name;
-        public float positionCamera_x;
-        public float positionCamera_y;
-        public float positionCamera_z;
-        public float sizeCamera;
-        public float pitch;
-        public float yaw;
-        
-    }
-    
     [SerializeField] public GameObject prefab;
-    [SerializeField] public List<View> views = new List<View>();
-    [SerializeField] public GameObject mainCamera;
-    [SerializeField] public GameObject body;
     
     private bool cameraEnabled = true;
     
@@ -58,7 +43,7 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         viewObject.GetComponent<ViewLink>().manager = this;
         viewObject.GetComponentInChildren<InputField>().text = view.name;
     }
-    public void createView()
+    public View shootView()
     {
         View view = new View();
         LeanPitchYaw control = body.GetComponent<LeanPitchYaw>();
@@ -69,9 +54,15 @@ public class ViewManager : MonoBehaviour, IDataPersistence
         view.positionCamera_z = mainCamera.transform.position.z;
         LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
         view.sizeCamera = camera.Zoom;
+        return view;
+    }   
+    
+    public void createView()
+    {
+        View view = shootView();
         views.Add(view);
         displayView(view);
-    }                                                                            
+    }   
     
     public void LoadData(ConfigData data)
     {
@@ -146,7 +137,7 @@ public class ViewManager : MonoBehaviour, IDataPersistence
     
     public void Show(bool visible)
     {   
-        RectTransform recttransform = this.gameObject.transform.parent.GetComponent<RectTransform>();
+        RectTransform recttransform = this.gameObject.transform.parent.transform.parent.GetComponent<RectTransform>();
         float width = recttransform.rect.width;
         if (visible & recttransform.anchoredPosition.x  <= 0)
         {
@@ -168,9 +159,16 @@ public class ViewManager : MonoBehaviour, IDataPersistence
 
     public void toggleShow()
     {
-        RectTransform recttransform = this.gameObject.transform.parent.GetComponent<RectTransform>();
+        RectTransform recttransform = this.gameObject.transform.parent.transform.parent.GetComponent<RectTransform>();
         bool newVisible = (recttransform.anchoredPosition.x > 0);
         Show(newVisible);
+    }
+
+    public void AddList()
+    {
+        StandardViewManager standards = this.transform.parent.transform.parent.GetComponent<StandardViewManager>();
+        views.AddRange(standards.views);
+        rebuild();
     }
     
 }
