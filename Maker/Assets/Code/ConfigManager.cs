@@ -94,7 +94,8 @@ public class ConfigManager : MonoBehaviour
         // Here I want to acces the the component from the input field
         // this component twinNameValidator 
         TwinNameValidator nameValidator = inputField.GetComponent<TwinNameValidator>();
-        return nameValidator.CheckInput(inputForTwinName);
+        //return nameValidator.CheckInput(inputForTwinName);
+        return true;
     }
 
 }
