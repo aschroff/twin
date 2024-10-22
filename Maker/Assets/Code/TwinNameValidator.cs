@@ -17,47 +17,82 @@ public class TwinNameValidator : MonoBehaviour
     private void Start()
     {   
         nameInputField = this.GetComponent<InputField>();
-        nameInputField.onValueChanged.AddListener(ValidateInput);
-        nameInputField.onEndEdit.AddListener(ValidateInput);
+        //nameInputField.onValueChanged.AddListener(ValidateInput);
+        //nameInputField.onEndEdit.AddListener(ValidateInput);
     }
 
-    public void ValidateInput(string input)
-    {
-        EnableButtons(false);
-        if (CheckInput(input))
-        {
-            //input matches regex
-            DisplayErrorMessage("");
-            EnableButtons(true);
-            Debug.Log("InputValid: " + input + ", Button interactable.");
-            //enable the button
-        }
-        else if (dataPersistenceManager.ExistsProfileId(input) && !input.Contains("."))
-        {
-            //dot is excluded because of ".", ".." and ".DS_Store" (shown when "ls -a" in folder: Maker)
-            //input is already a foldername
-           EnableButtons(false);
-           DisplayErrorMessage("This twin name is already taken.");
-           Debug.Log("ExistingFolderName: " + input); 
-            
-        }
-        else
-        {
-            EnableButtons(false);
+    public bool validInput(string twinNameWithVersion) {
+        if (twinNameWithVersion.Count(t => t == '.') != 1) {
+            //there has to be exactly one dot in the name - between the twinName and its version
             DisplayErrorMessage("Twin name can only contain following characters: a-z, A-Z, 0-9 and \"_\", \"(\", \")\",\" - \". With length between 1 and 14.");
-            Debug.Log("InvalidUserInput: " + input);
+            return false;
+        }
+        string[] twinName = twinNameWithVersion.Split('.');
+
+        if (dataPersistenceManager.ExistsProfileId(twinName[0]))
+            {
+                //if there is already a twin with this name - the version of this twin should be checked
+                if (twinName[1] != "000")
+                {
+                    DisplayErrorMessage("Twin name can only contain following characters: a-z, A-Z, 0-9 and \"_\", \"(\", \")\",\" - \". With length between 1 and 14.");
+                    return false;
+                } else {
+                //if twinName already exists we know that this twins name is valid
+                    return true;
+                }
+            }
+            else {
+            //if twin Name did not already exists it has to be checked!
+            if (!CheckInput(twinName[0]))
+            {
+                DisplayErrorMessage("Twin name can only contain following characters: a-z, A-Z, 0-9 and \"_\", \"(\", \")\",\" - \". With length between 1 and 14.");
+                return false;
+            }
+            else {
+                return true;
+            }
         }
     }
+
+    //public void ValidateInput(string input)
+    //{
+    //    //EnableButtons(false);
+    //    if (CheckInput(input))
+    //    {
+    //        //input matches regex
+    //        DisplayErrorMessage("");
+    //        //EnableButtons(true);
+    //        Debug.Log("InputValid: " + input + ", Button interactable.");
+    //        //enable the button
+    //    }
+    //    else if (dataPersistenceManager.ExistsProfileId(input) && !input.Contains("."))
+    //    {
+    //        //dot is excluded because of ".", ".." and ".DS_Store" (shown when "ls -a" in folder: Maker)
+    //        //input is already a foldername
+    //        //EnableButtons(false);
+    //        DisplayErrorMessage("This twin name is already taken.");
+    //        Debug.Log("ExistingFolderName: " + input);
+    //    }
+    //    else
+    //    {
+    //        //EnableButtons(false);
+    //        DisplayErrorMessage("Twin name can only contain following characters: a-z, A-Z, 0-9 and \"_\", \"(\", \")\",\" - \". With length between 1 and 14.");
+    //        Debug.Log("InvalidUserInput: " + input);
+    //    }
+    //}
 
     public void ValidateInput()
     {
         string input = nameInputField.text;
-        ValidateInput(input);
+        //ValidateInput(input);
+        validInput(input);
     }
 
     public bool CheckInput(string input)
     {
-        return true; //Regex.IsMatch(input, nameRegex) && !dataPersistenceManager.ExistsProfileId(input);
+        //return true;
+        return Regex.IsMatch(input, nameRegex) /*&& !dataPersistenceManager.ExistsProfileId(input)*/;
+        // regex is white page regex so it accepts exactly when the name meets the naming conditions
     }
 
     private void DisplayErrorMessage(string errorMessage) {

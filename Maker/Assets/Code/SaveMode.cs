@@ -12,7 +12,8 @@ public class SaveMode : MonoBehaviour
     private void OnEnable()
     {
         
-        inputField.GetComponent<TwinNameValidator>().ValidateInput("TwinName");
+        //inputField.GetComponent<TwinNameValidator>().ValidateInput("TwinName");
+
         UIController.ShowUI("Save");
         Touch.SetActive(false);
 

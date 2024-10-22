@@ -19,7 +19,9 @@ public class ConfigManager : MonoBehaviour
     {
         string newTwinNameFromInput = GetTwinNameFromInput();
         // getting newest input from the InputField
-        if (CheckInputTwinName(newTwinNameFromInput)) { 
+        //if (CheckInputTwinName(newTwinNameFromInput)) {
+        if (CheckInput(newTwinNameFromInput))
+        {
             // check if the new input is a already existing folder
             dataPersistenceManager.createNewConfig(newTwinNameFromInput);      
             inputField.transform.GetComponent<InputField>().text = "TwinName";  //resets the input Field 
@@ -41,7 +43,8 @@ public class ConfigManager : MonoBehaviour
     {
         string newTwinNameFromInput = GetTwinNameFromInput();
         // getting newest input from the InputField
-        if (CheckInputTwinName(newTwinNameFromInput)) {
+        //if (CheckInputTwinName(newTwinNameFromInput)) {
+        if (CheckInput(newTwinNameFromInput)) { 
             // check if the new input is a already existing folder
             dataPersistenceManager.saveAsConfig(newTwinNameFromInput);
             inputField.transform.GetComponent<InputField>().text = "TwinName";  //resets the input Field
@@ -88,6 +91,14 @@ public class ConfigManager : MonoBehaviour
             Debug.Log("Version from Input: " + originVersion.text.ToString() + ".");
         }
         return twinName;
+    }
+
+    private bool CheckInput(string inputNameWithVersion) {
+        TwinNameValidator nameValidator = inputField.GetComponent<TwinNameValidator>();
+        //check twin name first an then put the versions on it... think about this again
+
+        return nameValidator.validInput(inputNameWithVersion);
+        //return true;
     }
 
     private bool CheckInputTwinName(string inputForTwinName) {
