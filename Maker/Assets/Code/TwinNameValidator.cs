@@ -16,7 +16,7 @@ public class TwinNameValidator : MonoBehaviour
 
     private void Start()
     {   
-        //nameInputField = this.GetComponent<InputField>();
+        nameInputField = this.GetComponent<InputField>();
         //nameInputField.onValueChanged.AddListener(ValidateInput);
         //nameInputField.onEndEdit.AddListener(ValidateInput);
     }
@@ -69,9 +69,9 @@ public class TwinNameValidator : MonoBehaviour
     //    {
     //        //dot is excluded because of ".", ".." and ".DS_Store" (shown when "ls -a" in folder: Maker)
     //        //input is already a foldername
-    //       //EnableButtons(false);
-    //       DisplayErrorMessage("This twin name is already taken.");
-    //       Debug.Log("ExistingFolderName: " + input); 
+    //        //EnableButtons(false);
+    //        DisplayErrorMessage("This twin name is already taken.");
+    //        Debug.Log("ExistingFolderName: " + input);
     //    }
     //    else
     //    {
