@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ToolTracker : MonoBehaviour
 {
-    GameObject myButton;
+    public GameObject myButton;
 
     private GameObject[] toolNameDisplays = null;
 
