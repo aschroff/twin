@@ -4,6 +4,8 @@ using UnityEngine;
 using PaintIn3D;
 using System.Linq;
 using System;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 {
@@ -12,6 +14,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	[SerializeField] public bool startNewPart = true;
 	[SerializeField] public bool startNewGroup = true;
 	[SerializeField] private GroupData CurrentGroup;
+	[SerializeField] public Text currentText;
 	
 	public GroupData currentGroup 
 	{
@@ -24,8 +27,18 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
 	private P3dPaintableTexture lastTexture;
+	private P3dCommandSphere lastSphereCommand;
 	//[SerializeField] public bool temp_skiploading = false;
-	
+	public enum Tool
+	{
+		MarkerLine,
+		MarkerDotted,
+		Filler,
+		Sticker,
+		Text,
+		Delete,
+		Unknown
+	}
 	
 	private void SetCurrentGroup(GroupData value)
 	{
@@ -76,6 +89,12 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		public List<CommandDataTwin> partCommands = new List<CommandDataTwin>();
 		public string id;
 		public SceneManagement.View view;
+		public Tool typeTool;
+		public string nameTool;
+		public Color colorTool;
+		public string guidTool;
+		public string meaning;
+		public string textTool;
 	}
 
 	[System.Serializable]
@@ -91,13 +110,20 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	private void setActiveTool()
 	{
+		activeTool = getActiveTool();
+	}
+	
+	private GameObject getActiveTool()
+	{
 		foreach (Transform child in listTools.transform)
 		{
 			if (child.gameObject.activeSelf == true)
 			{
-				activeTool = child.gameObject;
+				return child.gameObject;
 			}
 		}
+
+		return null;
 	}
 
 
@@ -105,6 +131,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		if (startNewPart)
 		{
+			StoreCurrentPartInformation();
 			PartData newPart = new PartData();
 			newPart.id = System.Guid.NewGuid().ToString();
 			newPart.partCommands.Add(commandData);
@@ -112,6 +139,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			setActiveTool();
 			lastActiveTool = activeTool;
 			lastTexture = commandData.data.PaintableTexture;
+			lastSphereCommand = null;
 			return;
 		}
 		if (commandData.data.PaintableTexture != lastTexture)
@@ -120,10 +148,10 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			addCommand(commandData);
 			return;
 		}
-		setActiveTool();
-		if (lastActiveTool != activeTool)
+		if (activeTool != getActiveTool())
 		{
 			startNewPart = true;
+			lastSphereCommand = null;
 			addCommand(commandData);
 			return;
 		}
@@ -141,18 +169,10 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		P3dPaintableTexture.OnAddCommandGlobal -= HandleAddCommandGlobal;
 	}
-
-	public int count_parts()
-	{
-		return commandDatas.Count;
-	}
+	
 
 	private void HandleAddCommandGlobal(P3dPaintableTexture paintableTexture, P3dCommand command)
 	{
-		if (checkRedundancy(command))
-		{
-			return;
-		}
 		base.HandleAddCommandGlobal(paintableTexture, command);
 		if (base.listening == true)
 		{
@@ -169,7 +189,6 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	private void HandleNewPart(PartData newPart)
 	{
-		StoreCurrentPartView();
 		currentPart = newPart;
 		if (CurrentGroup != null)
         {
@@ -230,7 +249,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	public void SaveData(ConfigData data)
 	{
-		StoreCurrentPartView();
+		StoreCurrentPartInformation();
 		startNewGroup = true;
 		startNewPart = true;
 		var json = JsonUtility.ToJson(this);
@@ -423,29 +442,14 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		commandDatas.Remove(commandData.data);
 		Debug.Log("Removed command: " + id);
 	}
-
-	public bool checkRedundancy(P3dCommand command)
+	
+	private bool ArePositionsEqual(Vector3 pos1, Vector3 pos2, float precision = 0.000000001f)
 	{
-		if (command is P3dCommandSphere)
-		{
-			P3dCommandSphere commandSphere = (P3dCommandSphere)command;
-
-			foreach (CommandData commandExist in commandDatas)
-			{
-				if (commandExist.LocalCommand is P3dCommandSphere)
-				{
-					P3dCommandSphere commandSphereExists = (P3dCommandSphere)commandExist.LocalCommand;
-					if (commandSphereExists.Position.Equals(commandSphere.Position))
-					{
-						return true;
-					}
-				}
-
-			}
-		}
-		return false;
+		return Mathf.Abs(pos1.x - pos2.x) < precision &&
+		       Mathf.Abs(pos1.y - pos2.y) < precision &&
+		       Mathf.Abs(pos1.z - pos2.z) < precision;
 	}
-
+	
 	[ContextMenu("Reset")]
 	public void ClearAll()
 	{
@@ -490,7 +494,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		return groupmanagerGameobject;
 	}
 
-	private void StoreCurrentPartView()
+	private void StoreCurrentPartInformation()
 	{
 		if (currentPart != null && viewManager != null)
 		{
@@ -501,13 +505,140 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		{
 			Debug.Log("Cannot store current part view because current part or viewmanager is null");
 		}
+
+		if (activeTool != null)
+		{
+			GameObject selected = activeTool.GetComponent<ToolTracker>().myButton.gameObject;
+			currentPart.typeTool = DeriveType(activeTool);
+			if (currentPart.typeTool == Tool.MarkerLine || currentPart.typeTool == Tool.MarkerDotted || currentPart.typeTool == Tool.Filler)
+			{
+				SimplifyPart();
+				currentPart.meaning = GetText(selected);
+				currentPart.colorTool = activeTool.GetComponent<P3dPaintSphere>().Color;
+				currentPart.nameTool = activeTool.name;
+			}
+			else if (currentPart.typeTool == Tool.Sticker)
+			{
+				currentPart.meaning = GetText(selected);
+				ToolTracker toolTracker = activeTool.GetComponent<ToolTracker>();
+				currentPart.guidTool = toolTracker.myButton.GetComponent<Item>().id;
+				currentPart.nameTool = activeTool.name;
+			}
+			else if (currentPart.typeTool == Tool.Text)
+			{
+				currentPart.meaning = GetText(selected);
+				currentPart.textTool = currentText.text;
+				currentPart.colorTool = activeTool.GetComponent<P3dPaintDecal>().Color;
+				currentPart.nameTool = activeTool.name;
+			}
+
+		}
+		else
+		{
+			Debug.Log("Cannot store current part tool because active tool is null");
+		}
 	}
 
+	private Tool DeriveType(GameObject tool)
+	{	
+		P3dPaintSphere sphere = tool.GetComponent<P3dPaintSphere>();
+		bool hasSphere = (sphere != null);
+		bool isDelete = false;
+		if (hasSphere)
+		{
+			isDelete = (sphere.BlendMode == P3dBlendMode.REPLACE_ORIGINAL);
+		}
+		P3dPaintDecal dynamic = tool.GetComponent<P3dPaintDecal>();
+		bool hasDynamic = (dynamic != null);
+		bool hasTexture = false;
+		bool hasShape = false;
+		if (hasDynamic)
+		{
+			Texture texture = tool.GetComponent<P3dPaintDecal>().Texture;
+			hasTexture = (texture != null);
+			Texture shape = tool.GetComponent<P3dPaintDecal>().Shape;
+			hasShape = (shape != null);
+		}
+		P3dHitScreen hit = tool.GetComponent<P3dHitScreen>();
+		bool hasHit = (hit != null);
+		bool isDotted = false;
+		if (hasHit)
+		{
+			isDotted = (hit.Frequency == P3dHitScreen.FrequencyType.PixelInterval) && 
+			           (hit.Connector.ConnectHits == false);
+		}
+		P3dHitScreenFill hitFill = tool.GetComponent<P3dHitScreenFill>();
+		bool hasFill = (hitFill != null);
+
+
+		if (hasSphere && !isDotted && !hasFill && !isDelete)
+		{
+			return Tool.MarkerLine;
+		}
+		if (hasSphere && isDotted)
+		{ 
+			return Tool.MarkerDotted;
+		}
+		if (hasSphere && hasFill)
+		{ 
+			return Tool.Filler;
+		}
+		if (hasDynamic && hasTexture)
+		{
+			return Tool.Sticker;
+		}
+		if (hasDynamic && hasShape)
+		{
+			return Tool.Text;
+		}
+		if (isDelete)
+		{
+			return Tool.Delete;
+		}
+
+		return Tool.Unknown;
+	}
+	
 	public void EnforceNewPart()
 	{
-		StoreCurrentPartView();
+		StoreCurrentPartInformation();
 		Debug.Log("Enforce new part");
 		startNewPart = true;
+	}
+	
+	private string GetText(GameObject gameObject)
+	{
+		foreach (Text text in gameObject.GetComponentsInChildren<Text>())
+		{
+			if (text.enabled && text.text != "Placeholder" && text.gameObject.transform.parent.name == "InputField")
+			{   
+				return text.text;
+			}
+		}
+		return "unknown meaning";
+	}
+
+	private void SimplifyPart()
+	{
+		List<CommandDataTwin> commandsDelete  = new List<CommandDataTwin>();
+		P3dCommandSphere lastCommandSphere = null;
+		foreach (CommandDataTwin commandData in currentPart.partCommands)
+		{
+			P3dCommandSphere commandSphere = (P3dCommandSphere)commandData.data.LocalCommand;
+			if (lastCommandSphere != null)
+			{
+				if (ArePositionsEqual(commandSphere.Position, lastCommandSphere.Position))
+				{
+					commandsDelete.Add(commandData);
+				}
+			}
+			lastCommandSphere = commandSphere;
+		}
+		foreach (CommandDataTwin commandData in commandsDelete)
+		{
+			currentPart.partCommands.Remove(commandData);
+			deleteCommand(commandData);
+		}
 	}
 	
 	
