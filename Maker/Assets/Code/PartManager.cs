@@ -27,6 +27,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
 	private P3dPaintableTexture lastTexture;
+	private P3dCommandSphere lastSphereCommand;
 	//[SerializeField] public bool temp_skiploading = false;
 	public enum Tool
 	{
@@ -138,6 +139,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			setActiveTool();
 			lastActiveTool = activeTool;
 			lastTexture = commandData.data.PaintableTexture;
+			lastSphereCommand = null;
 			return;
 		}
 		if (commandData.data.PaintableTexture != lastTexture)
@@ -149,6 +151,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		if (activeTool != getActiveTool())
 		{
 			startNewPart = true;
+			lastSphereCommand = null;
 			addCommand(commandData);
 			return;
 		}
@@ -166,18 +169,10 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		P3dPaintableTexture.OnAddCommandGlobal -= HandleAddCommandGlobal;
 	}
-
-	public int count_parts()
-	{
-		return commandDatas.Count;
-	}
+	
 
 	private void HandleAddCommandGlobal(P3dPaintableTexture paintableTexture, P3dCommand command)
 	{
-		if (checkRedundancy(command))
-		{
-			return;
-		}
 		base.HandleAddCommandGlobal(paintableTexture, command);
 		if (base.listening == true)
 		{
@@ -447,29 +442,14 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		commandDatas.Remove(commandData.data);
 		Debug.Log("Removed command: " + id);
 	}
-
-	public bool checkRedundancy(P3dCommand command)
+	
+	private bool ArePositionsEqual(Vector3 pos1, Vector3 pos2, float precision = 0.000000001f)
 	{
-		if (command is P3dCommandSphere)
-		{
-			P3dCommandSphere commandSphere = (P3dCommandSphere)command;
-
-			foreach (CommandData commandExist in commandDatas)
-			{
-				if (commandExist.LocalCommand is P3dCommandSphere)
-				{
-					P3dCommandSphere commandSphereExists = (P3dCommandSphere)commandExist.LocalCommand;
-					if (commandSphereExists.Position.Equals(commandSphere.Position))
-					{
-						return true;
-					}
-				}
-
-			}
-		}
-		return false;
+		return Mathf.Abs(pos1.x - pos2.x) < precision &&
+		       Mathf.Abs(pos1.y - pos2.y) < precision &&
+		       Mathf.Abs(pos1.z - pos2.z) < precision;
 	}
-
+	
 	[ContextMenu("Reset")]
 	public void ClearAll()
 	{
@@ -532,6 +512,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			currentPart.typeTool = DeriveType(activeTool);
 			if (currentPart.typeTool == Tool.MarkerLine || currentPart.typeTool == Tool.MarkerDotted || currentPart.typeTool == Tool.Filler)
 			{
+				SimplifyPart();
 				currentPart.meaning = GetText(selected);
 				currentPart.colorTool = activeTool.GetComponent<P3dPaintSphere>().Color;
 				currentPart.nameTool = activeTool.name;
@@ -635,6 +616,29 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			}
 		}
 		return "unknown meaning";
+	}
+
+	private void SimplifyPart()
+	{
+		List<CommandDataTwin> commandsDelete  = new List<CommandDataTwin>();
+		P3dCommandSphere lastCommandSphere = null;
+		foreach (CommandDataTwin commandData in currentPart.partCommands)
+		{
+			P3dCommandSphere commandSphere = (P3dCommandSphere)commandData.data.LocalCommand;
+			if (lastCommandSphere != null)
+			{
+				if (ArePositionsEqual(commandSphere.Position, lastCommandSphere.Position))
+				{
+					commandsDelete.Add(commandData);
+				}
+			}
+			lastCommandSphere = commandSphere;
+		}
+		foreach (CommandDataTwin commandData in commandsDelete)
+		{
+			currentPart.partCommands.Remove(commandData);
+			deleteCommand(commandData);
+		}
 	}
 	
 	
