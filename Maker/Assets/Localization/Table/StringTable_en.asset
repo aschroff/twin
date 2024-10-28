@@ -1,0 +1,177 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: StringTable_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 799479af048164895b2b1dc84d66d8e9, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 1997269822094442875
+  m_TableData:
+  - m_Id: 799122907136
+    m_Localized: Undo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1211007754240
+    m_Localized: Redo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1355459584000
+    m_Localized: View
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1454805868544
+    m_Localized: Edit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1534476673024
+    m_Localized: Turn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1594488774656
+    m_Localized: Twins
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1977688776704
+    m_Localized: 'Overview:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2054876553216
+    m_Localized: 'Selection:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2198393053184
+    m_Localized: 'Group:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2275022987264
+    m_Localized: 'Tool:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2328638775296
+    m_Localized: 'Twin:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2386247540736
+    m_Localized: Views
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2590241710080
+    m_Localized: Store view
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2755077857280
+    m_Localized: Add list
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3135169880064
+    m_Localized: Groups
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3395145424896
+    m_Localized: Default view
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3621256159232
+    m_Localized: Delete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3651253821440
+    m_Localized: Marker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3865054273536
+    m_Localized: Filler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3964362809344
+    m_Localized: Shape
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4166196912128
+    m_Localized: Change
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4732578947072
+    m_Localized: Arms
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4774509404160
+    m_Localized: Hands
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4829618364416
+    m_Localized: Face
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4869753659392
+    m_Localized: Reset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5135110496256
+    m_Localized: Select
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6261822185472
+    m_Localized: Versions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6313567313920
+    m_Localized: Delete all other versions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6596875771904
+    m_Localized: Export skin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6702215716864
+    m_Localized: Export screen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6853038694400
+    m_Localized: Export standard views
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7085373775872
+    m_Localized: Help me...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7301447540736
+    m_Localized: Short summary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7521686249472
+    m_Localized: Complete report
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7798006996992
+    m_Localized: Treatment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7853556359168
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9433261268992
+    m_Localized: '{0:MM/dd/yyyy - hh:mm}'
+    m_Metadata:
+      m_Items:
+      - rid: 1997269822094442875
+  references:
+    version: 2
+    RefIds:
+    - rid: 1997269822094442875
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e02f5a94080000
