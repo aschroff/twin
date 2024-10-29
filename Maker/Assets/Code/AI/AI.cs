@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AiToolbox;
+using Code.AI.PromptGeneration;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -72,6 +73,26 @@ namespace Code.AI
             }
             prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.Situation);
             OneShot(prompt);
+        }
+        
+        public string DescribePart(PartManager.PartData part)
+        {
+            string prompt = "Send back the following text ";
+            
+            prompt += Part.Chapter(part);
+            if (!string.IsNullOrEmpty(path))
+            {
+                prompt +=  "#IMAGEPATH#" + path + "#IMAGEPATHEND#";              
+            }
+            ChatGPTwin.Request(prompt, parameters, completeCallback: text => {
+                // We've received the full text of the answer, so we can display it in the "You're chatting with" text.
+                part.description = text;
+            }, failureCallback: (errorCode, errorMessage) => {
+                // If the request fails, display the error message in the "You're chatting with" text.
+                var errorType = (ErrorCodes)errorCode;
+                part.description = $"Error {errorCode}: {errorType} - {errorMessage}";
+            });
+            return "";
         }
      
         private void OneShot(string prompt, string imagePath="")

@@ -95,6 +95,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		public string guidTool;
 		public string meaning;
 		public string textTool;
+		public string description;
 	}
 
 	[System.Serializable]
@@ -640,6 +641,36 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			currentPart.partCommands.Remove(commandData);
 			deleteCommand(commandData);
 		}
+	}
+	
+	public PartData getPart(string id)
+	{
+		foreach (GroupData group in groups)
+		{
+			foreach (PartData part in group.groupParts)
+			{
+				if (part.id == id)
+				{
+					return part;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public GroupData getGroup(PartData part)
+	{
+		foreach (GroupData group in groups)
+		{
+			foreach (PartData partSearch in group.groupParts)
+			{
+				if (part.id == partSearch.id)
+				{
+					return group;
+				}
+			}
+		}
+		return null;
 	}
 	
 	

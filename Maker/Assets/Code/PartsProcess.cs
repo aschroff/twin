@@ -31,7 +31,7 @@ namespace Code
                     partManager.EnforceNewPart();
                     partManager.ClearRefreshPart(part);
                     viewManager.select(part.view);
-                    recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + partCounter;
+                    recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + part.id;
                     recorder.folder = dataManager.selectedProfileId;
                     yield return new WaitForEndOfFrame();
                     recorder.Do();
