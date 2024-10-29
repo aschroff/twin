@@ -28,6 +28,7 @@ namespace Code
                 int partCounter = 0;
                 foreach (PartManager.PartData part in group.groupParts)
                 {
+                    partManager.EnforceNewPart();
                     partManager.ClearRefreshPart(part);
                     viewManager.select(part.view);
                     recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + partCounter;
@@ -36,7 +37,10 @@ namespace Code
                     recorder.Do();
                 }
             }
+
+            partManager.ClearRefreshAll();
             recorder.Reset(listActive);
+            Debug.Log("End Screenshots Parts, # of active groups ist: " + listActive.Count);
             recorder.name = dataManager.selectedProfileId;
             recorder.Post(getNotification());
             viewManager.select(currentView);
