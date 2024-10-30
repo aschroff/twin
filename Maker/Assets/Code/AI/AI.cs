@@ -77,7 +77,10 @@ namespace Code.AI
         
         public string DescribePart(PartManager.PartData part)
         {
-            string prompt = "Send back the following text ";
+            string prompt =
+                "The person is 1.60 m tall. Describe the medical findings depicted on the body." +
+                "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details."; 
+                            
             
             prompt += Part.Chapter(part);
             if (!string.IsNullOrEmpty(path))
@@ -85,10 +88,11 @@ namespace Code.AI
                 prompt +=  "#IMAGEPATH#" + path + "#IMAGEPATHEND#";              
             }
             ChatGPTwin.Request(prompt, parameters, completeCallback: text => {
-                // We've received the full text of the answer, so we can display it in the "You're chatting with" text.
                 part.description = text;
+                Debug.Log("AI response " + part.meaning +" :" + text);
+                characterDescription.text += "---------------------------------------------------\n";
+                characterDescription.text += text + "\n";
             }, failureCallback: (errorCode, errorMessage) => {
-                // If the request fails, display the error message in the "You're chatting with" text.
                 var errorType = (ErrorCodes)errorCode;
                 part.description = $"Error {errorCode}: {errorType} - {errorMessage}";
             });

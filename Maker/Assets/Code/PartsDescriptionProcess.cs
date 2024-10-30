@@ -29,6 +29,8 @@ namespace Code
             partProcess.Handle();
             yield return new WaitForEndOfFrame();
             PartManager partManager = getPartManager();
+            AI.AI ai = getAI();
+            ai.characterDescription.text = "Description of the medical findings: \n";
             foreach (PartManager.GroupData group in partManager.groups)
             {
                 int partCounter = 0;

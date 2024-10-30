@@ -96,6 +96,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		public string meaning;
 		public string textTool;
 		public string description;
+		public GroupData group;
 	}
 
 	[System.Serializable]
@@ -194,6 +195,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		if (CurrentGroup != null)
         {
 			CurrentGroup.groupParts.Add(newPart);
+			newPart.group = CurrentGroup;
 		}
 		startNewPart = false;
 		
@@ -236,6 +238,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		PartData newPart = new PartData();
 		newPart.id = id;
 		groupdata.groupParts.Add(newPart);
+		newPart.group = groupdata;
 		return newPart;
 
 	}
