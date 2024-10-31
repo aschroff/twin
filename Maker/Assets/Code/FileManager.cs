@@ -130,7 +130,6 @@ public class FileManager : MonoBehaviour
     {
         dataManager.DeleteProfileData(profile);
         Refresh();
-        inputFieldName.GetComponent<TwinNameValidator>().ValidateInput();
     }
     
     private void Detail(string profile, string profile_raw, string version = "")
