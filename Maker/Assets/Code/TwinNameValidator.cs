@@ -19,8 +19,6 @@ public class TwinNameValidator : MonoBehaviour
     private void Start()
     {   
         nameInputField = this.GetComponent<InputField>();
-        //nameInputField.onValueChanged.AddListener(ValidateInput);
-        //nameInputField.onEndEdit.AddListener(ValidateInput);
     }
 
     public bool validInput(string twinNameWithVersion) {
@@ -56,37 +54,9 @@ public class TwinNameValidator : MonoBehaviour
         }
     }
 
-    //public void ValidateInput(string input)
-    //{
-    //    //EnableButtons(false);
-    //    if (CheckInput(input))
-    //    {
-    //        //input matches regex
-    //        DisplayErrorMessage("");
-    //        //EnableButtons(true);
-    //        Debug.Log("InputValid: " + input + ", Button interactable.");
-    //        //enable the button
-    //    }
-    //    else if (dataPersistenceManager.ExistsProfileId(input) && !input.Contains("."))
-    //    {
-    //        //dot is excluded because of ".", ".." and ".DS_Store" (shown when "ls -a" in folder: Maker)
-    //        //input is already a foldername
-    //        //EnableButtons(false);
-    //        DisplayErrorMessage("This twin name is already taken.");
-    //        Debug.Log("ExistingFolderName: " + input);
-    //    }
-    //    else
-    //    {
-    //        //EnableButtons(false);
-    //        DisplayErrorMessage("Twin name can only contain following characters: a-z, A-Z, 0-9 and \"_\", \"(\", \")\",\" - \". With length between 1 and 14.");
-    //        Debug.Log("InvalidUserInput: " + input);
-    //    }
-    //}
-
     public void ValidateInput()
     {
         string input = nameInputField.text;
-        //ValidateInput(input);
         validInput(input);
     }
 
@@ -106,21 +76,5 @@ public class TwinNameValidator : MonoBehaviour
             text.text = message;
         }
         notification.Pulse();
-    }
-
-    private void EnableButtons(bool isEnabled) {
-        GameObject safeButtonObject = this.transform.parent.Find("Save as").gameObject;
-        GameObject newButtonObject = this.transform.parent.Find("New").gameObject;
-        Button safeTwinButton = safeButtonObject.GetComponent<Button>();
-        Button newTwinButton = newButtonObject.GetComponent<Button>();
-        if (isEnabled)
-        {
-            safeTwinButton.interactable = true;
-            newTwinButton.interactable = true;
-        }
-        else {
-            safeTwinButton.interactable = false;
-            newTwinButton.interactable = false;
-        }
     }
 }
