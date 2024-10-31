@@ -511,7 +511,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			Debug.Log("Cannot store current part view because current part or viewmanager is null");
 		}
 
-		if (activeTool != null)
+		if (activeTool != null && currentPart != null)
 		{
 			GameObject selected = activeTool.GetComponent<ToolTracker>().myButton.gameObject;
 			currentPart.typeTool = DeriveType(activeTool);
