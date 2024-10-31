@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using AiToolbox;
 using Code.AI.PromptGeneration;
 using UnityEngine;
@@ -75,27 +77,46 @@ namespace Code.AI
             OneShot(prompt);
         }
         
-        public string DescribePart(PartManager.PartData part)
+        
+        
+        private IEnumerator WaitForFileCoroutine(string path)
+        {
+            while (!File.Exists(path))
+            {
+                yield return new WaitForSeconds(0.5f); // Wait for 0.5 seconds
+            }
+
+            Debug.Log("File exists: " + path);
+            // Continue with the rest of your logic here
+        }
+        
+        
+        private IEnumerator DescribePartCoroutine(PartManager.PartData part)
         {
             string prompt =
                 "The person is 1.60 m tall. Describe the medical findings depicted on the body." +
-                "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details."; 
-                            
-            
-            prompt += Part.Chapter(part);
-            if (!string.IsNullOrEmpty(path))
+                "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
+
+            if (!string.IsNullOrEmpty(part.pathScreenshot))
             {
-                prompt +=  "#IMAGEPATH#" + path + "#IMAGEPATHEND#";              
+                yield return StartCoroutine(WaitForFileCoroutine(part.pathScreenshot));
+                prompt += "#IMAGEPATH#" + part.pathScreenshot + "#IMAGEPATHEND#";
             }
+
             ChatGPTwin.Request(prompt, parameters, completeCallback: text => {
                 part.description = text;
-                Debug.Log("AI response " + part.meaning +" :" + text);
+                Debug.Log("AI response " + part.meaning + " :" + text);
                 characterDescription.text += "---------------------------------------------------\n";
                 characterDescription.text += text + "\n";
             }, failureCallback: (errorCode, errorMessage) => {
                 var errorType = (ErrorCodes)errorCode;
                 part.description = $"Error {errorCode}: {errorType} - {errorMessage}";
             });
+        }
+
+        public string DescribePart(PartManager.PartData part)
+        {
+            StartCoroutine(DescribePartCoroutine(part));
             return "";
         }
      

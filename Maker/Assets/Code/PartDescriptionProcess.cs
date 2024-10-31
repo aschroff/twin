@@ -40,7 +40,7 @@ namespace Code
         private void describePart(PartManager.PartData part)
         {
             AI.AI ai = getAI();
-            ai.path = get_path();
+            part.pathScreenshot = get_path();
             Debug.Log("Before Call AI");
             ai.DescribePart(part);
         }
