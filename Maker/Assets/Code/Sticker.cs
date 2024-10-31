@@ -128,7 +128,7 @@ public class Sticker : ItemHash, ItemFile
 			textureHash.Texture = loadedTexture;
 			//Debug.Log("Texture assigned " + hash);
 			//int intHash = this.gameObject.GetComponent<Item>().getHash();
-			Debug.Log("hash" + intHash.ToString());
+			//Debug.Log("hash" + intHash.ToString());
 			textureHash.Hash = new P3dHash(intHash);
 		}
 	}

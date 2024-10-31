@@ -97,6 +97,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		public string textTool;
 		public string description;
 		public GroupData group;
+		public string pathScreenshot;
 	}
 
 	[System.Serializable]
@@ -305,8 +306,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 			// Pool
 			//command.Pool();
-
-			Debug.Log("Switch on command" + commandData.id);
+			
 			return command;
 		}
 		return null;

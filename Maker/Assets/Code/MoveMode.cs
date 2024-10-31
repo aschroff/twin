@@ -32,8 +32,6 @@ public class MoveMode : MonoBehaviour
         for (int i = Tools.transform.childCount - 1; i >= 0; i--)
         {
             Tools.transform.GetChild(i).gameObject.SetActive(false);
-            Debug.Log(Tools.transform.GetChild(i).gameObject);
-
         }
 
         UIController.ShowUI("Move");
