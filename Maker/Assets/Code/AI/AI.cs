@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AiToolbox;
+using Code.AI.PromptGeneration;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -72,6 +73,30 @@ namespace Code.AI
             }
             prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.Situation);
             OneShot(prompt);
+        }
+        
+        public string DescribePart(PartManager.PartData part)
+        {
+            string prompt =
+                "The person is 1.60 m tall. Describe the medical findings depicted on the body." +
+                "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details."; 
+                            
+            
+            prompt += Part.Chapter(part);
+            if (!string.IsNullOrEmpty(path))
+            {
+                prompt +=  "#IMAGEPATH#" + path + "#IMAGEPATHEND#";              
+            }
+            ChatGPTwin.Request(prompt, parameters, completeCallback: text => {
+                part.description = text;
+                Debug.Log("AI response " + part.meaning +" :" + text);
+                characterDescription.text += "---------------------------------------------------\n";
+                characterDescription.text += text + "\n";
+            }, failureCallback: (errorCode, errorMessage) => {
+                var errorType = (ErrorCodes)errorCode;
+                part.description = $"Error {errorCode}: {errorType} - {errorMessage}";
+            });
+            return "";
         }
      
         private void OneShot(string prompt, string imagePath="")
