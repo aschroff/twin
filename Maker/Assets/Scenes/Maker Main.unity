@@ -17797,6 +17797,13 @@ MonoBehaviour:
     meaning: 
     textTool: 
     description: 
+    group:
+      groupParts: []
+      group: {fileID: 0}
+      id: 
+      name: 
+      visible: 0
+      selected: 0
   references:
     version: 2
     RefIds: []
@@ -27968,6 +27975,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ResetApp
       objectReference: {fileID: 0}
+    - target: {fileID: 2336039277250485239, guid: 9b80a04d4e56a46c7a1b0f3528542243, type: 3}
+      propertyPath: notification
+      value: 
+      objectReference: {fileID: 94311452}
     - target: {fileID: 2336039277250485239, guid: 9b80a04d4e56a46c7a1b0f3528542243, type: 3}
       propertyPath: dataPersistenceManager
       value: 
