@@ -3,10 +3,12 @@ using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
+using Lean.Gui;
 
 public class TwinNameValidator : MonoBehaviour
 { 
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
+    [SerializeField] private LeanPulse notification;
 
     private InputField nameInputField;
     private static readonly string nameRegex = "^[a-zA-Z0-9_()-]{1,11}$";
@@ -96,9 +98,14 @@ public class TwinNameValidator : MonoBehaviour
     }
 
     private void DisplayErrorMessage(string errorMessage) {
-        GameObject errorMessageArea = this.transform.parent.Find("UserMessage").gameObject;
-        Text errorMessageDisplay = errorMessageArea.GetComponent<Text>();
-        errorMessageDisplay.text = errorMessage;
+        string message = errorMessage;
+
+        foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
+            // in case there are more text boxes we write the error Message in every of them
+        {
+            text.text = message;
+        }
+        notification.Pulse();
     }
 
     private void EnableButtons(bool isEnabled) {
