@@ -18,8 +18,8 @@ public class ConfigManager : MonoBehaviour
     public void newConfig()
     {
         string newTwinNameFromInput = GetTwinNameFromInput();
-        // getting newest input from the InputField
-        //if (CheckInputTwinName(newTwinNameFromInput)) {
+        // getting newest input
+
         if (CheckInput(newTwinNameFromInput))
         {
             // check if the new input is a already existing folder
@@ -32,7 +32,6 @@ public class ConfigManager : MonoBehaviour
             Debug.Log("Twin-Name-Test of New-button push failed!");
             //This is the new-Button because is create a completely new Twin
         }
-        
     }
     
     /*
@@ -42,9 +41,10 @@ public class ConfigManager : MonoBehaviour
     public void saveAsConfig()
     {
         string newTwinNameFromInput = GetTwinNameFromInput();
-        // getting newest input from the InputField
-        //if (CheckInputTwinName(newTwinNameFromInput)) {
-        if (CheckInput(newTwinNameFromInput)) { 
+        // getting newest input
+
+        if (CheckInput(newTwinNameFromInput))
+        { 
             // check if the new input is a already existing folder
             dataPersistenceManager.saveAsConfig(newTwinNameFromInput);
             inputField.transform.GetComponent<InputField>().text = "TwinName";  //resets the input Field
@@ -94,18 +94,17 @@ public class ConfigManager : MonoBehaviour
     }
 
     private bool CheckInput(string inputNameWithVersion) {
-        TwinNameValidator nameValidator = inputField.GetComponent<TwinNameValidator>();
-        //check twin name first an then put the versions on it... think about this again
+        TwinNameValidator nameValidator;
+
+        if (inputFieldVersion == null) {
+            //we adress the text in the error message toast with inputField/inputFieldVersion so we have to distinguish here
+
+            nameValidator = inputField.GetComponent<TwinNameValidator>();
+        } else {
+            nameValidator = inputFieldVersion.GetComponent<TwinNameValidator>();
+        }
 
         return nameValidator.validInput(inputNameWithVersion);
         //return true;
     }
-
-    private bool CheckInputTwinName(string inputForTwinName) {
-        // Here I want to acces the the component from the input field
-        // this component twinNameValidator 
-        TwinNameValidator nameValidator = inputField.GetComponent<TwinNameValidator>();
-        return true; //nameValidator.CheckInput(inputForTwinName);
-    }
-
 }
