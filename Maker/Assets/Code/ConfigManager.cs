@@ -104,7 +104,7 @@ public class ConfigManager : MonoBehaviour
             nameValidator = inputFieldVersion.GetComponent<TwinNameValidator>();
         }
 
-        return nameValidator.validInput(inputNameWithVersion);
+        return nameValidator.IsValidInput(inputNameWithVersion);
         //return true;
     }
 }
