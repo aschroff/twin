@@ -97,6 +97,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		public string textTool;
 		public string description;
 		public GroupData group;
+		public string pathScreenshot;
 	}
 
 	[System.Serializable]
@@ -305,8 +306,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 			// Pool
 			//command.Pool();
-
-			Debug.Log("Switch on command" + commandData.id);
+			
 			return command;
 		}
 		return null;
@@ -511,7 +511,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			Debug.Log("Cannot store current part view because current part or viewmanager is null");
 		}
 
-		if (activeTool != null)
+		if (activeTool != null && currentPart != null)
 		{
 			GameObject selected = activeTool.GetComponent<ToolTracker>().myButton.gameObject;
 			currentPart.typeTool = DeriveType(activeTool);
