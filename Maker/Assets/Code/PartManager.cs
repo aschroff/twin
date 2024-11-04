@@ -675,6 +675,21 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		}
 		return null;
 	}
-	
+
+	public bool AllPartsDescribed()
+	{
+		foreach (GroupData group in groups)
+		{
+			foreach (PartData part in group.groupParts)
+			{
+				if ((part.description == null) || (part.description == ""))
+				{
+					return false;
+				}
+			}
+
+		}
+		return true;
+	}
 	
 }

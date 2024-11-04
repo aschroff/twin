@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Lean.Gui;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Code
 {
@@ -41,8 +43,23 @@ namespace Code
         {
             AI.AI ai = getAI();
             part.pathScreenshot = get_path();
-            Debug.Log("Before Call AI");
-            ai.DescribePart(part);
+            if (File.Exists(part.pathScreenshot))
+            {
+                Debug.Log("Before Call AI");
+                ai.DescribePart(part); 
+            }
+            else 
+            {
+                Debug.Log("No Screenshot");
+                LeanPulse notification = getNotification();
+                foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
+                {
+                    text.text = "No Screenshot";
+                }
+
+                notification.Pulse();
+            }
+            
         }
         
         
