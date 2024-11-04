@@ -17,17 +17,14 @@ namespace Code
         {
             processManager = getProcessManager();
             partDescriptionProcess = processManager.gameObject.GetComponentInChildren<PartDescriptionProcess>();
-            StartCoroutine(execute());
+            execute();
             return new ProcessResult();
         }
         
         
-        private IEnumerator execute()
+        private void execute()
         {
             Debug.Log("Start Part Description");
-            PartsProcess partProcess = this.transform.parent.gameObject.GetComponentInChildren<PartsProcess>();
-            partProcess.Handle();
-            yield return new WaitForEndOfFrame();
             PartManager partManager = getPartManager();
             AI.AI ai = getAI();
             ai.characterDescription.text = "Description of the medical findings: \n";

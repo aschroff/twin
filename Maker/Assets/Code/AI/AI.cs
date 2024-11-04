@@ -94,8 +94,9 @@ namespace Code.AI
         private IEnumerator DescribePartCoroutine(PartManager.PartData part)
         {
             string prompt =
-                "The person is 1.60 m tall. Describe the medical findings depicted on the body." +
+                "The person is 1.60 m tall. Describe the medical findings depicted on the body in the style of a medical report." +
                 "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
+            prompt += Part.Description(part);
 
             if (!string.IsNullOrEmpty(part.pathScreenshot))
             {
@@ -118,6 +119,23 @@ namespace Code.AI
         {
             StartCoroutine(DescribePartCoroutine(part));
             return "";
+        }
+        
+        public void DescribeVersion(PartManager partManager)
+        {
+            string prompt = "Create a medical report with approximately 250 words. Herefore, describe each medical finding in two to three sentences, summarize the overall situation" +
+                            "and recommended treatments. The medical findings depicted on the body are listed below: \n ";
+            int countFinding = 0;
+            foreach (PartManager.GroupData group in partManager.groups)
+            {
+                foreach (PartManager.PartData part in group.groupParts)
+                {
+                    countFinding++;
+                    prompt += "Part Number " + countFinding + " :\n";
+                    prompt += part.description + "\n";
+                }
+            }
+            OneShot(prompt);
         }
      
         private void OneShot(string prompt, string imagePath="")
