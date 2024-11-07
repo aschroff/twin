@@ -267,6 +267,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			//if (temp_skiploading == false)
 			//{		
 			ViewManager viewManagerTemp = viewManager;
+			Text currentTextTemp = currentText;
 			var json = data.commandDetails;
 			if (json == "")
 			{
@@ -277,6 +278,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 				JsonUtility.FromJsonOverwrite(json, this);
 			}
 			viewManager = viewManagerTemp;
+			currentText = currentTextTemp;
 			//}
 		}
 		catch (Exception e)
