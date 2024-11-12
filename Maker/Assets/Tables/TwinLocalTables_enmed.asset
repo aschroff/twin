@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Code: enmed
   m_SharedData: {fileID: 11400000, guid: d12d872ce99d54eb4977c7b9daa8702f, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 5071356925864312834
   m_TableData:
   - m_Id: 177539637248
     m_Localized: Folders
@@ -27,7 +28,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 5637059633152
-    m_Localized: Single
+    m_Localized: Store view
     m_Metadata:
       m_Items: []
   - m_Id: 5908171055104
@@ -59,13 +60,106 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 10581196136448
-    m_Localized: Docu
+    m_Localized: Document
     m_Metadata:
       m_Items: []
   - m_Id: 10868396908544
     m_Localized: Turn
     m_Metadata:
       m_Items: []
+  - m_Id: 246218599948288
+    m_Localized: '{0:MM/dd/yyyy - hh:mm}'
+    m_Metadata:
+      m_Items:
+      - rid: 5071356925864312834
+  - m_Id: 242222485200896
+    m_Localized: Undo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245341004750848
+    m_Localized: Redo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245356280406016
+    m_Localized: 'Tool:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245617442938880
+    m_Localized: Patient view
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245775882772480
+    m_Localized: ' Erase '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245873492615168
+    m_Localized: ' Marker '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245888470474752
+    m_Localized: ' Filler '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245905214136320
+    m_Localized: ' Body form '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245917956431872
+    m_Localized: Import
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245944539930624
+    m_Localized: Arms
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245958951559168
+    m_Localized: Hands
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245976055930880
+    m_Localized: Face
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245990132015104
+    m_Localized: Reset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246010629578752
+    m_Localized: Select
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246021769650176
+    m_Localized: Timestamp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246042934108160
+    m_Localized: Delete all other timestamps
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246091286044672
+    m_Localized: Export skin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246119459184640
+    m_Localized: Export Screen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246159397347328
+    m_Localized: Export standard views
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246196428857344
+    m_Localized: Help
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246306030215168
+    m_Localized: ' Injuries '
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5071356925864312834
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e02f3cefdf0000

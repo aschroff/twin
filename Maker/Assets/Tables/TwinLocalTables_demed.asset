@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Code: demed
   m_SharedData: {fileID: 11400000, guid: d12d872ce99d54eb4977c7b9daa8702f, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 5071356925864312836
   m_TableData:
   - m_Id: 177539637248
     m_Localized: Akten
@@ -66,6 +67,99 @@ MonoBehaviour:
     m_Localized: Drehen
     m_Metadata:
       m_Items: []
+  - m_Id: 246218599948288
+    m_Localized: '{0:dd.MM.yyyy - hh:mm}'
+    m_Metadata:
+      m_Items:
+      - rid: 5071356925864312836
+  - m_Id: 242222485200896
+    m_Localized: "R\xFCckg\xE4ngig"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245341004750848
+    m_Localized: Wiederholen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245356280406016
+    m_Localized: 'Tool:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245617442938880
+    m_Localized: Patientenansicht
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245775882772480
+    m_Localized: ' Entfernen '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245873492615168
+    m_Localized: ' Stift '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245888470474752
+    m_Localized: " F\xFCllung "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245905214136320
+    m_Localized: " K\xF6rperform "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245917956431872
+    m_Localized: "\xC4ndern"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245944539930624
+    m_Localized: Arme
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245958951559168
+    m_Localized: "H\xE4nde"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245976055930880
+    m_Localized: Gesicht
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245990132015104
+    m_Localized: "Zur\xFCcksetzen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246010629578752
+    m_Localized: "W\xE4hlen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246021769650176
+    m_Localized: Zeitpunkte
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246042934108160
+    m_Localized: "\xDCbrigen Zeitpunkte l\xF6schen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246091286044672
+    m_Localized: Haut exportieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246119459184640
+    m_Localized: Bildschirm exportieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246159397347328
+    m_Localized: Standardansichten exportieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246196428857344
+    m_Localized: Hilfe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246306030215168
+    m_Localized: ' Aufkleber '
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5071356925864312836
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e02f3cefdf0000

@@ -8830,6 +8830,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1889491048315490214, guid: 3fbfc69092f0b498c9029ee6eb5e0510, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 246306030215168
+      objectReference: {fileID: 0}
+    - target: {fileID: 1889491048315490214, guid: 3fbfc69092f0b498c9029ee6eb5e0510, type: 3}
+      propertyPath: m_StringReference.m_TableReference.m_TableCollectionName
+      value: GUID:d12d872ce99d54eb4977c7b9daa8702f
+      objectReference: {fileID: 0}
     - target: {fileID: 1912310086876875827, guid: 3fbfc69092f0b498c9029ee6eb5e0510, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -10147,10 +10155,10 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 1517996418882027297, guid: 3fbfc69092f0b498c9029ee6eb5e0510, type: 3}
-    - {fileID: 649413184679633442, guid: 3fbfc69092f0b498c9029ee6eb5e0510, type: 3}
-    - {fileID: 1348949069632302466, guid: 3fbfc69092f0b498c9029ee6eb5e0510, type: 3}
-    - {fileID: 3226076602264197735, guid: 3fbfc69092f0b498c9029ee6eb5e0510, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
