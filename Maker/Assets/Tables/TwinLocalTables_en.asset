@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: d12d872ce99d54eb4977c7b9daa8702f, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 5071356925864312833
   m_TableData:
   - m_Id: 177539637248
     m_Localized: Groups
@@ -66,6 +67,99 @@ MonoBehaviour:
     m_Localized: Turn
     m_Metadata:
       m_Items: []
+  - m_Id: 246218599948288
+    m_Localized: '{0:MM/dd/yyyy - hh:mm}'
+    m_Metadata:
+      m_Items:
+      - rid: 5071356925864312833
+  - m_Id: 242222485200896
+    m_Localized: Undo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245341004750848
+    m_Localized: Redo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245356280406016
+    m_Localized: 'Tool:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245617442938880
+    m_Localized: Default view
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245775882772480
+    m_Localized: ' Delete '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245873492615168
+    m_Localized: ' Marker '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245888470474752
+    m_Localized: ' Filler '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245905214136320
+    m_Localized: ' Shape '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245917956431872
+    m_Localized: Change
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245944539930624
+    m_Localized: Arms
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245958951559168
+    m_Localized: Hands
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245976055930880
+    m_Localized: Face
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245990132015104
+    m_Localized: Reset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246010629578752
+    m_Localized: Select
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246021769650176
+    m_Localized: Versions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246042934108160
+    m_Localized: Delete all other versions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246091286044672
+    m_Localized: Export skin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246119459184640
+    m_Localized: Export screen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246159397347328
+    m_Localized: Export standard views
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246196428857344
+    m_Localized: Help me...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246306030215168
+    m_Localized: Sticker
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5071356925864312833
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e02f3cefdf0000
