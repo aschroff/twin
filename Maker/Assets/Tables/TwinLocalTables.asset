@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5be51871efa6c3e4eae1703925c8f5ac, type: 3}
-  m_Name: StringTable
+  m_Name: TwinLocalTables
   m_EditorClassIdentifier: 
-  m_SharedTableData: {fileID: 11400000, guid: 799479af048164895b2b1dc84d66d8e9, type: 2}
+  m_SharedTableData: {fileID: 11400000, guid: d12d872ce99d54eb4977c7b9daa8702f, type: 2}
   m_Tables:
-  - {fileID: 11400000, guid: ed913f04c6b5d40d1a7c00131b6f4ab2, type: 2}
-  - {fileID: 11400000, guid: 8a84cfb1afab840ee8f6bef4703ae2c1, type: 2}
+  - {fileID: 11400000, guid: dca5802a2da3149f9b8431b21fb5e265, type: 2}
+  - {fileID: 11400000, guid: 0df77e43bd5784546a933801eeded048, type: 2}
+  - {fileID: 11400000, guid: 3fc13b70d418d48a1a4445ebbb034787, type: 2}
+  - {fileID: 11400000, guid: a1de867865d7c4688bc1f187b76c1bce, type: 2}
   m_Extensions: []
   m_Group: String Table
   references:
