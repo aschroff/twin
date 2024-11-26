@@ -4,42 +4,37 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using UnityEngine.Localization;
-using UnityEngine.Localization.Components;
-using UnityEngine.Localization.Tables;
-using UnityEngine.Localization.Settings;
 
 public class TwinVersionSetter : MonoBehaviour
 {
+    [SerializeField] private LocalizedString dateFormat;
+    [SerializeField] private InputField inputFieldText;
+    private LocalizedString formattedLocalizedString;
     // Start is called before the first frame update
     void Start()
     {
-        LocalizeStringEvent localizeStringEvent = this.transform.GetComponentInChildren<LocalizeStringEvent>();
-        TableReference localizationTableReference = localizeStringEvent.StringReference.TableReference;
-        TableEntryReference localizationTableEntryReference = localizeStringEvent.StringReference.TableEntryReference;
 
-        string currentDateFormat = LocalizationSettings.StringDatabase.
-            GetLocalizedString(localizationTableReference, localizationTableEntryReference);
+        DateTime currentDate = DateTime.Now; // getting current Time to put into version input field
 
-        //string currentDateFormat = localizeStringEvent.
-        //LocalizationSettings.StringDatabase.GetLocalizedString(tableReference, entryReference);
-        //if (localizeStringEvent.StringReference) {
-        //} else if () {
+        // format the date to current localization settings
+        formattedLocalizedString = DateFormatter.formatDate(currentDate, dateFormat);
 
-        //} else if () {
-        //}
-        InputField versionInput = this.GetComponent<InputField>();
-        versionInput.text = currentDateFormat.Replace(".","-");
-        Debug.Log(versionInput.text);
-        //versionInput.text = DateTime.Now.ToString(currentDateFormat
-        //    .Replace(".","-")
-        //    .Substring(currentDateFormat.IndexOf(": ")));
-
-
+        //UpdateDate gets called, when event StringChanged is triggered
+        //parameter value of UpdateString is formatted date-string
+        formattedLocalizedString.StringChanged += UpdateDate;
+        //Triggers display update
+        formattedLocalizedString.RefreshString();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void UpdateDate(string value)
     {
-        
+        //InputField version = this.GetComponent<InputField>();
+        //Update UI with formatted date
+        inputFieldText.text = value;
+    }
+
+    private void OnDisable()
+    {
+        formattedLocalizedString.StringChanged -= UpdateDate;
     }
 }
