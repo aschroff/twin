@@ -14,8 +14,6 @@ public static class DateFormatter : object
             dateTime = DateTime.Now;
         }
             dateFormat.Arguments = new object[] { dateTime };
-        //UpdateDate gets called, when event StringChanged is triggered
-        //parameter value of UpdateString is formatted date-string
         return dateFormat;
     }
 
