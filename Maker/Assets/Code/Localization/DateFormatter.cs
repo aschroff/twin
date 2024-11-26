@@ -3,25 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.Localization;
-using TMPro;
-using System;
+using UnityEngine.UI; 
+using System; 
 
 public class NewBehaviourScript : MonoBehaviour
 {
     [SerializeField] private LocalizedString localizedDateString;
-    [SerializeField] private TextMeshProUGUI textComp;
-
-    //string that stores date from configFile; 
-    private string storedDate = "8/27/2024 3:27:26 PM";
+    [SerializeField] private Text textComp;
 
     private void Start()
     {
+        string storedDate = textComp.text.ToString();
         if (DateTime.TryParse(storedDate, out DateTime dateTime))
         {
 
             localizedDateString.Arguments = new object[] { dateTime };
+            //UpdateDate gets called, when event StringChanged is triggered
+            //parameter value of UpdateString is formatted date-string
             localizedDateString.StringChanged += UpdateDate;
-            localizedDateString.Arguments[0] = dateTime;
             //Triggers display update
             localizedDateString.RefreshString();
         }
@@ -33,6 +32,7 @@ public class NewBehaviourScript : MonoBehaviour
 
     }
 
+    //prevents UpdateDate of trying to get text component when game object is disabled 
     private void OnDisable()
     {
         localizedDateString.StringChanged -= UpdateDate;
