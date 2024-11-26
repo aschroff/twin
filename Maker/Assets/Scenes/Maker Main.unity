@@ -13672,6 +13672,14 @@ PrefabInstance:
       propertyPath: dateFormat.m_TableEntryReference.m_KeyId
       value: 5390009120055296
       objectReference: {fileID: 0}
+    - target: {fileID: 5315505598699779253, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+      propertyPath: notification
+      value: 
+      objectReference: {fileID: 94311452}
+    - target: {fileID: 5315505598699779253, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+      propertyPath: dataPersistenceManager
+      value: 
+      objectReference: {fileID: 609004393}
     - target: {fileID: 5570546650419907792, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
