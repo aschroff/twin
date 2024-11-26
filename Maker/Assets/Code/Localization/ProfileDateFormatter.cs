@@ -10,31 +10,32 @@ public class NewBehaviourScript : MonoBehaviour
 {
     [SerializeField] private LocalizedString localizedDateString;
     [SerializeField] private Text textComp;
+    LocalizedString formattedLocalizedString;
 
     private void Start()
     {
         string storedDate = textComp.text.ToString();
         if (DateTime.TryParse(storedDate, out DateTime dateTime))
         {
-
-            localizedDateString.Arguments = new object[] { dateTime };
+            formattedLocalizedString = DateFormatter.formatDate(dateTime, localizedDateString);
             //UpdateDate gets called, when event StringChanged is triggered
             //parameter value of UpdateString is formatted date-string
-            localizedDateString.StringChanged += UpdateDate;
+            formattedLocalizedString.StringChanged += UpdateDate;
             //Triggers display update
-            localizedDateString.RefreshString();
+            formattedLocalizedString.RefreshString();
         }
         else
         {
             Debug.Log("Invalid date format: " + storedDate);
         }
 
+
     }
 
     //prevents UpdateDate of trying to get text component when game object is disabled 
     private void OnDisable()
     {
-        localizedDateString.StringChanged -= UpdateDate;
+        formattedLocalizedString.StringChanged -= UpdateDate;
     }
 
     private void UpdateDate(string value)
