@@ -11,12 +11,9 @@ public class NewBehaviourScript : MonoBehaviour
     [SerializeField] private LocalizedString localizedDateString;
     [SerializeField] private Text textComp;
 
-    //string that stores date from configFile; 
-    private string storedDate;
-
     private void Start()
     {
-        storedDate = textComp.text.ToString();
+        string storedDate = textComp.text.ToString();
         if (DateTime.TryParse(storedDate, out DateTime dateTime))
         {
 
