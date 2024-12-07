@@ -329,6 +329,8 @@ MonoBehaviour:
   dataManager: {fileID: 0}
   inputFieldName: {fileID: 8726509804969779895}
   inputFieldVersion: {fileID: 0}
+  recorder: {fileID: 0}
+  notification: {fileID: 0}
   versionProfile: 
 --- !u!1 &3608362075497420424
 GameObject:
@@ -1351,7 +1353,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f77455691133a46d0bbe464849fe0d0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableValidation: 0
   dataPersistenceManager: {fileID: 0}
+  notification: {fileID: 0}
 --- !u!1 &8819207875687463437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1522,6 +1526,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5299042047346597556}
     m_Modifications:
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 5408222356692992
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_StringReference.m_TableReference.m_TableCollectionName
+      value: GUID:d12d872ce99d54eb4977c7b9daa8702f
+      objectReference: {fileID: 0}
     - target: {fileID: 4239298270747373838, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_Text
       value: 'App Reset '
