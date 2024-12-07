@@ -68,7 +68,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 246218599948288
-    m_Localized: '{0:MM/dd/yyyy - hh:mm}'
+    m_Localized: '{0:MM-dd-yyyy - hh:mm}'
     m_Metadata:
       m_Items:
       - rid: 5071356925864312833
@@ -156,8 +156,13 @@ MonoBehaviour:
     m_Localized: ' Sticker '
     m_Metadata:
       m_Items: []
-  - m_Id: 9312124701499392
-    m_Localized: Settings
+  - m_Id: 5390009120055296
+    m_Localized: '{0:MM-dd-yyyy}'
+    m_Metadata:
+      m_Items:
+      - rid: 5071356925864312833
+  - m_Id: 5408222356692992
+    m_Localized: Reset App
     m_Metadata:
       m_Items: []
   references:
@@ -166,4 +171,4 @@ MonoBehaviour:
     - rid: 5071356925864312833
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 00e02f3cefdf0000
+        m_Entries: 00e02f3cefdf000000e0ef4a2f261300
