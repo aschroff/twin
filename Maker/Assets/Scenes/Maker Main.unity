@@ -13807,6 +13807,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8038675664049359812}
     m_Modifications:
+    - target: {fileID: 2528477133427624409, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: dataPersistenceManager
+      value: 
+      objectReference: {fileID: 609004393}
     - target: {fileID: 6013022056744400333, guid: d588761cd794f4524964e1326abdc07c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -13894,6 +13898,22 @@ PrefabInstance:
     - target: {fileID: 6199921708383996008, guid: d588761cd794f4524964e1326abdc07c, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8071605080004962837, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8409093721138430568, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5513377015833497343}
+    - target: {fileID: 8409093721138430568, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EnableMode
+      objectReference: {fileID: 0}
+    - target: {fileID: 8409093721138430568, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Main
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
