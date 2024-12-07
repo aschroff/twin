@@ -83,7 +83,7 @@ public class TwinNameValidator : MonoBehaviour
             //if the version is unlike 000 it had to be altered by the user or the code so is should be correct? (set criteria for version input)
 
             //!!!insert here actual check for valid version!!!
-            return IsValidTwinName(twinName);
+            return true; //IsValidTwinName(twinName);
         }
     }
 
