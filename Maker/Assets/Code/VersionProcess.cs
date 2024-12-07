@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Code
 {
-    public class VersionProcess: Process
+    public class VersionProcess: ProcessSync
     {
         
         public override ProcessResult Execute(string variant = "")
@@ -15,6 +15,33 @@ namespace Code
             return new ProcessResult();
         }
         
+        public override ProcessResult ExecuteSync(string variant = "")
+        {
+            Debug.Log("Process status: Start VersionProcess");
+            StartCoroutine(ExecuteCoroutine());
+            Debug.Log("Process status: End VersionProcess");
+            return new ProcessResult();
+        }
+
+        private IEnumerator ExecuteCoroutine()
+        {
+            PartManager partManager = getPartManager();
+            LeanPulse notification = getNotification();
+            float timeout = 10f;
+            float elapsedTime = 0f;
+
+            while (!partManager.AllPartsDescribed() && elapsedTime < timeout)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            AI.AI ai = getAI();
+            ai.DescribeVersion(partManager);
+            
+            yield return new WaitForEndOfFrame();
+            OnExecuteCompleted();
+        }
         
         private IEnumerator execute()
         {

@@ -13,6 +13,7 @@ namespace Code
 
         public override ProcessResult Execute(string variant = "")
         {
+            Debug.Log("Process Status: PartDescriptionProcess Execute");
             StartCoroutine(execute(variant));
             return new ProcessResult();
         }
@@ -20,7 +21,7 @@ namespace Code
         
         private IEnumerator execute(string idPart)
         {
-            Debug.Log("Start Part Description");
+            Debug.Log("Process Status: PartDescriptionProcess execute");
             PartManager partManager = getPartManager();
             part = partManager.getPart(idPart);
             describePart(part);

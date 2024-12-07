@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Code
 {
-    public class PartsScreenshotProcess : Process
+    public class PartsScreenshotProcess : ProcessSync
     {
         private ViewManager viewManager;
         private Recorder recorder;
@@ -57,6 +57,48 @@ namespace Code
         public override ProcessResult Execute(string variant = "")
         {
             StartCoroutine(ProcessParts());
+            return new ProcessResult();
+        }
+        
+        private IEnumerator ExecuteCoroutine()
+        {
+            Debug.Log("Start Parts Screenshots");
+            viewManager = getViewmanager();
+            SceneManagement.View currentView = viewManager.shootView();
+            recorder = getRecorder();
+            dataManager = getDataManager();
+            List<GameObject> listActive = recorder.Prepare();
+            partManager = getPartManager();
+            nextGroup = null;
+            nextPart = null;
+
+            foreach (PartManager.GroupData group in partManager.groups)
+            {
+                Debug.Log("---Set group");
+                foreach (PartManager.PartData part in group.groupParts)
+                {
+                    Debug.Log("---Set part");
+                    nextGroup = group;
+                    nextPart = part;
+                    yield return StartCoroutine(WaitForIdle());
+                }
+            }
+
+            partManager.ClearRefreshAll();
+            recorder.Reset(listActive);
+
+            recorder.name = dataManager.selectedProfileId;
+            recorder.Post(getNotification());
+            viewManager.select(currentView);
+            yield return new WaitForEndOfFrame();
+            OnExecuteCompleted();
+        }
+        
+        public override ProcessResult ExecuteSync(string variant = "")
+        {
+            Debug.Log("Process status: Start PartsScreenshotProcess");
+            StartCoroutine(ExecuteCoroutine());
+            Debug.Log("Process status: End PartsScreenshotProcess");
             return new ProcessResult();
         }
 
