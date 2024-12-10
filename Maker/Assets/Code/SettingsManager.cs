@@ -16,7 +16,7 @@ public class SettingsManager : MonoBehaviour
         InteractionController.EnableMode("Main");
     }
 
-    public void GetselectedLanguage() {
+    public void GetSelectedLanguage() {
         //localeID is SetFontSize bu order of the languages  in the localization table
         // if options in drop down menu are in the same order as the languages in the localization table, we can directly parse the dopdown value as the localeID
         ChangeLocale(dropdown.value);
