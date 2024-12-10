@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 858734131066933951}
   - component: {fileID: 2528477133427624409}
   m_Layer: 5
-  m_Name: ResetManager
+  m_Name: SettingsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,11 +29,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2059865599528863033}
+  m_Father: {fileID: 6013022056744400333}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.08218384, y: -0.12994385}
+  m_AnchoredPosition: {x: -298.34998, y: 391.87006}
   m_SizeDelta: {x: 100.16798, y: 100.250694}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2528477133427624409
@@ -80,6 +80,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 858734131066933951}
   - {fileID: 1109825798640367749}
   - {fileID: 1233003059016446945}
   m_Father: {fileID: 0}
@@ -407,10 +408,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 4239298271117699265, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 858734131066933951}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
 --- !u!224 &2059865599528863033 stripped
