@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataPersistenceManager: {fileID: 0}
-  dropdown: {fileID: 0}
+  dropdown: {fileID: 6570167850992355447}
 --- !u!1 &6199921708383996008
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,9 +541,77 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1233003059016446945}
     m_Modifications:
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Text
+      value: English
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Text
+      value: Medical English
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[2].m_Text
+      value: Deutsch
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Text
+      value: Medizinerdeutsch
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[3].m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2528477133427624409}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GetSelectedLanguage
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SettingsManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6572693064871314193, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
       propertyPath: m_Name
       value: Dropdown - Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 8602093511231448079, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_text
+      value: English
       objectReference: {fileID: 0}
     - target: {fileID: 8602093511231448079, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
       propertyPath: m_textAlignment
@@ -651,3 +719,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 9065294214483662286, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
   m_PrefabInstance: {fileID: 5238074797498476440}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6570167850992355447 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+  m_PrefabInstance: {fileID: 5238074797498476440}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
