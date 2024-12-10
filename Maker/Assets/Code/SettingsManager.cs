@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResetManager : MonoBehaviour
+public class SettingsManager : MonoBehaviour
 {
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
 
