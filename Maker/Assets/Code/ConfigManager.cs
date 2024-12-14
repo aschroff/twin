@@ -82,7 +82,8 @@ public class ConfigManager : MonoBehaviour
             Debug.Log("Name only.Name from Input: " + twinName + ".");
             twinName += "." + "000";
         }
-        else
+
+        if (inputFieldVersion != null)
         {
             twinName = fileManager.GetProfile();
             textVersion = inputFieldVersion.transform.Find("Text");
