@@ -24,7 +24,6 @@ public class ConfigManager : MonoBehaviour
         {
             // check if the new input is a already existing folder
             dataPersistenceManager.createNewConfig(newTwinNameFromInput);      
-            inputField.transform.GetComponent<InputField>().text = "TwinName";  //resets the input Field 
             dataPersistenceManager.SaveConfig();
             fileManager.Refresh();
             InteractionController.EnableMode("Main");
@@ -47,7 +46,6 @@ public class ConfigManager : MonoBehaviour
         { 
             // check if the new input is a already existing folder
             dataPersistenceManager.saveAsConfig(newTwinNameFromInput);
-            inputField.transform.GetComponent<InputField>().text = "TwinName";  //resets the input Field
             dataPersistenceManager.SaveConfig();
             fileManager.Refresh();
             InteractionController.EnableMode("Main");
@@ -81,14 +79,21 @@ public class ConfigManager : MonoBehaviour
             twinName = originName.text.ToString();
             Debug.Log("Name only.Name from Input: " + twinName + ".");
             twinName += "." + "000";
+
+            //resets the input Field directly after reading it
+            inputField.transform.GetComponent<InputField>().text = "TwinName";
         }
-        else
+
+        if (inputFieldVersion != null)
         {
             twinName = fileManager.GetProfile();
             textVersion = inputFieldVersion.transform.Find("Text");
             originVersion = textVersion.GetComponent<Text>();
             twinName += "." + originVersion.text.ToString();
             Debug.Log("Version from Input: " + originVersion.text.ToString() + ".");
+            
+            //resets the input Field directly after reading it
+            inputFieldVersion.transform.GetComponent<InputField>().text = this.GetComponentInChildren<TwinVersionSetter>().GetLastFormattedDate();          
         }
         return twinName;
     }
