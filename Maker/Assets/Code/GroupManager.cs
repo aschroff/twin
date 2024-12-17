@@ -136,6 +136,20 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         Destroy(gameobjectGroup);
         this.Refresh();
     }
+
+    public void DeleteAllGroups()
+    {
+        int groupsSize = partmanager.groups.Count;
+        //iterating from the end, because removing elements shifts entries around
+        for(int i = groupsSize - 1; i >= 0; i--)
+        {
+            PartManager.GroupData groupdata = partmanager.groups[i]; 
+            groupdata.group.persistent = false;
+            Destroy(groupdata.group.gameObject);
+            partmanager.deleteGroup(groupdata);
+        }
+        this.Refresh();
+    }
     public void Refresh()
     {
         partmanager.Erase();
