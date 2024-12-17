@@ -36,6 +36,9 @@ public class DataPersistenceManager : MonoBehaviour
     [Header("Templates")]
     [SerializeField] private Templates  templates;
 
+    [Header("Group Manager")]
+    [SerializeField] private GroupManager groupManager; 
+
     private ConfigData configData;
     private List<IDataPersistence> dataPersistenceObjects;
     private FileDataHandler dataHandler;
@@ -185,8 +188,10 @@ public class DataPersistenceManager : MonoBehaviour
         selectedProfileId = "default-temp-for-deleting.000";
         foreach (KeyValuePair<string, ConfigData> profile in GetAllProfilesGameData()  )
         {
+            groupManager.DeleteAllGroups();
             DeleteProfileData(profile.Key);
-        }
+           
+         }
         foreach (KeyValuePair<string, Template> template in templates)
         {
             string content = template.Value.configFile.text;
