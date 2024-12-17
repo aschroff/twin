@@ -13807,6 +13807,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8038675664049359812}
     m_Modifications:
+    - target: {fileID: 1688826854490883693, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0f2199fd9a14149deacbe7a0a80dc7f1, type: 3}
     - target: {fileID: 2528477133427624409, guid: d588761cd794f4524964e1326abdc07c, type: 3}
       propertyPath: dataPersistenceManager
       value: 
@@ -13899,6 +13903,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6953139088345341095, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: e9d00259126cd4cb4b7d03ca4c9bcf48, type: 3}
     - target: {fileID: 8071605080004962837, guid: d588761cd794f4524964e1326abdc07c, type: 3}
       propertyPath: m_IsActive
       value: 0
