@@ -93,8 +93,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     }
     public void DeleteGroup(PartManager.GroupData groupdata, GameObject gameobjectGroup)
     {
-        groupdata.group.persistent = false;
-        partmanager.deleteGroup(groupdata);
+        DeleteGroupData(groupdata, gameobjectGroup);
         if (partmanager.currentGroup == null)
         {
             if (partmanager.trySetCurrentGroupIfEmpty() == null)
@@ -133,8 +132,14 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         
         
         //gameobjectGroup.SetActive(false);
-        Destroy(gameobjectGroup);
         this.Refresh();
+    }
+
+    public void DeleteGroupData(PartManager.GroupData groupdata, GameObject gameobjectGroup)
+    {
+        groupdata.group.persistent = false;
+        Destroy(gameobjectGroup);
+        partmanager.deleteGroup(groupdata);
     }
 
     public void DeleteAllGroups()
@@ -143,13 +148,12 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         //iterating from the end, because removing elements shifts entries around
         for(int i = groupsSize - 1; i >= 0; i--)
         {
-            PartManager.GroupData groupdata = partmanager.groups[i]; 
-            groupdata.group.persistent = false;
-            Destroy(groupdata.group.gameObject);
-            partmanager.deleteGroup(groupdata);
+            PartManager.GroupData groupdata = partmanager.groups[i];
+            DeleteGroupData(groupdata, groupdata.group.gameObject);
         }
         this.Refresh();
     }
+
     public void Refresh()
     {
         partmanager.Erase();
