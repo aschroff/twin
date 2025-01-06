@@ -68,7 +68,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 246218599948288
-    m_Localized: '{0:dd.MM.yyyy - hh:mm}'
+    m_Localized: '{0:dd-MM-yyyy - hh:mm}'
     m_Metadata:
       m_Items:
       - rid: 5071356925864312836
@@ -156,10 +156,23 @@ MonoBehaviour:
     m_Localized: ' Aufkleber '
     m_Metadata:
       m_Items: []
+  - m_Id: 5390009120055296
+    m_Localized: '{0:dd-MM-yyyy}'
+    m_Metadata:
+      m_Items:
+      - rid: 5071356925864312836
+  - m_Id: 5408222356692992
+    m_Localized: "App zur\xFCcksetzen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9368150435946496
+    m_Localized: Einstellungen
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
     - rid: 5071356925864312836
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 00e02f3cefdf0000
+        m_Entries: 00e02f3cefdf000000e0ef4a2f261300
