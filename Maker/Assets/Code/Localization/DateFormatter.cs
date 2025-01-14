@@ -5,7 +5,7 @@ using System;
 
 using UnityEngine.Localization;
 
-public static class DateFormatter : object
+public static class DateFormatter
 
 {
     public static LocalizedString formatDate(DateTime dateTime, LocalizedString dateFormat) {
