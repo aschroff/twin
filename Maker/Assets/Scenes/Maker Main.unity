@@ -6755,11 +6755,6 @@ CanvasGroup:
   m_CorrespondingSourceObject: {fileID: 6880711910703062952, guid: 7eea81e5c72174b61bc18200fd8312d7, type: 3}
   m_PrefabInstance: {fileID: 351613219502138566}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1811997042 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9083258261300487937, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
-  m_PrefabInstance: {fileID: 5013475286739239983}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1818148045
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13791,6 +13786,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8038675664049359812}
     m_Modifications:
+    - target: {fileID: 1688826854490883693, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0f2199fd9a14149deacbe7a0a80dc7f1, type: 3}
     - target: {fileID: 2528477133427624409, guid: d588761cd794f4524964e1326abdc07c, type: 3}
       propertyPath: dataPersistenceManager
       value: 
@@ -13883,6 +13882,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6953139088345341095, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: e9d00259126cd4cb4b7d03ca4c9bcf48, type: 3}
     - target: {fileID: 8071605080004962837, guid: d588761cd794f4524964e1326abdc07c, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -13988,7 +13991,7 @@ PrefabInstance:
     - target: {fileID: 1872758145371113348, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: inputFieldName
       value: 
-      objectReference: {fileID: 1811997042}
+      objectReference: {fileID: 0}
     - target: {fileID: 1872758145371113348, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: inputFieldVersion
       value: 
@@ -14312,7 +14315,7 @@ PrefabInstance:
     - target: {fileID: 8329449449957153508, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: inputField
       value: 
-      objectReference: {fileID: 1811997042}
+      objectReference: {fileID: 0}
     - target: {fileID: 8329449449957153508, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: fileManager
       value: 
@@ -14338,7 +14341,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 9083258261300487937, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
