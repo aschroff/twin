@@ -444,10 +444,8 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	}
 	public void deleteCommand(CommandDataTwin commandData)
 	{
-		Debug.Log("Removing command: " + commandData.id);
 		string id = commandData.id;
 		commandDatas.Remove(commandData.data);
-		Debug.Log("Removed command: " + id);
 	}
 	
 	private bool ArePositionsEqual(Vector3 pos1, Vector3 pos2, float precision = 0.000000001f)
