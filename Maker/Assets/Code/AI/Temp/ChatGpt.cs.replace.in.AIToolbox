@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
+
 // ReSharper disable InconsistentNaming
 namespace AiToolbox {
 public enum Role {
@@ -341,6 +342,7 @@ public static class ChatGpt {
             startIndex += substring1.Length;
             int endIndex = input.IndexOf(substring2, startIndex);
             string imagePath = input.Substring(startIndex, endIndex - startIndex);
+            Debug.Log("Call with image path: " + imagePath);
             string remaining = input.Remove(input.IndexOf(substring1), (endIndex + substring2.Length) - input.IndexOf(substring1));
             byte[] imageBytes = File.ReadAllBytes(imagePath);
             string base64Image = Convert.ToBase64String(imageBytes);

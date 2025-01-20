@@ -13,8 +13,11 @@ public class ProcessResult
 
 public abstract class Process : MonoBehaviour
 {
+
    
    public abstract ProcessResult Execute(string variant = "");
+   
+
 
    private ProcessManager processManager()
    {
@@ -62,6 +65,7 @@ public abstract class Process : MonoBehaviour
    
    public void Handle(string variant = "")
    {
+      Debug.Log("Process Status: Handle");
       Execute(variant);
    }
 }
