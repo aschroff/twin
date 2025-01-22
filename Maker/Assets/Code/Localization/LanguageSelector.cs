@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.Localization.Settings;
@@ -8,7 +7,7 @@ using UnityEngine.Localization.Settings;
 public class LanguageSelector : MonoBehaviour, IDataPersistence   
 {
     [SerializeField] public bool persistent = true;
-    private bool active = false; //makes sure that coroutine is not called more than once
+    private bool isMyCoroutineActive = false; //makes sure that coroutine is not called more than once
     private int languageID;
 
     public GameObject relatedGameObject()
@@ -18,7 +17,7 @@ public class LanguageSelector : MonoBehaviour, IDataPersistence
 
     public void ChangeLocale(int localeID)
     {
-        if (active == true)
+        if (isMyCoroutineActive == true)
         {
             return;
         }
@@ -27,23 +26,25 @@ public class LanguageSelector : MonoBehaviour, IDataPersistence
 
     IEnumerator SetLocale(int localeID)
     {
-        active = true;
+        isMyCoroutineActive = true;
         yield return LocalizationSettings.InitializationOperation; //makes sure that localization is loaded and ready to use
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localeID];
         languageID = localeID;
-        active = false;
+        isMyCoroutineActive = false;
 
     }
-    
+
     public void LoadData(ConfigData data)
     {
         if (persistent == false) return;
         languageID = data.languageID;
-        if (languageID == null)
+        if (data.languageID == null)
         {
             languageID = 0;
-        }
-        StartCoroutine(SetLocale(languageID));//error here because SettingManager is inactiv!
+        } 
+        
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[languageID];
+        
     }
 
     public void SaveData(ConfigData data)
