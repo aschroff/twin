@@ -19,7 +19,7 @@ public class MainMode : MonoBehaviour
         lmu.enabled = false;
         ldc.enabled = true;
         lpc.enabled = true;
-        for (int i = Tools.transform.childCount - 1; i >= 1; i--)
+        for (int i = Tools.transform.childCount - 1; i >= 0; i--)
         {
             Tools.transform.GetChild(i).gameObject.SetActive(false);
             //Debug.Log(Tools.transform.GetChild(i).gameObject);
