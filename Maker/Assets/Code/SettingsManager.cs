@@ -15,6 +15,14 @@ public class SettingsManager : MonoBehaviour
         Debug.Log("Settings Manager started!");
     }
 
+    public void OnEnable() {
+        languageSelector = this.gameObject.GetComponent<LanguageSelector>();
+        int languageID = languageSelector.GetLanguageID();
+        dropdown.value = languageID;
+        //update drop menu here
+        Debug.Log("Current languageID: " + languageID);
+    }
+
     public void ResetApp()
     {
         dataPersistenceManager.ResetApp();
