@@ -44,7 +44,6 @@ public class LanguageSelector : MonoBehaviour, IDataPersistence
         } 
         
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[languageID];
-        
     }
 
     public void SaveData(ConfigData data)
@@ -55,5 +54,13 @@ public class LanguageSelector : MonoBehaviour, IDataPersistence
             languageID = 0;
         }
         data.languageID = languageID;
+    }
+
+    public int GetLanguageID() {
+        if (languageID == null)
+        {
+            return 0;
+        }
+        return languageID;
     }
 }
