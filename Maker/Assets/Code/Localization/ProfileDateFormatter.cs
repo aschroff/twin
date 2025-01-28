@@ -6,15 +6,15 @@ using UnityEngine.Localization;
 using UnityEngine.UI; 
 using System; 
 
-public class NewBehaviourScript : MonoBehaviour
+public class ProfileDateFormatter : MonoBehaviour
 {
     [SerializeField] private LocalizedString localizedDateString;
-    [SerializeField] private Text textComp;
     LocalizedString formattedLocalizedString;
 
     private void Start()
     {
-        string storedDate = textComp.text.ToString();
+        Text textComponent = this.gameObject.GetComponent<Text>();
+        string storedDate = textComponent.text.ToString();
         if (DateTime.TryParse(storedDate, out DateTime dateTime))
         {
             formattedLocalizedString = DateFormatter.formatDate(dateTime, localizedDateString);
@@ -40,8 +40,9 @@ public class NewBehaviourScript : MonoBehaviour
 
     private void UpdateDate(string value)
     {
+        Text textComponent = this.gameObject.GetComponent<Text>();
         //Update UI with formatted date
-        textComp.text = value;
+        textComponent.text = value;
 
     }
 
