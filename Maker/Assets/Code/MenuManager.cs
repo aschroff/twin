@@ -9,6 +9,10 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 using RotaryHeart.Lib.SerializableDictionary;
+using UnityEngine.Localization.Settings;
+using UnityEngine.Localization.Tables;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.Localization;
 
 [Serializable]
 /// <summary>
@@ -77,7 +81,8 @@ public class MenuManager : MonoBehaviour
         actionData.transform.SetParent(this.transform, false);
         actionData.transform.localScale = prefab.transform.localScale;
         Text text = actionData.transform.Find("Action").gameObject.transform.Find("Text").GetComponentInChildren<Text>();
-        text.text = action.text;
+        LoadLocalizedEntry(text, action.text);
+        //text.text = action.text;
         Button buttonAction = actionData.transform.Find("Icon").GetComponentInChildren<Button>();
         Image imageAction = actionData.transform.Find("Icon").GetComponentInChildren<Image>();
         imageAction.sprite = action.icon;
@@ -85,6 +90,37 @@ public class MenuManager : MonoBehaviour
         buttonAction.interactable = true;
         buttonAction.onClick.AddListener(() => { action.onClick.Invoke(); });
     }
-    
+
+    private void LoadLocalizedEntry(Text text, String key)
+    {
+        String tableName = "TwinLocalTables";
+        // Load the specific String Table by its name
+        var stringTable = LocalizationSettings.StringDatabase.GetTable(tableName);
+
+
+        if (stringTable != null)
+        {
+            
+            // Retrieve the entry by key
+            StringTableEntry entry = stringTable.GetEntry(key);
+
+            if (entry != null)
+            {
+                // Access the localized value
+                string localizedValue = entry.GetLocalizedString();
+                text.text = localizedValue;
+                Debug.Log("Localized value: " + localizedValue);
+            }
+            else
+            {
+                Debug.LogWarning("Entry not found for key: " + key);
+            }
+        }
+        else
+        {
+            Debug.LogError("Failed to load table: " + tableName);
+        }
+    }
+
 
 }
