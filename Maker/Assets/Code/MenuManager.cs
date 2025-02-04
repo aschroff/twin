@@ -113,11 +113,13 @@ public class MenuManager : MonoBehaviour
             }
             else
             {
+                text.text = key;
                 Debug.LogWarning("Entry not found for key: " + key);
             }
         }
         else
         {
+            text.text = key;
             Debug.LogError("Failed to load table: " + tableName);
         }
     }
