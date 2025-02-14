@@ -31,7 +31,7 @@ public class SetFontSize : MonoBehaviour
             TwinPrefab twinPrefab = child.GetComponent<TwinPrefab>();
             if (IsInstanceOfPrefabWithName(child, "Tool Paint Dynamic Decal"))
             {
-                P3dPaintDecal textPrefab = child.GetComponent<P3dPaintDecal>();
+                CwPaintDecal textPrefab = child.GetComponent<CwPaintDecal>();
                 textPrefab.Radius = (index + 1) * multiplicator;
                 Debug.Log("Set font");
 

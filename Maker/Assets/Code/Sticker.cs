@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using PaintIn3D;
+using PaintCore;
 using CW.Common;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -33,7 +34,7 @@ public class Sticker : ItemHash, ItemFile
 			iconImage.sprite = sprite;
 			CwDemoButton button = gameObject.GetComponent<CwDemoButton>();
 			GameObject tool = button.IsolateTarget.gameObject;
-			P3dPaintDecal sticker = tool.GetComponent<P3dPaintDecal>();
+			CwPaintDecal sticker = tool.GetComponent<CwPaintDecal>();
 
 			sticker.Texture = loadedTexture;
 
@@ -87,7 +88,7 @@ public class Sticker : ItemHash, ItemFile
 
 					CwDemoButton button = gameObject.GetComponent<CwDemoButton>();
 					GameObject tool = button.IsolateTarget.gameObject;
-					P3dPaintDecal sticker = tool.GetComponent<P3dPaintDecal>();
+					CwPaintDecal sticker = tool.GetComponent<CwPaintDecal>();
 					//resetting size and angle of sticker so edits of previous sticker aren't applied when changing sticker picture
 					sticker.Angle = 0f;
 					sticker.Scale = new Vector3(0.2f, 0.2f, 0.2f);
@@ -124,12 +125,12 @@ public class Sticker : ItemHash, ItemFile
 		{
 			GameObject decalhash = Instantiate(Resources.Load("Decal Hash", typeof(GameObject))) as GameObject;
 			decalhash.transform.SetParent(FolderHash().transform);
-			P3dTextureHash textureHash = decalhash.GetComponent<P3dTextureHash>();
+			CwTextureHash textureHash = decalhash.GetComponent<CwTextureHash>();
 			textureHash.Texture = loadedTexture;
 			//Debug.Log("Texture assigned " + hash);
 			//int intHash = this.gameObject.GetComponent<Item>().getHash();
 			//Debug.Log("hash" + intHash.ToString());
-			textureHash.Hash = new P3dHash(intHash);
+			textureHash.Hash = new CwHash(intHash);
 		}
 	}
 
@@ -162,7 +163,7 @@ public class Sticker : ItemHash, ItemFile
 			GameObject child = FolderHash().transform.GetChild(j).gameObject;
 			if (IsInstanceOfPrefabWithName(child, "Decal Hash"))
             {
-				P3dTextureHash hashPrefab = child.GetComponent<P3dTextureHash>();
+				CwTextureHash hashPrefab = child.GetComponent<CwTextureHash>();
 
 				if (hashPrefab.Hash.ToString() == hash.ToString())
 				{
@@ -183,7 +184,7 @@ public class Sticker : ItemHash, ItemFile
 			GameObject child = FolderHash().transform.GetChild(j).gameObject;
 			if (IsInstanceOfPrefabWithName(child, "Decal Hash"))
 			{
-				P3dTextureHash hashPrefab = child.GetComponent<P3dTextureHash>();
+				CwTextureHash hashPrefab = child.GetComponent<CwTextureHash>();
 
 				if (hashPrefab.Hash.ToString() == hash.ToString())
 				{
@@ -220,7 +221,7 @@ public class Sticker : ItemHash, ItemFile
 	}
 	public  void handleDelete(string profile)
 	{
-		P3dPaintableTexture.ClearSave(profile);
+		CwPaintableTexture.ClearSave(profile);
 	}
 	public GameObject relatedGameObject()
 	{
