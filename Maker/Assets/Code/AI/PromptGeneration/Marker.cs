@@ -11,7 +11,7 @@ namespace Code.AI.PromptGeneration
         {
             CwDemoButton button = gameObject.GetComponent<CwDemoButton>();
             GameObject tool = button.IsolateTarget.gameObject;
-            P3dPaintSphere marker = tool.GetComponent<P3dPaintSphere>();
+            CwPaintSphere marker = tool.GetComponent<CwPaintSphere>();
             return marker.name + " (RGB: " + marker.Color.r + ", " + marker.Color.g + ", " + marker.Color.b +
                    ") " + GetMarkerText(); 
         }
