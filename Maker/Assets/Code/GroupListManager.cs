@@ -5,7 +5,7 @@ using System.Linq;
 using Lean.Gui;
 using UnityEngine.UI;
 
-public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
+public class GroupListManager : MonoBehaviour, ItemFile
 {
     private string childTagSelector = "GroupSelector"; 
     private string childTagDelete = "GroupDelete"; 
@@ -20,7 +20,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         foreach (PartManager.GroupData groupdata in partmanager.groups) 
         {
             Group group = createPersistentGroup(groupdata);
-            group.gameObject.transform.GetComponentInChildren<Text>().text = groupdata.name;
+            group.gameObject.transform.GetComponentInChildren<InputField>().text = groupdata.name;
         }
         //this.Refresh();
         partmanager.Listening = tempListening;
@@ -46,6 +46,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     {
         clear();
         build();
+        this.createNewNonpersistentGroup();
     }
     
     void Start()

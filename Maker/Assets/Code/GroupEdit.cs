@@ -4,7 +4,7 @@ using Lean.Gui;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Group : Item
+public class GroupEdit : Item
 {
 
     [SerializeField] public PartManager.GroupData groupdata = null;
@@ -19,6 +19,14 @@ public class Group : Item
     {
         GroupManager groupmanager = groupparent.GetComponentInChildren<GroupManager>();
         PartManager partmanager = groupmanager.partmanager;
+        if (this.persistent == false) {
+            this.persistent = true;
+            groupmanager.setButtons(this.gameObject, true);
+            this.GenerateGuid();
+            //groupdata = partmanager.StartNewGroup(this);            
+            groupdata.id = this.id;
+            groupmanager.createNewNonpersistentGroup();
+        }
         foreach (LeanToggle child in groupparent.GetComponentsInChildren<LeanToggle>())
         {
             child.On = false;
