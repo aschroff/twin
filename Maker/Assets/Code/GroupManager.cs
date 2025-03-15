@@ -185,7 +185,8 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     
     public void LoadData(ConfigData data)
     {
-     
+       partmanager.LoadData(data);
+       this.rebuild();
     }
 
     public void SaveData(ConfigData data)
