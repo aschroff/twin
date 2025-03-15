@@ -5,11 +5,12 @@ using System.Linq;
 using Lean.Gui;
 using UnityEngine.UI;
 
-public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
+public class GroupListManager : MonoBehaviour, ItemFile
 {
     private string childTagSelector = "GroupSelector"; 
     private string childTagDelete = "GroupDelete"; 
     [SerializeField] public PartManager partmanager;
+    [SerializeField] public GroupManager groupmanager;
     [SerializeField] public GameObject prefab;
     [SerializeField] public LeanPulse notification;
     public void build()
@@ -19,8 +20,8 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         partmanager.Listening = false;
         foreach (PartManager.GroupData groupdata in partmanager.groups) 
         {
-            Group group = createPersistentGroup(groupdata);
-            group.gameObject.transform.GetComponentInChildren<Text>().text = groupdata.name;
+            GroupEdit group = createPersistentGroup(groupdata);
+            group.gameObject.transform.GetComponentInChildren<InputField>().text = groupdata.name;
         }
         //this.Refresh();
         partmanager.Listening = tempListening;
@@ -46,11 +47,12 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     {
         clear();
         build();
+        this.createNewNonpersistentGroup();
     }
     
     void Start()
     {
-        //this.createNewNonpersistentGroup();
+        this.rebuild();
     }
 
     public void setButtons(GameObject group, bool value)
@@ -69,24 +71,23 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     {
         createGroup(false);
     }
-    public Group createPersistentGroup(PartManager.GroupData groupdata)
+    public GroupEdit createPersistentGroup(PartManager.GroupData groupdata)
     {
-        Group group = createGroup(true);
+        GroupEdit group = createGroup(true);
         group.id = groupdata.id;
         group.groupdata = groupdata;
-        group.groupdata.group = group;
         group.persistent = true;
         //TODO persistent visible flag
         return group;
     }
-    public Group createGroup(bool buttons)
+    public GroupEdit createGroup(bool buttons)
     {
         GameObject group = Instantiate(prefab);
         group.transform.SetParent(this.transform, false);
         group.transform.localScale = prefab.transform.localScale;
         setButtons(group, buttons);
         
-        Group groupcomponent = group.GetComponent<Group>();
+        GroupEdit groupcomponent = group.GetComponent<GroupEdit>();
         groupcomponent.groupparent = this.gameObject;
         return groupcomponent;
     }
@@ -140,39 +141,11 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
         partmanager.Erase();
         partmanager.Refresh();
     }
-
-    public void Show(bool visible)
-    {   
-        RectTransform recttransform = this.gameObject.transform.parent.transform.parent.GetComponent<RectTransform>();
-        float width = recttransform.rect.width;
-        if (visible & recttransform.anchoredPosition.x  >= 0)
-        {
-            
-        }
-        else if (!visible  & recttransform.anchoredPosition.x  >= 0)
-        {
-            recttransform.anchoredPosition += new Vector2(-width, 0);
-        }  
-        else if (!visible & recttransform.anchoredPosition.x  < 0)
-        {
-            
-        } 
-        else if (visible  & recttransform.anchoredPosition.x  < 0)
-        {
-            recttransform.anchoredPosition += new Vector2(width, 0);
-        }  
-    }
-
-    public void toggleShow()
-    {
-        RectTransform recttransform = this.gameObject.transform.parent.transform.parent.GetComponent<RectTransform>();
-        bool newVisible = (recttransform.anchoredPosition.x < 0);
-        Show(newVisible);
-    }
     
     public  void handleChange(string profile)
     {
         rebuild();
+        
     }
     public  void handleCopyChange(string profile)
     {
@@ -185,8 +158,7 @@ public class GroupManager : MonoBehaviour, ItemFile, IDataPersistence
     
     public void LoadData(ConfigData data)
     {
-       partmanager.LoadData(data);
-       this.rebuild();
+     
     }
 
     public void SaveData(ConfigData data)
