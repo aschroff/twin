@@ -169,10 +169,37 @@ MonoBehaviour:
     m_Localized: Settings
     m_Metadata:
       m_Items: []
+  - m_Id: 45644500087857152
+    m_Localized: Export Parts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45644896667688960
+    m_Localized: Export Parts NEW
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45646451944972288
+    m_Localized: Parts Description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45647122157002752
+    m_Localized: Describe this timestamp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45648029099745280
+    m_Localized: Describe this timestamp (complete process)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45649124622589952
+    m_Localized: Text detail
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
     - rid: 5071356925864312834
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 00e02f3cefdf000000e0ef4a2f261300
+        m_Entries: 
+        m_SharedEntries:
+        - id: 246218599948288
+        - id: 5390009120055296

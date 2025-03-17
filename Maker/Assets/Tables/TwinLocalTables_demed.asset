@@ -169,10 +169,37 @@ MonoBehaviour:
     m_Localized: Einstellungen
     m_Metadata:
       m_Items: []
+  - m_Id: 45644500087857152
+    m_Localized: Eintrag exportieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45644896667688960
+    m_Localized: Eintrag exportieren NEU
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45646451944972288
+    m_Localized: "Beschreibung der Eintr\xE4ge"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45647122157002752
+    m_Localized: Beschreibe diesen Zeitpunkt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45648029099745280
+    m_Localized: Beschreibe diesen Zeitpunkt (kompletter Prozess)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45649124622589952
+    m_Localized: Textdetail
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
     - rid: 5071356925864312836
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 00e02f3cefdf000000e0ef4a2f261300
+        m_Entries: 
+        m_SharedEntries:
+        - id: 246218599948288
+        - id: 5390009120055296
