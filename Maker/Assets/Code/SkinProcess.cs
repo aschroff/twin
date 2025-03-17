@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using PaintIn3D;
+using PaintCore;
 using System.IO;
 using UnityEngine.UI;
 using Lean.Gui;
@@ -13,7 +13,7 @@ namespace Code
         public override ProcessResult Execute(string variant = "")
         {
             Body body = getBody();
-            P3dPaintableTexture bodyTexture = body.gameObject.transform.parent.GetComponentInChildren<P3dPaintableTexture>();
+            CwPaintableTexture bodyTexture = body.gameObject.transform.parent.GetComponentInChildren<CwPaintableTexture>();
             byte[] bodyBytes = bodyTexture.GetPngData();
             DataPersistenceManager dataManager = getDataManager();
             name = dataManager.selectedProfileId;

@@ -44,7 +44,7 @@ public class StickerEditHandler : MonoBehaviour
         if(activeSticker != null)
         {
 
-            P3dPaintDecal stickerPrefab = activeSticker.GetComponent<P3dPaintDecal>();
+            CwPaintDecal stickerPrefab = activeSticker.GetComponent<CwPaintDecal>();
             stickerPrefab.FlipHorizontal();
             Debug.Log("Sticker flipped horizontally"); 
 
@@ -58,7 +58,7 @@ public class StickerEditHandler : MonoBehaviour
         if (activeSticker != null)
         {
 
-            P3dPaintDecal stickerPrefab = activeSticker.GetComponent<P3dPaintDecal>();
+            CwPaintDecal stickerPrefab = activeSticker.GetComponent<CwPaintDecal>();
             stickerPrefab.FlipVertical();
             Debug.Log("Sticker flipped vertically");
 
@@ -72,7 +72,7 @@ public class StickerEditHandler : MonoBehaviour
         if (activeSticker != null)
         {
 
-            P3dPaintDecal stickerPrefab = activeSticker.GetComponent<P3dPaintDecal>();
+            CwPaintDecal stickerPrefab = activeSticker.GetComponent<CwPaintDecal>();
             stickerPrefab.IncrementAngle(45);
             Debug.Log("Sticker turned to the left");
 
@@ -85,7 +85,7 @@ public class StickerEditHandler : MonoBehaviour
         if (activeSticker != null)
         {
 
-            P3dPaintDecal stickerPrefab = activeSticker.GetComponent<P3dPaintDecal>();
+            CwPaintDecal stickerPrefab = activeSticker.GetComponent<CwPaintDecal>();
             stickerPrefab.IncrementAngle(-45);
             Debug.Log("Sticker turned to the right");
 
@@ -98,7 +98,7 @@ public class StickerEditHandler : MonoBehaviour
         if (activeSticker != null)
         {
 
-            P3dPaintDecal stickerPrefab = activeSticker.GetComponent<P3dPaintDecal>();
+            CwPaintDecal stickerPrefab = activeSticker.GetComponent<CwPaintDecal>();
             stickerPrefab.MultiplyScale(1.5F);
             Debug.Log("Sticker expanded");
 
@@ -111,7 +111,7 @@ public class StickerEditHandler : MonoBehaviour
         if (activeSticker != null)
         {
 
-            P3dPaintDecal stickerPrefab = activeSticker.GetComponent<P3dPaintDecal>();
+            CwPaintDecal stickerPrefab = activeSticker.GetComponent<CwPaintDecal>();
             stickerPrefab.MultiplyScale(0.6667F);
             Debug.Log("Sticker shrunk");
 
