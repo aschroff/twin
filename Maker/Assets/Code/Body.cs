@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using PaintIn3D;
+using PaintCore;
 using UnityEngine;
 using Lean.Common;
 using Lean.Touch;
@@ -9,7 +9,7 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
    [SerializeField] public GameObject mainCamera;
    public  void handleChange(string profile)
    {
-      P3dPaintableTexture texture = this.gameObject.transform.GetComponent<P3dPaintableTexture>();
+      CwPaintableTexture texture = this.gameObject.transform.GetComponent<CwPaintableTexture>();
       texture.Save();
       texture.SaveName = profile;
       texture.Clear();
@@ -19,7 +19,7 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
    public  void handleCopyChange(string profile)
    {
       Debug.Log("Copy profile: " + profile);
-      P3dPaintableTexture texture = this.gameObject.transform.GetComponent<P3dPaintableTexture>();
+      CwPaintableTexture texture = this.gameObject.transform.GetComponent<CwPaintableTexture>();
       texture.Save();
       texture.SaveName = profile;
       texture.Save();
@@ -27,8 +27,8 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
    }
    public  void handleDelete(string profile)
    {
-      P3dPaintableTexture.ClearSave(profile);
-      P3dPaintableTexture texture = this.gameObject.transform.GetComponent<P3dPaintableTexture>();
+      CwPaintableTexture.ClearSave(profile);
+      CwPaintableTexture texture = this.gameObject.transform.GetComponent<CwPaintableTexture>();
       if (texture.SaveName == profile)
       {
          texture.Clear();

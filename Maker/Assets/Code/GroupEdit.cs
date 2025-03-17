@@ -4,7 +4,7 @@ using Lean.Gui;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Group : Item
+public class GroupEdit : Item
 {
 
     [SerializeField] public PartManager.GroupData groupdata = null;
@@ -17,38 +17,29 @@ public class Group : Item
 
     public void HandleEdit()
     {
-        GroupManager groupmanager = groupparent.GetComponentInChildren<GroupManager>();
+        GroupListManager groupmanager = groupparent.GetComponentInChildren<GroupListManager>();
         PartManager partmanager = groupmanager.partmanager;
-        foreach (LeanToggle child in groupparent.GetComponentsInChildren<LeanToggle>())
-        {
-            child.On = false;
-        }
-        foreach (LeanToggle child in this.transform.GetComponentsInChildren<LeanToggle>())
-        {
-            child.On = true;
+        if (this.persistent == false) {
+            this.persistent = true;
+            groupmanager.setButtons(this.gameObject, true);
+            this.GenerateGuid();
+            groupdata = partmanager.StartNewGroup(null);            
+            groupdata.id = this.id;
+            groupmanager.createNewNonpersistentGroup();
         }
         partmanager.currentGroup = groupdata;
         partmanager.currentGroup.name = this.transform.GetComponentInChildren<Text>().text;
         UpdateCurrent(partmanager.currentGroup.name);
+        groupmanager.groupmanager.rebuild();
     }
 
     
-    public void HandleClick()
-    {
-        Debug.Log("HandleClick");
-        GroupManager groupmanager = groupparent.GetComponentInChildren<GroupManager>();
-        bool boolOn = this.gameObject.GetComponentInChildren<Toggle>().isOn;
-        groupdata.visible = boolOn;
-        PartManager partmanager = groupmanager.partmanager;
-        groupmanager.Refresh();
-        Debug.Log("HandledClick");
-
-    }
     public void HandleDelete()
     {
         Debug.Log("HandleDelete");
-        GroupManager groupmanager = groupparent.GetComponentInChildren<GroupManager>();
+        GroupListManager groupmanager = groupparent.GetComponentInChildren<GroupListManager>();
         groupmanager.DeleteGroup(groupdata, this.gameObject);
+        groupmanager.groupmanager.rebuild();
         Debug.Log("HandledDelete");
     }
 

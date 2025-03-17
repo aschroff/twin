@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PaintIn3D;
+using PaintCore;
 using System.Linq;
 using System;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
+public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 {
 	[SerializeField] public ViewManager viewManager;
 	[SerializeField] public List<GroupData> groups;
@@ -26,8 +27,8 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	private GameObject groupmanagerGameobject;
 	private GameObject activeTool;
 	private GameObject lastActiveTool;
-	private P3dPaintableTexture lastTexture;
-	private P3dCommandSphere lastSphereCommand;
+	private CwPaintableTexture lastTexture;
+	private CwCommandSphere lastSphereCommand;
 	//[SerializeField] public bool temp_skiploading = false;
 	public enum Tool
 	{
@@ -165,19 +166,19 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	protected virtual void OnEnable()
 	{
-		P3dPaintableTexture.OnAddCommandGlobal += HandleAddCommandGlobal;
+		CwPaintableTexture.OnAddCommandGlobal += HandleAddCommandGlobal;
 	}
 
 	protected virtual void OnDisable()
 	{
-		P3dPaintableTexture.OnAddCommandGlobal -= HandleAddCommandGlobal;
+		CwPaintableTexture.OnAddCommandGlobal -= HandleAddCommandGlobal;
 	}
 	
 
-	private void HandleAddCommandGlobal(P3dPaintableTexture paintableTexture, P3dCommand command)
+	private void HandleAddCommandGlobal(CwPaintableTexture paintableTexture, CwCommand command)
 	{
 		base.HandleAddCommandGlobal(paintableTexture, command);
-		if (base.listening == true)
+		if (base.Listening == true)
 		{
 			// Ignore preview paint commands
 			if (command.Preview == false)
@@ -294,7 +295,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			}
 		}
 	}
-	private P3dCommand Apply(CommandDataTwin commandData)
+	private CwCommand Apply(CommandDataTwin commandData)
 	{
 
 		// Make sure it's still valid
@@ -313,11 +314,11 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 		}
 		return null;
 	}
-	public P3dCommand Apply(GroupData groupData)
+	public CwCommand Apply(GroupData groupData)
 	{
-		var oldListening = listening;
-		P3dCommand last = null;
-		listening = false;
+		var oldListening = Listening;
+		CwCommand last = null;
+		Listening = false;
 		foreach (PartData partData in groupData.groupParts)
         {
 			foreach (CommandDataTwin commandData in partData.partCommands)
@@ -325,20 +326,20 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 				last = this.Apply(commandData);
 			}
         }		
-		listening = oldListening;
+		Listening = oldListening;
 		//last.Pool();
 		return last;
 	}
-	public P3dCommand RefreshPart(PartData partData)
+	public CwCommand RefreshPart(PartData partData)
 	{
-		var oldListening = listening;
-		P3dCommand last = null;
-		listening = false;
+		var oldListening = Listening;
+		CwCommand last = null;
+		Listening = false;
 		foreach (CommandDataTwin commandData in partData.partCommands)
 		{
 			last = this.Apply(commandData);
 		}
-		listening = oldListening;
+		Listening = oldListening;
 		return last;
 	}
 	
@@ -347,17 +348,17 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		Debug.Log("Start erase");
 		// Ignore added commands while this method is running
-		var oldListening = listening;
+		var oldListening = Listening;
 
-		listening = false;
+		Listening = false;
 
 		// Loop through all paintable textures, and reset them to their original state
-		foreach (var paintableTexture in P3dPaintableTexture.Instances)
+		foreach (var paintableTexture in CwPaintableTexture.Instances)
 		{
 			paintableTexture.Clear();
 		}
 
-		listening = oldListening;
+		Listening = oldListening;
 		Debug.Log("Erased");
 	}
   
@@ -366,9 +367,9 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	{
 		Debug.Log("Start refresh with +groups: " + groups.Count.ToString());
 		// Ignore added commands while this method is running
-		var oldListening = listening;
-		P3dCommand last = null;
-		listening = false;
+		var oldListening = Listening;
+		CwCommand last = null;
+		Listening = false;
 
 		// Loop through all paintable textures, and reset them to their original state
 		foreach (GroupData group_data in groups)
@@ -384,7 +385,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			//last.Pool();
 			Debug.Log("Pooled");
 		}
-		listening = oldListening;
+		Listening = oldListening;
 		Debug.Log("Refreshed");
 	}
 	public void deleteGroup(GroupData groupData)
@@ -519,7 +520,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			{
 				SimplifyPart();
 				currentPart.meaning = GetText(selected);
-				currentPart.colorTool = activeTool.GetComponent<P3dPaintSphere>().Color;
+				currentPart.colorTool = activeTool.GetComponent<CwPaintSphere>().Color;
 				currentPart.nameTool = activeTool.name;
 			}
 			else if (currentPart.typeTool == Tool.Sticker)
@@ -533,7 +534,7 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 			{
 				currentPart.meaning = GetText(selected);
 				currentPart.textTool = currentText.text;
-				currentPart.colorTool = activeTool.GetComponent<P3dPaintDecal>().Color;
+				currentPart.colorTool = activeTool.GetComponent<CwPaintDecal>().Color;
 				currentPart.nameTool = activeTool.name;
 			}
 
@@ -546,33 +547,33 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 
 	private Tool DeriveType(GameObject tool)
 	{	
-		P3dPaintSphere sphere = tool.GetComponent<P3dPaintSphere>();
+		CwPaintSphere sphere = tool.GetComponent<CwPaintSphere>();
 		bool hasSphere = (sphere != null);
 		bool isDelete = false;
 		if (hasSphere)
 		{
-			isDelete = (sphere.BlendMode == P3dBlendMode.REPLACE_ORIGINAL);
+			isDelete = (sphere.BlendMode == CwBlendMode.REPLACE_ORIGINAL);
 		}
-		P3dPaintDecal dynamic = tool.GetComponent<P3dPaintDecal>();
+		CwPaintDecal dynamic = tool.GetComponent<CwPaintDecal>();
 		bool hasDynamic = (dynamic != null);
 		bool hasTexture = false;
 		bool hasShape = false;
 		if (hasDynamic)
 		{
-			Texture texture = tool.GetComponent<P3dPaintDecal>().Texture;
+			Texture texture = tool.GetComponent<CwPaintDecal>().Texture;
 			hasTexture = (texture != null);
-			Texture shape = tool.GetComponent<P3dPaintDecal>().Shape;
+			Texture shape = tool.GetComponent<CwPaintDecal>().Shape;
 			hasShape = (shape != null);
 		}
-		P3dHitScreen hit = tool.GetComponent<P3dHitScreen>();
+		CwHitScreen hit = tool.GetComponent<CwHitScreen>();
 		bool hasHit = (hit != null);
 		bool isDotted = false;
 		if (hasHit)
 		{
-			isDotted = (hit.Frequency == P3dHitScreen.FrequencyType.PixelInterval) && 
+			isDotted = (hit.Frequency == CwHitScreen.FrequencyType.PixelInterval) && 
 			           (hit.Connector.ConnectHits == false);
 		}
-		P3dHitScreenFill hitFill = tool.GetComponent<P3dHitScreenFill>();
+		CwHitScreenFill hitFill = tool.GetComponent<CwHitScreenFill>();
 		bool hasFill = (hitFill != null);
 
 
@@ -626,10 +627,10 @@ public class PartManager : P3dCommandSerialization, IDataPersistence, ItemFile
 	private void SimplifyPart()
 	{
 		List<CommandDataTwin> commandsDelete  = new List<CommandDataTwin>();
-		P3dCommandSphere lastCommandSphere = null;
+		CwCommandSphere lastCommandSphere = null;
 		foreach (CommandDataTwin commandData in currentPart.partCommands)
 		{
-			P3dCommandSphere commandSphere = (P3dCommandSphere)commandData.data.LocalCommand;
+			CwCommandSphere commandSphere = (CwCommandSphere)commandData.data.LocalCommand;
 			if (lastCommandSphere != null)
 			{
 				if (ArePositionsEqual(commandSphere.Position, lastCommandSphere.Position))

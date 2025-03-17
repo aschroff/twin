@@ -13,7 +13,7 @@ public class SetRadius : MonoBehaviour
 
     public void SetRadiusOfPaint(System.Int32 index)
     {
-        gameObjectText.GetComponent<PaintIn3D.P3dPaintSphere>().Radius = (index+1) * multiplicator;
+        gameObjectText.GetComponent<PaintIn3D.CwPaintSphere>().Radius = (index+1) * multiplicator;
     }
 
 
