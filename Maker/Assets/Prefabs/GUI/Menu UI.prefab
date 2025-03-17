@@ -475,10 +475,20 @@ MonoBehaviour:
     - 1
     - 2
     - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
     _keys:
     - 1
     - 2
     - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
     _values:
     - icon: {fileID: 21300000, guid: 9acef65909a7b431dacb5d9301cd115c, type: 3}
       text: Versions
@@ -487,7 +497,7 @@ MonoBehaviour:
           m_Calls:
           - m_Target: {fileID: 0}
             m_TargetAssemblyTypeName: InteractionController, Assembly-CSharp
-            m_MethodName: 
+            m_MethodName: EnableMode
             m_Mode: 5
             m_Arguments:
               m_ObjectArgument: {fileID: 0}
@@ -498,7 +508,7 @@ MonoBehaviour:
               m_BoolArgument: 0
             m_CallState: 2
     - icon: {fileID: 21300000, guid: 5381b5d6d58e24defb6cf3647a6526e8, type: 3}
-      text: Delete (all versions)...
+      text: Delete (all other versions)...
       onClick:
         m_PersistentCalls:
           m_Calls:
@@ -515,13 +525,13 @@ MonoBehaviour:
               m_BoolArgument: 0
             m_CallState: 2
     - icon: {fileID: 21300000, guid: c68dae29cc56d472d96f1c004e80bbe5, type: 3}
-      text: Export
+      text: Export skin
       onClick:
         m_PersistentCalls:
           m_Calls:
           - m_Target: {fileID: 0}
-            m_TargetAssemblyTypeName: Body, Assembly-CSharp
-            m_MethodName: HandleExport
+            m_TargetAssemblyTypeName: Process, Assembly-CSharp
+            m_MethodName: Handle
             m_Mode: 1
             m_Arguments:
               m_ObjectArgument: {fileID: 0}
@@ -529,6 +539,91 @@ MonoBehaviour:
               m_IntArgument: 0
               m_FloatArgument: 0
               m_StringArgument: Version
+              m_BoolArgument: 0
+            m_CallState: 2
+    - icon: {fileID: 21300000, guid: 3b5dea9c1abfd467a850ce1e8cc2e78a, type: 3}
+      text: Export screen
+      onClick:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: FileManager, Assembly-CSharp
+            m_MethodName: Screenshot
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: Version
+              m_BoolArgument: 0
+            m_CallState: 2
+    - icon: {fileID: 21300000, guid: 44be7694ae04f43b6bc2478eb8b589ef, type: 3}
+      text: Export standard views
+      onClick:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: Process, Assembly-CSharp
+            m_MethodName: Handle
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: Version
+              m_BoolArgument: 0
+            m_CallState: 2
+    - icon: {fileID: 21300000, guid: dde215555852c49759c71450a195b03c, type: 3}
+      text: Export parts
+      onClick:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: Process, Assembly-CSharp
+            m_MethodName: Handle
+            m_Mode: 5
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+    - icon: {fileID: 21300000, guid: c285dcd4aee0c4028bc7d7501a9609e4, type: 3}
+      text: Help me...
+      onClick:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: InteractionController, Assembly-CSharp
+            m_MethodName: EnableMode
+            m_Mode: 5
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: Help
+              m_BoolArgument: 0
+            m_CallState: 2
+    - icon: {fileID: 21300000, guid: e4421ab1149ef4f4d86bf6b89672a2d4, type: 3}
+      text: Export parts NEW
+      onClick:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: Process, Assembly-CSharp
+            m_MethodName: Handle
+            m_Mode: 5
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
 --- !u!1 &6776528731429700449
