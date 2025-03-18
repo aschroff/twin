@@ -121,7 +121,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3782729863979421063}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.20000002
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -668,7 +668,7 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-    - icon: {fileID: 21300000, guid: 15e9faba5e33146ad8e41b9445d4d591, type: 3}
+    - icon: {fileID: 21300000, guid: ea2f83acc9a984f5fa5eb83bec0980d3, type: 3}
       text: Describe this Version (complete process)
       onClick:
         m_PersistentCalls:
@@ -863,7 +863,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6242431959477929036}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.8666667}
+  m_AnchorMin: {x: 0, y: 0.79999995}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 20, y: 0}
   m_SizeDelta: {x: -20, y: 20}
@@ -1248,7 +1248,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1196045819753830399, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 435
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 1196045819753830399, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1320,7 +1320,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3563408562321140810, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 325
+      value: 215
       objectReference: {fileID: 0}
     - target: {fileID: 3563408562321140810, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1504,7 +1504,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5415803827312830068, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 215
+      value: 435
       objectReference: {fileID: 0}
     - target: {fileID: 5415803827312830068, guid: cbb112577eca54e8c895f1ee023c3d31, type: 3}
       propertyPath: m_AnchoredPosition.y
