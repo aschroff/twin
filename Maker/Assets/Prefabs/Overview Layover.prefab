@@ -944,6 +944,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8867154675135872798}
+  - component: {fileID: 2808246925432268924}
   m_Layer: 0
   m_Name: Info
   m_TagString: Untagged
@@ -974,6 +975,18 @@ RectTransform:
   m_AnchoredPosition: {x: 1304, y: 3571}
   m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2808246925432268924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8656588905483867362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f106cfd4860f64a9ab1e0e8760fe3bd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8915121058106041840
 GameObject:
   m_ObjectHideFlags: 0
@@ -1168,12 +1181,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4684022689559253548, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2808246925432268924}
+    - target: {fileID: 4684022689559253548, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: toggleShow
       objectReference: {fileID: 0}
     - target: {fileID: 4684022689559253548, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ViewManager, Assembly-CSharp
+      value: OverviewManager, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
