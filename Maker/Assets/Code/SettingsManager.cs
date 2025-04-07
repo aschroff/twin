@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using TMPro;
+using UnityEngine.UI;
+using Code.AI;
 
 public class SettingsManager : MonoBehaviour
 {
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
     [SerializeField] private TMP_Dropdown dropdown;
+    [SerializeField] private InputField inputFieldPrompt;
+    public string prompt = "The person is 1.60 m tall. " 
+                                + "Describe the medical findings depicted on the body in the style of a medical report. " 
+                                + "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
+
     private bool active = false; //makes sure that coroutine is not called more than once
 
     public void ResetApp()
@@ -39,4 +46,20 @@ public class SettingsManager : MonoBehaviour
         active = false;
 
     }
+
+    public void OnEnable()
+    {
+        DisplayPrompt();
+    }
+
+    public void OnDisable()
+    {
+        prompt = inputFieldPrompt.text; 
+    }
+
+    public void DisplayPrompt()
+    {
+        inputFieldPrompt.text = prompt; 
+    }
+
 }

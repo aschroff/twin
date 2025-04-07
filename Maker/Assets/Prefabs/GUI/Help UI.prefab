@@ -320,11 +320,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parameters:
-    apiKey: 
-    apiKeyEncryption: 0
+    apiKey: mHiQeis7KJUeAOZH88-nolTxbupsiXJUibFdZyIwmV6SwE1EFVg9kfR7FalOFM0e6eVgZAxZEDXiqFqo3_XlriQLprOtXwWbIT2ZZ65v-3Yo1jkY6TIwRl1HJKVuUvbNlxvc
+    apiKeyEncryption: 1
     apiKeyRemoteConfigKey: openai_api_key
     apiKeyEncryptionPassword: 52abb01a-314c-43e4-9f32-e375dbdd7610
-    model: 0
+    model: 3
     temperature: 1
     role: 
     timeout: 0
@@ -332,6 +332,7 @@ MonoBehaviour:
     _serialized: 1
   characterDescription: {fileID: 6581765109713913885}
   path: 
+  settingsManager: {fileID: 0}
 --- !u!1 &2938879672972153928
 GameObject:
   m_ObjectHideFlags: 0
