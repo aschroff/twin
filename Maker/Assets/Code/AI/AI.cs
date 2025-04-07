@@ -25,6 +25,7 @@ namespace Code.AI
         public Text characterDescription;
 
         public string path;
+        public SettingsManager settingsManager;
     
         private ChatGptParameters _parametersWithCharacterRole;
 
@@ -93,9 +94,15 @@ namespace Code.AI
         
         private IEnumerator DescribePartCoroutine(PartManager.PartData part)
         {
+            /*
             string prompt =
-                "The person is 1.60 m tall. Describe the medical findings depicted on the body in the style of a medical report." +
-                "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
+                            "The person is 1.60 m tall. Describe the medical findings depicted on the body in the style of a medical report." +
+                            "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
+            prompt += Part.Description(part);
+            */
+
+            //get prompt from settings page
+            string prompt = settingsManager.prompt; 
             prompt += Part.Description(part);
 
             if (!string.IsNullOrEmpty(part.pathScreenshot))
@@ -104,12 +111,14 @@ namespace Code.AI
                 prompt += "#IMAGEPATH#" + part.pathScreenshot + "#IMAGEPATHEND#";
             }
 
-            ChatGPTwin.Request(prompt, parameters, completeCallback: text => {
+            ChatGPTwin.Request(prompt, parameters, completeCallback: text =>
+            {
                 part.description = text;
                 Debug.Log("AI response " + part.meaning + " :" + text);
                 characterDescription.text += "---------------------------------------------------\n";
                 characterDescription.text += text + "\n";
-            }, failureCallback: (errorCode, errorMessage) => {
+            }, failureCallback: (errorCode, errorMessage) =>
+            {
                 var errorType = (ErrorCodes)errorCode;
                 part.description = $"Error {errorCode}: {errorType} - {errorMessage}";
             });
