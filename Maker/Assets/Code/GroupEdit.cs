@@ -15,6 +15,11 @@ public class GroupEdit : Item
         return this.gameObject;
     }
 
+    public void showDetails()
+    {
+        InteractionController.EnableMode("GroupDetail");
+    }
+
     public void HandleEdit()
     {
         GroupListManager groupmanager = groupparent.GetComponentInChildren<GroupListManager>();

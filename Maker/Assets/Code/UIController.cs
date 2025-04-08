@@ -42,7 +42,11 @@ public class UIController : Singleton<UIController>
     {
         foreach (CanvasGroup panel in uiPanels.Values)
         {
-            panel.gameObject.SetActive(false);
+            if (panel != null)
+            {
+                panel.gameObject.SetActive(false);
+            }
+            
         }
     }
 

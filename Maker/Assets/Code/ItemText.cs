@@ -56,7 +56,7 @@ public class Item : MonoBehaviour, IDataPersistence
        {
             textItem.text = text;
         }
-        else
+        else if (textItem != null)
         {
             textItem.text = defaultValue;
         }

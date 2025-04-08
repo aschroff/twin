@@ -95,7 +95,7 @@ namespace Code.AI
         {
             string prompt =
                 "The person is 1.60 m tall. Describe the medical findings depicted on the body in the style of a medical report." +
-                "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
+                "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details. The result should be approxiamtely 150 characters long. ";
             prompt += Part.Description(part);
 
             if (!string.IsNullOrEmpty(part.pathScreenshot))
