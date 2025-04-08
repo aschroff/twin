@@ -12658,18 +12658,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2603446128749344387, guid: b44c29086e4b946a39f713c2d4fd4f2b, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2603446128749344387, guid: b44c29086e4b946a39f713c2d4fd4f2b, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: toggleShow
-      objectReference: {fileID: 0}
-    - target: {fileID: 2603446128749344387, guid: b44c29086e4b946a39f713c2d4fd4f2b, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: OverviewManager, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 3185983688165412744, guid: b44c29086e4b946a39f713c2d4fd4f2b, type: 3}
       propertyPath: m_Name
       value: Overview Overlay
