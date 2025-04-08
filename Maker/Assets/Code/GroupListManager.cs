@@ -21,7 +21,16 @@ public class GroupListManager : MonoBehaviour, ItemFile
         foreach (PartManager.GroupData groupdata in partmanager.groups) 
         {
             GroupEdit group = createPersistentGroup(groupdata);
-            group.gameObject.transform.GetComponentInChildren<InputField>().text = groupdata.name;
+            InputField input_field = group.gameObject.transform.GetComponentInChildren<InputField>();
+            if (input_field != null)
+            {
+                input_field.text = groupdata.name;
+            }
+            Transform detail_text = group.gameObject.transform.Find("Details");
+            if (detail_text != null)
+            {
+                detail_text.GetComponent<Text>().text = groupdata.groupParts.Count + " parts";
+            }
         }
         //this.Refresh();
         partmanager.Listening = tempListening;
@@ -51,6 +60,11 @@ public class GroupListManager : MonoBehaviour, ItemFile
     }
     
     void Start()
+    {
+        this.rebuild();
+    }
+    
+    void OnEnable()
     {
         this.rebuild();
     }
