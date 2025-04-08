@@ -1,16 +1,23 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.Localization.Settings;
 
-public class LanguageSelector : MonoBehaviour
+
+public class LanguageSelector : MonoBehaviour, IDataPersistence   
 {
-    private bool active = false; //makes sure that coroutine is not called more than once
+    [SerializeField] public bool persistent = true;
+    private bool isMyCoroutineActive = false; //makes sure that coroutine is not called more than once
+    private int languageID;
+
+    public GameObject relatedGameObject()
+    {
+        return this.gameObject;
+    }
 
     public void ChangeLocale(int localeID)
     {
-        if (active == true)
+        if (isMyCoroutineActive == true)
         {
             return;
         }
@@ -19,10 +26,41 @@ public class LanguageSelector : MonoBehaviour
 
     IEnumerator SetLocale(int localeID)
     {
-        active = true;
+        isMyCoroutineActive = true;
         yield return LocalizationSettings.InitializationOperation; //makes sure that localization is loaded and ready to use
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localeID];
-        active = false;
+        languageID = localeID;
+        isMyCoroutineActive = false;
 
+    }
+
+    public void LoadData(ConfigData data)
+    {
+        if (persistent == false) return;
+        languageID = data.languageID;
+        if (data.languageID == null)
+        {
+            languageID = 0;
+        } 
+        
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[languageID];
+    }
+
+    public void SaveData(ConfigData data)
+    {
+        if (persistent == false) return;
+        if (languageID == null)
+        {
+            languageID = 0;
+        }
+        data.languageID = languageID;
+    }
+
+    public int GetLanguageID() {
+        if (languageID == null)
+        {
+            return 0;
+        }
+        return languageID;
     }
 }
