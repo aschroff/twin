@@ -103,6 +103,7 @@ namespace Code.AI
 
             //get prompt from settings page
             string prompt = settingsManager.prompt; 
+
             prompt += Part.Description(part);
 
             if (!string.IsNullOrEmpty(part.pathScreenshot))
