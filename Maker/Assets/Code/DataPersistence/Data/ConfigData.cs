@@ -22,6 +22,7 @@ public class ConfigData
     public string version;
     public string updated;
     public int languageID;
+    public string prompt;
 
     public ConfigData(string modelName, string modelVersion = "")
     {
@@ -40,5 +41,6 @@ public class ConfigData
         name = modelName;
         updated = new DateTime(1969, 4,25, 10,10,00).ToString();
         languageID = 0;
+        prompt = "";
     }
 }
