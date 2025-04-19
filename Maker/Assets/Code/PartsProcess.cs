@@ -28,7 +28,7 @@ namespace Code
                 int partCounter = 0;
                 foreach (PartManager.PartData part in group.groupParts)
                 {
-                    partManager.EnforceNewPart();
+                    partManager. EnforceNewPart();
                     partManager.ClearRefreshPart(part);
                     viewManager.select(part.view);
                     recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + part.id;
