@@ -505,7 +505,6 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 	{
 		if (currentPart != null && currentPart.view != null && currentPart.view.initial == false)
 		{
-			Debug.Log("Already stored current part view");
 			return;
 		}
 		if (currentPart != null && viewManager != null)
