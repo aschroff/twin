@@ -10,6 +10,7 @@ public class InteractionModeDictionary : SerializableDictionaryBase<string, Game
 public class  InteractionController : Singleton<InteractionController>
 {
     [SerializeField] InteractionModeDictionary interactionModes;
+    [SerializeField] PartManager partManager;
 
     GameObject currentMode;
 
