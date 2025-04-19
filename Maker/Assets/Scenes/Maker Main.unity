@@ -11032,6 +11032,10 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 1347838729}
+    - target: {fileID: 6293954258772006636, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
+      propertyPath: partManager
+      value: 
+      objectReference: {fileID: 1753083901}
     - target: {fileID: 8390672923660631252, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
       propertyPath: body
       value: 
@@ -14863,6 +14867,7 @@ MonoBehaviour:
     - {fileID: 1049926994}
     - {fileID: 1950432176}
     - {fileID: 2067588520}
+  partManager: {fileID: 0}
 --- !u!114 &5513377015833497344
 MonoBehaviour:
   m_ObjectHideFlags: 0

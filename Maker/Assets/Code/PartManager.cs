@@ -65,6 +65,7 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		if (modeOld.name.Contains("Edit") && viewChangingModes.Contains(modeNew.name))
 		{
 			Debug.Log(modeOld.name + "-> " + modeNew.name);
+			StoreCurrentPartInformation();
 			startNewPart = true;
 		}
 	}
@@ -89,7 +90,7 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 	{
 		public List<CommandDataTwin> partCommands = new List<CommandDataTwin>();
 		public string id;
-		public SceneManagement.View view;
+		public SceneManagement.View view = null;
 		public Tool typeTool;
 		public string nameTool;
 		public Color colorTool;
@@ -502,10 +503,17 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 
 	private void StoreCurrentPartInformation()
 	{
+		if (currentPart != null && currentPart.view != null && currentPart.view.initial == false)
+		{
+			Debug.Log("Already stored current part view");
+			return;
+		}
 		if (currentPart != null && viewManager != null)
 		{
 			Debug.Log("Store current part view");
 			currentPart.view = viewManager.shootView();
+			Debug.Log(currentPart.view.positionCamera_x);
+			Debug.Log(currentPart.view.positionCamera_y);
 		}
 		else
 		{
