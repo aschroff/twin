@@ -2,13 +2,12 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class SettingsManager : MonoBehaviour, IDataPersistence
+public class SettingsManager : MonoBehaviour
 {
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
     [SerializeField] private TMP_Dropdown dropdown;
-    [SerializeField] private InputField inputFieldPrompt;
-    [SerializeField] public bool persistent = true;
-    public string prompt = "The person is 1.60 m tall. " 
+    //[SerializeField] private InputField inputFieldSummaryPrompt;
+    public string summaryPrompt = "The person is 1.60 m tall. " 
                                 + "Describe the medical findings depicted on the body in the style of a medical report. " 
                                 + "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
 
@@ -30,12 +29,12 @@ public class SettingsManager : MonoBehaviour, IDataPersistence
     public void ResetApp()
     {
         dataPersistenceManager.ResetApp();
-        prompt = "The person is 1.60 m tall. " 
+        summaryPrompt = "The person is 1.60 m tall. " 
                                 + "Describe the medical findings depicted on the body in the style of a medical report. " 
                                 + "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
         DisplayPrompt();
         InteractionController.EnableMode("Main");
-            }
+    }
 
     public void GetSelectedLanguage() {
         //localeID is SetFontSize bu order of the languages  in the localization table
@@ -47,39 +46,12 @@ public class SettingsManager : MonoBehaviour, IDataPersistence
 
     public void OnDisable()
     {
-        prompt = inputFieldPrompt.text; 
+        //summaryPrompt = inputFieldSummaryPrompt.text; 
     }
 
     public void DisplayPrompt()
     {
-        inputFieldPrompt.text = prompt; 
+        //inputFieldSummaryPrompt.text = summaryPrompt; 
     }
 
-    public void LoadData(ConfigData data)
-    {
-        if (persistent == false) return;
-        if (data.prompt == null)
-        {
-            prompt = "The person is 1.60 m tall. " 
-                                + "Describe the medical findings depicted on the body in the style of a medical report. " 
-                                + "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
-        }
-        else
-        {
-            prompt = data.prompt;
-        }
-
-    }
-
-    public void SaveData(ConfigData data)
-    {
-        if (persistent == false) return;
-
-        data.prompt = prompt;
-    }
-
-    public GameObject relatedGameObject()
-    {
-        return this.gameObject;
-    }
 }

@@ -1,13 +1,7 @@
 using UnityEngine;
-using System.Linq;
-using Lean.Transition;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
-using RotaryHeart.Lib.SerializableDictionary;
-using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
+using System.Collections.Generic;
 
 /*[Serializable]
 /// <summary>
@@ -15,19 +9,12 @@ using UnityEngine.Localization.Tables;
 /// </summary>
 public class ButtonClickedEvent : UnityEvent {}*/
 
-[System.Serializable]
-public class InputMenuAction 
-{
-    public InputField inputField;
-    //public ButtonClickedEvent onClick;
-}
-[System.Serializable]
-public class InputMenuDictionary : SerializableDictionaryBase<string, InputMenuAction> { }
-
 public class InputMenuManager : MonoBehaviour
 {
     [SerializeField] public GameObject prefab;
-    [SerializeField] public InputMenuDictionary  menu;
+    //[SerializeField] public InputMenuDictionary  menu;
+    [SerializeField] public List<String> promptNames;
+
     
 
     void OnEnable()
@@ -51,12 +38,9 @@ public class InputMenuManager : MonoBehaviour
     private void Create()
     {
         Delete();
-        foreach (InputMenuAction action in menu.Values)
+        foreach (String prompt in promptNames)
         {
-            createMenuEntry(action);
-        }
-        {
-            
+            createMenuEntry(prompt);
         }
     }
     
@@ -69,18 +53,13 @@ public class InputMenuManager : MonoBehaviour
         }
     }
 
-    public void  createMenuEntry(InputMenuAction action)
+    public void  createMenuEntry(String prompt)
     {
         GameObject actionData = Instantiate(prefab);
         actionData.transform.SetParent(this.transform, false);
         actionData.transform.localScale = prefab.transform.localScale;
-        Text text = actionData.transform.Find("Action").gameObject.transform.Find("Input Field").GetComponentInChildren<Text>();
-        //LoadLocalizedEntry(text, action.text);
-        //text.text = action.text;
-        Button buttonAction = actionData.transform.Find("Icon").GetComponentInChildren<Button>();
-        //Image imageAction = actionData.transform.Find("Icon").GetComponentInChildren<Image>();
-        /*buttonAction.gameObject.SetActive(true);
-        buttonAction.interactable = true;
-        buttonAction.onClick.AddListener(() => { action.onClick.Invoke(); });*/
+        Text text = actionData.transform.Find("Label").gameObject.GetComponentInChildren<Text>();
+        text.text = prompt;
+
     }
 }
