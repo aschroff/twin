@@ -124,7 +124,7 @@ namespace Code
         private IEnumerator execute(PartManager.PartData part, PartManager.GroupData group)
         {
             Debug.Log("Start execute");
-            //partManager.EnforceNewPart();
+            partManager.EnforceNewPart();
             viewManager.select(part.view);
             yield return new WaitForSeconds(0.5f);
             
