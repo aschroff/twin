@@ -60,7 +60,7 @@ public class Recorder: MonoBehaviour
         string fullPath = get_path();
         byte[] textureBytes = ss.EncodeToPNG();
         File.WriteAllBytes(fullPath, textureBytes);
-        NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(textureBytes, "twinAlbum", "screenshot_" + name + ".png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ) );
+        NativeGallery.SaveImageToGallery(textureBytes, "twinAlbum", "screenshot_" + name + ".png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ) );
     }
 
     public void Post(LeanPulse notification)
