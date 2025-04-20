@@ -19,7 +19,7 @@ namespace Code
             name = dataManager.selectedProfileId;
             string fullPath =  Path.Combine(Application.persistentDataPath,name, "skin_" + name + ".png");
             File.WriteAllBytes(fullPath, bodyBytes);
-            NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(bodyBytes, "twinAlbum", "skin_" + name + ".png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ) );
+            NativeGallery.SaveImageToGallery(bodyBytes, "twinAlbum", "skin_" + name + ".png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ) );
             LeanPulse notification = getNotification();
              
 #if UNITY_EDITOR
