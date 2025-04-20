@@ -56,11 +56,11 @@ public class PartListManager : MonoBehaviour
                 {
                     part.transform.Find("Icon").gameObject.SetActive(false);
                 }
-                Button change_button = part.transform.Find("Change").gameObject.GetComponent<Button>();
+                /*Button change_button = part.transform.Find("Change").gameObject.GetComponent<Button>();
                 change_button.onClick.AddListener(() =>
                 {
                     process.Handle();
-                });
+                });*/
                 
             }
 
