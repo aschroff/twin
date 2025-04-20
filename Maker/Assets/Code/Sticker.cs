@@ -66,7 +66,7 @@ public class Sticker : ItemHash, ItemFile
 
 	private void SelectTexture(int maxSize)
 	{
-		NativeGallery.Permission permission = NativeGallery.GetImageFromGallery((path) =>
+		NativeGallery.GetImageFromGallery((path) =>
 		{
 			Debug.Log("Image path: " + path);
 			if (path != null)
@@ -97,8 +97,7 @@ public class Sticker : ItemHash, ItemFile
 				}
 			}
 		});
-
-		Debug.Log("Permission result: " + permission);
+		
 	}
 
 	private void SaveTexture()
@@ -109,10 +108,9 @@ public class Sticker : ItemHash, ItemFile
 		string fullPath = get_path();
 		byte[] textureBytes = loadedTexture.EncodeToPNG();
 		File.WriteAllBytes(fullPath, textureBytes);
-		NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(
+		NativeGallery.SaveImageToGallery(
 			fullPath, "GalleryMaker", Path.GetFileName(fullPath), (success, path) => Debug.Log("Media save! result: " + success + " " + path)
 			);
-		Debug.Log("Permission result: " + permission);
 	}
 
 
