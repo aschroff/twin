@@ -1,13 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using TMPro;
+using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
 {
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
     [SerializeField] private TMP_Dropdown dropdown;
+    //[SerializeField] private InputField inputFieldSummaryPrompt;
+    public string summaryPrompt = "The person is 1.60 m tall. " 
+                                + "Describe the medical findings depicted on the body in the style of a medical report. " 
+                                + "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
+
     private LanguageSelector languageSelector;
 
     void Start()
@@ -19,13 +22,17 @@ public class SettingsManager : MonoBehaviour
         languageSelector = this.gameObject.GetComponent<LanguageSelector>();
         int languageID = languageSelector.GetLanguageID();
         dropdown.value = languageID;
-        //update drop menu here
         Debug.Log("Current languageID: " + languageID);
+        DisplayPrompt();
     }
 
     public void ResetApp()
     {
         dataPersistenceManager.ResetApp();
+        summaryPrompt = "The person is 1.60 m tall. " 
+                                + "Describe the medical findings depicted on the body in the style of a medical report. " 
+                                + "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
+        DisplayPrompt();
         InteractionController.EnableMode("Main");
     }
 
@@ -36,4 +43,15 @@ public class SettingsManager : MonoBehaviour
         languageSelector = this.gameObject.GetComponent<LanguageSelector>();
         languageSelector.ChangeLocale(dropdown.value);
     }
+
+    public void OnDisable()
+    {
+        //summaryPrompt = inputFieldSummaryPrompt.text; 
+    }
+
+    public void DisplayPrompt()
+    {
+        //inputFieldSummaryPrompt.text = summaryPrompt; 
+    }
+
 }
