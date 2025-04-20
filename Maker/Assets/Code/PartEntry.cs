@@ -16,6 +16,12 @@ public class PartEntry : Item
         return this.gameObject;
     }
     
+    public void showDetails()
+    {
+        InteractionController.Partdata = partdata;
+        InteractionController.EnableMode("Part");
+    }
+    
     
 
    
