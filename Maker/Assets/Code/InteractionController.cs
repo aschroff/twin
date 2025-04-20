@@ -10,9 +10,38 @@ public class InteractionModeDictionary : SerializableDictionaryBase<string, Game
 public class  InteractionController : Singleton<InteractionController>
 {
     [SerializeField] InteractionModeDictionary interactionModes;
+    [SerializeField] PartManager partManager;
+    [SerializeField] private static string twin;
+    [SerializeField] private static string version;
+    [SerializeField] private static PartManager.GroupData groupdata;
+    [SerializeField] private static PartManager.PartData partdata;
 
+    public static string Twin
+    {
+        get { return twin; }
+        set { twin = value; }
+    }
+
+    public static string Version
+    {
+        get { return version; }
+        set { version = value; }
+    }
+
+    public static PartManager.GroupData Groupdata
+    {
+        get { return groupdata; }
+        set { groupdata = value; }
+    }
+
+    public static PartManager.PartData Partdata
+    {
+        get { return partdata; }
+        set { partdata = value; }
+    }
+    
     GameObject currentMode;
-
+    
         
     public delegate void ModeChange(GameObject modeOld, GameObject modeNew);
     public static event ModeChange OnModeChange;

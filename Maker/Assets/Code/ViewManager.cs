@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class ViewManager : SceneManagement, IDataPersistence
 {
     [SerializeField] public GameObject prefab;
+    [SerializeField] public PartManager partManager;
     
     private bool cameraEnabled = true;
     
@@ -54,6 +55,7 @@ public class ViewManager : SceneManagement, IDataPersistence
         view.positionCamera_z = mainCamera.transform.position.z;
         LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
         view.sizeCamera = camera.Zoom;
+        view.initial = false;
         return view;
     }   
     
@@ -108,6 +110,7 @@ public class ViewManager : SceneManagement, IDataPersistence
     
     public void select(View view)
     {
+        partManager.EnforceNewPart();
         LeanPitchYaw control = body.GetComponent<LeanPitchYaw>();
         control.Yaw = view.yaw;
         control.Pitch =  view.pitch;
@@ -120,6 +123,7 @@ public class ViewManager : SceneManagement, IDataPersistence
     
     public void setDefaultPosition()
     {
+        partManager.EnforceNewPart();
         LeanPitchYaw control = body.GetComponent<LeanPitchYaw>();
         control.Yaw = 0.0f;
         control.Pitch =  0.0f;

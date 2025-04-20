@@ -28,7 +28,6 @@ namespace Code
 
             foreach (PartManager.GroupData group in partManager.groups)
             {
-                Debug.Log("---Set group");
                 foreach (PartManager.PartData part in group.groupParts)
                 {
                     Debug.Log("---Set part");
@@ -126,8 +125,11 @@ namespace Code
         {
             Debug.Log("Start execute");
             partManager.EnforceNewPart();
-            partManager.ClearRefreshPart(part);
             viewManager.select(part.view);
+            yield return new WaitForSeconds(0.5f);
+            
+            partManager.ClearRefreshPart(part);
+            yield return new WaitForSeconds(0.5f);
             recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + part.id;
             recorder.folder = dataManager.selectedProfileId;
             Debug.Log("---Start WaitForEndOfFrame");
