@@ -87,12 +87,14 @@ public class ViewManager : SceneManagement, IDataPersistence
             GameObject prefab_save = prefab;
             GameObject mainCamera_save = this.mainCamera;
             GameObject body_save = body;
+            PartManager partManagerTemp = partManager;
 
             JsonUtility.FromJsonOverwrite(json, this);
             
             prefab = prefab_save; 
             mainCamera = mainCamera_save;
             body = body_save;
+            partManager = partManagerTemp;
         }
         
         rebuild();
