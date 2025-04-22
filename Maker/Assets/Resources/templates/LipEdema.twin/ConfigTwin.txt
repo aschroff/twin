@@ -1,5 +1,5 @@
 {
-    "lastUpdated": -8584780753196932138,
+    "lastUpdated": -8584562799086411348,
     "itemTexts": {
         "keys": [
             "9ce8c8a3-28f0-4a80-a0f3-6062df9e78a8",
@@ -107,8 +107,8 @@
         "sampleInteger3": 1,
         "sampleInteger4": 1
     },
-    "commandDetails": "{\"listening\":true,\"commandDatas\":[],\"groups\":[{\"groupParts\":[],\"group\":{\"instanceID\":-12284},\"id\":\"c1d2f396-bd0b-4416-8032-d4614eb60bef\",\"name\":\"Pain\",\"visible\":true,\"selected\":false},{\"groupParts\":[],\"group\":{\"instanceID\":-12390},\"id\":\"dad23584-4606-4c87-b2ea-3f19a70ca4df\",\"name\":\"Injuries\",\"visible\":true,\"selected\":false},{\"groupParts\":[],\"group\":{\"instanceID\":-12484},\"id\":\"03b5bf33-ea76-4bb2-afd6-ba8bb5a9997c\",\"name\":\"Treatment\",\"visible\":true,\"selected\":false},{\"groupParts\":[],\"group\":{\"instanceID\":-12578},\"id\":\"5548229b-3b0b-4c96-b167-21152d99bedf\",\"name\":\"Swell\",\"visible\":true,\"selected\":true}],\"startNewPart\":true,\"startNewGroup\":true,\"CurrentGroup\":{\"groupParts\":[],\"group\":{\"instanceID\":-12578},\"id\":\"5548229b-3b0b-4c96-b167-21152d99bedf\",\"name\":\"Swell\",\"visible\":true},\"currentPart\":{\"partCommands\":[],\"id\":\"\"},\"references\":{\"version\":2,\"RefIds\":[]}}",
-    "views": "{\"prefab\":{\"instanceID\":29190},\"views\":[{\"name\":\"Head front\",\"positionCamera_x\":-0.0000910349190235138,\"positionCamera_y\":1.524681568145752,\"positionCamera_z\":1.0,\"sizeCamera\":0.17221857607364655,\"pitch\":0.0,\"yaw\":0.0},{\"name\":\"Head back\",\"positionCamera_x\":0.005078047513961792,\"positionCamera_y\":1.5285898447036744,\"positionCamera_z\":1.0,\"sizeCamera\":0.17221857607364655,\"pitch\":1.2953436374664307,\"yaw\":-181.86553955078126},{\"name\":\"Upper body\",\"positionCamera_x\":0.007741709239780903,\"positionCamera_y\":1.32881498336792,\"positionCamera_z\":1.0,\"sizeCamera\":0.4513985812664032,\"pitch\":-1.0362427234649659,\"yaw\":-360.62213134765627},{\"name\":\"Lower body\",\"positionCamera_x\":0.026257431134581567,\"positionCamera_y\":0.4291035532951355,\"positionCamera_z\":1.0,\"sizeCamera\":0.6700218915939331,\"pitch\":-1.0362427234649659,\"yaw\":-360.62213134765627}],\"mainCamera\":{\"instanceID\":27330},\"body\":{\"instanceID\":28092}}",
+    "commandDetails": "{\"listening\":true,\"commandDatas\":[],\"viewManager\":{\"instanceID\":31248},\"groups\":[{\"groupParts\":[],\"group\":{\"instanceID\":-109594},\"id\":\"c1d2f396-bd0b-4416-8032-d4614eb60bef\",\"name\":\"Pain\",\"visible\":true,\"selected\":false},{\"groupParts\":[],\"group\":{\"instanceID\":-109688},\"id\":\"dad23584-4606-4c87-b2ea-3f19a70ca4df\",\"name\":\"Injuries\",\"visible\":true,\"selected\":false},{\"groupParts\":[],\"group\":{\"instanceID\":-109782},\"id\":\"03b5bf33-ea76-4bb2-afd6-ba8bb5a9997c\",\"name\":\"Treatment\",\"visible\":true,\"selected\":false},{\"groupParts\":[],\"group\":{\"instanceID\":-109876},\"id\":\"5548229b-3b0b-4c96-b167-21152d99bedf\",\"name\":\"Swell\",\"visible\":true,\"selected\":true}],\"startNewPart\":true,\"startNewGroup\":true,\"CurrentGroup\":{\"groupParts\":[],\"group\":{\"instanceID\":-109876},\"id\":\"5548229b-3b0b-4c96-b167-21152d99bedf\",\"name\":\"Swell\",\"visible\":true,\"selected\":true},\"currentText\":{\"instanceID\":31472},\"currentPart\":{\"partCommands\":[],\"id\":\"\",\"view\":{\"name\":\"View\",\"positionCamera_x\":0.026257431134581567,\"positionCamera_y\":0.4291035532951355,\"positionCamera_z\":1.0,\"sizeCamera\":0.6700218915939331,\"pitch\":-1.0362427234649659,\"yaw\":-360.62213134765627,\"initial\":false},\"typeTool\":0,\"nameTool\":\"\",\"colorTool\":{\"r\":0.0,\"g\":0.0,\"b\":0.0,\"a\":0.0},\"guidTool\":\"\",\"meaning\":\"\",\"textTool\":\"\",\"description\":\"\",\"group\":{\"groupParts\":[],\"group\":{\"instanceID\":0},\"id\":\"\",\"name\":\"\",\"visible\":false,\"selected\":false},\"pathScreenshot\":\"\"},\"references\":{\"version\":2,\"RefIds\":[]}}",
+    "views": "{\"views\":[{\"name\":\"Head front\",\"positionCamera_x\":-0.0000910349190235138,\"positionCamera_y\":1.524681568145752,\"positionCamera_z\":1.0,\"sizeCamera\":0.17221857607364655,\"pitch\":0.0,\"yaw\":0.0,\"initial\":true},{\"name\":\"Head back\",\"positionCamera_x\":0.005078047513961792,\"positionCamera_y\":1.5285898447036744,\"positionCamera_z\":1.0,\"sizeCamera\":0.17221857607364655,\"pitch\":1.2953436374664307,\"yaw\":-181.86553955078126,\"initial\":true},{\"name\":\"Upper body\",\"positionCamera_x\":0.007741709239780903,\"positionCamera_y\":1.32881498336792,\"positionCamera_z\":1.0,\"sizeCamera\":0.4513985812664032,\"pitch\":-1.0362427234649659,\"yaw\":-360.62213134765627,\"initial\":true},{\"name\":\"Lower body\",\"positionCamera_x\":0.026257431134581567,\"positionCamera_y\":0.4291035532951355,\"positionCamera_z\":1.0,\"sizeCamera\":0.6700218915939331,\"pitch\":-1.0362427234649659,\"yaw\":-360.62213134765627,\"initial\":true}],\"mainCamera\":{\"instanceID\":31416},\"body\":{\"instanceID\":32008},\"prefab\":{\"instanceID\":35636},\"partManager\":{\"instanceID\":31550}}",
     "yaw": -360.62213134765627,
     "pitch": -1.0362427234649659,
     "positionCamera": {
@@ -119,5 +119,18 @@
     "sizeCamera": 0.6700218915939331,
     "name": "LipEdema",
     "version": "twin",
-    "updated": "8/13/2024 8:46:05 AM"
+    "updated": "4/22/2025 3:02:56 PM",
+    "languageID": 0,
+    "prompts": {
+        "keys": [
+            "Prompt",
+            "Part Description",
+            "Medical Report"
+        ],
+        "values": [
+            "",
+            "The person is 1.60 m tall. Describe the medical findings depicted on the body in the style of a medical report. Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.\n        ",
+            "Create a medical report with approximately 250 words. Herefore, describe each medical finding in two to three sentences, summarize the overall situation and recommended treatments. The medical findings depicted on the body are listed below:"
+        ]
+    }
 }

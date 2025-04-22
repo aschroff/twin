@@ -1,5 +1,5 @@
 {
-    "lastUpdated": -8584777856079141728,
+    "lastUpdated": -8584562796466075108,
     "itemTexts": {
         "keys": [
             "1c0467fb-556c-453f-a20d-4278bef5c5a6",
@@ -107,8 +107,8 @@
         "sampleInteger3": 1,
         "sampleInteger4": 1
     },
-    "commandDetails": "{\"listening\":true,\"commandDatas\":[],\"groups\":[],\"startNewPart\":true,\"startNewGroup\":true,\"CurrentGroup\":{\"groupParts\":[],\"group\":{\"instanceID\":0},\"id\":\"\",\"name\":\"\",\"visible\":false},\"currentPart\":{\"partCommands\":[],\"id\":\"\"},\"references\":{\"version\":2,\"RefIds\":[]}}",
-    "views": "{\"prefab\":{\"instanceID\":33314},\"views\":[],\"mainCamera\":{\"instanceID\":114842},\"body\":{\"instanceID\":118230}}",
+    "commandDetails": "{\"listening\":true,\"commandDatas\":[],\"viewManager\":{\"instanceID\":31248},\"groups\":[],\"startNewPart\":true,\"startNewGroup\":true,\"CurrentGroup\":{\"groupParts\":[],\"group\":{\"instanceID\":0},\"id\":\"\",\"name\":\"\",\"visible\":false,\"selected\":true},\"currentText\":{\"instanceID\":31472},\"currentPart\":{\"partCommands\":[],\"id\":\"\",\"view\":{\"name\":\"View\",\"positionCamera_x\":0.026257431134581567,\"positionCamera_y\":0.4291035532951355,\"positionCamera_z\":1.0,\"sizeCamera\":0.6700218915939331,\"pitch\":-1.0362427234649659,\"yaw\":-360.62213134765627,\"initial\":false},\"typeTool\":0,\"nameTool\":\"\",\"colorTool\":{\"r\":0.0,\"g\":0.0,\"b\":0.0,\"a\":0.0},\"guidTool\":\"\",\"meaning\":\"\",\"textTool\":\"\",\"description\":\"\",\"group\":{\"groupParts\":[],\"group\":{\"instanceID\":0},\"id\":\"\",\"name\":\"\",\"visible\":false,\"selected\":false},\"pathScreenshot\":\"\"},\"references\":{\"version\":2,\"RefIds\":[]}}",
+    "views": "{\"views\":[],\"mainCamera\":{\"instanceID\":31416},\"body\":{\"instanceID\":32008},\"prefab\":{\"instanceID\":35636},\"partManager\":{\"instanceID\":31550}}",
     "yaw": 0.0,
     "pitch": 0.0,
     "positionCamera": {
@@ -119,5 +119,18 @@
     "sizeCamera": 2.0,
     "name": "Violence",
     "version": "tbd",
-    "updated": "8/16/2024 5:14:37 PM"
+    "updated": "4/22/2025 3:07:18 PM",
+    "languageID": 0,
+    "prompts": {
+        "keys": [
+            "Prompt",
+            "Part Description",
+            "Medical Report"
+        ],
+        "values": [
+            "",
+            "The person is 1.60 m tall. Describe the medical findings depicted on the body in the style of a medical report. Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.",
+            "Create a medical report with approximately 250 words. Herefore, describe each medical finding in two to three sentences, summarize the overall situation and recommended treatments. The medical findings depicted on the body are listed below:"
+        ]
+    }
 }

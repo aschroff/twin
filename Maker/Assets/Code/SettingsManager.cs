@@ -1,15 +1,12 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class SettingsManager : MonoBehaviour
 {
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
     [SerializeField] private TMP_Dropdown dropdown;
-    //[SerializeField] private InputField inputFieldSummaryPrompt;
-    public string summaryPrompt = "The person is 1.60 m tall. " 
-                                + "Describe the medical findings depicted on the body in the style of a medical report. " 
-                                + "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
 
     private LanguageSelector languageSelector;
 
@@ -23,16 +20,11 @@ public class SettingsManager : MonoBehaviour
         int languageID = languageSelector.GetLanguageID();
         dropdown.value = languageID;
         Debug.Log("Current languageID: " + languageID);
-        DisplayPrompt();
     }
 
     public void ResetApp()
     {
         dataPersistenceManager.ResetApp();
-        summaryPrompt = "The person is 1.60 m tall. " 
-                                + "Describe the medical findings depicted on the body in the style of a medical report. " 
-                                + "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";
-        DisplayPrompt();
         InteractionController.EnableMode("Main");
     }
 
@@ -44,14 +36,38 @@ public class SettingsManager : MonoBehaviour
         languageSelector.ChangeLocale(dropdown.value);
     }
 
-    public void OnDisable()
+
+    public List<(string,string)> getPrompts()
     {
-        //summaryPrompt = inputFieldSummaryPrompt.text; 
+        List<(string, string)> list = new List<(string, string)>();
+
+        Transform top = gameObject.transform.parent;
+        List<GameObject> objectsWithItemPrompt = getChildrenWithItemPrompt(top);
+
+        foreach (GameObject child in objectsWithItemPrompt)
+        {
+            string label = child.gameObject.GetComponentInChildren<Text>().text;
+            string prompt = child.gameObject.GetComponentInChildren<InputField>().text;
+            list.Add((label, prompt));   
+        }
+
+        return list; 
     }
 
-    public void DisplayPrompt()
+
+    private List<GameObject> getChildrenWithItemPrompt(Transform parent)
     {
-        //inputFieldSummaryPrompt.text = summaryPrompt; 
+        List<GameObject> childrenWithItemPrompt = new List<GameObject>();
+
+        foreach(Transform child in parent)
+        {
+            if(child.gameObject.TryGetComponent<ItemPrompt>(out var _itemPrompt))
+            {
+                childrenWithItemPrompt.Add(child.gameObject);
+            }
+            childrenWithItemPrompt.AddRange(getChildrenWithItemPrompt(child));
+        }
+        return childrenWithItemPrompt;
     }
 
 }
