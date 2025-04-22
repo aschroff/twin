@@ -9,10 +9,18 @@ using UnityEngine.UI;
 public class ViewManager : SceneManagement, IDataPersistence
 {
     [SerializeField] public GameObject prefab;
-    [SerializeField] public PartManager partManager;
+    [SerializeReference] public PartManager partManager;
     
     private bool cameraEnabled = true;
-    
+
+    private void Start()
+    {
+        if (partManager == null)
+        {
+            partManager = this.transform.parent.parent.parent.GetComponentInParent<PartManager>();
+        }
+    }
+
     public void build()
     {
         foreach (View view in views)
@@ -79,12 +87,14 @@ public class ViewManager : SceneManagement, IDataPersistence
             GameObject prefab_save = prefab;
             GameObject mainCamera_save = this.mainCamera;
             GameObject body_save = body;
+            PartManager partManagerTemp = partManager;
 
             JsonUtility.FromJsonOverwrite(json, this);
             
             prefab = prefab_save; 
             mainCamera = mainCamera_save;
             body = body_save;
+            partManager = partManagerTemp;
         }
         
         rebuild();
