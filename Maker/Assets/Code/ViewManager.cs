@@ -9,10 +9,18 @@ using UnityEngine.UI;
 public class ViewManager : SceneManagement, IDataPersistence
 {
     [SerializeField] public GameObject prefab;
-    [SerializeField] public PartManager partManager;
+    [SerializeReference] public PartManager partManager;
     
     private bool cameraEnabled = true;
-    
+
+    private void Start()
+    {
+        if (partManager == null)
+        {
+            partManager = this.transform.parent.parent.parent.GetComponentInParent<PartManager>();
+        }
+    }
+
     public void build()
     {
         foreach (View view in views)
