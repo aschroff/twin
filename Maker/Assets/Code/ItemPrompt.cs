@@ -3,8 +3,16 @@ using UnityEngine.UI;
 
 public class ItemPrompt : MonoBehaviour, IDataPersistence
 {
-    [SerializeField] public bool persistent = true;
+    public enum PromptLevel
+    {
+        Version,
+        Part
+    }
+
+    [SerializeField] public PromptLevel level;
     private InputField inputField;
+    
+    public string promptResult = "";
 
     public GameObject relatedGameObject()
     {
@@ -18,19 +26,32 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
 
     public void SaveData(ConfigData data)
     {
-        if(persistent == false) return;
         string label = GetComponentInChildren<Text>().text; //??
         if(data.prompts.ContainsKey(label))
         {
             data.prompts.Remove(label);
         }
         data.prompts.Add(label, inputField.text);
+        if (level == PromptLevel.Version)
+        {
+            if (data.resultsVersion.ContainsKey(label))
+            {
+                data.resultsVersion.Remove(label);
+            }
+            data.resultsVersion.Add(label, promptResult);
+        }
+        else
+        {
+            if (data.partList.ContainsKey(label))
+            {
+                data.partList.Remove(label);
+            }
+        }
 
     }
 
     public void LoadData(ConfigData data)
     {
-        if(persistent == false) return;
         if (inputField == null)
         {
             setPrompt();
@@ -50,6 +71,8 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
             {
                 inputField.text = "";
             }
+            
+            data.resultsVersion.TryGetValue(label.text, out promptResult);
         }
 
     }
