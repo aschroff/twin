@@ -63,6 +63,11 @@ public abstract class Process : MonoBehaviour
       return processManager().partManager;
    }
    
+   protected SettingsManager getSettingsManager()
+   {
+      return processManager().settingsManager;
+   }
+   
    public void Handle(string variant = "")
    {
       Debug.Log("Process Status: Handle");

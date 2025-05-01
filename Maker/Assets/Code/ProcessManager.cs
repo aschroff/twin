@@ -13,5 +13,6 @@ namespace Code
         [SerializeField] public LeanPulse notification;
         [SerializeField] public AI.AI ai;
         [SerializeField] public PartManager partManager;
+        [SerializeField] public SettingsManager settingsManager;
     }
 }
