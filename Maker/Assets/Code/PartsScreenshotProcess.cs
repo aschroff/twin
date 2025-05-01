@@ -14,9 +14,15 @@ namespace Code
         private PartManager.PartData nextPart;
         private bool isProcessingPart = false;
 
+        public override ProcessResult Execute(string variant = "")
+        {
+            StartCoroutine(ProcessParts());
+            return new ProcessResult();
+        }
+        
         private IEnumerator ProcessParts()
         {
-            Debug.Log("Start Parts Screenshots");
+            Debug.Log("ProcessParts: Start Parts Screenshots");
             viewManager = getViewmanager();
             SceneManagement.View currentView = viewManager.shootView();
             recorder = getRecorder();
@@ -53,15 +59,17 @@ namespace Code
             }
         }
 
-        public override ProcessResult Execute(string variant = "")
+        public override ProcessResult ExecuteSync(string variant = "")
         {
-            StartCoroutine(ProcessParts());
+            Debug.Log("Process status: Start PartsScreenshotProcess");
+            StartCoroutine(ExecuteCoroutine());
+            Debug.Log("Process status: End PartsScreenshotProcess");
             return new ProcessResult();
         }
         
         private IEnumerator ExecuteCoroutine()
         {
-            Debug.Log("Start Parts Screenshots");
+            Debug.Log("ExecuteCoroutine: Start Parts Screenshots");
             viewManager = getViewmanager();
             SceneManagement.View currentView = viewManager.shootView();
             recorder = getRecorder();
@@ -91,14 +99,6 @@ namespace Code
             viewManager.select(currentView);
             yield return new WaitForEndOfFrame();
             OnExecuteCompleted();
-        }
-        
-        public override ProcessResult ExecuteSync(string variant = "")
-        {
-            Debug.Log("Process status: Start PartsScreenshotProcess");
-            StartCoroutine(ExecuteCoroutine());
-            Debug.Log("Process status: End PartsScreenshotProcess");
-            return new ProcessResult();
         }
 
         private void Update()
