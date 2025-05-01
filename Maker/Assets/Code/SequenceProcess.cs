@@ -23,14 +23,6 @@ namespace Code
                 await ExecuteProcessAsync(process);
             }
         }
-
-        private async Task ExecuteProcessAsyncOld(ProcessSync process)
-        {
-            var taskCompletionSource = new TaskCompletionSource<bool>();
-            process.ExecuteCompleted += () => taskCompletionSource.SetResult(true);
-            process.ExecuteSync();
-            await taskCompletionSource.Task;
-        }
         
         private async Task ExecuteProcessAsync(ProcessSync process)
         {

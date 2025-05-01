@@ -24,7 +24,7 @@ namespace Code
         
         public override ProcessResult ExecuteSync(string variant = "")
         {
-            Debug.Log("Process status: Start PartsDescriptionProcess");
+            Debug.Log("Process status: Start PartsDescriptionProcess ExecuteSync");
             processManager = getProcessManager();
             partDescriptionProcess = processManager.gameObject.GetComponentInChildren<PartDescriptionProcess>();
             StartCoroutine(ExecuteCoroutine(variant));

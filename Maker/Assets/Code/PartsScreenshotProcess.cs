@@ -73,10 +73,10 @@ namespace Code
 
             foreach (PartManager.GroupData group in partManager.groups)
             {
-                Debug.Log("---Set group");
+                Debug.Log("---Set group" + group.name);
                 foreach (PartManager.PartData part in group.groupParts)
                 {
-                    Debug.Log("---Set part");
+                    Debug.Log("---Set part" + part.id);
                     nextGroup = group;
                     nextPart = part;
                     yield return StartCoroutine(WaitForIdle());
