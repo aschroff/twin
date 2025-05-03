@@ -36,7 +36,6 @@ namespace Code.AI
                 const string errorMessage = "Please set the <b>API Key</b> in the <b>ChatGPT Dialogue</b> Game Object.";
                 characterDescription.text = errorMessage;
                 characterDescription.color = Color.magenta;
-                return;
             }
         
         }
@@ -57,46 +56,11 @@ namespace Code.AI
             }
             return "";
         }
-
-        public void Summary()
-        {
-            string prompt = "Produce a text 100-120 word. The person is 1.60 m tall. Describe the medical findings depicted on the body.";
-            prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.ShortSummary);
-            OneShot(prompt, path);
-
-        }
-    
-        public void CompleteReport()
-        {
-            string prompt = "The person is 1.60 m tall. Describe the medical findings depicted on the body and make a recommendation for treating these problems.";
-            prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.CompleteReport);
-            OneShot(prompt, path);
-
-        }
-   
-        public void Treatment()
-        {
-            string prompt = "The person is 1.60 m tall. Describe in 50-70 words the medical findings depicted on the body and make a 200 -250 words recommendation for treating these problems.";
-            prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.Treatment);
-            OneShot(prompt, path);
-        }
         
-        public void Situation(string language)
+        private ItemPrompt getPromptResultOfLabel(string label)
         {
-
-            string prompt = "Send back the following text ";
-            if (language != "English")
-            {
-                prompt += " translated into " + language +", without any further changes: \n";
-            }
-            else
-            {
-                prompt += ", without any further changes except for correction of spelling mistakes: \n";
-            }
-            prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.Situation);
-            OneShot(prompt);
+            return settingsManager.getPromptObject(label);
         }
-        
         
         
         private IEnumerator WaitForFileCoroutine(string path)
@@ -107,17 +71,13 @@ namespace Code.AI
             }
 
             Debug.Log("File exists: " + path);
-            // Continue with the rest of your logic here
         }
         
         
-        private IEnumerator DescribePartCoroutine(PartManager.PartData part)
+        private IEnumerator DescribePartCoroutine(PartManager.PartData part, string variant)
         {
-            string prompt = getPromptOfLabel("Part Description");
+            string prompt = getPromptOfLabel(variant);
             
-            /*string prompt =
-                            "The person is 1.60 m tall. Describe the medical findings depicted on the body in the style of a medical report." +
-                            "Include the size and shape of the findings, their location on the body including the relative position on the body part and the orientation, and any other relevant details.";*/
             prompt += Part.Description(part);
 
 
@@ -140,17 +100,23 @@ namespace Code.AI
             });
         }
 
-        public string DescribePart(PartManager.PartData part)
+        public string DescribePart(PartManager.PartData part, string variant)
         {
-            StartCoroutine(DescribePartCoroutine(part));
+            StartCoroutine(DescribePartCoroutine(part, variant));
             return "";
         }
         
-        public void DescribeVersion(PartManager partManager)
+        public void CompleteReport()
         {
-            string prompt = getPromptOfLabel("Medical Report");
-            /*string prompt = "Create a medical report with approximately 250 words. Herefore, describe each medical finding in two to three sentences, summarize the overall situation" +
-                            "and recommended treatments. The medical findings depicted on the body are listed below: \n ";*/
+            string prompt = "The person is 1.60 m tall. Describe the medical findings depicted on the body and make a recommendation for treating these problems.";
+            prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.CompleteReport);
+            OneShot(prompt, path);
+
+        }
+        
+        public void DescribeVersion(PartManager partManager,  string variant)
+        {
+            string prompt = getPromptOfLabel(variant);
             int countFinding = 0;
             foreach (PartManager.GroupData group in partManager.groups)
             {
@@ -161,22 +127,22 @@ namespace Code.AI
                     prompt += part.description + "\n";
                 }
             }
-            OneShot(prompt);
+            OneShot(prompt, variant);
         }
      
-        private void OneShot(string prompt, string imagePath="")
+        private void OneShot(string prompt, string variant, string imagePath="")
         {
             if (!string.IsNullOrEmpty(imagePath))
             {
                 prompt +=  "#IMAGEPATH#" + imagePath + "#IMAGEPATHEND#";              
             }
 
+            ItemPrompt itemPrompt = getPromptResultOfLabel(variant);
             characterDescription.text = "<in progress> ";
             ChatGPTwin.Request(prompt, parameters, completeCallback: text => {
-                // We've received the full text of the answer, so we can display it in the "You're chatting with" text.
                 characterDescription.text = text;
+                itemPrompt.promptResult = text;
             }, failureCallback: (errorCode, errorMessage) => {
-                // If the request fails, display the error message in the "You're chatting with" text.
                 var errorType = (ErrorCodes)errorCode;
                 characterDescription.text = $"Error {errorCode}: {errorType} - {errorMessage}";
                 characterDescription.color = Color.red;

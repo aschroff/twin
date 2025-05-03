@@ -53,7 +53,24 @@ public class SettingsManager : MonoBehaviour
 
         return list; 
     }
+    
+    public ItemPrompt getPromptObject(string label)
+    {
+        List<(string, string)> list = new List<(string, string)>();
 
+        Transform top = gameObject.transform.parent;
+        List<GameObject> objectsWithItemPrompt = getChildrenWithItemPrompt(top);
+
+        foreach (GameObject child in objectsWithItemPrompt)
+        {
+            if (child.gameObject.GetComponentInChildren<Text>().text == label)
+            {
+                return child.GetComponent<ItemPrompt>();
+            }
+
+        }
+        return null;
+    }
 
     private List<GameObject> getChildrenWithItemPrompt(Transform parent)
     {
