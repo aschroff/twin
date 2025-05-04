@@ -5957,6 +5957,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ViewListUI
       objectReference: {fileID: 0}
+    - target: {fileID: 6499497201713150031, guid: fddf429417fe747339f562f24f780e1e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11385,6 +11389,18 @@ PrefabInstance:
     - target: {fileID: 1013226406711613350, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: createView
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464891155135381990, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5513377015833497343}
+    - target: {fileID: 3464891155135381990, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EnableMode
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464891155135381990, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: ViewList
       objectReference: {fileID: 0}
     - target: {fileID: 4680506048222474474, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
       propertyPath: m_Enabled
