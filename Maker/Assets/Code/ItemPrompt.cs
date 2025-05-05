@@ -6,13 +6,20 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
     public enum PromptLevel
     {
         Version,
-        Part
+        Part,
+        Unknown
     }
 
     [SerializeField] public PromptLevel level;
+    [SerializeField] public string label;
     private InputField inputField;
     
     public string promptResult = "";
+    
+    private string getUniqueDescription()
+    {
+        return this.gameObject.transform.Find("Label").GetComponent<Text>().text;
+    }
 
     public GameObject relatedGameObject()
     {
@@ -26,25 +33,25 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
 
     public void SaveData(ConfigData data)
     {
-        string label = GetComponentInChildren<Text>().text; //??
-        if(data.prompts.ContainsKey(label))
+        string key = getUniqueDescription();
+        if(data.prompts.ContainsKey(key))
         {
-            data.prompts.Remove(label);
+            data.prompts.Remove(key);
         }
-        data.prompts.Add(label, inputField.text);
+        data.prompts.Add(key, inputField.text);
         if (level == PromptLevel.Version)
         {
-            if (data.resultsVersion.ContainsKey(label))
+            if (data.resultsVersion.ContainsKey(key))
             {
-                data.resultsVersion.Remove(label);
+                data.resultsVersion.Remove(key);
             }
-            data.resultsVersion.Add(label, promptResult);
+            data.resultsVersion.Add(key, promptResult);
         }
         else
         {
-            if (data.partList.ContainsKey(label))
+            if (data.partList.ContainsKey(key))
             {
-                data.partList.Remove(label);
+                data.partList.Remove(key);
             }
         }
 
@@ -52,16 +59,16 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
 
     public void LoadData(ConfigData data)
     {
+        string key = getUniqueDescription();
         if (inputField == null)
         {
             setPrompt();
         }
-        Text label = this.GetComponentInChildren<Text>();
         string promptText;
 
-        if(label != null)
+        if(key != null)
         {
-            data.prompts.TryGetValue(label.text, out promptText);
+            data.prompts.TryGetValue(key, out promptText);
         
             if (promptText != null)
             {
@@ -72,7 +79,7 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
                 inputField.text = "";
             }
             
-            data.resultsVersion.TryGetValue(label.text, out promptResult);
+            data.resultsVersion.TryGetValue(key, out promptResult);
         }
 
     }

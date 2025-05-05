@@ -26,7 +26,6 @@ namespace Code.AI
 
         public string path;
         public SettingsManager settingsManager;
-        private List<(string, string)> prompts; 
     
         private ChatGptParameters _parametersWithCharacterRole;
 
@@ -39,27 +38,16 @@ namespace Code.AI
             }
         
         }
+        
 
-        public void OnEnable()
+        private string getPromptOfLabel(string label, ItemPrompt.PromptLevel level = ItemPrompt.PromptLevel.Unknown)
         {
-            prompts = settingsManager.getPrompts();
-        }
-
-        private string getPromptOfLabel(string label)
-        {
-            foreach ((string, string) tupel in prompts)
-            {
-                if (tupel.Item1 == label)
-                {
-                    return tupel.Item2;
-                }
-            }
-            return "";
+            return this.getPromptResultOfLabel(label, level).gameObject.GetComponentInChildren<InputField>().text;
         }
         
-        private ItemPrompt getPromptResultOfLabel(string label)
+        private ItemPrompt getPromptResultOfLabel(string label, ItemPrompt.PromptLevel level = ItemPrompt.PromptLevel.Unknown)
         {
-            return settingsManager.getPromptObject(label);
+            return settingsManager.getPromptObject(label, level);
         }
         
         
@@ -76,7 +64,7 @@ namespace Code.AI
         
         private IEnumerator DescribePartCoroutine(PartManager.PartData part, string variant)
         {
-            string prompt = getPromptOfLabel(variant);
+            string prompt = getPromptOfLabel(variant, ItemPrompt.PromptLevel.Part);
             
             prompt += Part.Description(part);
 
@@ -116,7 +104,7 @@ namespace Code.AI
         
         public void DescribeVersion(PartManager partManager,  string variant)
         {
-            string prompt = getPromptOfLabel(variant);
+            string prompt = getPromptOfLabel(variant, ItemPrompt.PromptLevel.Version);
             int countFinding = 0;
             foreach (PartManager.GroupData group in partManager.groups)
             {
@@ -137,7 +125,7 @@ namespace Code.AI
                 prompt +=  "#IMAGEPATH#" + imagePath + "#IMAGEPATHEND#";              
             }
 
-            ItemPrompt itemPrompt = getPromptResultOfLabel(variant);
+            ItemPrompt itemPrompt = getPromptResultOfLabel(variant, ItemPrompt.PromptLevel.Version);
             characterDescription.text = "<in progress> ";
             ChatGPTwin.Request(prompt, parameters, completeCallback: text => {
                 characterDescription.text = text;

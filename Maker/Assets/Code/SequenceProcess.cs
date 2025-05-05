@@ -12,27 +12,19 @@ namespace Code
 
         public override ProcessResult Execute(string variant = "")
         {
-            ExecuteProcessesAsync();
+            ExecuteProcessesAsync(variant);
             return new ProcessResult();
         }
 
-        private async Task ExecuteProcessesAsync()
+        private async Task ExecuteProcessesAsync(string variant = "")
         {
             foreach (var process in processes)
             {
-                await ExecuteProcessAsync(process);
+                await ExecuteProcessAsync(process, variant);
             }
         }
-
-        private async Task ExecuteProcessAsyncOld(ProcessSync process)
-        {
-            var taskCompletionSource = new TaskCompletionSource<bool>();
-            process.ExecuteCompleted += () => taskCompletionSource.SetResult(true);
-            process.ExecuteSync();
-            await taskCompletionSource.Task;
-        }
         
-        private async Task ExecuteProcessAsync(ProcessSync process)
+        private async Task ExecuteProcessAsync(ProcessSync process, string variant = "")
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             Action handler = null;
@@ -42,7 +34,7 @@ namespace Code
                 process.ExecuteCompleted -= handler;
             };
             process.ExecuteCompleted += handler;
-            process.ExecuteSync();
+            process.ExecuteSync(variant);
             await taskCompletionSource.Task;
         }
     }

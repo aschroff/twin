@@ -309,6 +309,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 653904621475728463}
+  - {fileID: 6413397131539465474}
   - {fileID: 3114649945308939461}
   m_Father: {fileID: 5992674016130538951}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -761,6 +762,134 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4239298271117699265, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
   m_PrefabInstance: {fileID: 3869691583223828548}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4329666713596219190
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2755011394344659834}
+    m_Modifications:
+    - target: {fileID: 2966493647224121630, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_Name
+      value: Medical Report (Part Description)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3445785907976342616, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_Text
+      value: The person is 1.60 m tall. Describe the medical findings depicted on
+        the body in the style of a medical report. Include the size and shape of
+        the findings, their location on the body including the relative position
+        on the body part and the orientation, and any other relevant details.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4886138176954282310, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: label
+      value: Medical Report
+      objectReference: {fileID: 0}
+    - target: {fileID: 4886138176954282310, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: level
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4993498458058382180, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_Text
+      value: Medical Report (Part level)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9129755351144261091, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: m_Text
+      value: The person is 1.60 m tall. Describe the medical findings depicted on
+        the body in the style of a medical report. Include the size and shape of
+        the findings, their location on the body including the relative position
+        on the body part and the orientation, and any other relevant details.
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+--- !u!224 &6413397131539465474 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7284262719918115380, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+  m_PrefabInstance: {fileID: 4329666713596219190}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5238074797498476440
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -985,6 +1114,14 @@ PrefabInstance:
         the findings, their location on the body including the relative position
         on the body part and the orientation, and any other relevant details.
       objectReference: {fileID: 0}
+    - target: {fileID: 4886138176954282310, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: label
+      value: Part Description
+      objectReference: {fileID: 0}
+    - target: {fileID: 4886138176954282310, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: level
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4993498458058382180, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
       propertyPath: m_Text
       value: Part Description
@@ -1104,6 +1241,10 @@ PrefabInstance:
         250 words. Herefore, describe each medical finding in two to three sentences,
         summarize the overall situation and recommended treatments. The medical findings
         depicted on the body are listed below:'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4886138176954282310, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
+      propertyPath: label
+      value: Medical Report
       objectReference: {fileID: 0}
     - target: {fileID: 4993498458058382180, guid: e77f2bceb94da4139aa8e43b4ccc4c1c, type: 3}
       propertyPath: m_Text

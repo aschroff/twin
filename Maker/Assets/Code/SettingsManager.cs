@@ -36,38 +36,29 @@ public class SettingsManager : MonoBehaviour
         languageSelector.ChangeLocale(dropdown.value);
     }
 
-
-    public List<(string,string)> getPrompts()
-    {
-        List<(string, string)> list = new List<(string, string)>();
-
-        Transform top = gameObject.transform.parent;
-        List<GameObject> objectsWithItemPrompt = getChildrenWithItemPrompt(top);
-
-        foreach (GameObject child in objectsWithItemPrompt)
-        {
-            string label = child.gameObject.GetComponentInChildren<Text>().text;
-            string prompt = child.gameObject.GetComponentInChildren<InputField>().text;
-            list.Add((label, prompt));   
-        }
-
-        return list; 
-    }
     
-    public ItemPrompt getPromptObject(string label)
+    public ItemPrompt getPromptObject(string label, ItemPrompt.PromptLevel level = ItemPrompt.PromptLevel.Unknown)
     {
-        List<(string, string)> list = new List<(string, string)>();
 
         Transform top = gameObject.transform.parent;
         List<GameObject> objectsWithItemPrompt = getChildrenWithItemPrompt(top);
 
         foreach (GameObject child in objectsWithItemPrompt)
         {
-            if (child.gameObject.GetComponentInChildren<Text>().text == label)
+            ItemPrompt itemPrompt = child.GetComponent<ItemPrompt>();
+            if (itemPrompt.label == label)
             {
-                return child.GetComponent<ItemPrompt>();
+                if (level == ItemPrompt.PromptLevel.Unknown || child.GetComponent<ItemPrompt>().level == level)
+                {
+                    return child.GetComponent<ItemPrompt>();
+                }
             }
 
+        }
+
+        if (label != "Default")
+        {
+            return getPromptObject("Default", level);
         }
         return null;
     }

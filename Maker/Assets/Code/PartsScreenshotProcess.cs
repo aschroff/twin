@@ -59,7 +59,7 @@ namespace Code
             return new ProcessResult();
         }
         
-        private IEnumerator ExecuteCoroutine()
+        private IEnumerator ExecuteCoroutine(string variant = "")
         {
             Debug.Log("Start Parts Screenshots");
             viewManager = getViewmanager();
@@ -96,7 +96,7 @@ namespace Code
         public override ProcessResult ExecuteSync(string variant = "")
         {
             Debug.Log("Process status: Start PartsScreenshotProcess");
-            StartCoroutine(ExecuteCoroutine());
+            StartCoroutine(ExecuteCoroutine(variant));
             Debug.Log("Process status: End PartsScreenshotProcess");
             return new ProcessResult();
         }
