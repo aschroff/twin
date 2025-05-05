@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 3680238332540445819}
   - component: {fileID: 7273348880630202378}
   - component: {fileID: 4643133334247827424}
-  - component: {fileID: 3281440496308446101}
+  - component: {fileID: 1658875441350744002}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Groupmanager
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 1
---- !u!114 &3281440496308446101
+--- !u!114 &1658875441350744002
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -339,12 +339,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7912850131296632428}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0a7a2a1a3f1402eba6702321832e36c, type: 3}
+  m_Script: {fileID: 11500000, guid: e5fd03edf161243d4a5cfc4163bb65e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  partmanager: {fileID: 0}
-  groupmanager: {fileID: 0}
-  prefab: {fileID: 4419033343505253822, guid: 9d17819ee46d54786921e04c6c708d7b, type: 3}
+  viewmanager: {fileID: 0}
+  prefab: {fileID: 0}
   notification: {fileID: 0}
 --- !u!1001 &967896674504413524
 PrefabInstance:
