@@ -23,6 +23,7 @@ public class ConfigData
     public string updated;
     public int languageID;
     public SerializableDictionary<string, string> prompts;
+    public SerializableDictionary<string, string> resultsVersion;
    
 
     public ConfigData(string modelName, string modelVersion = "")
@@ -43,5 +44,6 @@ public class ConfigData
         updated = new DateTime(1969, 4,25, 10,10,00).ToString();
         languageID = 0;
         prompts = new SerializableDictionary<string, string>();
+        resultsVersion = new SerializableDictionary<string, string>();
     }
 }

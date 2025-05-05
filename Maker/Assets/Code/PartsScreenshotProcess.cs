@@ -80,7 +80,7 @@ namespace Code
             return new ProcessResult();
         }
         
-        private IEnumerator ExecuteCoroutine()
+        private IEnumerator ExecuteCoroutine(string variant = "")
         {
             Debug.Log("ExecuteCoroutine: Start Parts Screenshots");
             viewManager = getViewmanager();
@@ -114,6 +114,16 @@ namespace Code
             yield return new WaitForEndOfFrame();
             OnExecuteCompleted();
         }
+
+        
+        public override ProcessResult ExecuteSync(string variant = "")
+        {
+            Debug.Log("Process status: Start PartsScreenshotProcess");
+            StartCoroutine(ExecuteCoroutine(variant));
+            Debug.Log("Process status: End PartsScreenshotProcess");
+            return new ProcessResult();
+        }
+
 
         private void Update()
         {

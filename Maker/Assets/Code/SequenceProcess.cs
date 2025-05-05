@@ -19,26 +19,19 @@ namespace Code
 
         public override ProcessResult Execute(string variant = "")
         {
-            ExecuteProcessesAsync();
+            ExecuteProcessesAsync(variant);
             return new ProcessResult();
         }
 
-        private async Task ExecuteProcessesAsync()
+        private async Task ExecuteProcessesAsync(string variant = "")
         {
             foreach (var process in processes)
             {
-                await ExecuteProcessAsync(process);
+                await ExecuteProcessAsync(process, variant);
             }
         }
-
-        private async Task ExecuteProcessAsyncOld(ProcessSync process)
-        {
-            var taskCompletionSource = new TaskCompletionSource<bool>();
-            process.ExecuteCompleted += () => taskCompletionSource.SetResult(true);
-            process.ExecuteSync();
-            await taskCompletionSource.Task;
-        }
         
+
         /// <summary>
         /// Executes a single process asynchronously and waits for its completion.
         /// </summary>
@@ -50,7 +43,7 @@ namespace Code
         /// This method uses a <see cref="TaskCompletionSource{TResult}"/> to await the completion of the process. 
         /// It subscribes to the <c>ExecuteCompleted</c> event of the process and ensures proper unsubscription to avoid memory leaks.
         /// </remarks>
-        private async Task ExecuteProcessAsync(ProcessSync process)
+        private async Task ExecuteProcessAsync(ProcessSync process, string variant = "")
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             Action handler = null;
@@ -60,7 +53,7 @@ namespace Code
                 process.ExecuteCompleted -= handler;
             };
             process.ExecuteCompleted += handler;
-            process.ExecuteSync();
+            process.ExecuteSync(variant);
             await taskCompletionSource.Task;
         }
     }

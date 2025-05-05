@@ -17,7 +17,7 @@ namespace Code
         {
             processManager = getProcessManager();
             partDescriptionProcess = processManager.gameObject.GetComponentInChildren<PartDescriptionProcess>();
-            execute();
+            execute(variant);
             return new ProcessResult();
         }
         
@@ -43,14 +43,14 @@ namespace Code
                 int partCounter = 0;
                 foreach (PartManager.PartData part in group.groupParts)
                 {
-                    StartCoroutine(describePart(part));
+                    StartCoroutine(describePart(part, variant));
                 }
 
             }
             yield return new WaitForEndOfFrame();
             OnExecuteCompleted();
         }
-        private void execute()
+        private void execute(string variant)
         {
             Debug.Log("Process status: PartsDescriptionProcess execute");
             PartManager partManager = getPartManager();
@@ -61,17 +61,17 @@ namespace Code
                 int partCounter = 0;
                 foreach (PartManager.PartData part in group.groupParts)
                 {
-                    StartCoroutine(describePart(part));
+                    StartCoroutine(describePart(part, variant));
                 }
 
             }
 
         }
         
-        private IEnumerator describePart(PartManager.PartData part)
+        private IEnumerator describePart(PartManager.PartData part, string variant)
         {   
             Debug.Log("Process status: describePart" + part.id);
-            partDescriptionProcess.Handle(part.id);
+            partDescriptionProcess.Handle(variant + "##" + part.id);
             yield return new WaitForEndOfFrame();
         }
         

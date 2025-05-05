@@ -18,13 +18,26 @@ namespace Code
             return new ProcessResult();
         }
         
+        public (string before, string after) SplitStringByDoubleHash(string input)
+        {
+            if (string.IsNullOrEmpty(input) || !input.Contains("##"))
+            {
+                return (input, string.Empty);
+            }
+
+            string[] parts = input.Split(new[] { "##" }, 2, System.StringSplitOptions.None);
+            return (parts[0], parts.Length > 1 ? parts[1] : string.Empty);
+        }
         
-        private IEnumerator execute(string idPart)
+        private IEnumerator execute(string variantRaw)
         {
             Debug.Log("Process Status: PartDescriptionProcess execute");
+            string variant;
+            string idPart;
+            (variant, idPart) = SplitStringByDoubleHash(variantRaw);
             PartManager partManager = getPartManager();
             part = partManager.getPart(idPart);
-            describePart(part);
+            describePart(part, variant);
             yield return new WaitForEndOfFrame();
         }
         public string get_path()
@@ -40,14 +53,14 @@ namespace Code
 		
         }
 
-        private void describePart(PartManager.PartData part)
+        private void describePart(PartManager.PartData part, string variant)
         {
             AI.AI ai = getAI();
             part.pathScreenshot = get_path();
             if (File.Exists(part.pathScreenshot))
             {
                 Debug.Log("Before Call AI");
-                ai.DescribePart(part); 
+                ai.DescribePart(part, variant); 
             }
             else 
             {
