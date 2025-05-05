@@ -4,6 +4,11 @@ using UnityEngine;
 
 namespace Code
 {
+    /// <summary>
+    /// Handles the process of taking screenshots for parts in a scene.
+    /// Manages the execution flow, including preparing data, iterating through parts,
+    /// and capturing screenshots using a recorder.
+    /// </summary>
     public class PartsScreenshotProcess : ProcessSync
     {
         private ViewManager viewManager;
@@ -14,9 +19,15 @@ namespace Code
         private PartManager.PartData nextPart;
         private bool isProcessingPart = false;
 
+        public override ProcessResult Execute(string variant = "")
+        {
+            StartCoroutine(ProcessParts());
+            return new ProcessResult();
+        }
+        
         private IEnumerator ProcessParts()
         {
-            Debug.Log("Start Parts Screenshots");
+            Debug.Log("ProcessParts: Start Parts Screenshots");
             viewManager = getViewmanager();
             SceneManagement.View currentView = viewManager.shootView();
             recorder = getRecorder();
@@ -53,15 +64,25 @@ namespace Code
             }
         }
 
-        public override ProcessResult Execute(string variant = "")
+        /// <summary>
+        /// Executes the coroutine responsible for capturing screenshots of all parts in the scene.
+        /// This method handles the following tasks:
+        /// - Iterates through all groups and their respective parts.
+        /// - Waits for each part to finish processing before moving to the next. Update()-function starts process for next part when process of part before is completed
+        /// - Resets and cleans up after processing is complete.
+        /// - Posts the captured data and restores the original view.
+        /// </summary>
+        public override ProcessResult ExecuteSync(string variant = "")
         {
-            StartCoroutine(ProcessParts());
+            Debug.Log("Process status: Start PartsScreenshotProcess");
+            StartCoroutine(ExecuteCoroutine());
+            Debug.Log("Process status: End PartsScreenshotProcess");
             return new ProcessResult();
         }
         
         private IEnumerator ExecuteCoroutine()
         {
-            Debug.Log("Start Parts Screenshots");
+            Debug.Log("ExecuteCoroutine: Start Parts Screenshots");
             viewManager = getViewmanager();
             SceneManagement.View currentView = viewManager.shootView();
             recorder = getRecorder();
@@ -80,6 +101,7 @@ namespace Code
                     nextGroup = group;
                     nextPart = part;
                     yield return StartCoroutine(WaitForIdle());
+                    // waits until Update() gets called and starts coroutine to take screenshot of this part
                 }
             }
 
@@ -91,14 +113,6 @@ namespace Code
             viewManager.select(currentView);
             yield return new WaitForEndOfFrame();
             OnExecuteCompleted();
-        }
-        
-        public override ProcessResult ExecuteSync(string variant = "")
-        {
-            Debug.Log("Process status: Start PartsScreenshotProcess");
-            StartCoroutine(ExecuteCoroutine());
-            Debug.Log("Process status: End PartsScreenshotProcess");
-            return new ProcessResult();
         }
 
         private void Update()
