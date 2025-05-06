@@ -5893,6 +5893,14 @@ PrefabInstance:
       propertyPath: viewManager
       value: 
       objectReference: {fileID: 722981551}
+    - target: {fileID: 2454543465579113694, guid: fddf429417fe747339f562f24f780e1e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5513377015833497343}
+    - target: {fileID: 2454543465579113694, guid: fddf429417fe747339f562f24f780e1e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EnableMode
+      objectReference: {fileID: 0}
     - target: {fileID: 5293551088873445745, guid: fddf429417fe747339f562f24f780e1e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -6053,6 +6061,11 @@ PrefabInstance:
 --- !u!224 &1524048358 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5293551088873445745, guid: fddf429417fe747339f562f24f780e1e, type: 3}
+  m_PrefabInstance: {fileID: 1524048357}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &1524048359 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 8107328539216943493, guid: fddf429417fe747339f562f24f780e1e, type: 3}
   m_PrefabInstance: {fileID: 1524048357}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1551648120 stripped
@@ -18441,7 +18454,7 @@ MonoBehaviour:
     - {fileID: 1240982175654551382}
     - {fileID: 8958209791886974812}
     - {fileID: 887619747}
-    - {fileID: 0}
+    - {fileID: 1524048359}
     - {fileID: 4974995707950816676}
 --- !u!114 &8038675664049359814
 MonoBehaviour:
