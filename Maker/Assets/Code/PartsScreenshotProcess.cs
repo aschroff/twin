@@ -140,14 +140,19 @@ namespace Code
         private IEnumerator execute(PartManager.PartData part, PartManager.GroupData group)
         {
             Debug.Log("Start execute");
+            recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + part.id;
+            recorder.folder = dataManager.selectedProfileId;
+            if (recorder.FileExists())
+            {
+                Debug.Log("File already exists, skipping screenshot for " + part.id);
+                yield break;
+            }
             partManager.EnforceNewPart();
             viewManager.select(part.view);
             yield return new WaitForSeconds(0.5f);
-            
             partManager.ClearRefreshPart(part);
             yield return new WaitForSeconds(0.5f);
-            recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + part.id;
-            recorder.folder = dataManager.selectedProfileId;
+
             Debug.Log("---Start WaitForEndOfFrame");
             yield return new WaitForEndOfFrame();
             Debug.Log("---End WaitForEndOfFrame");
