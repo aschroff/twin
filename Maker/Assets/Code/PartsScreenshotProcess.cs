@@ -63,22 +63,6 @@ namespace Code
                 yield return null;
             }
         }
-
-        /// <summary>
-        /// Executes the coroutine responsible for capturing screenshots of all parts in the scene.
-        /// This method handles the following tasks:
-        /// - Iterates through all groups and their respective parts.
-        /// - Waits for each part to finish processing before moving to the next. Update()-function starts process for next part when process of part before is completed
-        /// - Resets and cleans up after processing is complete.
-        /// - Posts the captured data and restores the original view.
-        /// </summary>
-        public override ProcessResult ExecuteSync(string variant = "")
-        {
-            Debug.Log("Process status: Start PartsScreenshotProcess");
-            StartCoroutine(ExecuteCoroutine());
-            Debug.Log("Process status: End PartsScreenshotProcess");
-            return new ProcessResult();
-        }
         
         private IEnumerator ExecuteCoroutine(string variant = "")
         {
@@ -116,6 +100,14 @@ namespace Code
         }
 
         
+        /// <summary>
+        /// Executes the coroutine responsible for capturing screenshots of all parts in the scene.
+        /// This method handles the following tasks:
+        /// - Iterates through all groups and their respective parts.
+        /// - Waits for each part to finish processing before moving to the next. Update()-function starts process for next part when process of part before is completed
+        /// - Resets and cleans up after processing is complete.
+        /// - Posts the captured data and restores the original view.
+        /// </summary>
         public override ProcessResult ExecuteSync(string variant = "")
         {
             Debug.Log("Process status: Start PartsScreenshotProcess");
