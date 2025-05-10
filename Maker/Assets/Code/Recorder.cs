@@ -24,6 +24,12 @@ public class Recorder: MonoBehaviour
 		
     }
     
+    public bool FileExists()
+    {
+        string fullPath = get_path();
+        return File.Exists(fullPath);
+    }
+    
     private IEnumerator TakeAndSave(LeanPulse notification)
     {
         List<GameObject> listActive = Prepare();
