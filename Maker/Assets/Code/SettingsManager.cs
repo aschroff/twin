@@ -60,6 +60,7 @@ public class SettingsManager : MonoBehaviour
         {
             return getPromptObject("Default", level);
         }
+        Debug.Log("Prompt not found: " + label + ", " + level);
         return null;
     }
 

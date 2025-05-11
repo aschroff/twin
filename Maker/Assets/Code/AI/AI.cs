@@ -42,6 +42,9 @@ namespace Code.AI
 
         private string getPromptOfLabel(string label, ItemPrompt.PromptLevel level = ItemPrompt.PromptLevel.Unknown)
         {
+            Debug.Log("getPromptOfLabel");
+            Debug.Log(label);
+            Debug.Log(level);
             return this.getPromptResultOfLabel(label, level).gameObject.GetComponentInChildren<InputField>().text;
         }
         
