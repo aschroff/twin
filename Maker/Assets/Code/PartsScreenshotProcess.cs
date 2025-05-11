@@ -63,22 +63,6 @@ namespace Code
                 yield return null;
             }
         }
-
-        /// <summary>
-        /// Executes the coroutine responsible for capturing screenshots of all parts in the scene.
-        /// This method handles the following tasks:
-        /// - Iterates through all groups and their respective parts.
-        /// - Waits for each part to finish processing before moving to the next. Update()-function starts process for next part when process of part before is completed
-        /// - Resets and cleans up after processing is complete.
-        /// - Posts the captured data and restores the original view.
-        /// </summary>
-        public override ProcessResult ExecuteSync(string variant = "")
-        {
-            Debug.Log("Process status: Start PartsScreenshotProcess");
-            StartCoroutine(ExecuteCoroutine());
-            Debug.Log("Process status: End PartsScreenshotProcess");
-            return new ProcessResult();
-        }
         
         private IEnumerator ExecuteCoroutine(string variant = "")
         {
@@ -116,6 +100,14 @@ namespace Code
         }
 
         
+        /// <summary>
+        /// Executes the coroutine responsible for capturing screenshots of all parts in the scene.
+        /// This method handles the following tasks:
+        /// - Iterates through all groups and their respective parts.
+        /// - Waits for each part to finish processing before moving to the next. Update()-function starts process for next part when process of part before is completed
+        /// - Resets and cleans up after processing is complete.
+        /// - Posts the captured data and restores the original view.
+        /// </summary>
         public override ProcessResult ExecuteSync(string variant = "")
         {
             Debug.Log("Process status: Start PartsScreenshotProcess");
@@ -148,14 +140,19 @@ namespace Code
         private IEnumerator execute(PartManager.PartData part, PartManager.GroupData group)
         {
             Debug.Log("Start execute");
+            recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + part.id;
+            recorder.folder = dataManager.selectedProfileId;
+            if (recorder.FileExists())
+            {
+                Debug.Log("File already exists, skipping screenshot for " + part.id);
+                yield break;
+            }
             partManager.EnforceNewPart();
             viewManager.select(part.view);
             yield return new WaitForSeconds(0.5f);
-            
             partManager.ClearRefreshPart(part);
             yield return new WaitForSeconds(0.5f);
-            recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + part.id;
-            recorder.folder = dataManager.selectedProfileId;
+
             Debug.Log("---Start WaitForEndOfFrame");
             yield return new WaitForEndOfFrame();
             Debug.Log("---End WaitForEndOfFrame");
