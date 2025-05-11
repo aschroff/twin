@@ -97,7 +97,7 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		public string guidTool;
 		public string meaning;
 		public string textTool;
-		public string description;
+		public string description = "";
 		public GroupData group;
 		public string pathScreenshot;
 	}
