@@ -8,6 +8,7 @@ namespace Code
     {
         private ProcessManager processManager;
         private PartDescriptionProcess partDescriptionProcess;
+        [SerializeField] public bool hardRedo = false;
         private ProcessManager getProcessManager()
         {
             return this.gameObject.transform.parent.gameObject.GetComponent<ProcessManager>();
@@ -37,7 +38,6 @@ namespace Code
             Debug.Log("Process status: PartsDescriptionProcess ExecuteCoroutine");
             PartManager partManager = getPartManager();
             AI.AI ai = getAI();
-            ai.characterDescription.text = "Description of the medical findings: \n";
             foreach (PartManager.GroupData group in partManager.groups)
             {
                 int partCounter = 0;
@@ -55,12 +55,21 @@ namespace Code
             Debug.Log("Process status: PartsDescriptionProcess execute");
             PartManager partManager = getPartManager();
             AI.AI ai = getAI();
-            ai.characterDescription.text = "Description of the medical findings: \n";
             foreach (PartManager.GroupData group in partManager.groups)
             {
                 int partCounter = 0;
                 foreach (PartManager.PartData part in group.groupParts)
                 {
+                    if ((part.description == "") || (hardRedo == true))
+                    {
+                        partCounter++;
+                        part.description = "Part Number " + partCounter + " :\n";
+                        part.description += part.meaning + "\n";
+                    }
+                    else
+                    {
+                        part.description = "No description";
+                    }
                     StartCoroutine(describePart(part, variant));
                 }
 

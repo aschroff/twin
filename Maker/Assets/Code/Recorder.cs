@@ -44,7 +44,7 @@ public class Recorder: MonoBehaviour
     public List<GameObject> Prepare()
     {
         List<GameObject> ActiveChildren = new List<GameObject>();
-        for (int i = this.transform.childCount - 1; i >= 1; i--)
+        for (int i = this.transform.childCount - 1; i >= 0; i--)
         {
             GameObject child = this.transform.GetChild(i).gameObject;
             if (child.activeSelf)
