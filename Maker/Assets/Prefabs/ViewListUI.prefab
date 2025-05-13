@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6415238079282903847}
   - component: {fileID: 2316026423606622998}
   - component: {fileID: 619087080847563805}
-  - component: {fileID: 268170596156507606}
+  - component: {fileID: 8050771526978334031}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Groupmanager
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 1
---- !u!114 &268170596156507606
+--- !u!114 &8050771526978334031
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,13 +127,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2890584380945826638}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0a7a2a1a3f1402eba6702321832e36c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f630504537514f01841aa571e41deef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  partmanager: {fileID: 0}
-  groupmanager: {fileID: 0}
-  prefab: {fileID: 4419033343505253822, guid: 9d17819ee46d54786921e04c6c708d7b, type: 3}
-  notification: {fileID: 0}
+  views: []
+  mainCamera: {fileID: 0}
+  body: {fileID: 0}
+  viewManager: {fileID: 0}
+  prefab: {fileID: 4419033343505253822, guid: 394c92993902e4eb496a04b381b6b5d7, type: 3}
 --- !u!1 &4835996147438974434
 GameObject:
   m_ObjectHideFlags: 0
