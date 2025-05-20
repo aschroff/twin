@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 
 public class ConfigManager : MonoBehaviour
@@ -10,15 +10,45 @@ public class ConfigManager : MonoBehaviour
     [SerializeField] private FileManager fileManager;
     [SerializeField] private GameObject inputField;
     [SerializeField] private GameObject inputFieldVersion;
+    [SerializeField] private LocalizedString dateFormat;
 
     /*
      * This methode is responsible, if the button newConfig is pressed in Twin Mode.
-     * This Button creates a complete new Twin
      */
-    public void newConfig()
+    public void newConfigFromInput()
     {
-        string newTwinNameFromInput = GetTwinNameFromInput();
         // getting newest input
+        string newTwinNameFromInput = GetTwinNameFromInput();
+        newConfig(newTwinNameFromInput);
+    }
+
+    /*
+     * This methode is responsible, if the button New Version is pressed in MainUI or TurnUI
+     */
+    public void newConfigFromMainMenu()
+    {
+        //get time
+        DateTime currentDate = DateTime.Now; // getting current Time to put into version input field
+
+        // format the date to current localization settings
+        LocalizedString formattedLocalizedString = DateFormatter.formatDate(currentDate, dateFormat);
+
+        String twinAndVersion = dataPersistenceManager.selectedProfileId;
+        string[] splitTwinName = twinAndVersion.Split('.');
+        String twin = splitTwinName[0];
+        twin += "." + formattedLocalizedString.GetLocalizedString();
+        Debug.Log("Version from Input: " + formattedLocalizedString.GetLocalizedString() + ".");
+
+        newConfig(twin); 
+
+    }
+
+
+    /*
+     * This method creates a complete new Twin
+     */
+    private void newConfig(string newTwinNameFromInput)
+    {
 
         if (CheckInput(newTwinNameFromInput))
         {
@@ -29,7 +59,6 @@ public class ConfigManager : MonoBehaviour
             InteractionController.EnableMode("Main");
         } else {
             Debug.Log("Twin-Name-Test of New-button push failed!");
-            //This is the new-Button because is create a completely new Twin
         }
     }
     
