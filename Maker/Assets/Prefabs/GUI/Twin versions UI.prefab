@@ -119,6 +119,18 @@ MonoBehaviour:
   fileManager: {fileID: 0}
   inputField: {fileID: 0}
   inputFieldVersion: {fileID: 0}
+  dateFormat:
+    m_TableReference:
+      m_TableCollectionName: GUID:d12d872ce99d54eb4977c7b9daa8702f
+    m_TableEntryReference:
+      m_KeyId: 5390009120055296
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &539008734881843823
 GameObject:
   m_ObjectHideFlags: 0
@@ -817,7 +829,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8329449449957153508}
         m_TargetAssemblyTypeName: ConfigManager, Assembly-CSharp
         m_MethodName: saveAsConfig
         m_Mode: 1
@@ -1103,8 +1115,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 423, y: 5}
-  m_SizeDelta: {x: 225, y: 60}
+  m_AnchoredPosition: {x: 500, y: 5}
+  m_SizeDelta: {x: 350, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4057376346681269004
 CanvasRenderer:
@@ -1540,9 +1552,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8329449449957153508}
         m_TargetAssemblyTypeName: ConfigManager, Assembly-CSharp
-        m_MethodName: newConfig
+        m_MethodName: newConfigFromInput
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
