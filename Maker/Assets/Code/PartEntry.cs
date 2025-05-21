@@ -22,6 +22,16 @@ public class PartEntry : Item
         InteractionController.EnableMode("Part");
     }
     
+    public void delete()
+    {
+        if (partdata != null)
+        {
+            
+        }
+        Destroy(this.gameObject);
+        
+    }
+    
     
 
    
