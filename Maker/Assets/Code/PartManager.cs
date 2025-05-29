@@ -399,7 +399,7 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
         }
 		foreach (PartData part in groupData.groupParts)
         {
-			deletePart(part);
+			clearPart(part);
         }
 		groupData.groupParts.Clear();
 		groupData.group.groupdata = null;
@@ -420,7 +420,7 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		}
 		return null;
 	}
-	public void deletePart(PartData partData)
+	public void clearPart(PartData partData)
 	{
 		Debug.Log("Removing part: " + partData.id);
 		if (currentPart == partData)
@@ -448,6 +448,31 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 	{
 		string id = commandData.id;
 		commandDatas.Remove(commandData.data);
+	}
+
+	public GroupData FindGroupContainingPart(PartManager.PartData partData)
+	{
+		foreach (GroupData group in groups)
+		{
+			if (group.groupParts.Contains(partData))
+			{
+				return group;
+			}
+		}
+		return null; 
+	}
+	public void deletePart(PartData partData)
+	{
+		clearPart(partData);
+		GroupData groupData = FindGroupContainingPart(partData);
+		if (groupData != null)
+		{
+			groupData.groupParts.Remove(partData);
+		}
+		else
+		{
+			Debug.LogWarning("Part not found in any group: " + partData.id);
+		}
 	}
 	
 	private bool ArePositionsEqual(Vector3 pos1, Vector3 pos2, float precision = 0.000000001f)
