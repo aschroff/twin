@@ -48,10 +48,20 @@ public class ViewManager : SceneManagement, IDataPersistence
         GameObject viewObject = Instantiate(prefab);
         viewObject.transform.SetParent(this.transform, false);
         viewObject.transform.localScale = prefab.transform.localScale;
-        viewObject.GetComponent<ViewLink>().link = view;
-        viewObject.GetComponent<ViewLink>().manager = this;
-        viewObject.GetComponentInChildren<InputField>().text = view.name;
+
+        ViewLink viewLink = viewObject.AddComponent<ViewLink>();
+        viewLink.link = view;
+        viewLink.manager = this;
+        viewObject.GetComponentInChildren<Text>().text = view.name;
+
+        //buttons need dynamic funcitionality assignment too keep the prefab general 
+        Button imageButton = viewObject.transform.GetChild(0).GetComponent<Button>();
+        Button textBackgroundButton = viewObject.transform.GetChild(1).GetComponent<Button>();
+
+        imageButton.onClick.AddListener(viewLink.HandleSelect);
+        textBackgroundButton.onClick.AddListener(viewLink.HandleSelect);
     }
+
     public View shootView()
     {
         View view = new View();
