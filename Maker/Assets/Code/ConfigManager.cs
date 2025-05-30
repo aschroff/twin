@@ -7,6 +7,7 @@ public class ConfigManager : MonoBehaviour
 {
 
     [SerializeField] private DataPersistenceManager dataPersistenceManager;
+    [SerializeField] private PartManager partManager;
     [SerializeField] private FileManager fileManager;
     [SerializeField] private GameObject inputField;
     [SerializeField] private GameObject inputFieldVersion;
@@ -20,6 +21,12 @@ public class ConfigManager : MonoBehaviour
         // getting newest input
         string newTwinNameFromInput = GetTwinNameFromInput();
         newConfig(newTwinNameFromInput);
+    }
+
+    public void cloneConfigFromInput()
+    {
+        string newTwinNameFromInput = GetTwinNameFromInput();
+        saveAsConfig(newTwinNameFromInput);
     }
 
     /*
@@ -39,7 +46,17 @@ public class ConfigManager : MonoBehaviour
         twin += "." + formattedLocalizedString.GetLocalizedString();
         Debug.Log("Version from Input: " + formattedLocalizedString.GetLocalizedString() + ".");
 
-        newConfig(twin); 
+        saveAsConfig(twin);
+
+        //deleting parts of cloned twin
+        foreach (PartManager.GroupData group in partManager.groups)
+        {
+            for(int i = group.groupParts.Count - 1; i >= 0; i--)
+            {
+                partManager.deletePart(group.groupParts[i]); 
+            }
+        }
+        partManager.ClearRefreshAll();
 
     }
 
@@ -66,10 +83,8 @@ public class ConfigManager : MonoBehaviour
      * This methode is responsible, if the button safeAs is pressed in Twin-Mode.
      * This Button creates a new Twin on the basis of another Twin.
      */
-    public void saveAsConfig()
+    public void saveAsConfig(string newTwinNameFromInput)
     {
-        string newTwinNameFromInput = GetTwinNameFromInput();
-        // getting newest input
 
         if (CheckInput(newTwinNameFromInput))
         { 
