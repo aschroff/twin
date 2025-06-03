@@ -58,23 +58,25 @@ public class ViewManager : SceneManagement, IDataPersistence
         build();
     }
     
-    public void displayView(View view)
+    public GameObject displayView(View view)
     {
         GameObject viewObject = Instantiate(prefab);
         viewObject.transform.SetParent(this.transform, false);
         viewObject.transform.localScale = prefab.transform.localScale;
 
-        ViewLink viewLink = viewObject.AddComponent<ViewLink>();
+        ViewLink viewLink = viewObject.transform.GetComponent<ViewLink>();
         viewLink.link = view;
         viewLink.manager = this;
-        viewObject.GetComponentInChildren<Text>().text = view.name;
+        viewObject.transform.Find("ReadOnlyMode").Find("Text Background").Find("ViewName").GetComponent<Text>().text = view.name;
 
-        //buttons need dynamic funcitionality assignment too keep the prefab general 
-        Button imageButton = viewObject.transform.GetChild(0).GetComponent<Button>();
-        Button textBackgroundButton = viewObject.transform.GetChild(1).GetComponent<Button>();
+        //buttons need dynamic funcitionality assignment because ViewLink needs ViewManager Instance first which cannot be given statically (in unity editor) because the prefab
+        //is only instantiated here
+        Button imageButton = viewObject.transform.Find("ReadOnlyMode").Find("Icon").GetComponent<Button>();
+        Button textBackgroundButton = viewObject.transform.Find("ReadOnlyMode").Find("Text Background").GetComponent<Button>();
 
         imageButton.onClick.AddListener(viewLink.HandleSelect);
         textBackgroundButton.onClick.AddListener(viewLink.HandleSelect);
+        return viewObject;
     }
 
     public View shootView()
