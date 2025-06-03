@@ -68,14 +68,6 @@ public class ViewManager : SceneManagement, IDataPersistence
         viewLink.link = view;
         viewLink.manager = this;
         viewObject.transform.Find("ReadOnlyMode").Find("Text Background").Find("ViewName").GetComponent<Text>().text = view.name;
-
-        //buttons need dynamic funcitionality assignment because ViewLink needs ViewManager Instance first which cannot be given statically (in unity editor) because the prefab
-        //is only instantiated here
-        Button imageButton = viewObject.transform.Find("ReadOnlyMode").Find("Icon").GetComponent<Button>();
-        Button textBackgroundButton = viewObject.transform.Find("ReadOnlyMode").Find("Text Background").GetComponent<Button>();
-
-        imageButton.onClick.AddListener(viewLink.HandleSelect);
-        textBackgroundButton.onClick.AddListener(viewLink.HandleSelect);
         return viewObject;
     }
 
