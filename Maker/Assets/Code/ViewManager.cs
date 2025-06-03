@@ -9,8 +9,8 @@ using UnityEngine.UI;
 public class ViewManager : SceneManagement, IDataPersistence
 {
     [SerializeField] public GameObject prefab;
-    [SerializeReference] public PartManager partManager;
-    
+    [SerializeField] public PartManager partManager;
+
     private bool cameraEnabled = true;
 
     private void Start()
