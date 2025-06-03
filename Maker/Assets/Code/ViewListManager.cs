@@ -62,9 +62,11 @@ public class ViewListManager : SceneManagement, IDataPersistence
         GameObject viewObject = Instantiate(prefab);
         viewObject.transform.SetParent(this.transform, false);
         viewObject.transform.localScale = prefab.transform.localScale;
-        viewObject.GetComponent<ViewLink>().link = view;
-        viewObject.GetComponent<ViewLink>().manager = this.viewManager;
         viewObject.GetComponentInChildren<InputField>().text = view.name;
+
+        Button deleteButton = viewObject.transform.Find("Delete").GetComponent<Button>();
+
+        deleteButton.onClick.AddListener(() => delete(view));
     }
 
     public void AddList()
@@ -115,14 +117,11 @@ public class ViewListManager : SceneManagement, IDataPersistence
         camera.enabled = cameraEnabled;
     }
 
-    //the following two functions should be possible in the future
-    //but they come with another PR!
-
-    //public void delete(View view)
-    //{
-    //    views.Remove(view);
-    //    this.rebuild();
-    //}
+    public void delete(View view)
+    {
+        this.viewManager.delete(view);
+        this.rebuild();
+    }
 
     //public void select(View view)
     //{
