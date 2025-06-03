@@ -65,8 +65,10 @@ public class ViewListManager : SceneManagement, IDataPersistence
         viewObject.GetComponentInChildren<InputField>().text = view.name;
 
         Button deleteButton = viewObject.transform.Find("Delete").GetComponent<Button>();
+        Button selectButton = viewObject.transform.Find("Select").GetComponent<Button>();
 
         deleteButton.onClick.AddListener(() => delete(view));
+        selectButton.onClick.AddListener(() => select(view));
     }
 
     public void AddList()
@@ -123,17 +125,10 @@ public class ViewListManager : SceneManagement, IDataPersistence
         this.rebuild();
     }
 
-    //public void select(View view)
-    //{
-    //    partManager.EnforceNewPart();
-    //    LeanPitchYaw control = body.GetComponent<LeanPitchYaw>();
-    //    control.Yaw = view.yaw;
-    //    control.Pitch = view.pitch;
-    //    mainCamera.transform.position = new Vector3(view.positionCamera_x, view.positionCamera_y, view.positionCamera_z);
-    //    LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
-    //    cameraEnabled = camera.enabled;
-    //    camera.enabled = true;
-    //    camera.Zoom = view.sizeCamera;
-    //}
+    public void select(View view)
+    {
+        this.viewManager.select(view);
+        this.transform.parent.parent.Find("BackButton").GetComponent<Button>().onClick.Invoke();
+    }
 
 }
