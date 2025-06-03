@@ -11,6 +11,7 @@ public class ConfigManager : MonoBehaviour
     [SerializeField] private FileManager fileManager;
     [SerializeField] private GameObject inputField;
     [SerializeField] private GameObject inputFieldVersion;
+    [SerializeField] private ViewManager viewManager;
     [SerializeField] private LocalizedString dateFormat;
 
     /*
@@ -93,6 +94,7 @@ public class ConfigManager : MonoBehaviour
             dataPersistenceManager.SaveConfig();
             fileManager.Refresh();
             InteractionController.EnableMode("Main");
+            viewManager.setDefaultPosition();
         } else {
             Debug.Log("Twin-Name-Test of saveAs-button push failed!");
             //This is the safeAs-Button because is create a completely new Twin

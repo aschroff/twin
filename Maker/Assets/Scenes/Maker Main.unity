@@ -16212,7 +16212,7 @@ PrefabInstance:
       objectReference: {fileID: 609004393}
     - target: {fileID: 5037554182192162691, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 95.234375
+      value: 95.23425
       objectReference: {fileID: 0}
     - target: {fileID: 5249643866990954766, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: dateFormat.m_TableEntryReference.m_KeyId
@@ -16346,6 +16346,10 @@ PrefabInstance:
       propertyPath: partManager
       value: 
       objectReference: {fileID: 1753083901}
+    - target: {fileID: 8329449449957153508, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
+      propertyPath: viewManager
+      value: 
+      objectReference: {fileID: 722981551}
     - target: {fileID: 8329449449957153508, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: inputFieldVersion
       value: 
@@ -17886,6 +17890,10 @@ PrefabInstance:
       propertyPath: partManager
       value: 
       objectReference: {fileID: 1753083901}
+    - target: {fileID: 34455528108144745, guid: 9b80a04d4e56a46c7a1b0f3528542243, type: 3}
+      propertyPath: viewManager
+      value: 
+      objectReference: {fileID: 722981551}
     - target: {fileID: 34455528108144745, guid: 9b80a04d4e56a46c7a1b0f3528542243, type: 3}
       propertyPath: dataPersistenceManager
       value: 
