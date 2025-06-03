@@ -23,10 +23,25 @@ public class ViewManager : SceneManagement, IDataPersistence
 
     public void build()
     {
+        
+        displayView(getDefaultView());
         foreach (View view in views)
         {
             displayView(view);
         }
+    }
+
+    private View getDefaultView() {
+        View defaultView = new View();
+        defaultView.name = "Default View";
+        defaultView.positionCamera_x = 0.0f;
+        defaultView.positionCamera_y = 0.5f;
+        defaultView.positionCamera_z = 1.0f;
+        defaultView.sizeCamera = 2;
+        defaultView.pitch = 0.0f;
+        defaultView.yaw = 0.0f;
+        defaultView.initial = false;
+        return defaultView;
     }
     
     public void clear()
