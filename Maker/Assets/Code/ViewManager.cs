@@ -90,8 +90,31 @@ public class ViewManager : SceneManagement, IDataPersistence
     {
         View view = shootView();
         views.Add(view);
-        displayView(view);
-    }   
+        GameObject viewObject = displayView(view);
+        
+        //to enable naming the view directly after creation we activate the EditMode of the Prefab
+        Transform editGameObject = viewObject.transform.Find("EditMode");
+        editGameObject.gameObject.SetActive(true);
+        viewObject.transform.Find("ReadOnlyMode").gameObject.SetActive(false);
+
+        // the user should see that he can name the new view direclty 
+        InputField viewNameInputField = editGameObject.Find("InputField").GetComponent<InputField>();
+        this.transform.GetComponentInParent<ScrollRect>().normalizedPosition =  new Vector2(0,0);
+        viewNameInputField.Select();
+        viewNameInputField.ActivateInputField();
+        viewNameInputField.onEndEdit.AddListener(delegate { SetNameOfNewView(viewObject, view, viewNameInputField.text); });
+             
+    }
+
+    private void SetNameOfNewView(GameObject viewObject, View view, string nameOfNewView) {
+        //since the view overlay should only contains ReadOnly Views we switch back to ReadOnly-Mode of the prefabe as the user named the new view
+        Transform editGameObject = viewObject.transform.Find("ReadOnlyMode");
+        editGameObject.gameObject.SetActive(true);
+        viewObject.transform.Find("EditMode").gameObject.SetActive(false);
+
+        editGameObject.Find("Text Background").Find("ViewName").GetComponent<Text>().text = nameOfNewView;
+        view.name = nameOfNewView;
+    }
     
     public void LoadData(ConfigData data)
     {
