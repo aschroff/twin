@@ -12,6 +12,7 @@ public class PartListManager : MonoBehaviour
 {
 
     [SerializeField] public PartManager partmanager;
+    [SerializeField] public ViewManager viewmanager;
     [SerializeField] public GameObject prefab;
     [SerializeField] public GroupListSelectionManager selectionManager;
     [SerializeField] public DataPersistenceManager dataManager;
