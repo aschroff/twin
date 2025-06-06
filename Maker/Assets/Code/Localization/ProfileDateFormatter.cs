@@ -33,10 +33,10 @@ public class ProfileDateFormatter : MonoBehaviour
     }
 
     //prevents UpdateDate of trying to get text component when game object is disabled 
-    private void OnDisable()
+    /*private void OnDisable()
     {
         formattedLocalizedString.StringChanged -= UpdateDate;
-    }
+    }*/
 
     private void UpdateDate(string value)
     {
