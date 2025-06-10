@@ -45,7 +45,8 @@ public class ViewListManager : SceneManagement, IDataPersistence
     public void build()
     {
         //get views from viewsManager so they are only stored there
-        //Debug.Log("Number of Views in ViewManager on build: " + this.viewManager.views.Count);
+        //default view is not stored with all others views since it will be added manually everytime a list of view is built
+        displayView(viewManager.getDefaultView());
         foreach (View view in this.viewManager.views)
         {
             displayView(view);
