@@ -831,7 +831,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8329449449957153508}
         m_TargetAssemblyTypeName: ConfigManager, Assembly-CSharp
-        m_MethodName: saveAsConfig
+        m_MethodName: cloneConfigFromInput
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

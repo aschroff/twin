@@ -9,8 +9,8 @@ using UnityEngine.UI;
 public class ViewManager : SceneManagement, IDataPersistence
 {
     [SerializeField] public GameObject prefab;
-    [SerializeReference] public PartManager partManager;
-    
+    [SerializeField] public PartManager partManager;
+
     private bool cameraEnabled = true;
 
     private void Start()
@@ -23,10 +23,25 @@ public class ViewManager : SceneManagement, IDataPersistence
 
     public void build()
     {
+        
+        displayView(getDefaultView());
         foreach (View view in views)
         {
             displayView(view);
         }
+    }
+
+    private View getDefaultView() {
+        View defaultView = new View();
+        defaultView.name = "Default View";
+        defaultView.positionCamera_x = 0.0f;
+        defaultView.positionCamera_y = 0.5f;
+        defaultView.positionCamera_z = 1.0f;
+        defaultView.sizeCamera = 2;
+        defaultView.pitch = 0.0f;
+        defaultView.yaw = 0.0f;
+        defaultView.initial = false;
+        return defaultView;
     }
     
     public void clear()
@@ -43,15 +58,19 @@ public class ViewManager : SceneManagement, IDataPersistence
         build();
     }
     
-    public void displayView(View view)
+    public GameObject displayView(View view)
     {
         GameObject viewObject = Instantiate(prefab);
         viewObject.transform.SetParent(this.transform, false);
         viewObject.transform.localScale = prefab.transform.localScale;
-        viewObject.GetComponent<ViewLink>().link = view;
-        viewObject.GetComponent<ViewLink>().manager = this;
-        viewObject.GetComponentInChildren<InputField>().text = view.name;
+
+        ViewLink viewLink = viewObject.transform.GetComponent<ViewLink>();
+        viewLink.link = view;
+        viewLink.manager = this;
+        viewObject.transform.Find("ReadOnlyMode").Find("Text Background").Find("ViewName").GetComponent<Text>().text = view.name;
+        return viewObject;
     }
+
     public View shootView()
     {
         View view = new View();
@@ -71,8 +90,31 @@ public class ViewManager : SceneManagement, IDataPersistence
     {
         View view = shootView();
         views.Add(view);
-        displayView(view);
-    }   
+        GameObject viewObject = displayView(view);
+        
+        //to enable naming the view directly after creation we activate the EditMode of the Prefab
+        Transform editGameObject = viewObject.transform.Find("EditMode");
+        editGameObject.gameObject.SetActive(true);
+        viewObject.transform.Find("ReadOnlyMode").gameObject.SetActive(false);
+
+        // the user should see that he can name the new view direclty 
+        InputField viewNameInputField = editGameObject.Find("InputField").GetComponent<InputField>();
+        this.transform.GetComponentInParent<ScrollRect>().normalizedPosition =  new Vector2(0,0);
+        viewNameInputField.Select();
+        viewNameInputField.ActivateInputField();
+        viewNameInputField.onEndEdit.AddListener(delegate { SetNameOfNewView(viewObject, view, viewNameInputField.text); });
+             
+    }
+
+    private void SetNameOfNewView(GameObject viewObject, View view, string nameOfNewView) {
+        //since the view overlay should only contains ReadOnly Views we switch back to ReadOnly-Mode of the prefabe as the user named the new view
+        Transform editGameObject = viewObject.transform.Find("ReadOnlyMode");
+        editGameObject.gameObject.SetActive(true);
+        viewObject.transform.Find("EditMode").gameObject.SetActive(false);
+
+        editGameObject.Find("Text Background").Find("ViewName").GetComponent<Text>().text = nameOfNewView;
+        view.name = nameOfNewView;
+    }
     
     public void LoadData(ConfigData data)
     {
