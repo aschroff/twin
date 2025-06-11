@@ -31,7 +31,7 @@ public class ViewManager : SceneManagement, IDataPersistence
         }
     }
 
-    private View getDefaultView() {
+    public View getDefaultView() {
         View defaultView = new View();
         defaultView.name = "Default View";
         defaultView.positionCamera_x = 0.0f;
