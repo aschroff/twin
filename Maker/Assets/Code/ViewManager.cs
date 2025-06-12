@@ -5,6 +5,8 @@ using System.Linq;
 using Lean.Common;
 using Lean.Touch;
 using UnityEngine.UI;
+using UnityEngine.Localization.Components;
+using UnityEngine.Events;
 
 public class ViewManager : SceneManagement, IDataPersistence
 {
@@ -23,15 +25,40 @@ public class ViewManager : SceneManagement, IDataPersistence
 
     public void build()
     {
-        
-        displayView(getDefaultView());
+
+        AddDefaultView();
         foreach (View view in views)
         {
             displayView(view);
         }
     }
 
+    private GameObject AddDefaultView() {
+        //create defaultView and instance of the prefab representing the defaultView in the UI
+        View defaultView = getDefaultView();
+        GameObject defaultViewToDisplay = displayView(defaultView);
+
+        //to update the name from the DefaultView accoringly to the current locale we need access to the localizeEvents
+        Transform viewNameDefaultView = defaultViewToDisplay.transform.Find("ReadOnlyMode").Find("Text Background").Find("ViewName");
+        LocalizeStringEvent localizeEvent = viewNameDefaultView.GetComponent<LocalizeStringEvent>();
+        localizeEvent.StringReference.SetReference("TwinLocalTables", "DEFAULT_VIEW");
+
+
+        // configure UnityEventto set Text
+        UnityAction<string> updateText = (string localizedText) =>
+        {
+            viewNameDefaultView.GetComponent<Text>().text = localizedText;
+        };
+
+        localizeEvent.OnUpdateString.AddListener(updateText);
+
+        localizeEvent.RefreshString();
+
+        return defaultViewToDisplay;
+    }
+
     public View getDefaultView() {
+
         View defaultView = new View();
         defaultView.name = "Default View";
         defaultView.positionCamera_x = 0.0f;
