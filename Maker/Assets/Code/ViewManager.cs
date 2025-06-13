@@ -38,21 +38,10 @@ public class ViewManager : SceneManagement, IDataPersistence
         View defaultView = getDefaultView();
         GameObject defaultViewToDisplay = displayView(defaultView);
 
-        //to update the name from the DefaultView accoringly to the current locale we need access to the localizeEvents
+        //to update the name from the DefaultView we need access to the localizeEvents
         Transform viewNameDefaultView = defaultViewToDisplay.transform.Find("ReadOnlyMode").Find("Text Background").Find("ViewName");
-        LocalizeStringEvent localizeEvent = viewNameDefaultView.GetComponent<LocalizeStringEvent>();
-        localizeEvent.StringReference.SetReference("TwinLocalTables", "DEFAULT_VIEW");
 
-
-        // configure UnityEventto set Text
-        UnityAction<string> updateText = (string localizedText) =>
-        {
-            viewNameDefaultView.GetComponent<Text>().text = localizedText;
-        };
-
-        localizeEvent.OnUpdateString.AddListener(updateText);
-
-        localizeEvent.RefreshString();
+        viewNameDefaultView.GetComponent<LocalizeStringEvent>().enabled = true;
 
         return defaultViewToDisplay;
     }
