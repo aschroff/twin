@@ -10,7 +10,8 @@ public class ProfileDisplay : MonoBehaviour, ItemFile, IDataPersistence
     public  void handleChange(string profile)
     {
         Text text = this.gameObject.transform.GetComponent<Text>();
-        text.text = profile;
+        //accessing [0] field in array from split gets the twine name of the given profile ([1] is accessed in VersionDisplay)
+        text.text = profile.Split(".")[0];
     }
     public  void handleCopyChange(string profile)
     {
