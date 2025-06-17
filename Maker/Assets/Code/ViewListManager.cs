@@ -46,11 +46,24 @@ public class ViewListManager : SceneManagement, IDataPersistence
     {
         //get views from viewsManager so they are only stored there
         //default view is not stored with all others views since it will be added manually everytime a list of view is built
-        displayView(viewManager.getDefaultView());
+
+        AddDefaultView();
         foreach (View view in this.viewManager.views)
         {
             displayView(view);
         }
+    }
+
+    private GameObject AddDefaultView() {
+        //create defaultView and instance of the prefab representing the defaultView in the UI
+        View defaultView = viewManager.getDefaultView();
+        GameObject defaultViewToDisplay = displayView(defaultView);
+
+        //to disable the delete button we need acces it
+        Button deleteDefaultView = defaultViewToDisplay.transform.Find("Delete").GetComponent<Button>();
+        deleteDefaultView.interactable = false;
+
+        return defaultViewToDisplay;
     }
 
     /// <summary>
@@ -58,7 +71,7 @@ public class ViewListManager : SceneManagement, IDataPersistence
     /// The localScale, a link to the view, the viewManager itself and the name of the view will be set too.
     /// </summary>
     /// <param name="view"></param>
-    public void displayView(View view)
+    public GameObject displayView(View view)
     {
         GameObject viewObject = Instantiate(prefab);
         viewObject.transform.SetParent(this.transform, false);
@@ -70,6 +83,7 @@ public class ViewListManager : SceneManagement, IDataPersistence
 
         deleteButton.onClick.AddListener(() => delete(view));
         selectButton.onClick.AddListener(() => select(view));
+        return viewObject; 
     }
 
     public void AddList()
