@@ -116,9 +116,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataPersistenceManager: {fileID: 0}
+  partManager: {fileID: 0}
   fileManager: {fileID: 0}
   inputField: {fileID: 0}
   inputFieldVersion: {fileID: 0}
+  viewManager: {fileID: 0}
   dateFormat:
     m_TableReference:
       m_TableCollectionName: GUID:d12d872ce99d54eb4977c7b9daa8702f
@@ -422,7 +424,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: New Twin
+  m_Text: New Version
 --- !u!114 &4496304576941721603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,7 +441,7 @@ MonoBehaviour:
     m_TableReference:
       m_TableCollectionName: GUID:d12d872ce99d54eb4977c7b9daa8702f
     m_TableEntryReference:
-      m_KeyId: 57501905553711104
+      m_KeyId: 65475254925910016
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
@@ -1799,7 +1801,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Clone Twin
+  m_Text: Clone Version
 --- !u!114 &5449170714661668683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1816,7 +1818,7 @@ MonoBehaviour:
     m_TableReference:
       m_TableCollectionName: GUID:d12d872ce99d54eb4977c7b9daa8702f
     m_TableEntryReference:
-      m_KeyId: 57502216653627392
+      m_KeyId: 78939278015455232
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
