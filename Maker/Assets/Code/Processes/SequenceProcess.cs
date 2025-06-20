@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using System;
 
-namespace Code
+namespace Code.Processes
 {
     /// <summary>
     /// A process that executes a sequence of synchronized processes asynchronously.

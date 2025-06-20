@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Code
+namespace Code.Processes
 {
     /// <summary>
     /// Handles the process of taking screenshots for parts in a scene.

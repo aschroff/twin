@@ -1,4 +1,4 @@
-namespace Code
+namespace Code.Processes
 {
     public abstract class ProcessSync: Process
     {

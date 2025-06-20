@@ -1,7 +1,7 @@
-using UnityEngine;
 using Lean.Gui;
+using UnityEngine;
 
-namespace Code
+namespace Code.Processes
 {
     public class ProcessManager: MonoBehaviour
     {

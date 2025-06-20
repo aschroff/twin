@@ -1,11 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using Lean.Gui;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Code
+namespace Code.Processes
 {
     public class PartDescriptionProcess: Process
     {

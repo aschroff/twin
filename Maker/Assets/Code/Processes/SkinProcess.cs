@@ -1,11 +1,10 @@
-using System.Collections;
-using UnityEngine;
-using PaintCore;
 using System.IO;
-using UnityEngine.UI;
 using Lean.Gui;
+using PaintCore;
+using UnityEngine;
+using UnityEngine.UI;
 
-namespace Code
+namespace Code.Processes
 {
     public class SkinProcess: Process
     {

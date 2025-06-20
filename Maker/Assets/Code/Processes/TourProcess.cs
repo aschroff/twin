@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Code
+namespace Code.Processes
 {
     public class TourProcess: Process
     {
