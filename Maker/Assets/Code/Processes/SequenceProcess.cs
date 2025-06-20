@@ -25,9 +25,11 @@ namespace Code.Processes
 
         private async Task ExecuteProcessesAsync(string variant = "")
         {
+            ProcessResult previousResult = null;
+
             foreach (var process in processes)
             {
-                await ExecuteProcessAsync(process, variant);
+                previousResult = await ExecuteProcessAsync(process, variant, previousResult);
             }
         }
         
@@ -43,7 +45,7 @@ namespace Code.Processes
         /// This method uses a <see cref="TaskCompletionSource{TResult}"/> to await the completion of the process. 
         /// It subscribes to the <c>ExecuteCompleted</c> event of the process and ensures proper unsubscription to avoid memory leaks.
         /// </remarks>
-        private async Task ExecuteProcessAsync(ProcessSync process, string variant = "")
+        private async Task<ProcessResult> ExecuteProcessAsync(ProcessSync process, string variant, ProcessResult previousResult)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             Action handler = null;
@@ -53,8 +55,12 @@ namespace Code.Processes
                 process.ExecuteCompleted -= handler;
             };
             process.ExecuteCompleted += handler;
-            process.ExecuteSync(variant);
+
+            // Übergib das vorherige Ergebnis an den aktuellen Prozess
+            var result = process.ExecuteSync(variant, previousResult);
             await taskCompletionSource.Task;
+
+            return result;
         }
     }
 }

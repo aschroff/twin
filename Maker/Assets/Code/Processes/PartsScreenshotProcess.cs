@@ -108,7 +108,7 @@ namespace Code.Processes
         /// - Resets and cleans up after processing is complete.
         /// - Posts the captured data and restores the original view.
         /// </summary>
-        public override ProcessResult ExecuteSync(string variant = "")
+        public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
         {
             Debug.Log("Process status: Start PartsScreenshotProcess");
             StartCoroutine(ExecuteCoroutine(variant));
