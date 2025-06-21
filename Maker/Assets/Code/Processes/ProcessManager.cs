@@ -6,7 +6,7 @@ namespace Code.Processes
     public class ProcessManager: MonoBehaviour
     {
         [SerializeField] public ViewManager viewManager;
-        [SerializeField] public StandardViewManager standarViewManager;
+        [SerializeField] public StandardViewManager standardViewManager;
         [SerializeField] public Recorder recorder;
         [SerializeField] public DataPersistenceManager dataManager;
         [SerializeField] public Body body;

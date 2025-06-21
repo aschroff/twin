@@ -28,7 +28,7 @@ namespace Code.Processes
       }
       protected StandardViewManager getStandardViewManager()
       {
-         return processManager().standarViewManager;
+         return processManager().standardViewManager;
       }
    
       protected Recorder getRecorder()
