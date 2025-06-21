@@ -45,11 +45,25 @@ public class ViewListManager : SceneManagement, IDataPersistence
     public void build()
     {
         //get views from viewsManager so they are only stored there
-        //Debug.Log("Number of Views in ViewManager on build: " + this.viewManager.views.Count);
+        //default view is not stored with all others views since it will be added manually everytime a list of view is built
+
+        AddDefaultView();
         foreach (View view in this.viewManager.views)
         {
             displayView(view);
         }
+    }
+
+    private GameObject AddDefaultView() {
+        //create defaultView and instance of the prefab representing the defaultView in the UI
+        View defaultView = viewManager.getDefaultView();
+        GameObject defaultViewToDisplay = displayView(defaultView);
+
+        //to disable the delete button we need acces it
+        Button deleteDefaultView = defaultViewToDisplay.transform.Find("Delete").GetComponent<Button>();
+        deleteDefaultView.interactable = false;
+
+        return defaultViewToDisplay;
     }
 
     /// <summary>
@@ -57,14 +71,19 @@ public class ViewListManager : SceneManagement, IDataPersistence
     /// The localScale, a link to the view, the viewManager itself and the name of the view will be set too.
     /// </summary>
     /// <param name="view"></param>
-    public void displayView(View view)
+    public GameObject displayView(View view)
     {
         GameObject viewObject = Instantiate(prefab);
         viewObject.transform.SetParent(this.transform, false);
         viewObject.transform.localScale = prefab.transform.localScale;
-        viewObject.GetComponent<ViewLink>().link = view;
-        viewObject.GetComponent<ViewLink>().manager = this.viewManager;
         viewObject.GetComponentInChildren<InputField>().text = view.name;
+
+        Button deleteButton = viewObject.transform.Find("Delete").GetComponent<Button>();
+        Button selectButton = viewObject.transform.Find("Select").GetComponent<Button>();
+
+        deleteButton.onClick.AddListener(() => delete(view));
+        selectButton.onClick.AddListener(() => select(view));
+        return viewObject; 
     }
 
     public void AddList()
@@ -115,26 +134,16 @@ public class ViewListManager : SceneManagement, IDataPersistence
         camera.enabled = cameraEnabled;
     }
 
-    //the following two functions should be possible in the future
-    //but they come with another PR!
+    public void delete(View view)
+    {
+        this.viewManager.delete(view);
+        this.rebuild();
+    }
 
-    //public void delete(View view)
-    //{
-    //    views.Remove(view);
-    //    this.rebuild();
-    //}
-
-    //public void select(View view)
-    //{
-    //    partManager.EnforceNewPart();
-    //    LeanPitchYaw control = body.GetComponent<LeanPitchYaw>();
-    //    control.Yaw = view.yaw;
-    //    control.Pitch = view.pitch;
-    //    mainCamera.transform.position = new Vector3(view.positionCamera_x, view.positionCamera_y, view.positionCamera_z);
-    //    LeanPinchCamera camera = mainCamera.GetComponent<LeanPinchCamera>();
-    //    cameraEnabled = camera.enabled;
-    //    camera.enabled = true;
-    //    camera.Zoom = view.sizeCamera;
-    //}
+    public void select(View view)
+    {
+        this.viewManager.select(view);
+        this.transform.parent.parent.Find("BackButton").GetComponent<Button>().onClick.Invoke();
+    }
 
 }

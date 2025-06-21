@@ -120,7 +120,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4555647984221519583}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ViewLink, Assembly-CSharp
         m_MethodName: HandleDelete
         m_Mode: 1
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4555647984221519583}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ViewLink, Assembly-CSharp
         m_MethodName: HandleSelect
         m_Mode: 1
@@ -275,7 +275,6 @@ GameObject:
   - component: {fileID: 4419033343505253441}
   - component: {fileID: 4419033343505253444}
   - component: {fileID: 4419033343505253443}
-  - component: {fileID: 4555647984221519583}
   m_Layer: 5
   m_Name: Scroll text and two buttons
   m_TagString: Untagged
@@ -325,27 +324,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &4555647984221519583
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4419033343505253822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c0e831cb4b0e4e2082d730b0d870302, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  link:
-    name: 
-    positionCamera_x: 0
-    positionCamera_y: 0
-    positionCamera_z: 0
-    sizeCamera: 0
-    pitch: 0
-    yaw: 0
-  manager: {fileID: 0}
 --- !u!1 &5081874475998998624
 GameObject:
   m_ObjectHideFlags: 0
@@ -655,7 +633,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4555647984221519583}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ViewLink, Assembly-CSharp
         m_MethodName: HandleEdit
         m_Mode: 0
