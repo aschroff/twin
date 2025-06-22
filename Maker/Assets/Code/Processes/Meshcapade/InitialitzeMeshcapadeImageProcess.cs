@@ -44,7 +44,7 @@ namespace Code.Processes.Meshcapade
             string base64Image = Convert.ToBase64String(imageBytes);
             meshcapadeResult.fileContent = base64Image;
             
-            return new MeshcapadeProcessResult { authToken = "123", apiPath = "abc"};
+            return meshcapadeResult;
         }
         public override ProcessResult Execute(string variant = "")
         {

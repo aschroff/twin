@@ -19,7 +19,7 @@ namespace Code.Processes
 
       private ProcessManager processManager()
       {
-         return this.gameObject.transform.parent.gameObject.GetComponent<ProcessManager>();
+         return this.gameObject.GetComponentInParent<ProcessManager>();;
       }
 
       protected ViewManager getViewmanager()
