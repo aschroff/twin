@@ -21,12 +21,18 @@ namespace Code.Processes.Meshcapade
     public class InitialitzeMeshcapadeImageProcess : ProcessSync
     {
         [SerializeField] public string apiPath;
+        [SerializeField] public string authToken;
+        [SerializeField] public string format;
+        [SerializeField] public string pose;
         
         public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
         {
             MeshcapadeProcessResult meshcapadeResult= new MeshcapadeProcessResult();
             meshcapadeResult.avatarName = getDataManager().selectedProfileId;
             meshcapadeResult.apiPath = apiPath;
+            meshcapadeResult.authToken = authToken;
+            meshcapadeResult.format = format;
+            meshcapadeResult.pose = pose;
             
             return new MeshcapadeProcessResult { authToken = "123", apiPath = "abc"};
         }
