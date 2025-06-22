@@ -4646,6 +4646,7 @@ MonoBehaviour:
   authToken: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJuSnVpYzVwbXk1T1hGSjVmY1RIQTdUNVktRHZVbVVOR2xxVHBqS0hDVnU4In0.eyJleHAiOjE3NTA2MDY0NjksImlhdCI6MTc1MDYwNDY2OSwiYXV0aF90aW1lIjoxNzUwNjA0NjY5LCJqdGkiOiIyZWI0MjRmOC00M2JkLTQ2ZDktYmQ0Ny03ZWUxYTk5Y2RiYzUiLCJpc3MiOiJodHRwczovL2F1dGgubWVzaGNhcGFkZS5jb20vcmVhbG1zL21lc2hjYXBhZGUtbWUiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNTM0MmY0OWQtM2Y4MS00ODk3LTllZDYtNmU5OTRlZWM2MTIzIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoibWVzaGNhcGFkZS1tZSIsIm5vbmNlIjoiMTUxODBkNzUtMjBhMi00OTIzLTg4YjEtZWU4OWI1MWZkYjdlIiwic2Vzc2lvbl9zdGF0ZSI6IjRjNGUzNDM4LWM0NmUtNDRhZC04Nzc2LTg5ODhmZjhlNmJjNiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9tZXNoY2FwYWRlLmNvbSIsImh0dHBzOi8vbWUubWVzaGNhcGFkZS5jb20iLCJodHRwczovL21lc2hjYXBhZGUubWUiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwiZGVmYXVsdC1yb2xlcy1nY21jIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiNGM0ZTM0MzgtYzQ2ZS00NGFkLTg3NzYtODk4OGZmOGU2YmM2IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJBbmRpIFNjaHJvZmYiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhbmRyZWFzQHNjaHJvZmYtb25saW5lLmNvbSIsImdpdmVuX25hbWUiOiJBbmRpIiwiZmFtaWx5X25hbWUiOiJTY2hyb2ZmIiwiZW1haWwiOiJhbmRyZWFzQHNjaHJvZmYtb25saW5lLmNvbSJ9.dRtfzHQgWShI_ca4hgVGuSh28nZBoDiMMwZD0JwhYmHjf49bYDw6G_C-GpUeJH1evtIdkR7nCIqz6F1Fd7s58YH7exaheyfKw_rqOhk25p0z49n-GoApssHjHvROll47_7IJMZQUIipW0htKvXJQ99ma-VNCpNkM9Frz_2BSXeHyH8x3C3Sg1fchSPUjljKUhCgKs9a4kEJEXDA-ST1y-he0DCNRg6xuXDSf8_fhYVDWE6LNeXqh91nZqwC9OYrR4giX4rvi9IGhqv8n-mgzTnE7AP4nnkhhBhw9R5gRtihNTm1zgusnNHqfVyWZx5k1cRs3zjsL_rsoLmL5SsscnQ
   format: OBJ
   pose: scan
+  imagePath: 
 --- !u!1 &1092951646
 GameObject:
   m_ObjectHideFlags: 0
@@ -17374,6 +17375,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 5513377015833497344}
+    - target: {fileID: 5948998862446283598, guid: e67848681524a40fabb12d218bdbbbc7, type: 3}
+      propertyPath: initalizeProcess
+      value: 
+      objectReference: {fileID: 1087240410}
+    - target: {fileID: 5948998862446283598, guid: e67848681524a40fabb12d218bdbbbc7, type: 3}
+      propertyPath: bodyFromImageProcess
+      value: 
+      objectReference: {fileID: 433099194}
     - target: {fileID: 6293377317749678765, guid: e67848681524a40fabb12d218bdbbbc7, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
