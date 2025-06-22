@@ -27,12 +27,16 @@ namespace Code.Processes.Meshcapade
         
         public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
         {
+            Body body = getBody();
             MeshcapadeProcessResult meshcapadeResult= new MeshcapadeProcessResult();
             meshcapadeResult.avatarName = getDataManager().selectedProfileId;
             meshcapadeResult.apiPath = apiPath;
             meshcapadeResult.authToken = authToken;
             meshcapadeResult.format = format;
             meshcapadeResult.pose = pose;
+            meshcapadeResult.gender = body.gender;
+            meshcapadeResult.height = body.height.ToString();
+            meshcapadeResult.weight = body.weight.ToString();
             
             return new MeshcapadeProcessResult { authToken = "123", apiPath = "abc"};
         }

@@ -7,6 +7,9 @@ using Lean.Touch;
 public class Body : MonoBehaviour,ItemFile, IDataPersistence
 {
    [SerializeField] public GameObject mainCamera;
+   [SerializeField] public int height;
+   [SerializeField] public int weight;
+   [SerializeField] public string gender;
    public  void handleChange(string profile)
    {
       CwPaintableTexture texture = this.gameObject.transform.GetComponent<CwPaintableTexture>();
