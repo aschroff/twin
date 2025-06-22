@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using UnityEngine;
 
 namespace Code.Processes.Meshcapade
@@ -20,14 +22,15 @@ namespace Code.Processes.Meshcapade
     
     public class InitialitzeMeshcapadeImageProcess : ProcessSync
     {
-        [SerializeField] public string apiPath;
-        [SerializeField] public string authToken;
-        [SerializeField] public string format;
-        [SerializeField] public string pose;
+        [SerializeField] private string apiPath;
+        [SerializeField] private string authToken;
+        [SerializeField] private string format;
+        [SerializeField] private string pose;
+        [SerializeField] public string imagePath;
         
         public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
         {
-            Body body = getBody();
+            Body.Body body = getBody();
             MeshcapadeProcessResult meshcapadeResult= new MeshcapadeProcessResult();
             meshcapadeResult.avatarName = getDataManager().selectedProfileId;
             meshcapadeResult.apiPath = apiPath;
@@ -37,6 +40,9 @@ namespace Code.Processes.Meshcapade
             meshcapadeResult.gender = body.gender;
             meshcapadeResult.height = body.height.ToString();
             meshcapadeResult.weight = body.weight.ToString();
+            byte[] imageBytes = File.ReadAllBytes(imagePath);
+            string base64Image = Convert.ToBase64String(imageBytes);
+            meshcapadeResult.fileContent = base64Image;
             
             return new MeshcapadeProcessResult { authToken = "123", apiPath = "abc"};
         }

@@ -41,7 +41,7 @@ namespace Code.Processes
          return processManager().dataManager;
       }
 
-      protected Body getBody()
+      protected Body.Body getBody()
       {
          return processManager().body;
       }

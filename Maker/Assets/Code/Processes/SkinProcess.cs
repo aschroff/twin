@@ -11,7 +11,7 @@ namespace Code.Processes
 
         public override ProcessResult Execute(string variant = "")
         {
-            Body body = getBody();
+            Body.Body body = getBody();
             CwPaintableTexture bodyTexture = body.gameObject.transform.parent.GetComponentInChildren<CwPaintableTexture>();
             byte[] bodyBytes = bodyTexture.GetPngData();
             DataPersistenceManager dataManager = getDataManager();
