@@ -63,6 +63,12 @@ public class ViewListManager : SceneManagement, IDataPersistence
         Button deleteDefaultView = defaultViewToDisplay.transform.Find("Delete").GetComponent<Button>();
         deleteDefaultView.interactable = false;
 
+        //disabling the input field because the default view should not be renamed
+        Image inputFieldImage = defaultViewToDisplay.transform.Find("InputField").GetComponent<Image>();
+        InputField inputField = defaultViewToDisplay.transform.Find("InputField").GetComponent<InputField>();
+        inputFieldImage.enabled = false;
+        inputField.enabled = false;
+
         return defaultViewToDisplay;
     }
 
