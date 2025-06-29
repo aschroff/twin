@@ -1,18 +1,17 @@
-using System.Collections;
-using UnityEngine;
-using PaintCore;
 using System.IO;
-using UnityEngine.UI;
 using Lean.Gui;
+using PaintCore;
+using UnityEngine;
+using UnityEngine.UI;
 
-namespace Code
+namespace Code.Processes
 {
     public class SkinProcess: Process
     {
 
         public override ProcessResult Execute(string variant = "")
         {
-            Body body = getBody();
+            Body.Body body = getBody();
             CwPaintableTexture bodyTexture = body.gameObject.transform.parent.GetComponentInChildren<CwPaintableTexture>();
             byte[] bodyBytes = bodyTexture.GetPngData();
             DataPersistenceManager dataManager = getDataManager();

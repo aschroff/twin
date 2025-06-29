@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Code
+namespace Code.Processes
 {
     public class PartsDescriptionProcess: ProcessSync
     {
@@ -23,7 +22,7 @@ namespace Code
         }
         
         
-        public override ProcessResult ExecuteSync(string variant = "")
+        public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
         {
             Debug.Log("Process status: Start PartsDescriptionProcess");
             processManager = getProcessManager();

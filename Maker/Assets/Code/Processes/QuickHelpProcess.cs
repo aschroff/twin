@@ -1,10 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Lean.Gui;
 using UnityEngine;
 
-namespace Code
+namespace Code.Processes
 {
     public abstract class QuickHelpProcess: Process
     {
