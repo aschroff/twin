@@ -12,32 +12,43 @@ public class TwinVersionSetter : MonoBehaviour
     private LocalizedString formattedLocalizedString;
     private string lastFormattedDate;
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
 
         DateTime currentDate = DateTime.Now; // getting current Time to put into version input field
 
         // format the date to current localization settings
         formattedLocalizedString = DateFormatter.formatDate(currentDate, dateFormat);
-
-        // Subscribe to the StringChanged event
-        formattedLocalizedString.StringChanged += UpdateDate;
-        // Triggers display update
-        formattedLocalizedString.RefreshString();
+        string formattedString = formattedLocalizedString.GetLocalizedString();
+        inputFieldText.text = formattedString;
+        lastFormattedDate = formattedString;
     }
+        /*void Start()
+        {
 
-    // Event handler method
-    private void UpdateDate(string value)
-    {
-        // Update UI with formatted date
-        inputFieldText.text = value;
-        this.lastFormattedDate = value;
-    }
+            DateTime currentDate = DateTime.Now; // getting current Time to put into version input field
 
-    private void OnDisable()
-    {
-        formattedLocalizedString.StringChanged -= UpdateDate;
-    }
+            // format the date to current localization settings
+            formattedLocalizedString = DateFormatter.formatDate(currentDate, dateFormat);
+
+            // Subscribe to the StringChanged event
+            formattedLocalizedString.StringChanged += UpdateDate;
+            // Triggers display update
+            formattedLocalizedString.RefreshString();
+        }
+
+        // Event handler method
+        private void UpdateDate(string value)
+        {
+            // Update UI with formatted date
+            inputFieldText.text = value;
+            this.lastFormattedDate = value;
+        }
+
+        private void OnDisable()
+        {
+            formattedLocalizedString.StringChanged -= UpdateDate;
+        }*/
 
     public string GetLastFormattedDate()
     {
