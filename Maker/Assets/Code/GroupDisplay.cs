@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class GroupDisplay : MonoBehaviour 
@@ -8,7 +6,7 @@ public class GroupDisplay : MonoBehaviour
     private void Update()
     {
         Text currentGroupText = this.gameObject.GetComponent<Text>();
-        if (partmanager.currentGroup != null)
+        if (partmanager.currentGroup != null && partmanager.currentGroup.group != null )
         {
             currentGroupText.text = partmanager.currentGroup.name;  
         }
