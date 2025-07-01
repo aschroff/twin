@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class GroupDisplay : MonoBehaviour 
 {
     [SerializeField] private PartManager partmanager; 
-    private void OnEnable()
+    private void Update()
     {
         Text currentGroupText = this.gameObject.GetComponent<Text>();
         if (partmanager.currentGroup != null)
