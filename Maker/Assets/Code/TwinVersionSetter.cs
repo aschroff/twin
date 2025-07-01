@@ -23,32 +23,6 @@ public class TwinVersionSetter : MonoBehaviour
         inputFieldText.text = formattedString;
         lastFormattedDate = formattedString;
     }
-        /*void Start()
-        {
-
-            DateTime currentDate = DateTime.Now; // getting current Time to put into version input field
-
-            // format the date to current localization settings
-            formattedLocalizedString = DateFormatter.formatDate(currentDate, dateFormat);
-
-            // Subscribe to the StringChanged event
-            formattedLocalizedString.StringChanged += UpdateDate;
-            // Triggers display update
-            formattedLocalizedString.RefreshString();
-        }
-
-        // Event handler method
-        private void UpdateDate(string value)
-        {
-            // Update UI with formatted date
-            inputFieldText.text = value;
-            this.lastFormattedDate = value;
-        }
-
-        private void OnDisable()
-        {
-            formattedLocalizedString.StringChanged -= UpdateDate;
-        }*/
 
     public string GetLastFormattedDate()
     {
