@@ -1,10 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using Lean.Gui;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Code
+namespace Code.Processes
 {
     public class VersionProcess: ProcessSync
     {
@@ -15,7 +14,7 @@ namespace Code
             return new ProcessResult();
         }
         
-        public override ProcessResult ExecuteSync(string variant = "")
+        public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
         {
             Debug.Log("Process status: Start VersionProcess");
             StartCoroutine(ExecuteCoroutine(variant));

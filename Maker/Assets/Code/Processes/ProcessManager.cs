@@ -1,15 +1,15 @@
-using UnityEngine;
 using Lean.Gui;
+using UnityEngine;
 
-namespace Code
+namespace Code.Processes
 {
     public class ProcessManager: MonoBehaviour
     {
         [SerializeField] public ViewManager viewManager;
-        [SerializeField] public StandardViewManager standarViewManager;
+        [SerializeField] public StandardViewManager standardViewManager;
         [SerializeField] public Recorder recorder;
         [SerializeField] public DataPersistenceManager dataManager;
-        [SerializeField] public Body body;
+        [SerializeField] public Body.Body body;
         [SerializeField] public LeanPulse notification;
         [SerializeField] public AI.AI ai;
         [SerializeField] public PartManager partManager;
