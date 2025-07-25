@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using Lean.Gui;
 using UnityEngine.UI;
+using TMPro;
 
 public class GroupListManager : MonoBehaviour, ItemFile
 {
@@ -128,16 +129,16 @@ public class GroupListManager : MonoBehaviour, ItemFile
             }
             notification.Pulse();
         }
-        
-        
-        Text currentGroupText = null; 
+
+
+        TextMeshProUGUI currentGroupText = null; 
         foreach (GameObject currentGroupTextGameObject in GameObject.FindGameObjectsWithTag("CurrentGroup"))
         {
-            currentGroupText = currentGroupTextGameObject.GetComponent<Text>();
+            currentGroupText = currentGroupTextGameObject.GetComponent<TextMeshProUGUI>();
 
             if(partmanager.currentGroup == null) //no group is currently selected
             {
-                currentGroupText.text = "<no group>";
+                currentGroupText.text = "-";
             }
             else //if group is selected, set current group name in overview 
             {

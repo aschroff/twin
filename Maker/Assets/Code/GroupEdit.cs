@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Lean.Gui;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,7 +53,7 @@ public class GroupEdit : Item
     {
         foreach (GameObject currentGroupTextGameObject in GameObject.FindGameObjectsWithTag("CurrentGroup"))
         {
-            Text currentGroupText = currentGroupTextGameObject.GetComponent<Text>();
+            TextMeshProUGUI currentGroupText = currentGroupTextGameObject.GetComponent<TextMeshProUGUI>();
             currentGroupText.text = current;
         }
 
