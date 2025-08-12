@@ -40,4 +40,21 @@ public class ToolTracker : MonoBehaviour
 
         }
     }
+
+    private void OnDisable()
+    {
+        if (toolNameDisplays == null)
+        {
+            toolNameDisplays = GameObject.FindGameObjectsWithTag("CurrentTool");
+        }
+
+        Debug.Log("removing tool");
+
+        foreach (GameObject toolNameDisplay in toolNameDisplays)
+        {
+            Debug.Log("old value tool" + toolNameDisplay.GetComponent<Text>().text);
+            toolNameDisplay.GetComponent<Text>().text = "-";
+
+        }
+    }
 }
