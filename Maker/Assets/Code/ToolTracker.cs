@@ -53,7 +53,7 @@ public class ToolTracker : MonoBehaviour
                 if (toolNameDisplay != null)
                 {
                     Debug.Log("old value tool" + toolNameDisplay.GetComponent<Text>().text);
-                    toolNameDisplay.GetComponent<Text>().text = "-";
+                    toolNameDisplay.GetComponent<Text>().text = "-"; //TODO change to TMPUGUI
                 }
 
             }
