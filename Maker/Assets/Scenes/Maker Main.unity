@@ -1087,6 +1087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Touch: {fileID: 1616260168}
   inputField: {fileID: 952705286}
+  Tools: {fileID: 701643922}
 --- !u!1001 &336125304
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11375,6 +11376,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5321056029687497371, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5396793875646057358, guid: 2f6be349fc23c4b88908e22d8f03a21c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -16052,7 +16057,7 @@ PrefabInstance:
       objectReference: {fileID: 609004393}
     - target: {fileID: 5037554182192162691, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 95.23425
+      value: 95.23413
       objectReference: {fileID: 0}
     - target: {fileID: 5249643866990954766, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: dateFormat.m_TableEntryReference.m_KeyId

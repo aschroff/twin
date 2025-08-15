@@ -7,6 +7,8 @@ public class SaveMode : MonoBehaviour
 {
     [SerializeField] GameObject Touch;
     [SerializeField] GameObject inputField;
+    [SerializeField] GameObject Tools;
+
 
 
     private void OnEnable()
@@ -16,6 +18,11 @@ public class SaveMode : MonoBehaviour
 
         UIController.ShowUI("Save");
         Touch.SetActive(false);
+
+        for (int i = Tools.transform.childCount - 1; i >= 0; i--)
+        {
+            Tools.transform.GetChild(i).gameObject.SetActive(false);
+        }
 
     }
 
