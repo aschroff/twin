@@ -22,7 +22,7 @@ namespace Code.Processes
         }
         
         
-        public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
+        public override ProcessResult ExecuteSync(string variant = "")
         {
             Debug.Log("Process status: Start PartsDescriptionProcess");
             processManager = getProcessManager();

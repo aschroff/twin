@@ -17,7 +17,7 @@ namespace Code.Processes
    
 
 
-      private ProcessManager processManager()
+      protected ProcessManager processManager()
       {
          return this.gameObject.GetComponentInParent<ProcessManager>();;
       }

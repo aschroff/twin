@@ -6,7 +6,7 @@ namespace Code.Processes.Meshcapade
     
     public class FinalitzeMeshcapadeImageProcess : ProcessSync
     {
-        public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
+        public override ProcessResult ExecuteSync(string variant = "")
         {
             return new ProcessResult();
         }

@@ -14,5 +14,6 @@ namespace Code.Processes
         [SerializeField] public AI.AI ai;
         [SerializeField] public PartManager partManager;
         [SerializeField] public SettingsManager settingsManager;
+        public ProcessResult processResult;
     }
 }

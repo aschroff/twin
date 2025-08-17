@@ -14,7 +14,7 @@ namespace Code.Processes
             return new ProcessResult();
         }
         
-        public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
+        public override ProcessResult ExecuteSync(string variant = "")
         {
             Debug.Log("Process status: Start VersionProcess");
             StartCoroutine(ExecuteCoroutine(variant));

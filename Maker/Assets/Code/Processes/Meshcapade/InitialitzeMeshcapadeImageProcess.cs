@@ -18,6 +18,8 @@ namespace Code.Processes.Meshcapade
         public string gender { get; set; }
         public string format { get; set; }
         public string pose { get; set; }
+        public string avatarData { get; set; }
+        public string ErrorCode { get; set; } = null;
     }
     
     public class InitialitzeMeshcapadeImageProcess : ProcessSync
@@ -28,7 +30,7 @@ namespace Code.Processes.Meshcapade
         [SerializeField] private string pose;
         [SerializeField] public string imagePath;
         
-        public override ProcessResult ExecuteSync(string variant = "", ProcessResult previousResult = null)
+        public override ProcessResult ExecuteSync(string variant = "")
         {
             Body.Body body = getBody();
             MeshcapadeProcessResult meshcapadeResult= new MeshcapadeProcessResult();
@@ -43,7 +45,8 @@ namespace Code.Processes.Meshcapade
             byte[] imageBytes = File.ReadAllBytes(imagePath);
             string base64Image = Convert.ToBase64String(imageBytes);
             meshcapadeResult.fileContent = base64Image;
-            
+            OnExecuteCompleted();
+            processManager().processResult = meshcapadeResult;
             return meshcapadeResult;
         }
         public override ProcessResult Execute(string variant = "")
