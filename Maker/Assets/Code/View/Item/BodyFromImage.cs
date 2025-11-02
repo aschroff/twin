@@ -7,7 +7,6 @@ using UnityEngine;
 public class BodyFromImage : MonoBehaviour
 {
     [SerializeField] private Process bodyFromImageProcess;
-    [SerializeField] private InitialitzeMeshcapadeImageProcess initalizeProcess;
     private Texture2D textureBody;
     private string imagePath;
     private void SelectImage(int maxSize)
@@ -46,16 +45,11 @@ public class BodyFromImage : MonoBehaviour
         }
     }
 
-    private void SetImage()
-    {
-        initalizeProcess.imagePath = imagePath;
-    }
     
     public void SelectImageAndStartProcess()
     {
         
         SelectImage(1024);
-        SetImage();
         StartProcess();
     }
 }
