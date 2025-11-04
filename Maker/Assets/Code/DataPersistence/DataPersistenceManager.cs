@@ -322,6 +322,32 @@ public class DataPersistenceManager : MonoBehaviour
         dataHandler.Save(configData, selectedProfileId);
     }
 
+    /*
+    * Collects the data which is exported.
+    */
+    public void ExportConfig()
+    {
+        // if we don't have any data to save, log a warning here
+        if (this.configData == null)
+        {
+            Debug.LogWarning("No data was found. A New Game needs to be started before data can be saved.");
+            return;
+        }
+
+        // pass the data to other scripts so they can update it
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
+        {
+            dataPersistenceObj.SaveData(configData);
+        }
+
+        // timestamp the data so we know when it was last saved
+        configData.lastUpdated = System.DateTime.Now.ToBinary();
+
+
+        // save that data to a file using the data handler
+        dataHandler.ExportData(configData, selectedProfileId);
+    }
+
     private void OnApplicationQuit() 
     {
         Debug.Log("Quit -> Saved Config");
