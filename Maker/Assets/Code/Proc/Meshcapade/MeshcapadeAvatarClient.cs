@@ -42,6 +42,7 @@ namespace Code.Proc.Meshcapade
             Action<string> onError)
         {
             // 1. Get access token
+            Debug.Log($"Step 1: Getting access token...");
             string bearerToken = null;
             yield return StartCoroutine(GetAccessTokenCoroutine(
                 t => bearerToken = t,
@@ -50,7 +51,8 @@ namespace Code.Proc.Meshcapade
             {
                 yield break;
             }
-
+            Debug.Log($"Got token: {bearerToken}");
+            Debug.Log($"Step 2: Creating request...");
             // 2. Create avatar (init)
             string avatarId = null;
             yield return StartCoroutine(CreateAvatarRequest(bearerToken, id => avatarId = id, onError));
@@ -58,7 +60,7 @@ namespace Code.Proc.Meshcapade
             {
                 yield break;
             }
-
+            Debug.Log($"Step 3: Creating register image upload...");
             // 3. Register image upload
             UploadInfo uploadInfo = null;
             yield return StartCoroutine(RegisterImageRequest(avatarId, bearerToken, info => uploadInfo = info,
@@ -67,7 +69,7 @@ namespace Code.Proc.Meshcapade
             {
                 yield break;
             }
-
+            Debug.Log($"Step 4: Load image...");
             // 4. Get image bytes
             byte[] imageBytes = null;
             yield return StartCoroutine(getImageBytesCoroutine().Wrap(obj => imageBytes = obj as byte[]));
@@ -76,13 +78,13 @@ namespace Code.Proc.Meshcapade
                 onError?.Invoke("Image bytes were null");
                 yield break;
             }
-
+            Debug.Log($"Step 5: Upload image...");
             // 5. Upload image
             yield return StartCoroutine(UploadImageBytes(uploadInfo, imageBytes, onError));
-
+            Debug.Log($"Step 6: Fit image...");
             // 6. Trigger fit-to-images
             yield return StartCoroutine(TriggerFitToImagesRequest(avatarId, bearerToken, onError));
-
+            Debug.Log($"Step 7: Poll until complete...");
             // 7. Poll for completion
             AvatarResult result = null;
             yield return StartCoroutine(PollUntilReadyRequest(avatarId, bearerToken, r => result = r, onError));
@@ -162,14 +164,26 @@ namespace Code.Proc.Meshcapade
                 try
                 {
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-                    if (dict.TryGetValue("id", out object idObj))
+                    if (dict.TryGetValue("data", out object dataObj))
                     {
-                        onAvatarId?.Invoke(idObj.ToString());
+                        // dataObj ist ein verschachteltes Objekt, als JSON-String serialisieren und erneut deserialisieren
+                        var dataJson = JsonConvert.SerializeObject(dataObj);
+                        var dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson);
+                    
+                        if (dataDict.TryGetValue("id", out object idObj))
+                        {
+                            onAvatarId?.Invoke(idObj.ToString());
+                        }
+                        else
+                        {
+                            onError?.Invoke("CreateAvatar: JSON missing `id` field in `data` object");
+                        }
                     }
                     else
                     {
-                        onError?.Invoke("CreateAvatar: JSON missing `id` field");
+                        onError?.Invoke("CreateAvatar: JSON missing `data` field");
                     }
+                    
                 }
                 catch (Exception e)
                 {

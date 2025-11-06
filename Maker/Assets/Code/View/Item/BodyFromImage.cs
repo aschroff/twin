@@ -6,9 +6,11 @@ using UnityEngine;
 
 public class BodyFromImage : MonoBehaviour
 {
-    [SerializeField] private Process bodyFromImageProcess;
+    [SerializeField] private AvatarProcess bodyFromImageProcess;
     private Texture2D textureBody;
     private string imagePath;
+    
+    
     private void SelectImage(int maxSize)
     {
         NativeGallery.GetImageFromGallery((path) =>
@@ -37,6 +39,7 @@ public class BodyFromImage : MonoBehaviour
     {
         if (bodyFromImageProcess != null)
         {
+            bodyFromImageProcess.SetImagePath(imagePath);
             bodyFromImageProcess.Execute();
         }
         else

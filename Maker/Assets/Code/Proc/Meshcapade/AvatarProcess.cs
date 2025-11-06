@@ -4,11 +4,18 @@ using Code;
 using Code.AI;
 using Code.Proc.Meshcapade;
 using Lean.Gui;
+using UnityEngine.UI;
 
 
 public class AvatarProcess : Process
 {
     private MeshcapadeAvatarClient client;
+    [SerializeField] string imagePath;
+
+    public void SetImagePath(string path)
+    {
+        imagePath=path;
+    }
 
     private void Awake()
     {
@@ -34,8 +41,7 @@ public class AvatarProcess : Process
     // Example image provider
     private IEnumerator GetMyImageCoroutine()
     {
-        // TODO: Replace with your own image acquisition (screenshot, file, webcam, etc.)
-        string path = Application.dataPath + "/test.jpg";
+        string path = imagePath;
         byte[] bytes = System.IO.File.ReadAllBytes(path);
         yield return bytes;
     }
@@ -44,8 +50,13 @@ public class AvatarProcess : Process
     {
         Debug.Log($"✅ Avatar ready! ID={result.avatarId}, Asset={result.assetUrl}");
 
-        // Example: notify UI or save result
-        getNotification()?.Pulse(); // Using LeanPulse
+        LeanPulse notification = getNotification();
+        foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
+        {
+            text.text = $"Body from image succeeded ID={result.avatarId}.";
+        }
+
+        notification.Pulse();
 
     }
 
@@ -53,7 +64,12 @@ public class AvatarProcess : Process
     {
         Debug.LogError($"❌ Avatar creation failed: {error}");
 
-        // Example: show user a notification
-        getNotification()?.Pulse();
+        LeanPulse notification = getNotification();
+        foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
+        {
+            text.text = "Body from image failed.";
+        }
+
+        notification.Pulse();
     }
 }
