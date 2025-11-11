@@ -209,8 +209,37 @@ namespace Code.Proc.Meshcapade
 
                 try
                 {
-                    UploadInfo ui = JsonConvert.DeserializeObject<UploadInfo>(req.downloadHandler.text);
-                    onUploadInfo?.Invoke(ui);
+                    var uploadDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(req.downloadHandler.text);
+
+                    // reading the upload-url and content-type from the json, that was given as an answer for the webrequest
+                    if (uploadDict.TryGetValue("data", out object dataObj))
+                    {
+                        var dataJson = JsonConvert.SerializeObject(dataObj);
+                        var dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson);
+
+                        if (dataDict.TryGetValue("attributes", out object attributesObj))
+                        {
+                            Debug.Log($"attributes: {attributesObj}");
+                            var attributesJson = JsonConvert.SerializeObject(attributesObj);
+                            var attributesDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(attributesJson);
+
+                            if (attributesDict.TryGetValue("url", out object urlObj) && attributesDict.TryGetValue("type", out object typeObj)) {
+
+                                UploadInfo ui = JsonConvert.DeserializeObject<UploadInfo>(urlObj.ToString()); //storing the url
+                                ui.contentType = typeObj.ToString(); //storing the content type
+                                onUploadInfo?.Invoke(ui);
+
+                                if (ui.contentType == null || ui.uploadUrl == null)
+                                {
+                                    onError?.Invoke($"UploadURL or ContentType not found");
+                                }
+
+                            }
+
+                        }
+
+                    }
+                 
                 }
                 catch (Exception e)
                 {
@@ -223,7 +252,7 @@ namespace Code.Proc.Meshcapade
         {
             using (UnityWebRequest req = UnityWebRequest.Put(uploadInfo.uploadUrl, imageBytes))
             {
-                req.SetRequestHeader("Content-Type", uploadInfo.contentType ?? "image/jpeg");
+                req.SetRequestHeader("Content-Type", uploadInfo.contentType ?? "image/jpeg"); //TODO content type from json: "IMAGE"
                 yield return req.SendWebRequest();
 
                 if (req.result != UnityWebRequest.Result.Success)
@@ -319,8 +348,8 @@ namespace Code.Proc.Meshcapade
         [Serializable]
         public class UploadInfo
         {
-            [JsonProperty("uploadUrl")] public string uploadUrl;
-            [JsonProperty("contentType")] public string contentType;
+            [JsonProperty("path")] public string uploadUrl;
+            [JsonProperty("type")] public string contentType;
         }
 
         [Serializable]
