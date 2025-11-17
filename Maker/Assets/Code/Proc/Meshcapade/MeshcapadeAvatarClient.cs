@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-
 namespace Code.Proc.Meshcapade
 {
 
@@ -163,31 +162,19 @@ namespace Code.Proc.Meshcapade
                 string json = req.downloadHandler.text;
                 try
                 {
-                    var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-                    if (dict.TryGetValue("data", out object dataObj))
+                    var resp = JsonConvert.DeserializeObject<JsonApiSingle<Resource<AvatarAttributes>>>(json);
+                    if (resp?.data?.id != null)
                     {
-                        // dataObj ist ein verschachteltes Objekt, als JSON-String serialisieren und erneut deserialisieren
-                        var dataJson = JsonConvert.SerializeObject(dataObj);
-                        var dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson);
-                    
-                        if (dataDict.TryGetValue("id", out object idObj))
-                        {
-                            onAvatarId?.Invoke(idObj.ToString());
-                        }
-                        else
-                        {
-                            onError?.Invoke("CreateAvatar: JSON missing `id` field in `data` object");
-                        }
+                        onAvatarId?.Invoke(resp.data.id);
                     }
                     else
                     {
-                        onError?.Invoke("CreateAvatar: JSON missing `data` field");
+                        onError?.Invoke("CreateAvatar: response missing data.id. Raw JSON: " + json);
                     }
-                    
                 }
                 catch (Exception e)
                 {
-                    onError?.Invoke($"CreateAvatar JSON parse error: {e.Message}");
+                    onError?.Invoke($"CreateAvatar JSON parse error: {e.Message}. Raw JSON: {json}");
                 }
             }
         }
