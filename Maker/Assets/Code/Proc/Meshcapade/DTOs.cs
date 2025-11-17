@@ -59,37 +59,57 @@ namespace Code.Proc.Meshcapade
 
     public class UrlObject
     {
-        // Some responses use "Link" (capitalized) as seen in docs/examples.
+        // possible capitalized/camel fields seen in different responses
         [JsonProperty("Link", NullValueHandling = NullValueHandling.Ignore)]
         public string Link;
 
-        // Some responses may use "link" lowercase — keep a fallback property for both:
         [JsonProperty("link", NullValueHandling = NullValueHandling.Ignore)]
         public string link;
+
+        // new: explicit fields your JSON used
+        [JsonProperty("path", NullValueHandling = NullValueHandling.Ignore)]
+        public string path;
 
         [JsonProperty("Method", NullValueHandling = NullValueHandling.Ignore)]
         public string Method;
 
+        [JsonProperty("method", NullValueHandling = NullValueHandling.Ignore)]
+        public string method;
+
         [JsonProperty("internal", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Internal;
 
-        // In case the response is simply a string (rare but possible), keep raw token:
         [JsonExtensionData]
         public IDictionary<string, JToken> AdditionalData;
-        
-        // helper to get the actual link regardless of capitalization
+
+        // returns whichever string field is available (path, Link, link, or any string value in AdditionalData)
         public string GetLink()
         {
+            if (!string.IsNullOrEmpty(path)) return path;
             if (!string.IsNullOrEmpty(Link)) return Link;
             if (!string.IsNullOrEmpty(link)) return link;
+
             if (AdditionalData != null)
             {
-                if (AdditionalData.TryGetValue("Link", out var tk) && tk.Type == JTokenType.String) return tk.ToString();
-                if (AdditionalData.TryGetValue("link", out var tk2) && tk2.Type == JTokenType.String) return tk2.ToString();
+                // Try common alternatives
+                if (AdditionalData.TryGetValue("path", out var tkp) && tkp.Type == JTokenType.String) return tkp.ToString();
+                if (AdditionalData.TryGetValue("Link", out var tkL) && tkL.Type == JTokenType.String) return tkL.ToString();
+                if (AdditionalData.TryGetValue("link", out var tkl) && tkl.Type == JTokenType.String) return tkl.ToString();
             }
+
+            return null;
+        }
+
+        // returns whichever method field is present
+        public string GetMethod()
+        {
+            if (!string.IsNullOrEmpty(method)) return method;
+            if (!string.IsNullOrEmpty(Method)) return Method;
+            if (AdditionalData != null && AdditionalData.TryGetValue("method", out var tk) && tk.Type == JTokenType.String) return tk.ToString();
             return null;
         }
     }
+
 
     // 6) UploadInfo - normalized object your upload function will use
     public class UploadInfo
@@ -134,5 +154,22 @@ namespace Code.Proc.Meshcapade
         [JsonProperty("title")] public string title;
         [JsonProperty("detail")] public string detail;
     }
+    
+    public class FinalExportRequestBody
+    {
+        public ExportRequestData data { get; set; }
+    }
+
+    public class ExportRequestData
+    {
+        public string type { get; set; } = "export";
+        public ExportRequestAttributes attributes { get; set; }
+    }
+
+    public class ExportRequestAttributes
+    {
+        public string format { get; set; } = "GLB"; // or "OBJ", "FBX"
+    }
+
 }
 

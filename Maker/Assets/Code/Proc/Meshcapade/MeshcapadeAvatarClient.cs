@@ -4,6 +4,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 namespace Code.Proc.Meshcapade
 {
@@ -91,6 +92,41 @@ namespace Code.Proc.Meshcapade
             {
                 yield break;
             }
+            // 8. Requesting export
+            Debug.Log("Step 8: Requesting export...");
+            string exportUrl = null;
+
+            var exportBody = new FinalExportRequestBody
+            {
+                data = new ExportRequestData
+                {
+                    type = "export",
+                    attributes = new ExportRequestAttributes
+                    {
+                        format = "GLB" // Change to OBJ/FBX if needed
+                    }
+                }
+            };
+
+            yield return StartCoroutine(RequestExport(avatarId, bearerToken, exportBody,
+                url => exportUrl = url,
+                onError));
+
+            if (string.IsNullOrEmpty(exportUrl))
+                yield break;
+
+            Debug.Log($"Export ready: {exportUrl}");
+
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            // 9. Success → return final result
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            AvatarResult finalResult = new AvatarResult
+            {
+                avatarId = avatarId,
+                assetUrl = exportUrl // store export download URL
+            };
+
+            onComplete?.Invoke(finalResult);
 
             // Success
             onComplete?.Invoke(result);
@@ -193,78 +229,103 @@ namespace Code.Proc.Meshcapade
                     onError?.Invoke($"Register image error: {req.error}, code: {req.responseCode}");
                     yield break;
                 }
-
+                string json = req.downloadHandler.text;
                 try
                 {
-                    var uploadDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(req.downloadHandler.text);
+                    // Deserialize into the typed wrapper for Resource<ImageRegisterAttributes>
+                    var resp = JsonConvert.DeserializeObject<JsonApiSingle<Resource<ImageRegisterAttributes>>>(json);
 
-                    // reading the upload-url and content-type from the json, that was given as an answer for the webrequest
-                    if (uploadDict.TryGetValue("data", out object dataObj))
+                    string presignedUrl = null;
+                    string httpMethod = null;
+
+                    // 1) Try attributes.url (preferred)
+                    if (resp?.data?.attributes?.url != null)
                     {
-                        var dataJson = JsonConvert.SerializeObject(dataObj);
-                        var dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataJson);
-
-                        if (dataDict.TryGetValue("attributes", out object attributesObj))
-                        {
-                            Debug.Log($"attributes: {attributesObj}");
-                            var attributesJson = JsonConvert.SerializeObject(attributesObj);
-                            var attributesDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(attributesJson);
-
-                            if (attributesDict.TryGetValue("url", out object urlObj) && attributesDict.TryGetValue("type", out object typeObj)) {
-
-                                UploadInfo ui = JsonConvert.DeserializeObject<UploadInfo>(urlObj.ToString()); //storing the url
-                                ui.contentType = typeObj.ToString(); //storing the content type
-                                onUploadInfo?.Invoke(ui);
-
-                                if (ui.contentType == null || ui.uploadUrl == null)
-                                {
-                                    onError?.Invoke($"UploadURL or ContentType not found");
-                                }
-
-                            }
-
-                        }
-
+                        var urlObj = resp.data.attributes.url;
+                        presignedUrl = urlObj.GetLink();
+                        httpMethod = urlObj.GetMethod();
                     }
-                 
+
+                    // 2) Fallback: try links.upload (some responses provide the upload URL in links)
+                    if (string.IsNullOrEmpty(presignedUrl) && resp?.data?.links != null)
+                    {
+                        // links is a Dictionary<string,string> in our Resource<T>. Try "upload" key.
+                        if (resp.data.links.TryGetValue("upload", out var uploadLink) && !string.IsNullOrEmpty(uploadLink))
+                        {
+                            presignedUrl = uploadLink;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(presignedUrl))
+                    {
+                        onError?.Invoke("RegisterImage: upload url missing in response. Raw JSON: " + json);
+                        yield break;
+                    }
+
+                    UploadInfo ui = new UploadInfo
+                    {
+                        UploadUrl = presignedUrl,
+                        Method = string.IsNullOrEmpty(httpMethod) ? "PUT" : httpMethod.ToUpperInvariant(),
+                        ContentType = null // not provided by the API in this response — keep null and set default when uploading if needed
+                    };
+
+                    onUploadInfo?.Invoke(ui);
                 }
                 catch (Exception e)
                 {
-                    onError?.Invoke($"RegisterImage JSON parse error: {e.Message}");
+                    onError?.Invoke($"RegisterImage JSON parse error: {e.Message}. Raw JSON: {json}");
+                    yield break;
                 }
+
+               
             }
         }
 
         private IEnumerator UploadImageBytes(UploadInfo uploadInfo, byte[] imageBytes, Action<string> onError)
         {
-            using (UnityWebRequest req = UnityWebRequest.Put(uploadInfo.uploadUrl, imageBytes))
+            using (UnityWebRequest req = UnityWebRequest.Put(uploadInfo.UploadUrl, imageBytes))
             {
-                req.SetRequestHeader("Content-Type", uploadInfo.contentType ?? "image/jpeg"); //TODO content type from json: "IMAGE"
+                // Some presigned endpoints expect no Content-Type header, some do.
+                // If the API supplies a content type, set it; otherwise optionally set to image/jpeg.
+                if (!string.IsNullOrEmpty(uploadInfo.ContentType))
+                    req.SetRequestHeader("Content-Type", uploadInfo.ContentType);
+                else
+                    req.SetRequestHeader("Content-Type", "image/jpeg"); // or omit header if upload fails
+
+                // If the presigned upload requires specific headers, you must set them exactly as returned by API.
                 yield return req.SendWebRequest();
 
                 if (req.result != UnityWebRequest.Result.Success)
                 {
-                    onError?.Invoke($"Upload image error: {req.error}, code: {req.responseCode}");
+                    onError?.Invoke($"Upload image error: {req.error}, code: {req.responseCode}, body: {req.downloadHandler?.text}");
                     yield break;
                 }
             }
+
         }
 
-        private IEnumerator TriggerFitToImagesRequest(string avatarId, string bearerToken, Action<string> onError)
+        private IEnumerator TriggerFitToImagesRequest(string avatarId, string bearerToken, Action<string> onError, ExportRequestBody options = null)
         {
             string url = $"{apiBaseUrl}/avatars/{avatarId}/fit-to-images";
-            using (UnityWebRequest req = UnityWebRequest.PostWwwForm(url, ""))
+            var body = options != null ? JsonConvert.SerializeObject(options) : "{\"imageMode\":\"AFI2\"}"; // example default
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
+
+            using (UnityWebRequest req = new UnityWebRequest(url, "POST"))
             {
+                req.uploadHandler = new UploadHandlerRaw(bodyRaw);
+                req.downloadHandler = new DownloadHandlerBuffer();
+                req.SetRequestHeader("Content-Type", "application/json");
                 req.SetRequestHeader("Authorization", bearerToken);
                 yield return req.SendWebRequest();
 
                 if (req.result != UnityWebRequest.Result.Success)
                 {
-                    onError?.Invoke($"Fit-to-images error: {req.error}, code: {req.responseCode}");
+                    onError?.Invoke($"Fit-to-images error: {req.error}, code: {req.responseCode}, body: {req.downloadHandler?.text}");
                     yield break;
                 }
             }
         }
+
 
         private IEnumerator PollUntilReadyRequest(string avatarId, string bearerToken, Action<AvatarResult> onResult,
             Action<string> onError)
@@ -290,28 +351,38 @@ namespace Code.Proc.Meshcapade
                     string json = req.downloadHandler.text;
                     try
                     {
-                        AvatarStatusResponse status = JsonConvert.DeserializeObject<AvatarStatusResponse>(json);
-                        if (status.status == "succeeded")
+                        var resp = JsonConvert.DeserializeObject<JsonApiSingle<Resource<AvatarStatusAttributes>>>(json);
+                        var state = resp?.data?.attributes?.state;
+                        if (!string.IsNullOrEmpty(state))
                         {
-                            AvatarResult r = new AvatarResult
+                            if (state.Equals("READY", StringComparison.OrdinalIgnoreCase) || state.Equals("succeeded", StringComparison.OrdinalIgnoreCase))
                             {
-                                avatarId = avatarId,
-                                assetUrl = status.asset_url
-                            };
-                            onResult?.Invoke(r);
-                            yield break;
+                                // optionally get asset_url from attributes or links
+                                string assetUrl = resp.data.attributes.asset_url;
+                                // If the API does not return a direct asset_url, you will need to call export endpoint next (see below).
+                                AvatarResult r = new AvatarResult { avatarId = avatarId, assetUrl = assetUrl };
+                                onResult?.Invoke(r);
+                                yield break;
+                            }
+                            else if (state.Equals("FAILED", StringComparison.OrdinalIgnoreCase) || state.Equals("failure", StringComparison.OrdinalIgnoreCase))
+                            {
+                                onError?.Invoke("Avatar processing failed. Raw JSON: " + json);
+                                yield break;
+                            }
+                            // else still processing -> continue polling
                         }
-                        else if (status.status == "failed")
+                        else
                         {
-                            onError?.Invoke("Avatar processing failed.");
+                            onError?.Invoke("Avatar status response missing state. Raw JSON: " + json);
                             yield break;
                         }
                     }
                     catch (Exception e)
                     {
-                        onError?.Invoke($"Status JSON parse error: {e.Message}");
+                        onError?.Invoke($"Status JSON parse error: {e.Message}. Raw JSON: {json}");
                         yield break;
                     }
+
                 }
 
                 attempts++;
@@ -320,7 +391,115 @@ namespace Code.Proc.Meshcapade
 
             onError?.Invoke("Avatar creation timed out.");
         }
+        
+        private IEnumerator RequestExport(string avatarId, string bearerToken, FinalExportRequestBody exportBody, Action<string> onExportUrl, Action<string> onError)
+    {
+        string url = $"{apiBaseUrl}/avatars/{avatarId}/export";
+        string body = JsonConvert.SerializeObject(exportBody);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
 
+        // 1) Trigger export
+        using (UnityWebRequest req = new UnityWebRequest(url, "POST"))
+        {
+            req.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            req.downloadHandler = new DownloadHandlerBuffer();
+            req.SetRequestHeader("Content-Type", "application/json");
+            req.SetRequestHeader("Authorization", bearerToken);
+            yield return req.SendWebRequest();
+
+            if (req.result != UnityWebRequest.Result.Success)
+            {
+                onError?.Invoke($"Export request failed: {req.error}, code: {req.responseCode}, body: {req.downloadHandler?.text}");
+                yield break;
+            }
+
+            // The POST often returns an export job resource; we'll poll the same endpoint until export is READY.
+        }
+
+        // 2) Poll export status (simple loop)
+        int attempts = 0;
+        const int maxAttempts = 60;
+        const float delay = 2f;
+
+        while (attempts < maxAttempts)
+        {
+            using (UnityWebRequest req = UnityWebRequest.Post(url, "")) // or GET if API expects GET for export status; check docs
+            {
+                req.SetRequestHeader("Authorization", bearerToken);
+                yield return req.SendWebRequest();
+
+                if (req.result != UnityWebRequest.Result.Success)
+                {
+                    onError?.Invoke($"Export status error: {req.error}, code: {req.responseCode}");
+                    yield break;
+                }
+
+                string json = req.downloadHandler.text;
+                try
+                {
+                    var resp = JsonConvert.DeserializeObject<JsonApiSingle<Resource<ExportAttributes>>>(json);
+                    var state = resp?.data?.attributes?.state;
+                    if (!string.IsNullOrEmpty(state))
+                    {
+                        if (state.Equals("READY", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Download link might be in resp.data.attributes.download (UrlObject) or resp.data.links
+                            var downloadObjToken = resp?.data?.attributes?.download;
+                            string downloadUrl = null;
+                            if (downloadObjToken != null)
+                            {
+                                // If download is a UrlObject, attempt to read Link
+                                try
+                                {
+                                    var urlObj = downloadObjToken;
+                                    downloadUrl = urlObj?.GetLink();
+                                }
+                                catch { /* ignore */ }
+                            }
+
+                            // fallback: check links
+                            if (string.IsNullOrEmpty(downloadUrl) && resp?.data?.links != null && resp.data.links.TryGetValue("download", out var dl))
+                            {
+                                downloadUrl = dl;
+                            }
+
+                            if (!string.IsNullOrEmpty(downloadUrl))
+                            {
+                                onExportUrl?.Invoke(downloadUrl);
+                                yield break;
+                            }
+                            else
+                            {
+                                onError?.Invoke("Export ready but download url not found. Raw JSON: " + json);
+                                yield break;
+                            }
+                        }
+                        else if (state.Equals("FAILED", StringComparison.OrdinalIgnoreCase))
+                        {
+                            onError?.Invoke("Export failed. Raw JSON: " + json);
+                            yield break;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    onError?.Invoke($"Export status parse error: {e.Message}. Raw JSON: {json}");
+                    yield break;
+                }
+            }
+
+            attempts++;
+            yield return new WaitForSeconds(delay);
+        }
+
+        onError?.Invoke("Export timed out");
+    }
+
+
+        
+        
+        
+        
         // --- Data types for JSON serialization ---
         private class TokenResponse
         {
@@ -330,13 +509,6 @@ namespace Code.Proc.Meshcapade
 
             [JsonProperty("token_type")] public string token_type;
             // There may be other fields like refresh_token, scope, etc.
-        }
-
-        [Serializable]
-        public class UploadInfo
-        {
-            [JsonProperty("path")] public string uploadUrl;
-            [JsonProperty("type")] public string contentType;
         }
 
         [Serializable]
