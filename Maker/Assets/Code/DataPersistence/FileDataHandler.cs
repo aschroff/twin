@@ -6,11 +6,13 @@ using System.IO;
 using SFB;
 using SimpleFileBrowser;
 // using FileBrowser;
+// using NativeFilePicker;
 
 
 public class FileDataHandler
 {
     private string dataDirPath = "";
+    private string fileType = " ";
     private string templateDirPath = "";
     private string dataFileName = "";
     private bool useEncryption = false;
@@ -399,33 +401,107 @@ public class FileDataHandler
     
     public void ExportData(ConfigData data, string profileId)
     {
+        // pdfFileType = NativeFilePicker.ConvertExtensionToFileType( "pdf" ); // Returns "application/pdf" on Android and "com.adobe.pdf" on iOS
+        fileType = NativeFilePicker.ConvertExtensionToFileType( " " ); // Returns "application/pdf" on Android and "com.adobe.pdf" on iOS
+        Debug.Log( "Files MIME/UTI is: " + fileType );
         StartExportProcess(data, profileId);
-    }
+        }
 
-    private void StartExportProcess(ConfigData data, string profileId) {
-    // Example 1: Show a save file dialog using callback approach
-	// 	onSuccess event: not registered (which means this dialog is pretty useless)
-	// 	onCancel event: not registered
-	// 	Save file/folder: file, Allow multiple selection: false
-	// 	Initial path: "C:\", Initial filename: "Screenshot.png"
-	// 	Title: "Save As", Submit button text: "Save"
-		// FileBrowser.ShowSaveDialog( null, null, FileBrowser.PickMode.Files, false, Application.persistentDataPath, "Screenshot.png", "Save As", "Save" );
+    // private void StartExportProcess(ConfigData data, string profileId) {
+    // // Example 1: Show a save file dialog using callback approach
+	// // 	onSuccess event: not registered (which means this dialog is pretty useless)
+	// // 	onCancel event: not registered
+	// // 	Save file/folder: file, Allow multiple selection: false
+	// // 	Initial path: "C:\", Initial filename: "Screenshot.png"
+	// // 	Title: "Save As", Submit button text: "Save"
+	// 	// FileBrowser.ShowSaveDialog( null, null, FileBrowser.PickMode.Files, false, Application.persistentDataPath, "Screenshot.png", "Save As", "Save" );
         
-        // Before exporting a twin make sure it is saved
-        Save(data, profileId);
+    //     // Before exporting a twin make sure it is saved
+    //     Save(data, profileId);
 
-        FileBrowser.ShowLoadDialog( ( paths ) =>
-        { 
-            // Succes case : eventCall
-            Debug.Log( "User selected folder: " + FileBrowser.Success + " : " + FileBrowser.Result[0] );
-            string selecetPath = FileBrowser.Result[0];
-            PerformExport(data, profileId, selecetPath);
-        },
-            // Cancel case : eventCall
-        () => { Debug.Log( "Export canceled"); 
-        },
-        // TODO: include localization dependence 
-        FileBrowser.PickMode.Folders, false, null, null, "Select Folder", "Select" );
+    //     FileBrowser.ShowLoadDialog( ( paths ) =>
+    //     { 
+    //         // Succes case : eventCall
+    //         Debug.Log( "User selected folder: " + FileBrowser.Success + " : " + FileBrowser.Result[0] );
+    //         string selecetPath = FileBrowser.Result[0];
+    //         PerformExport(data, profileId, selecetPath);
+    //     },
+    //         // Cancel case : eventCall
+    //     () => { Debug.Log( "Export canceled"); 
+    //     },
+    //     // TODO: include localization dependence 
+    //     FileBrowser.PickMode.Folders, false, null, null, "Select Folder", "Select" );
+    // }
+
+
+
+    private void StartExportProcess(ConfigData data, string profileId) 
+    {
+    // //         // Don't attempt to import/export files if the file picker is already open
+            if( NativeFilePicker.IsFilePickerBusy() )
+                return;
+
+    // //         // Pick a PDF file
+    //         NativeFilePicker.PickFile( ( path ) =>
+    // //         {
+    //             if( path == null )
+    //                 Debug.Log( "Operation cancelled" );
+    //             else
+    //                 Debug.Log( "Picked file: " + path );
+    //                 PerformExport(data, profileId, path);
+    //             }
+    //             , new string[] {fileType};
+    //         )
+
+            // NativeFilePicker.ExportFile(  ,
+            // ( path ) =>
+            // {
+            //     if( path == null )
+            //         Debug.Log( "Operation cancelled" );
+            //     else
+            //         Debug.Log( "Picked file: " + path );
+            //     PerformExport(data, profileId, path);
+            // });
+        
+    // #if UNITY_ANDROID
+    //             // Use MIMEs on Android
+    //             string[] fileTypes = new string[] { "image/*", "video/*" };
+    // #else
+    //             // Use UTIs on iOS
+    //             string[] fileTypes = new string[] { };
+    //             // OR ?????????????????????????????????????????????????????????????????????????????????????????????????????
+    //             // string[] fileTypes = new string[] { " " };
+    // #endif
+
+                // Pick image(s) and/or video(s)
+                // NativeFilePicker.PickMultipleFiles( ( paths ) =>
+                // {
+                //     if( paths == null )
+                //         Debug.Log( "Operation cancelled" );
+                //     else
+                //     {
+                //         for( int i = 0; i < paths.Length; i++ )
+                //             Debug.Log( "Picked file: " + paths[i] );
+                //     }
+                // }, fileTypes );
+
+                // Create a dummy text file
+			// string filePath = Path.Combine( Application.temporaryCachePath, profileId );
+			// File.WriteAllText( filePath, "Hello world!" );
+            
+            string filePath = Path.Combine(Application.temporaryCachePath);
+
+            // string dataToStore = JsonUtility.ToJson(data, true);
+
+            // WriteIntoFile(profileId, fullPath, dataToStore);
+			// Export the file
+			NativeFilePicker.ExportFile( filePath, ( success ) => { 
+                Debug.Log( "File exported: " + success );
+                if (success) 
+                    PerformExport (data, profileId, filePath);
+                });
+            // Debug.Log( "File exported: " + success ));
+            // PerformExport (data, profileId, fullPath);
     }
 
     private void PerformExport(ConfigData data, string profileId, string exportDestinationPath)
@@ -463,33 +539,38 @@ public class FileDataHandler
                 dataToStore = EncryptDecrypt(dataToStore);
             }
 
-            // write the serialized data to the file
-            using (FileStream stream = new FileStream(fullPath, FileMode.Create))
-            {
-                using (StreamWriter writer = new StreamWriter(stream))
-                {
-                    writer.Write(dataToStore);
-                }
-            }
-
-            // verify the newly saved file can be loaded successfully
-            ConfigData verifiedGameData = Load(profileId);
-            // if the data can be verified, back it up
-            if (verifiedGameData != null)
-            {
-                // File.Copy(fullPath, backupFilePath, true);
-                Debug.Log("Exported Twin successfully to: " + fullPath);
-            }
-            // otherwise, something went wrong and we should throw an exception
-            else
-            {
-                throw new Exception("Save file could not be verified and backup could not be created.");
-            }
+            WriteIntoFile(profileId, fullPath, dataToStore);
 
         }
         catch (Exception e)
         {
             Debug.LogError("Error occured when trying to Export Twin: " + fullPath + "\n," + e);
+        }
+    }
+
+    private void WriteIntoFile(string profileId, string fullPath, string dataToStore)
+    {
+        // write the serialized data to the file
+        using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+        {
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                writer.Write(dataToStore);
+            }
+        }
+
+        // verify the newly saved file can be loaded successfully
+        ConfigData verifiedGameData = Load(profileId);
+        // if the data can be verified, back it up
+        if (verifiedGameData != null)
+        {
+            // File.Copy(fullPath, backupFilePath, true);
+            Debug.Log("Exported Twin successfully to: " + fullPath);
+        }
+        // otherwise, something went wrong and we should throw an exception
+        else
+        {
+            throw new Exception("Save file could not be verified and backup could not be created.");
         }
     }
 }
