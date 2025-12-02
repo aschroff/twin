@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
-
+using SFB;
+using SimpleFileBrowser;
+// using FileBrowser;
 
 
 public class FileDataHandler
@@ -394,97 +396,100 @@ public class FileDataHandler
         }
             
     }
-        public void ExportData(ConfigData data, string profileId)
+    
+    public void ExportData(ConfigData data, string profileId)
     {
         StartExportProcess(data, profileId);
     }
 
-    private void StartExportProcess(ConfigData data, string profileId)
-    {
-#if UNITY_EDITOR
-    string exportDestinationPath = UnityEditor.EditorUtility.OpenFolderPanel("Select Export Destination", "", "");
-    if (!string.IsNullOrEmpty(exportDestinationPath))
-    {
-        PerformExport(data, profileId, exportDestinationPath);
+    private void StartExportProcess(ConfigData data, string profileId) {
+    // Example 1: Show a save file dialog using callback approach
+	// 	onSuccess event: not registered (which means this dialog is pretty useless)
+	// 	onCancel event: not registered
+	// 	Save file/folder: file, Allow multiple selection: false
+	// 	Initial path: "C:\", Initial filename: "Screenshot.png"
+	// 	Title: "Save As", Submit button text: "Save"
+		// FileBrowser.ShowSaveDialog( null, null, FileBrowser.PickMode.Files, false, Application.persistentDataPath, "Screenshot.png", "Save As", "Save" );
+        
+        // Before exporting a twin make sure it is saved
+        Save(data, profileId);
+
+        FileBrowser.ShowLoadDialog( ( paths ) =>
+        { 
+            // Succes case : eventCall
+            Debug.Log( "User selected folder: " + FileBrowser.Success + " : " + FileBrowser.Result[0] );
+            string selecetPath = FileBrowser.Result[0];
+            PerformExport(data, profileId, selecetPath);
+        },
+            // Cancel case : eventCall
+        () => { Debug.Log( "Export canceled"); 
+        },
+        // TODO: include localization dependence 
+        FileBrowser.PickMode.Folders, false, null, null, "Select Folder", "Select" );
     }
-#elif NATIVEFILEPICKER_AVAILABLE
-    // For runtime builds with NativeFilePicker
-    NativeFilePicker.Permission permission = NativeFilePicker.PickFolder((destinationPath) =>
+
+    private void PerformExport(ConfigData data, string profileId, string exportDestinationPath)
     {
-        if (destinationPath != null)
+        // base case - if the profileId is null, return right away
+        if (profileId == null)
         {
-            Debug.Log("Selected destination folder: " + destinationPath);
-            PerformExport(data, profileId, destinationPath);
+            return;
         }
-        else
+            
+        // use Path.Combine to account for different OS's having different path separators
+        if ((data.version != "") && (profileId.Contains('.') == false))
         {
-            Debug.Log("No destination folder selected");
+            profileId = profileId + "." + data.version;
         }
-    });
-    
-    Debug.Log("Destination picker permission: " + permission);
-#else
-    // Fallback: use default data directory
-    Debug.LogWarning("File picker not available. Using default directory.");
-    PerformExport(data, profileId, dataDirPath);
-#endif
-    }
-
-private void PerformExport(ConfigData data, string profileId, string exportDestinationPath)
-{
-
-    // use Path.Combine to account for different OS's having different path separators
-    if ((data.version != "") && (profileId.Contains('.') == false))
-    {
-        profileId = profileId + "." + data.version;
-    }
-    else if ((data.version != "") && (profileId.Contains('.')))
-    {
-        profileId = profileId.Remove(profileId.LastIndexOf(".")) + "." + data.version;
-    }
-    data.updated = DateTime.Now.ToString();
-    string fullPath = Path.Combine(exportDestinationPath, profileId, dataFileName);
-    string backupFilePath = fullPath + backupExtension;
-    try
-    {
-        // create the directory the file will be written to if it doesn't already exist
-        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-
-        // serialize the C# game data object into Json
-        string dataToStore = JsonUtility.ToJson(data, true);
-
-        // optionally encrypt the data
-        if (useEncryption)
+        else if ((data.version != "") && (profileId.Contains('.')))
         {
-            dataToStore = EncryptDecrypt(dataToStore);
+            profileId = profileId.Remove(profileId.LastIndexOf(".")) + "." + data.version;
         }
-
-        // write the serialized data to the file
-        using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+        data.updated = DateTime.Now.ToString();
+        string fullPath = Path.Combine(exportDestinationPath, profileId, dataFileName);
+        Debug.Log("Exporting Twin to: " + fullPath);
+        // string backupFilePath = fullPath + backupExtension;
+        try
         {
-            using (StreamWriter writer = new StreamWriter(stream))
+            // create the directory the file will be written to if it doesn't already exist
+            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+
+            // serialize the C# game data object into Json
+            string dataToStore = JsonUtility.ToJson(data, true);
+
+            // optionally encrypt the data
+            if (useEncryption)
             {
-                writer.Write(dataToStore);
+                dataToStore = EncryptDecrypt(dataToStore);
             }
-        }
 
-        // verify the newly saved file can be loaded successfully
-        ConfigData verifiedGameData = Load(profileId);
-        // if the data can be verified, back it up
-        if (verifiedGameData != null)
-        {
-            File.Copy(fullPath, backupFilePath, true);
-        }
-        // otherwise, something went wrong and we should throw an exception
-        else
-        {
-            throw new Exception("Save file could not be verified and backup could not be created.");
-        }
+            // write the serialized data to the file
+            using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(dataToStore);
+                }
+            }
 
+            // verify the newly saved file can be loaded successfully
+            ConfigData verifiedGameData = Load(profileId);
+            // if the data can be verified, back it up
+            if (verifiedGameData != null)
+            {
+                // File.Copy(fullPath, backupFilePath, true);
+                Debug.Log("Exported Twin successfully to: " + fullPath);
+            }
+            // otherwise, something went wrong and we should throw an exception
+            else
+            {
+                throw new Exception("Save file could not be verified and backup could not be created.");
+            }
+
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error occured when trying to Export Twin: " + fullPath + "\n," + e);
+        }
     }
-    catch (Exception e)
-    {
-        Debug.LogError("Error occured when trying to save data to file: " + fullPath + "\n" + e);
-    }
-}
 }
