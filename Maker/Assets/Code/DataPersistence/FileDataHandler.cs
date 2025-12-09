@@ -5,8 +5,8 @@ using System;
 using System.IO;
 using SFB;
 using SimpleFileBrowser;
+using static NativeFilePicker;
 // using FileBrowser;
-// using NativeFilePicker;
 
 
 public class FileDataHandler
@@ -402,7 +402,7 @@ public class FileDataHandler
     public void ExportData(ConfigData data, string profileId)
     {
         // pdfFileType = NativeFilePicker.ConvertExtensionToFileType( "pdf" ); // Returns "application/pdf" on Android and "com.adobe.pdf" on iOS
-        fileType = NativeFilePicker.ConvertExtensionToFileType( " " ); // Returns "application/pdf" on Android and "com.adobe.pdf" on iOS
+        fileType = NativeFilePicker.ConvertExtensionToFileType( "" ); // allowing all file types
         Debug.Log( "Files MIME/UTI is: " + fileType );
         StartExportProcess(data, profileId);
         }
@@ -438,7 +438,7 @@ public class FileDataHandler
     private void StartExportProcess(ConfigData data, string profileId) 
     {
     // //         // Don't attempt to import/export files if the file picker is already open
-            if( NativeFilePicker.IsFilePickerBusy() )
+            if( IsFilePickerBusy() )
                 return;
 
     // //         // Pick a PDF file
@@ -488,23 +488,55 @@ public class FileDataHandler
                 // Create a dummy text file
 			// string filePath = Path.Combine( Application.temporaryCachePath, profileId );
 			// File.WriteAllText( filePath, "Hello world!" );
-            
-            string filePath = Path.Combine(Application.temporaryCachePath);
+            // var permissio;n = NativeFilePicker.Permission.Granted && (!NativeFilePicker.Permission.Denied == !NativeFilePicker.Permission.ShouldAsk); 
+            // Debug.Log("Permissions:(1)" + NativeFilePicker.CheckPermission());
+            Debug.Log( "Can Export Files?: " + CanExportFiles() );
 
+
+//             NativeFilePicker.RequestPermissionAsync( ( permission ) =>
+// 		{
+// 			if( permission != Permission.Granted || IsFilePickerBusy() )
+// 			{
+// 				callback?.Invoke( null );
+// 				return;
+// 			}
+
+// 			if( CanPickMultipleFiles() )
+// 			{
+// #if !UNITY_EDITOR && UNITY_ANDROID
+// 				AJC.CallStatic( "PickFiles", Context, new FPResultCallbackAndroid( null, callback, null ), true, SelectedFilePath, allowedFileTypes, "" );
+// #elif !UNITY_EDITOR && UNITY_IOS
+// 				FPResultCallbackiOS.Initialize( null, callback, null );
+// 				_NativeFilePicker_PickMultipleFiles( allowedFileTypes, allowedFileTypes.Length );
+// #endif
+// 			}
+// 			else if( callback != null )
+// 				callback( null );
+// 		}, true );
+
+            string filePath = Path.Combine(Application.temporaryCachePath);
+            string fullPath = Path.Combine(filePath, profileId, dataFileName);
+            PerformExport (data, profileId, fullPath);
+            // Debug.Log("Permissions:(2)" + NativeFilePicker.CheckPermission());
+            
             // string dataToStore = JsonUtility.ToJson(data, true);
 
             // WriteIntoFile(profileId, fullPath, dataToStore);
 			// Export the file
-			NativeFilePicker.ExportFile( filePath, ( success ) => { 
-                Debug.Log( "File exported: " + success );
-                if (success) 
-                    PerformExport (data, profileId, filePath);
+            // File.WriteAllText filePath, "Hello world!" );
+			
+            ExportFile( fullPath, ( success ) => { 
+                Debug.Log( "File exported:" + success );
+                Debug.Log("Permissions:(3)" + CheckPermission());
+                // if (success) 
+                    // PerformExport (data, profileId, filePath);
+                    
                 });
-            // Debug.Log( "File exported: " + success ));
+            // Debug.Log( "File exported: " + success ));-
             // PerformExport (data, profileId, fullPath);
     }
 
-    private void PerformExport(ConfigData data, string profileId, string exportDestinationPath)
+    private void PerformExport(ConfigData data, string profileId, string fullPath)
     {
         // base case - if the profileId is null, return right away
         if (profileId == null)
@@ -522,7 +554,7 @@ public class FileDataHandler
             profileId = profileId.Remove(profileId.LastIndexOf(".")) + "." + data.version;
         }
         data.updated = DateTime.Now.ToString();
-        string fullPath = Path.Combine(exportDestinationPath, profileId, dataFileName);
+        // string fullPath = Path.Combine(exportDestinationPath, profileId, dataFileName);
         Debug.Log("Exporting Twin to: " + fullPath);
         // string backupFilePath = fullPath + backupExtension;
         try
