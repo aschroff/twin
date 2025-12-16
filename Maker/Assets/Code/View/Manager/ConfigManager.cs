@@ -160,11 +160,11 @@ public class ConfigManager : MonoBehaviour
     }
 
     /*
-    Method wich is responsible for exporting thu currend selected twin 
+    Export current twin selection 
     */
     public void ExportTwin()
     {
         dataPersistenceManager.ExportConfig();
     }
 
-    }
+}

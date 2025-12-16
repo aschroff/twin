@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
-using SFB;
-using SimpleFileBrowser;
 using static NativeFilePicker;
-// using FileBrowser;
 
 
 public class FileDataHandler
@@ -410,7 +407,6 @@ public class FileDataHandler
         // Save File to current storage location
         Save(data, profileId);
 
-        
         string fullFilePath = Path.Combine(dataDirPath, profileId, dataFileName);
         // ExportFile copies file from current storage location (fullFilePath) to selected location in file epxplorer 
         NativeFilePicker.ExportFile( fullFilePath, ( success ) => Debug.Log( "File exported:" + success ) );
