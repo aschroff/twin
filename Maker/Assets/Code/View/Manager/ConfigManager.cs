@@ -165,6 +165,19 @@ public class ConfigManager : MonoBehaviour
     public void ExportTwin()
     {
         dataPersistenceManager.ExportConfig();
+
+    //     if (CheckInput(newTwinNameFromInput))
+    //     { 
+    //         // check if the new input is a already existing folder
+    //         dataPersistenceManager.saveAsConfig(newTwinNameFromInput);
+    //         dataPersistenceManager.SaveConfig();
+    //         fileManager.Refresh();
+    //         InteractionController.EnableMode("Main");
+    //         viewManager.setDefaultPosition();
+    //     } else {
+    //         Debug.Log("Twin-Name-Test of saveAs-button push failed!");
+    //         //This is the safeAs-Button because is create a completely new Twin
+    //     }
     }
 
 }
