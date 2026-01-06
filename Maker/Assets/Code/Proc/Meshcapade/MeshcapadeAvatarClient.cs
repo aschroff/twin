@@ -18,8 +18,8 @@ namespace Code.Proc.Meshcapade
             "https://auth.meshcapade.com/realms/meshcapade-me/protocol/openid-connect/token";
 
         // You should supply these (or inject them)
-        public string username="andreas@schroff-online.com";
-        public string password="Maieutec2019#";
+        public string username= "ella.schroff@maieutec.com";
+        public string password= "Rugran-gukqo4-xutxuz";
 
         public string clientId = "meshcapade-me";
 
@@ -83,10 +83,27 @@ namespace Code.Proc.Meshcapade
             yield return StartCoroutine(UploadImageBytes(uploadInfo, imageBytes, onError));
             Debug.Log($"Step 6: Fit image...");
             // 6. Trigger fit-to-images
-            yield return StartCoroutine(TriggerFitToImagesRequest(avatarId, bearerToken, onError));
+
+            var fittingBody = new FinalFittingImageBody
+            {
+                data = new FittingImageData
+                {
+                    type = "fit-to-images",
+                    attributes = new FittingImageAttributes
+                    {
+                        avatarname = "meerjungfrau2",
+                        gender = "female",
+                        imageMode = "AFI"
+                    }
+                }
+            };
+
+            yield return StartCoroutine(TriggerFitToImagesRequest(avatarId, bearerToken, onError, fittingBody));
             Debug.Log($"Step 7: Poll until complete...");
             // 7. Poll for completion
             AvatarResult result = null;
+
+
             yield return StartCoroutine(PollUntilReadyRequest(avatarId, bearerToken, r => result = r, onError));
             if (result == null)
             {
@@ -103,7 +120,7 @@ namespace Code.Proc.Meshcapade
                     type = "export",
                     attributes = new ExportRequestAttributes
                     {
-                        format = "GLB" // Change to OBJ/FBX if needed
+                        format = "OBJ" // Change to OBJ/FBX if needed
                     }
                 }
             };
@@ -304,11 +321,18 @@ namespace Code.Proc.Meshcapade
 
         }
 
-        private IEnumerator TriggerFitToImagesRequest(string avatarId, string bearerToken, Action<string> onError, ExportRequestBody options = null)
+        private IEnumerator TriggerFitToImagesRequest(string avatarId, string bearerToken, Action<string> onError, FinalFittingImageBody bodyOptions)
         {
             string url = $"{apiBaseUrl}/avatars/{avatarId}/fit-to-images";
-            var body = options != null ? JsonConvert.SerializeObject(options) : "{\"imageMode\":\"AFI2\"}"; // example default
+            JObject bodyJson = bodyOptions != null ? JObject.FromObject(bodyOptions) : new JObject();
+
+            bodyJson["imageMode"] = bodyOptions.data.attributes.imageMode;
+            bodyJson["gender"] = bodyOptions.data.attributes.gender;
+            string body = bodyJson.ToString(Formatting.None);
             byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
+
+            /*string body = JsonConvert.SerializeObject(bodyOptions);
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(body);*/
 
             using (UnityWebRequest req = new UnityWebRequest(url, "POST"))
             {
@@ -340,6 +364,7 @@ namespace Code.Proc.Meshcapade
                 using (UnityWebRequest req = UnityWebRequest.Get(url))
                 {
                     req.SetRequestHeader("Authorization", bearerToken);
+                    req.SetRequestHeader("Content-Type", "application/json");
                     yield return req.SendWebRequest();
 
                     if (req.result != UnityWebRequest.Result.Success)
@@ -393,113 +418,146 @@ namespace Code.Proc.Meshcapade
         }
         
         private IEnumerator RequestExport(string avatarId, string bearerToken, FinalExportRequestBody exportBody, Action<string> onExportUrl, Action<string> onError)
-    {
-        string url = $"{apiBaseUrl}/avatars/{avatarId}/export";
-        string body = JsonConvert.SerializeObject(exportBody);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
-
-        // 1) Trigger export
-        using (UnityWebRequest req = new UnityWebRequest(url, "POST"))
         {
-            req.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            req.downloadHandler = new DownloadHandlerBuffer();
-            req.SetRequestHeader("Content-Type", "application/json");
-            req.SetRequestHeader("Authorization", bearerToken);
-            yield return req.SendWebRequest();
+            string url = $"{apiBaseUrl}/avatars/{avatarId}/export";
+            JObject bodyJson = exportBody != null ? JObject.FromObject(exportBody) : new JObject();
 
-            if (req.result != UnityWebRequest.Result.Success)
+            bodyJson["filename"] = exportBody.data.attributes.filename;
+            bodyJson["format"] = exportBody.data.attributes.format;
+            bodyJson["pose"] = exportBody.data.attributes.pose;
+
+            string body = bodyJson.ToString(Formatting.None);
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
+            /*string body = JsonConvert.SerializeObject(exportBody);
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(body);*/
+
+            string statusUrl = "";
+            // 1) Trigger export
+            using (UnityWebRequest req = new UnityWebRequest(url, "POST"))
             {
-                onError?.Invoke($"Export request failed: {req.error}, code: {req.responseCode}, body: {req.downloadHandler?.text}");
-                yield break;
-            }
-
-            // The POST often returns an export job resource; we'll poll the same endpoint until export is READY.
-        }
-
-        // 2) Poll export status (simple loop)
-        int attempts = 0;
-        const int maxAttempts = 60;
-        const float delay = 2f;
-
-        while (attempts < maxAttempts)
-        {
-            using (UnityWebRequest req = UnityWebRequest.Post(url, "")) // or GET if API expects GET for export status; check docs
-            {
+                req.uploadHandler = new UploadHandlerRaw(bodyRaw);
+                req.downloadHandler = new DownloadHandlerBuffer();
+                req.SetRequestHeader("Content-Type", "application/json");
                 req.SetRequestHeader("Authorization", bearerToken);
                 yield return req.SendWebRequest();
 
                 if (req.result != UnityWebRequest.Result.Success)
                 {
-                    onError?.Invoke($"Export status error: {req.error}, code: {req.responseCode}");
+                    onError?.Invoke($"Export request failed: {req.error}, code: {req.responseCode}, body: {req.downloadHandler?.text}");
                     yield break;
                 }
 
-                string json = req.downloadHandler.text;
-                try
+
+                var resp = JsonConvert.DeserializeObject<JsonApiSingle<Resource<ExportAttributes>>>(req.downloadHandler.text);
+
+                // try to get self link for requesting status
+                if (resp?.data?.links != null && resp.data.links.TryGetValue("self", out var selfLink))
                 {
-                    var resp = JsonConvert.DeserializeObject<JsonApiSingle<Resource<ExportAttributes>>>(json);
-                    var state = resp?.data?.attributes?.state;
-                    if (!string.IsNullOrEmpty(state))
-                    {
-                        if (state.Equals("READY", StringComparison.OrdinalIgnoreCase))
-                        {
-                            // Download link might be in resp.data.attributes.download (UrlObject) or resp.data.links
-                            var downloadObjToken = resp?.data?.attributes?.download;
-                            string downloadUrl = null;
-                            if (downloadObjToken != null)
-                            {
-                                // If download is a UrlObject, attempt to read Link
-                                try
-                                {
-                                    var urlObj = downloadObjToken;
-                                    downloadUrl = urlObj?.GetLink();
-                                }
-                                catch { /* ignore */ }
-                            }
-
-                            // fallback: check links
-                            if (string.IsNullOrEmpty(downloadUrl) && resp?.data?.links != null && resp.data.links.TryGetValue("download", out var dl))
-                            {
-                                downloadUrl = dl;
-                            }
-
-                            if (!string.IsNullOrEmpty(downloadUrl))
-                            {
-                                onExportUrl?.Invoke(downloadUrl);
-                                yield break;
-                            }
-                            else
-                            {
-                                onError?.Invoke("Export ready but download url not found. Raw JSON: " + json);
-                                yield break;
-                            }
-                        }
-                        else if (state.Equals("FAILED", StringComparison.OrdinalIgnoreCase))
-                        {
-                            onError?.Invoke("Export failed. Raw JSON: " + json);
-                            yield break;
-                        }
-                    }
+                    statusUrl = selfLink;
+                    Debug.Log("Step 8: Got Url for checking status");
                 }
-                catch (Exception e)
+                else
                 {
-                    onError?.Invoke($"Export status parse error: {e.Message}. Raw JSON: {json}");
-                    yield break;
+                    // Fallback if links aren't provided: GET /meshes/{meshID}
+                    statusUrl = $"{apiBaseUrl}/meshes/{resp.data.id}";
                 }
             }
 
-            attempts++;
-            yield return new WaitForSeconds(delay);
+
+
+            // 2) Poll export status (simple loop)
+            int attempts = 0;
+            const int maxAttempts = 60;
+            const float delay = 2f;
+
+            while (attempts < maxAttempts)
+            {
+                using (UnityWebRequest req = UnityWebRequest.Get(statusUrl)) 
+                {
+                    req.SetRequestHeader("Authorization", bearerToken);
+                    yield return req.SendWebRequest();
+
+                    if (req.result != UnityWebRequest.Result.Success)
+                    {
+                        onError?.Invoke($"Export status error: {req.error}, code: {req.responseCode}");
+                        yield break;
+                    }
+
+                    string json = req.downloadHandler.text;
+                    try
+                    {
+                        var resp = JsonConvert.DeserializeObject<JsonApiSingle<Resource<ExportAttributes>>>(json);
+                        var state = resp?.data?.attributes?.state;
+                        if (!string.IsNullOrEmpty(state))
+                        {
+                            if (state.Equals("READY", StringComparison.OrdinalIgnoreCase))
+                            {
+                                string downloadUrl = resp?.data?.attributes?.url.path; //download link
+                                /*if (!string.IsNullOrEmpty(downloadUrl))
+                                {
+                                    onExportUrl?.Invoke(downloadUrl);
+                                    yield break;
+                                }*/
+                                if (string.IsNullOrEmpty(downloadUrl) && resp?.data?.links != null && resp.data.links.TryGetValue("download", out var dl)) // fallback: check links
+                                {
+                                    downloadUrl = dl;
+                                }
+
+                                if (!string.IsNullOrEmpty(downloadUrl))
+                                {
+                                    //onExportUrl?.Invoke(downloadUrl);
+                                    StartCoroutine(DownloadAvatarContent(downloadUrl));
+                                    yield break;
+                                }
+                                else
+                                {
+                                    onError?.Invoke("Export ready but download url not found. Raw JSON: " + json);
+                                    yield break;
+                                }
+                            }
+                            else if (state.Equals("FAILED", StringComparison.OrdinalIgnoreCase))
+                            {
+                                onError?.Invoke("Export failed. Raw JSON: " + json);
+                                yield break;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        onError?.Invoke($"Export status parse error: {e.Message}. Raw JSON: {json}");
+                        yield break;
+                    }
+                }
+
+                attempts++;
+                yield return new WaitForSeconds(delay);
+            }
+
+            onError?.Invoke("Export timed out");
         }
 
-        onError?.Invoke("Export timed out");
-    }
+        IEnumerator DownloadAvatarContent(string url)
+        {
+            string myData = "";
+            using (UnityWebRequest www = UnityWebRequest.Get(url))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("Failed to download file: " + www.error);
+                }
+                else
+                {
+                    myData = www.downloadHandler.text;
+
+                    Debug.Log("Successfully stored file. Length: " + myData.Length);
+
+                }
+            }
+        }
 
 
-        
-        
-        
-        
         // --- Data types for JSON serialization ---
         private class TokenResponse
         {
