@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using static NativeFilePicker;
+using System.IO.Compression;
 
 
 public class FileDataHandler
@@ -80,6 +81,7 @@ public class FileDataHandler
                 }
             }
         }
+        Debug.Log("DataDirPath: " + dataDirPath + " ProfileID: " + profileId);
         return loadedData;
     }
     
@@ -404,11 +406,27 @@ public class FileDataHandler
     // Don't attempt to import/export files if the file picker is already open
         if( IsFilePickerBusy() )
             return;
+        
         // Save File to current storage location
         Save(data, profileId);
 
-        string fullFilePath = Path.Combine(dataDirPath, profileId, dataFileName);
-        // ExportFile copies file from current storage location (fullFilePath) to selected location in file epxplorer 
-        NativeFilePicker.ExportFile( fullFilePath, ( success ) => Debug.Log( "File exported:" + success ) );
+        string profileDirectoryPath = Path.Combine( dataDirPath, profileId ); 
+
+        string [] filePaths = GetFilesInDirectory( profileDirectoryPath );
+
+        ExportMultipleFiles(filePaths);
+
+    }
+
+    private string[] GetFilesInDirectory(string directoryPath)
+    {
+        if (Directory.Exists(directoryPath))
+        {
+            // Returns an array of full file paths (strings)
+            return Directory.GetFiles(directoryPath);
+        }
+        
+        Debug.LogWarning("Directory not found: " + directoryPath);
+        return new string[0];
     }
 }
