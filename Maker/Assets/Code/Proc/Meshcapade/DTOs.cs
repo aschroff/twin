@@ -132,6 +132,29 @@ namespace Code.Proc.Meshcapade
         [JsonProperty("shape_parameters")] public JToken shape_parameters;
     }
 
+    public class ShapeParameters
+    {
+        /*[JsonProperty("Height")] public string Height;
+        [JsonProperty("Weight")] public string Weight;
+        [JsonProperty("Bust_girth")] public string Bust_girth;
+        [JsonProperty("Ankle_girth")] public string Ankle_girth;
+        [JsonProperty("Inside_leg_height")] public float Inside_leg_height;*/
+        [JsonProperty("Height")]
+        public string Height { get; set; }
+
+        [JsonProperty("Weight")]
+        public string Weight { get; set; }
+
+        [JsonProperty("Bust_girth")]
+        public string Bust_girth { get; set; }
+
+        [JsonProperty("Ankle_girth")]
+        public string Ankle_girth { get; set; }
+
+        [JsonProperty("Inside_leg_height")]
+        public float Inside_leg_height { get; set; }
+    }
+
     // 8) Export job attributes (when you call /export)
     public class ExportRequestBody
     {
@@ -143,7 +166,7 @@ namespace Code.Proc.Meshcapade
     public class ExportAttributes
     {
         [JsonProperty("state")] public string state; // e.g. "PENDING", "READY", "FAILED"
-        [JsonProperty("download")] public UrlObject download; // if present
+        [JsonProperty("url")] public UrlObject url; // if present
     }
 
     // 9) Generic error DTO you can use for logging or to display nice messages
@@ -168,7 +191,27 @@ namespace Code.Proc.Meshcapade
 
     public class ExportRequestAttributes
     {
-        public string format { get; set; } = "GLB"; // or "OBJ", "FBX"
+        public string filename { get; set; }
+        public string format { get; set; } = "OBJ"; // or "OBJ", "FBX"
+        public string pose { get; set; } = "scan";
+    }
+
+    public class FinalFittingImageBody
+    {
+        public FittingImageData data { get; set; }
+    }
+
+    public class FittingImageData
+    {
+        public string type { get; set; } = "fit-to-images";
+        public FittingImageAttributes attributes { get; set; }
+    }
+
+    public class FittingImageAttributes
+    {
+        public string avatarname { get; set; } = "meerjungfrau2";
+        public string gender { get; set; } = "female";
+        public string imageMode { get; set; } = "AFI";
     }
 
 }
