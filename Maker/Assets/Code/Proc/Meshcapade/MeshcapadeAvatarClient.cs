@@ -18,8 +18,8 @@ namespace Code.Proc.Meshcapade
             "https://auth.meshcapade.com/realms/meshcapade-me/protocol/openid-connect/token";
 
         // You should supply these (or inject them)
-        public string username= "ella.schroff@maieutec.com";
-        public string password= "Rugran-gukqo4-xutxuz";
+        public string username;
+        public string password;
 
         public string clientId = "meshcapade-me";
 
@@ -326,8 +326,8 @@ namespace Code.Proc.Meshcapade
             string url = $"{apiBaseUrl}/avatars/{avatarId}/fit-to-images";
             JObject bodyJson = bodyOptions != null ? JObject.FromObject(bodyOptions) : new JObject();
 
-            bodyJson["imageMode"] = bodyOptions.data.attributes.imageMode;
-            bodyJson["gender"] = bodyOptions.data.attributes.gender;
+            bodyJson["imageMode"] = "AFI";
+            bodyJson["gender"] = "female";
             string body = bodyJson.ToString(Formatting.None);
             byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
 
@@ -389,9 +389,9 @@ namespace Code.Proc.Meshcapade
                                 onResult?.Invoke(r);
                                 yield break;
                             }
-                            else if (state.Equals("FAILED", StringComparison.OrdinalIgnoreCase) || state.Equals("failure", StringComparison.OrdinalIgnoreCase))
+                            else if (state.Equals("FAILED", StringComparison.OrdinalIgnoreCase) || state.Equals("failure", StringComparison.OrdinalIgnoreCase) || state.Equals("ERROR", StringComparison.OrdinalIgnoreCase))
                             {
-                                onError?.Invoke("Avatar processing failed. Raw JSON: " + json);
+                                onError?.Invoke("Avatar processing failed. Attempt: " + attempts + ", Raw JSON: " + json);
                                 yield break;
                             }
                             // else still processing -> continue polling
