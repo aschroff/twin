@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CW.Common;
 using UnityEngine.UI;
+using TMPro;
 
 public class ToolTracker : MonoBehaviour
 {
@@ -33,9 +34,9 @@ public class ToolTracker : MonoBehaviour
 
         foreach (GameObject toolNameDisplay in toolNameDisplays)
         {
-            Debug.Log("old value tool" + toolNameDisplay.GetComponent<Text>().text);
-            toolNameDisplay.GetComponent<Text>().text = myButton.GetComponentInChildren<InputField>().text;
-            Debug.Log("new value tool" + toolNameDisplay.GetComponent<Text>().text);
+            Debug.Log("old value tool" + toolNameDisplay.GetComponent<TextMeshProUGUI>().text);
+            toolNameDisplay.GetComponent<TextMeshProUGUI>().text = myButton.GetComponentInChildren<InputField>().text;
+            Debug.Log("new value tool" + toolNameDisplay.GetComponent<TextMeshProUGUI>().text);
             Debug.Log("really set: " +myButton.GetComponentInChildren<InputField>().text);
 
         }
