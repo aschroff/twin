@@ -428,32 +428,15 @@ public class FileDataHandler
             throw e;
         }
     }
-    private void StartExportProcess(ConfigData data, string profileId) 
+
+    private void ExportFile(string filePath)
     {
-    // Don't attempt to import/export files if the file picker is already open
+        // Don't attempt to import/export files if the file picker is already open
         if( IsFilePickerBusy() )
-            return;
-        
-        // Save File to current storage location
-        Save(data, profileId);
-
-        string profileDirectoryPath = Path.Combine( dataDirPath, profileId ); 
-
-        string [] filePaths = GetFilesInDirectory( profileDirectoryPath );
-
-        ExportMultipleFiles(filePaths);
-
-    }
-
-    private string[] GetFilesInDirectory(string directoryPath)
-    {
-        if (Directory.Exists(directoryPath))
         {
-            // Returns an array of full file paths (strings)
-            return Directory.GetFiles(directoryPath);
+            return;
         }
         
-        Debug.LogWarning("Directory not found: " + directoryPath);
-        return new string[0];
+        NativeFilePicker.ExportFile( filePath, ( success ) => Debug.Log( "File exported:" + success ) );
     }
 }
