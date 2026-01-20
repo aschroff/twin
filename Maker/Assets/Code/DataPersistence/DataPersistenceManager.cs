@@ -301,25 +301,49 @@ public class DataPersistenceManager : MonoBehaviour
             return;
         }
 
-        // if we don't have any data to save, log a warning here
-        if (this.configData == null) 
+        bool flowControl = PrepareConfigStorage();
+        if (!flowControl)
         {
-            Debug.LogWarning("No data was found. A New Game needs to be started before data can be saved.");
             return;
         }
 
+        // save that data to a file using the data handler
+        dataHandler.Save(configData, selectedProfileId);
+    }
+
+    public void ExportConfig()
+    {
+        bool flowControl = PrepareConfigStorage();
+        if (!flowControl)
+        {
+            return;
+        }
+
+        // save that data to a file using the data handler
+        dataHandler.ExportData(configData, selectedProfileId);
+    }
+
+    /*
+    * Collects the saveable data
+    */
+    private bool PrepareConfigStorage()
+    {
+        // if we don't have any data to save, log a warning here
+        if (this.configData == null)
+        {
+            Debug.LogWarning("No data was found. A New Game needs to be started before data can be saved.");
+            return false;
+        }
+
         // pass the data to other scripts so they can update it
-        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
         {
             dataPersistenceObj.SaveData(configData);
         }
 
         // timestamp the data so we know when it was last saved
         configData.lastUpdated = System.DateTime.Now.ToBinary();
-
-
-        // save that data to a file using the data handler
-        dataHandler.Save(configData, selectedProfileId);
+        return true;
     }
 
     private void OnApplicationQuit() 

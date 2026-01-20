@@ -41,4 +41,23 @@ public class ToolTracker : MonoBehaviour
 
         }
     }
+
+    private void OnDisable()
+    {
+        if (toolNameDisplays != null)
+        {
+            Debug.Log("removing tool");
+
+            foreach (GameObject toolNameDisplay in toolNameDisplays)
+            {
+                //in case the gameobject has been destroyed, e.g. app is stopped in edit mode
+                if (toolNameDisplay != null)
+                {
+                    Debug.Log("old value tool" + toolNameDisplay.GetComponent<Text>().text);
+                    toolNameDisplay.GetComponent<Text>().text = "-"; //TODO change to TMPUGUI
+                }
+
+            }
+        }
+    }
 }
