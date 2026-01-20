@@ -16,6 +16,8 @@ public class FileDataHandler
     private readonly string encryptionCodeWord = "word";
     private readonly string backupExtension = ".bak";
 
+    private readonly string compressExtension = ".zip";
+
     public FileDataHandler(string dataDirPath, string templateDirPath, string dataFileName, bool useEncryption) 
     {
         this.dataDirPath = dataDirPath;
@@ -398,9 +400,23 @@ public class FileDataHandler
     
     public void ExportData(ConfigData data, string profileId)
     {
-        StartExportProcess(data, profileId);
+        CompressFolder(profileId);
+        // StartExportProcess(data, profileId);
     }
 
+    private void CompressFolder(string profileId)
+    {   
+        try
+        {
+        string profileDirectoryPath = Path.Combine( dataDirPath, profileId );
+        string zipFileName = Path.Combine( dataDirPath, profileId ) + compressExtension;
+        ZipFile.CreateFromDirectory( profileDirectoryPath, zipFileName);
+            
+        } catch (Exception e)
+        {
+            Debug.Log("Compressing Folder didn't work, throwing this Exception Message: " + e.Message);
+        }
+    }
     private void StartExportProcess(ConfigData data, string profileId) 
     {
     // Don't attempt to import/export files if the file picker is already open
