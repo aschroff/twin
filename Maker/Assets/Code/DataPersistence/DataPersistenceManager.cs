@@ -311,9 +311,6 @@ public class DataPersistenceManager : MonoBehaviour
         dataHandler.Save(configData, selectedProfileId);
     }
 
-    /*
-    * Collects the data which is exported.
-    */
     public void ExportConfig()
     {
         bool flowControl = PrepareConfigStorage();
@@ -326,6 +323,9 @@ public class DataPersistenceManager : MonoBehaviour
         dataHandler.ExportData(configData, selectedProfileId);
     }
 
+    /*
+    * Collects the saveable data
+    */
     private bool PrepareConfigStorage()
     {
         // if we don't have any data to save, log a warning here

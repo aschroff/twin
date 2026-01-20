@@ -15,7 +15,6 @@ public class FileDataHandler
     private bool useEncryption = false;
     private readonly string encryptionCodeWord = "word";
     private readonly string backupExtension = ".bak";
-
     private readonly string compressExtension = ".zip";
 
     public FileDataHandler(string dataDirPath, string templateDirPath, string dataFileName, bool useEncryption) 
@@ -83,7 +82,6 @@ public class FileDataHandler
                 }
             }
         }
-        Debug.Log("DataDirPath: " + dataDirPath + " ProfileID: " + profileId);
         return loadedData;
     }
     
@@ -418,10 +416,9 @@ public class FileDataHandler
             {
                 File.Delete(zipFilePath);
             }
-        
             ZipFile.CreateFromDirectory( profileDirectoryPath, zipFilePath);
             return zipFilePath;
-            
+
         } catch (Exception e)
         {
             Debug.Log("Compressing Folder didn't work, throwing this Exception Message: " + e.Message);
@@ -436,7 +433,6 @@ public class FileDataHandler
         {
             return;
         }
-        
         NativeFilePicker.ExportFile( filePath, ( success ) => Debug.Log( "File exported:" + success ) );
     }
 }
