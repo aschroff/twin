@@ -5960,6 +5960,7 @@ Transform:
   - {fileID: 1616749774}
   - {fileID: 572846210}
   - {fileID: 2062408336}
+  - {fileID: 1915636006}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1660812247
@@ -5982,7 +5983,7 @@ MonoBehaviour:
   notification: {fileID: 94311452}
   ai: {fileID: 1846390381}
   partManager: {fileID: 1753083901}
-  settingsManager: {fileID: 0}
+  settingsManager: {fileID: 345406282}
 --- !u!1001 &1698356880
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6819,6 +6820,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabName: Tool Sticker
+--- !u!1 &1915636004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1915636006}
+  - component: {fileID: 1915636005}
+  m_Layer: 0
+  m_Name: PhotoProcess
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1915636005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1915636004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcb7d96e72154dd4ac9869f6a7d736e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarProcess
+  imagePath: 
+--- !u!4 &1915636006
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1915636004}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1660812246}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1917614282
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16063,7 +16109,7 @@ PrefabInstance:
       objectReference: {fileID: 609004393}
     - target: {fileID: 5037554182192162691, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 95.23425
+      value: 95.23413
       objectReference: {fileID: 0}
     - target: {fileID: 5249643866990954766, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: dateFormat.m_TableEntryReference.m_KeyId
@@ -16812,6 +16858,22 @@ PrefabInstance:
     - target: {fileID: 4543404559886576824, guid: e67848681524a40fabb12d218bdbbbc7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: Settings
+      objectReference: {fileID: 0}
+    - target: {fileID: 4748775418629923529, guid: e67848681524a40fabb12d218bdbbbc7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4748775418629923529, guid: e67848681524a40fabb12d218bdbbbc7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7866754541126039738}
+    - target: {fileID: 4748775418629923529, guid: e67848681524a40fabb12d218bdbbbc7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectImageAndStartProcess
+      objectReference: {fileID: 0}
+    - target: {fileID: 4748775418629923529, guid: e67848681524a40fabb12d218bdbbbc7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BodyFromImage, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5174534842090477079, guid: e67848681524a40fabb12d218bdbbbc7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -18427,6 +18489,7 @@ GameObject:
   - component: {fileID: 7866754541126039735}
   - component: {fileID: 7866754541126039734}
   - component: {fileID: 7866754541126039737}
+  - component: {fileID: 7866754541126039738}
   m_Layer: 0
   m_Name: SMPLX-mesh-female
   m_TagString: Untagged
@@ -18639,6 +18702,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1347838729}
+--- !u!114 &7866754541126039738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7866754541126039730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ef9d19652a924a82b2130d288ea1932, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BodyFromImage
+  bodyFromImageProcess: {fileID: 1915636005}
 --- !u!1 &7925466847632151133
 GameObject:
   m_ObjectHideFlags: 0

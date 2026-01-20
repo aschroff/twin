@@ -22,15 +22,25 @@ public class Model : MonoBehaviour
         model.SetBodyPose(bodyPose); 
     }
 
+
+    private float[] betasFromPython = new float[]
+    {
+    1.5893277f,  3.600594f,  -1.6865557f,  -1.2408743f,  -1.0364962f,
+    -0.8183566f,   -1.9653333f,  -2.632217f,  -1.1107891f, 0.5654215f
+    };
+
+
     public void overall_random()
     {
-        for (int i=0; i<SMPLX.NUM_BETAS; i++)
+        for (int i = 0; i < SMPLX.NUM_BETAS; i++)
         {
-            model.betas[i] = Random.Range(-2.0f, 2.0f);
+            model.betas[i] = betasFromPython[i];
         }
         model.SetBetaShapes();
-        
+
     }
+
+
     public void face_random()
     {
         for (int i=0; i<SMPLX.NUM_EXPRESSIONS; i++)
