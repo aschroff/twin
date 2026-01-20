@@ -400,21 +400,32 @@ public class FileDataHandler
     
     public void ExportData(ConfigData data, string profileId)
     {
-        CompressFolder(profileId);
-        // StartExportProcess(data, profileId);
+        // Saving file before exporting it
+        Save(data, profileId);
+        string zipFilePath = CompressFolder(profileId);
+        ExportFile(zipFilePath);
     }
 
-    private void CompressFolder(string profileId)
+    private string CompressFolder(string profileId)
     {   
-        try
-        {
         string profileDirectoryPath = Path.Combine( dataDirPath, profileId );
-        string zipFileName = Path.Combine( dataDirPath, profileId ) + compressExtension;
-        ZipFile.CreateFromDirectory( profileDirectoryPath, zipFileName);
+        string zipFilePath = Path.Combine( dataDirPath, profileId ) + compressExtension;
+
+        // manually overwrite an already existing version of a zip file with this name because we don't wand to provide a version history and to avoid conflicts with already existing files
+        try 
+        {
+            if (File.Exists(zipFilePath))
+            {
+                File.Delete(zipFilePath);
+            }
+        
+            ZipFile.CreateFromDirectory( profileDirectoryPath, zipFilePath);
+            return zipFilePath;
             
         } catch (Exception e)
         {
             Debug.Log("Compressing Folder didn't work, throwing this Exception Message: " + e.Message);
+            throw e;
         }
     }
     private void StartExportProcess(ConfigData data, string profileId) 
