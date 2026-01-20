@@ -26,7 +26,8 @@ public class AvatarProcess : Process
     public override ProcessResult Execute(string variant = "")
     {
         Debug.Log("AvatarProcess: Starting avatar creation...");
-
+        client.username = getSettingsManager().getInput("Meshcapade User");
+        client.password = getSettingsManager().getInput("Meshcapade Password");
         // Kick off async avatar creation
         client.CreateAvatarFromImage(
             GetMyImageCoroutine,

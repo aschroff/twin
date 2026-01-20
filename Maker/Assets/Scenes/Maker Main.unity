@@ -5982,7 +5982,7 @@ MonoBehaviour:
   notification: {fileID: 94311452}
   ai: {fileID: 1846390381}
   partManager: {fileID: 1753083901}
-  settingsManager: {fileID: 0}
+  settingsManager: {fileID: 345406282}
 --- !u!1001 &1698356880
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6848,6 +6848,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcb7d96e72154dd4ac9869f6a7d736e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AvatarProcess
+  imagePath: 
 --- !u!4 &1915636006
 Transform:
   m_ObjectHideFlags: 0
