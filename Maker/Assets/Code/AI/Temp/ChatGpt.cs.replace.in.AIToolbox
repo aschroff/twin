@@ -5,10 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
-
 
 // ReSharper disable InconsistentNaming
 namespace AiToolbox {
@@ -425,6 +423,7 @@ public static class ChatGpt {
             ChatGptModel.Gpt4oMini => "gpt-4o-mini",
             ChatGptModel.o1Mini => "o1-mini",
             ChatGptModel.o1Preview => "o1-preview",
+            ChatGptModel.o3Mini => "o3-mini",
             _ => throw new ArgumentOutOfRangeException(nameof(chatGptModel), chatGptModel, null)
             // 0d344651-d8d3-46d2-b91c-031a0a12d4e8
         };
