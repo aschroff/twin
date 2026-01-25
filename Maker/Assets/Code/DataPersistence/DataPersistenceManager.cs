@@ -61,14 +61,14 @@ public class DataPersistenceManager : MonoBehaviour
             Debug.LogWarning("Data Persistence is currently disabled!");
         }
 
-        this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
+        this.dataHandler = new FileDataHandler(DataPaths.PersistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
 
         InitializeSelectedProfileId();
     }
 
     private void Start()
     {
-        this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
+        this.dataHandler = new FileDataHandler(DataPaths.PersistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadConfig();
         initPersistentObjects();
@@ -190,13 +190,13 @@ public class DataPersistenceManager : MonoBehaviour
         foreach (KeyValuePair<string, Template> template in templates)
         {
             string content = template.Value.configFile.text;
-            string path = Path.Combine(Application.persistentDataPath,template.Key);
+            string path = Path.Combine(DataPaths.PersistentDataPath,template.Key);
             Directory.CreateDirectory(path);
-            System.IO.File.WriteAllText(Path.Combine(Application.persistentDataPath,template.Key, "ConfigTwin"), content);
+            System.IO.File.WriteAllText(Path.Combine(DataPaths.PersistentDataPath,template.Key, "ConfigTwin"), content);
             foreach (KeyValuePair<string, Texture2D> stickerFile in template.Value.stickerFiles)
             {
                 byte[] bytes = stickerFile.Value.EncodeToPNG();
-                File.WriteAllBytes(Path.Combine(Application.persistentDataPath,template.Key, stickerFile.Key + ".png"), bytes);
+                File.WriteAllBytes(Path.Combine(DataPaths.PersistentDataPath,template.Key, stickerFile.Key + ".png"), bytes);
             }
 
             
