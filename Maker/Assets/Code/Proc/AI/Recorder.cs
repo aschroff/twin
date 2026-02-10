@@ -19,7 +19,7 @@ public class Recorder: MonoBehaviour
     
     public string get_path()
     {   
-        return Path.Combine(Application.persistentDataPath,folder,
+        return Path.Combine(DataPaths.PersistentDataPath,folder,
             "screenshot_" + name + ".png");
 		
     }

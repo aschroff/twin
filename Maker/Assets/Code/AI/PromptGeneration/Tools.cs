@@ -1,5 +1,4 @@
 using System;
-using Castle.Core.Configuration;
 using UnityEngine;
 
 namespace Code.AI.PromptGeneration
