@@ -22,11 +22,7 @@ public class ViewManager : SceneManagement, IDataPersistence
             partManager = this.transform.parent.parent.parent.GetComponentInParent<PartManager>();
         }
     }
-
-    public void OnGUI()
-    {
-        rebuild();
-    }
+    
 
     public void build()
     {
