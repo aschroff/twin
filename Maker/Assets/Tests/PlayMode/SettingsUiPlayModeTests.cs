@@ -14,15 +14,10 @@ public class SettingsUiPlayModeTests : PlayModeTestBase
     {
         yield return ClickButtonByName("Settings Button");
 
-        Assert.IsTrue(
-            InteractionModes.TryGetValue("Settings", out var settingsMode),
-            "Settings mode not configured in interactionModes."
-        );
-        Assert.IsTrue(
-            settingsMode.activeInHierarchy,
-            "Settings mode GameObject is not active after clicking Settings Button."
-        );
+        AssertModeActive("Settings");
 
         yield return ClickButtonByPath("Canvas/Settings UI/SettingsPanel/Reset");
+
+        AssertModeActive("Main");
     }
 }

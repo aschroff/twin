@@ -45,6 +45,18 @@ public abstract class PlayModeTestBase
         yield return null;
     }
 
+    protected void AssertModeActive(string modeName)
+    {
+        Assert.IsTrue(
+            InteractionModes.TryGetValue(modeName, out var modeObject),
+            $"Mode '{modeName}' not configured in interactionModes."
+        );
+        Assert.IsTrue(
+            modeObject.activeInHierarchy,
+            $"Mode '{modeName}' GameObject is not active."
+        );
+    }
+
     protected static IEnumerator ClickButtonByName(string name)
     {
         var button = FindButtonByName(name);
