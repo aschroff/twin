@@ -19,5 +19,13 @@ public class SettingsUiPlayModeTests : PlayModeTestBase
         yield return ClickButtonByPath("Canvas/Settings UI/SettingsPanel/Reset");
 
         AssertModeActive("Main");
+
+        AssertGameObjectActive("Canvas/Overlays/Group Overlay");
+        AssertGameObjectActive("Canvas/Overlays/View Overlay");
+        AssertGameObjectActive("Canvas/Overlays/Overview Overlay");
+        AssertGameObjectActive("Canvas/Main UI/Bottom/NewVersion");
+        AssertGameObjectActive("Canvas/Main UI/Bottom/GroupDetail");
+        AssertGameObjectActive("Canvas/Main UI/Bottom/HelpMe");
+        AssertGameObjectActive("Canvas/Main UI/Top/GameObject/Settings Button");
     }
 }

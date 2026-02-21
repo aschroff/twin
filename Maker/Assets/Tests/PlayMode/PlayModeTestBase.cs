@@ -57,6 +57,26 @@ public abstract class PlayModeTestBase
         );
     }
 
+    protected void AssertGameObjectActive(string path)
+    {
+        var gameObjects = Object.FindObjectsOfType<GameObject>(true);
+        foreach (var go in gameObjects)
+        {
+            if (go == null)
+            {
+                continue;
+            }
+
+            if (GetTransformPath(go.transform) == path)
+            {
+                Assert.IsTrue(go.activeInHierarchy, $"GameObject at path '{path}' is not active in hierarchy.");
+                return;
+            }
+        }
+
+        Assert.Fail($"GameObject at path '{path}' not found in scene.");
+    }
+
     protected static IEnumerator ClickButtonByName(string name)
     {
         var button = FindButtonByName(name);
