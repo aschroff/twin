@@ -59,6 +59,20 @@ public abstract class PlayModeTestBase
 
     protected void AssertGameObjectActive(string path)
     {
+        var go = FindGameObjectByPath(path);
+        Assert.IsTrue(go.activeInHierarchy, $"GameObject at path '{path}' is not active in hierarchy.");
+    }
+
+    protected void AssertTextValue(string path, string expectedValue)
+    {
+        var go = FindGameObjectByPath(path);
+        var textComponent = go.GetComponent<Text>();
+        Assert.IsNotNull(textComponent, $"Text component not found on GameObject at path '{path}'.");
+        Assert.AreEqual(expectedValue, textComponent.text, $"Text value at path '{path}' does not match.");
+    }
+
+    protected GameObject FindGameObjectByPath(string path)
+    {
         var gameObjects = Object.FindObjectsOfType<GameObject>(true);
         foreach (var go in gameObjects)
         {
@@ -69,12 +83,12 @@ public abstract class PlayModeTestBase
 
             if (GetTransformPath(go.transform) == path)
             {
-                Assert.IsTrue(go.activeInHierarchy, $"GameObject at path '{path}' is not active in hierarchy.");
-                return;
+                return go;
             }
         }
 
         Assert.Fail($"GameObject at path '{path}' not found in scene.");
+        return null;
     }
 
     protected static IEnumerator ClickButtonByName(string name)

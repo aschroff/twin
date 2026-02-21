@@ -27,5 +27,8 @@ public class SettingsUiPlayModeTests : PlayModeTestBase
         AssertGameObjectActive("Canvas/Main UI/Bottom/GroupDetail");
         AssertGameObjectActive("Canvas/Main UI/Bottom/HelpMe");
         AssertGameObjectActive("Canvas/Main UI/Top/GameObject/Settings Button");
+
+        AssertTextValue("Canvas/Main UI/Top/GameObject/Save Button/Profile", "default");
+        AssertTextValue("Canvas/Overlays/View Overlay/Scroll/Panel/Overlay Scroll read only and icon(Clone)/ReadOnlyMode/Text Background/ViewName", "Default view");
     }
 }
