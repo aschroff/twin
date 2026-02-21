@@ -116,7 +116,7 @@ public abstract class PlayModeTestBase
     protected static Button FindButtonByName(string name)
     {
         var buttons = Object.FindObjectsOfType<Button>(true);
-        Button firstMatch = null;
+        Button firstInactiveMatch = null;
         foreach (var button in buttons)
         {
             if (button != null && button.gameObject.name == name)
@@ -126,16 +126,16 @@ public abstract class PlayModeTestBase
                     return button;
                 }
 
-                if (firstMatch == null)
+                if (firstInactiveMatch == null)
                 {
-                    firstMatch = button;
+                    firstInactiveMatch = button;
                 }
             }
         }
 
-        if (firstMatch != null)
+        if (firstInactiveMatch != null)
         {
-            return firstMatch;
+            Assert.Fail($"Button with name '{name}' was found but is inactive.");
         }
 
         Assert.Fail($"Button with name '{name}' not found in scene.");
@@ -145,6 +145,7 @@ public abstract class PlayModeTestBase
     protected static Button FindButtonByPath(string path)
     {
         var buttons = Object.FindObjectsOfType<Button>(true);
+        Button firstInactiveMatch = null;
         foreach (var button in buttons)
         {
             if (button == null)
@@ -155,11 +156,24 @@ public abstract class PlayModeTestBase
             var buttonPath = GetTransformPath(button.transform);
             if (buttonPath == path)
             {
-                return button;
+                if (button.gameObject.activeInHierarchy)
+                {
+                    return button;
+                }
+
+                if (firstInactiveMatch == null)
+                {
+                    firstInactiveMatch = button;
+                }
             }
         }
 
-        Assert.IsNotNull(null, $"Button with path '{path}' not found in scene.");
+        if (firstInactiveMatch != null)
+        {
+            Assert.Fail($"Button with path '{path}' was found but is inactive.");
+        }
+
+        Assert.Fail($"Button with path '{path}' not found in scene.");
         return null;
     }
 
