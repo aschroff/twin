@@ -24,6 +24,9 @@ public class ConfigData
     public int languageID;
     public SerializableDictionary<string, string> prompts;
     public SerializableDictionary<string, string> resultsVersion;
+    public float[] shapeParameters;
+    public SMPLX.BodyPose bodyPose;
+    public SMPLX.HandPose handPose;
    
 
     public ConfigData(string modelName, string modelVersion = "")
@@ -45,5 +48,8 @@ public class ConfigData
         languageID = 0;
         prompts = new SerializableDictionary<string, string>();
         resultsVersion = new SerializableDictionary<string, string>();
+        shapeParameters = new float[SMPLX.NUM_BETAS];
+        bodyPose = SMPLX.BodyPose.T;
+        handPose = SMPLX.HandPose.Flat;
     }
 }

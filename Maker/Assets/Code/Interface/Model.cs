@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Model : MonoBehaviour
+public class Model : MonoBehaviour, IDataPersistence
 {
     private SMPLX model;
     private string model_info;
@@ -17,11 +17,12 @@ public class Model : MonoBehaviour
         model.GetModelInfo(out shapes, out expressions, out poseCorrectives);
         model_info = string.Format("Model: {0} beta shapes, {1} expressions, {2} pose correctives", shapes, expressions, poseCorrectives);
         handPose = SMPLX.HandPose.Flat;
-        bodyPose = SMPLX.BodyPose.T;  
+        bodyPose = SMPLX.BodyPose.T;
         model.SetHandPose(handPose);
         model.SetBodyPose(bodyPose); 
     }
 
+ 
 
     private float[] betasFromPython = new float[]
     {
@@ -89,7 +90,39 @@ public class Model : MonoBehaviour
             model.betas[i] = 0.0f;
         }
         model.SetBetaShapes();
-        model.SetBodyPose(SMPLX.BodyPose.A);
+
+        bodyPose = SMPLX.BodyPose.T;
+        model.SetBodyPose(bodyPose);
+
+        handPose = SMPLX.HandPose.Flat;
+        model.SetHandPose(handPose);
     }
-    
+
+    public void LoadData(ConfigData data)
+    {
+        handPose = data.handPose;
+        bodyPose = data.bodyPose;
+        if (data.shapeParameters.Length == 0)
+        {
+            data.shapeParameters = new float[SMPLX.NUM_BETAS];
+        }
+        model.betas = data.shapeParameters;
+        model.SetBodyPose(bodyPose);
+        model.SetHandPose(handPose);
+        model.SetBetaShapes();
+    }
+
+    public void SaveData(ConfigData data)
+    {
+        data.handPose = handPose;
+        data.bodyPose = bodyPose;
+        data.shapeParameters = model.betas;
+    }
+
+    public GameObject relatedGameObject()
+    {
+        return this.gameObject;
+    }
+
+   
 }
