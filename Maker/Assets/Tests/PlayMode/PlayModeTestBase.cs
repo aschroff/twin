@@ -45,6 +45,12 @@ public abstract class PlayModeTestBase
         yield return null;
     }
 
+    protected IEnumerator ResetApp()
+    {
+        yield return ClickButtonByName("Settings Button");
+        yield return ClickButtonByPath("Canvas/Settings UI/SettingsPanel/Reset");
+    }
+    
     protected void AssertModeActive(string modeName)
     {
         Assert.IsTrue(
