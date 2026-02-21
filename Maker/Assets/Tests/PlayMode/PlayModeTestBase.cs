@@ -116,15 +116,29 @@ public abstract class PlayModeTestBase
     protected static Button FindButtonByName(string name)
     {
         var buttons = Object.FindObjectsOfType<Button>(true);
+        Button firstMatch = null;
         foreach (var button in buttons)
         {
             if (button != null && button.gameObject.name == name)
             {
-                return button;
+                if (button.gameObject.activeInHierarchy)
+                {
+                    return button;
+                }
+
+                if (firstMatch == null)
+                {
+                    firstMatch = button;
+                }
             }
         }
 
-        Assert.IsNotNull(null, $"Button with name '{name}' not found in scene.");
+        if (firstMatch != null)
+        {
+            return firstMatch;
+        }
+
+        Assert.Fail($"Button with name '{name}' not found in scene.");
         return null;
     }
 
