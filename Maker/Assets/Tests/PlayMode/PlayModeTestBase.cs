@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using PaintCore;
 
 public abstract class PlayModeTestBase
 {
@@ -43,6 +44,14 @@ public abstract class PlayModeTestBase
         _saveNameScope?.Dispose();
         DataPaths.ClearPersistentDataPathOverride();
         yield return null;
+        
+        yield return SceneManager.LoadSceneAsync("Empty", LoadSceneMode.Single);
+        yield return null;
+
+        CwSerialization.HashToModel.Clear();
+        CwSerialization.ModelToHash.Clear();
+        
+        
     }
 
     protected IEnumerator ResetApp()
