@@ -3377,6 +3377,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 268035761}
     - target: {fileID: 2730589644314581939, guid: 570be41bf7ac241c2a2ff15fbbbcca67, type: 3}
+      propertyPath: model
+      value: gpt-5.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2730589644314581939, guid: 570be41bf7ac241c2a2ff15fbbbcca67, type: 3}
+      propertyPath: apiKey
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2730589644314581939, guid: 570be41bf7ac241c2a2ff15fbbbcca67, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
