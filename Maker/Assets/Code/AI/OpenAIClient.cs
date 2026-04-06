@@ -49,13 +49,12 @@ namespace Code.AI
             var fileName = Path.GetFileName(filePath);
             var fileBytes = File.ReadAllBytes(filePath);
 
-            var formData = new List<IMultipartFormSection>
-            {
-                new MultipartFormFileSection("file", fileBytes, fileName, "application/octet-stream"),
-                new MultipartFormDataSection("purpose", purpose)
-            };
+            // Use WWWForm for better compatibility
+            var form = new WWWForm();
+            form.AddBinaryData("file", fileBytes, fileName, DetermineContentType(filePath));
+            form.AddField("purpose", purpose);
 
-            var request = UnityWebRequest.Post($"{BaseUrl}/files", formData);
+            var request = UnityWebRequest.Post($"{BaseUrl}/files", form);
             request.SetRequestHeader("Authorization", $"Bearer {_apiKey}");
             request.timeout = _timeout;
 
@@ -90,12 +89,32 @@ namespace Code.AI
         }
 
         /// <summary>
+        /// Determine the MIME content type based on file extension.
+        /// </summary>
+        private string DetermineContentType(string filePath)
+        {
+            var extension = Path.GetExtension(filePath).ToLower();
+            return extension switch
+            {
+                ".png" => "image/png",
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                ".gif" => "image/gif",
+                ".webp" => "image/webp",
+                ".txt" => "text/plain",
+                ".pdf" => "application/pdf",
+                ".json" => "application/json",
+                _ => "application/octet-stream"
+            };
+        }
+
+        /// <summary>
         /// Send a request to OpenAI with optional file and structured output.
         /// </summary>
         /// <param name="prompt">The text prompt</param>
         /// <param name="model">Model to use (default: gpt-4o-mini)</param>
-        /// <param name="fileId">Optional uploaded file ID</param>
-        /// <param name="imagePath">Optional local image path (will be uploaded)</param>
+        /// <param name="fileId">Optional uploaded file ID (for non-image documents)</param>
+        /// <param name="imagePath">Optional local image path (will be embedded as base64)</param>
         /// <param name="structuredOutputType">Optional C# type for structured output parsing</param>
         /// <returns>Response text or structured output as JSON</returns>
         public async Task<string> RequestAsync(
@@ -105,18 +124,11 @@ namespace Code.AI
             string imagePath = null,
             Type structuredOutputType = null)
         {
-            // Upload image if provided
-            if (!string.IsNullOrEmpty(imagePath))
-            {
-                if (string.IsNullOrEmpty(fileId))
-                {
-                    fileId = await UploadFileAsync(imagePath);
-                }
-            }
-
-            // Build request payload
+            // Build request payload (handles both fileId and imagePath)
             var payload = BuildRequestPayload(prompt, model, fileId, imagePath, structuredOutputType);
             var jsonPayload = JsonConvert.SerializeObject(payload);
+
+            Debug.Log($"Request JSON: {jsonPayload}");
 
             // Use Responses API (not responses/parse)
             var endpoint = $"{BaseUrl}/responses";
@@ -281,7 +293,7 @@ namespace Code.AI
 
         private object BuildRequestPayload(string prompt, string model, string fileId, string imagePath, Type structuredOutputType)
         {
-            // Build content array for responses.parse API
+            // Build content array for Responses API
             var content = new List<object>();
 
             // Add text prompt
@@ -291,7 +303,7 @@ namespace Code.AI
                 { "text", prompt }
             });
 
-            // Add file if provided
+            // Add file if provided (for non-image documents)
             if (!string.IsNullOrEmpty(fileId))
             {
                 content.Add(new Dictionary<string, string>
@@ -300,20 +312,36 @@ namespace Code.AI
                     { "file_id", fileId }
                 });
             }
-            // Or add image as base64 if provided
+            // Add image if provided (embedded as base64)
             else if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
             {
-                var imageBytes = File.ReadAllBytes(imagePath);
-                var base64Image = Convert.ToBase64String(imageBytes);
-                content.Add(new Dictionary<string, object>
+                var extension = Path.GetExtension(imagePath).ToLower();
+                var isImage = extension == ".png" || extension == ".jpg" || extension == ".jpeg" ||
+                              extension == ".gif" || extension == ".webp" || extension == ".bmp";
+
+                if (isImage)
                 {
-                    { "type", "image_url" },
-                    { "image_url", new Dictionary<string, string>
-                        {
-                            { "url", $"data:image/jpeg;base64,{base64Image}" }
-                        }
-                    }
-                });
+                    var imageBytes = File.ReadAllBytes(imagePath);
+                    var base64Image = Convert.ToBase64String(imageBytes);
+
+                    // Determine MIME type
+                    var mimeType = extension switch
+                    {
+                        ".png" => "image/png",
+                        ".jpg" => "image/jpeg",
+                        ".jpeg" => "image/jpeg",
+                        ".gif" => "image/gif",
+                        ".webp" => "image/webp",
+                        ".bmp" => "image/bmp",
+                        _ => "image/png"
+                    };
+
+                    content.Add(new Dictionary<string, object>
+                    {
+                        { "type", "input_image" },
+                        { "image_url", $"data:{mimeType};base64,{base64Image}" }
+                    });
+                }
             }
 
             return new

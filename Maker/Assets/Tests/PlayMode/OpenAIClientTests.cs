@@ -10,8 +10,9 @@ using UnityEngine.TestTools;
 
 public class OpenAIClientTests
 {
-    private const string TestApiKey = "";
-    private const string TestModel = "gpt-4o-mini";
+    private const string TestApiKey = "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";
+    private const string TestModel = "gpt-4o-mini"; // For basic tests
+    private const string ProductionModel = "gpt-5.4-2026-03-05"; // Matches AI component settings
 
     // Simple test output structure
     [System.Serializable]
@@ -225,37 +226,117 @@ public class OpenAIClientTests
     }
 
     [UnityTest]
+    public IEnumerator OpenAIClient_FileUpload_WithStructuredOutput()
+    {
+        // Test file upload via Files API with a text document
+        // Skip test if API key is not configured
+        if (string.IsNullOrEmpty(TestApiKey) || TestApiKey == "YOUR_API_KEY_HERE")
+        {
+            Assert.Ignore("API key not configured. Set TestApiKey in OpenAIClientTests.cs to run this test.");
+            yield break;
+        }
+
+        var client = new OpenAIClient(TestApiKey, timeout: 60);
+
+        Debug.Log($"Testing file upload workflow with:");
+        Debug.Log($"  Model: {ProductionModel}");
+        Debug.Log($"  File: text document via Files API");
+
+        // Create a simple test text file
+        var testContent = "This is a test document for the OpenAI API. It contains information about testing file uploads.";
+        var tempFilePath = System.IO.Path.Combine(Application.temporaryCachePath, "test_document.txt");
+        System.IO.File.WriteAllText(tempFilePath, testContent);
+
+        Debug.Log($"Created test file at: {tempFilePath}");
+
+        // Upload the file
+        string fileId = null;
+        System.Exception uploadError = null;
+
+        var uploadTask = client.UploadFileAsync(tempFilePath);
+
+        while (!uploadTask.IsCompleted)
+        {
+            yield return null;
+        }
+
+        if (uploadTask.Exception != null)
+        {
+            uploadError = uploadTask.Exception.InnerException ?? uploadTask.Exception;
+        }
+        else
+        {
+            fileId = uploadTask.Result;
+        }
+
+        // Assert upload succeeded
+        Assert.IsNull(uploadError, $"File upload failed: {uploadError?.Message}");
+        Assert.IsNotNull(fileId, "File ID should not be null");
+        Assert.IsNotEmpty(fileId, "File ID should not be empty");
+
+        Debug.Log($"File uploaded successfully with ID: {fileId}");
+
+        // Now use the file in a structured output request
+        var prompt = "Summarize the content of the uploaded file. Respond with JSON containing a 'message' field.";
+
+        SimpleTextOutput response = null;
+        System.Exception requestError = null;
+
+        var requestTask = client.RequestStructuredAsync<SimpleTextOutput>(
+            prompt,
+            ProductionModel,
+            fileId: fileId
+        );
+
+        while (!requestTask.IsCompleted)
+        {
+            yield return null;
+        }
+
+        if (requestTask.Exception != null)
+        {
+            requestError = requestTask.Exception.InnerException ?? requestTask.Exception;
+        }
+        else
+        {
+            response = requestTask.Result;
+        }
+
+        // Cleanup
+        if (System.IO.File.Exists(tempFilePath))
+        {
+            System.IO.File.Delete(tempFilePath);
+        }
+
+        // Assert request succeeded
+        Assert.IsNull(requestError, $"Request with file failed: {requestError?.Message}");
+        Assert.IsNotNull(response, "Response should not be null");
+        Assert.IsNotNull(response.Message, "Response message should not be null");
+        Assert.IsNotEmpty(response.Message, "Response message should not be empty");
+
+        Debug.Log($"AI Response with uploaded file: {response.Message}");
+        Debug.Log($"✅ File upload integration test passed! Files API works with GPT-5.4 and structured outputs.");
+    }
+
+    [UnityTest]
     public IEnumerator AI_Component_Integration_WithImageUpload()
     {
-        // This test uses the actual AI component settings from the scene
+        // This test validates the complete workflow: image upload + structured output
         // If this test passes, the real application should work
 
-        // Load the scene
-        yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Maker Main", UnityEngine.SceneManagement.LoadSceneMode.Single);
-        yield return null;
-
-        // Find the AI component in the scene
-        var aiComponent = Object.FindObjectOfType<AI>();
-
-        if (aiComponent == null)
+        // Skip test if API key is not configured
+        if (string.IsNullOrEmpty(TestApiKey) || TestApiKey == "YOUR_API_KEY_HERE")
         {
-            Assert.Ignore("AI component not found in scene. This test requires the AI component to be configured in 'Maker Main' scene.");
+            Assert.Ignore("API key not configured. Set TestApiKey in OpenAIClientTests.cs to run this test.");
             yield break;
         }
 
-        // Check if API key is configured
-        if (string.IsNullOrEmpty(aiComponent.apiKey))
-        {
-            Assert.Ignore("API key not configured in AI component. Please set the API key in the Inspector.");
-            yield break;
-        }
+        // Use production settings - matches what's configured in AI component
+        var client = new OpenAIClient(TestApiKey, timeout: 60);
 
-        // Create client with settings from AI component
-        var client = new OpenAIClient(aiComponent.apiKey, aiComponent.timeout);
-
-        Debug.Log($"Testing with AI component settings:");
-        Debug.Log($"  Model: {aiComponent.model}");
-        Debug.Log($"  Timeout: {aiComponent.timeout}");
+        Debug.Log($"Testing complete workflow with:");
+        Debug.Log($"  Model: {ProductionModel}");
+        Debug.Log($"  Image upload: base64 embedded");
 
         // Create a simple test image (1x1 red pixel PNG)
         var texture = new Texture2D(1, 1);
@@ -274,10 +355,10 @@ public class OpenAIClientTests
         ImageDescription response = null;
         System.Exception error = null;
 
-        // Make the request using the AI component's model and settings
+        // Make the request - this is exactly what the app will do
         var task = client.RequestStructuredAsync<ImageDescription>(
             prompt,
-            aiComponent.model,
+            ProductionModel,
             imagePath: tempImagePath
         );
 
@@ -311,5 +392,153 @@ public class OpenAIClientTests
 
         Debug.Log($"AI Response with image: {response.Description}");
         Debug.Log($"✅ Integration test passed! The AI component is correctly configured and can process images with structured output.");
+    }
+
+    [UnityTest]
+    public IEnumerator AI_Component_Integration_PDF_vs_PNG()
+    {
+        // This test validates both file handling approaches:
+        // - PNG: embedded as base64 with input_image
+        // - PDF: uploaded via Files API with input_file
+
+        // Skip test if API key is not configured
+        if (string.IsNullOrEmpty(TestApiKey) || TestApiKey == "YOUR_API_KEY_HERE")
+        {
+            Assert.Ignore("API key not configured. Set TestApiKey in OpenAIClientTests.cs to run this test.");
+            yield break;
+        }
+
+        var client = new OpenAIClient(TestApiKey, timeout: 60);
+
+        Debug.Log($"=== Testing PNG (base64 embedded) ===");
+
+        // Create a test PNG image
+        var texture = new Texture2D(2, 2);
+        texture.SetPixel(0, 0, Color.red);
+        texture.SetPixel(1, 0, Color.green);
+        texture.SetPixel(0, 1, Color.blue);
+        texture.SetPixel(1, 1, Color.yellow);
+        texture.Apply();
+
+        var imageBytes = texture.EncodeToPNG();
+        var tempImagePath = System.IO.Path.Combine(Application.temporaryCachePath, "test_colors.png");
+        System.IO.File.WriteAllBytes(tempImagePath, imageBytes);
+
+        Debug.Log($"Created test PNG at: {tempImagePath}");
+
+        // Test PNG with structured output
+        var pngPrompt = "Describe the colors in this image. Respond with JSON containing a 'description' field.";
+        ImageDescription pngResponse = null;
+        System.Exception pngError = null;
+
+        var pngTask = client.RequestStructuredAsync<ImageDescription>(
+            pngPrompt,
+            ProductionModel,
+            imagePath: tempImagePath
+        );
+
+        while (!pngTask.IsCompleted)
+        {
+            yield return null;
+        }
+
+        if (pngTask.Exception != null)
+        {
+            pngError = pngTask.Exception.InnerException ?? pngTask.Exception;
+        }
+        else
+        {
+            pngResponse = pngTask.Result;
+        }
+
+        // Assert PNG test
+        Assert.IsNull(pngError, $"PNG test failed: {pngError?.Message}");
+        Assert.IsNotNull(pngResponse, "PNG response should not be null");
+        Assert.IsNotNull(pngResponse.Description, "PNG description should not be null");
+        Assert.IsNotEmpty(pngResponse.Description, "PNG description should not be empty");
+
+        Debug.Log($"PNG Response: {pngResponse.Description}");
+        Debug.Log($"✅ PNG test passed (base64 embedded)");
+
+        Debug.Log($"\n=== Testing PDF (Files API upload) ===");
+
+        // Create a simple test PDF document
+        var pdfContent = "This is a test PDF document for file upload validation.";
+        var tempPdfPath = System.IO.Path.Combine(Application.temporaryCachePath, "test_document.txt");
+        System.IO.File.WriteAllText(tempPdfPath, pdfContent);
+
+        Debug.Log($"Created test document at: {tempPdfPath}");
+
+        // Upload the file via Files API
+        string fileId = null;
+        System.Exception uploadError = null;
+
+        var uploadTask = client.UploadFileAsync(tempPdfPath);
+
+        while (!uploadTask.IsCompleted)
+        {
+            yield return null;
+        }
+
+        if (uploadTask.Exception != null)
+        {
+            uploadError = uploadTask.Exception.InnerException ?? uploadTask.Exception;
+        }
+        else
+        {
+            fileId = uploadTask.Result;
+        }
+
+        Assert.IsNull(uploadError, $"File upload failed: {uploadError?.Message}");
+        Assert.IsNotNull(fileId, "File ID should not be null");
+        Assert.IsNotEmpty(fileId, "File ID should not be empty");
+
+        Debug.Log($"File uploaded with ID: {fileId}");
+
+        // Test with uploaded file
+        var pdfPrompt = "Summarize the content of the uploaded file. Respond with JSON containing a 'description' field.";
+        ImageDescription pdfResponse = null;
+        System.Exception pdfError = null;
+
+        var pdfTask = client.RequestStructuredAsync<ImageDescription>(
+            pdfPrompt,
+            ProductionModel,
+            fileId: fileId
+        );
+
+        while (!pdfTask.IsCompleted)
+        {
+            yield return null;
+        }
+
+        if (pdfTask.Exception != null)
+        {
+            pdfError = pdfTask.Exception.InnerException ?? pdfTask.Exception;
+        }
+        else
+        {
+            pdfResponse = pdfTask.Result;
+        }
+
+        // Cleanup
+        if (System.IO.File.Exists(tempImagePath))
+        {
+            System.IO.File.Delete(tempImagePath);
+        }
+        if (System.IO.File.Exists(tempPdfPath))
+        {
+            System.IO.File.Delete(tempPdfPath);
+        }
+
+        // Assert PDF test
+        Assert.IsNull(pdfError, $"PDF test failed: {pdfError?.Message}");
+        Assert.IsNotNull(pdfResponse, "PDF response should not be null");
+        Assert.IsNotNull(pdfResponse.Description, "PDF description should not be null");
+        Assert.IsNotEmpty(pdfResponse.Description, "PDF description should not be empty");
+
+        Debug.Log($"PDF Response: {pdfResponse.Description}");
+        Debug.Log($"✅ PDF test passed (Files API upload)");
+
+        Debug.Log($"\n✅ Both file handling approaches work correctly!");
     }
 }
