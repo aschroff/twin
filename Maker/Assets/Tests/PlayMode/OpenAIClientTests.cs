@@ -10,7 +10,7 @@ using UnityEngine.TestTools;
 
 public class OpenAIClientTests
 {
-    private const string TestApiKey = null;
+    private const string TestApiKey = "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";
     private const string TestModel = "gpt-4o-mini"; // For basic tests
     private const string ProductionModel = "gpt-5.4-2026-03-05"; // Matches AI component settings
 
