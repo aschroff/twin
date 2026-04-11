@@ -8,9 +8,8 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class OpenAIClientTests
+public class OpenAIClientTests : TestBase
 {
-    private const string TestApiKey = "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";
     private const string TestModel = "gpt-4o-mini"; // For basic tests
     private const string ProductionModel = "gpt-5.4-2026-03-05"; // Matches AI component settings
 
@@ -34,14 +33,14 @@ public class OpenAIClientTests
     public IEnumerator OpenAIClient_SimpleTextRequest_ReturnsResponse()
     {
         // Skip test if API key is not configured
-        if (string.IsNullOrEmpty(TestApiKey) || TestApiKey == "YOUR_API_KEY_HERE")
+        if (!HasOpenAIApiKey)
         {
-            Assert.Ignore("API key not configured. Set TestApiKey in OpenAIClientTests.cs to run this test.");
+            Assert.Ignore("API key not configured. Create Assets/Tests/Helper/testsecrets.json from testsecrets.example.json");
             yield break;
         }
 
         // Arrange
-        var client = new OpenAIClient(TestApiKey, timeout: 30);
+        var client = new OpenAIClient(OpenAIApiKey, timeout: 30);
         var prompt = "Respond with a JSON object containing a 'message' field with the text 'Hello, Unity!'";
         SimpleTextOutput response = null;
         System.Exception error = null;
@@ -126,14 +125,14 @@ public class OpenAIClientTests
     public IEnumerator OpenAIClient_MultipleRequests_AllComplete()
     {
         // Skip test if API key is not configured
-        if (string.IsNullOrEmpty(TestApiKey) || TestApiKey == "YOUR_API_KEY_HERE")
+        if (!HasOpenAIApiKey)
         {
-            Assert.Ignore("API key not configured. Set TestApiKey in OpenAIClientTests.cs to run this test.");
+            Assert.Ignore("API key not configured. Create Assets/Tests/Helper/testsecrets.json from testsecrets.example.json");
             yield break;
         }
 
         // Arrange
-        var client = new OpenAIClient(TestApiKey, timeout: 30);
+        var client = new OpenAIClient(OpenAIApiKey, timeout: 30);
         var prompts = new[]
         {
             "Respond with JSON: {\"message\": \"1\"}",
@@ -170,14 +169,14 @@ public class OpenAIClientTests
     public IEnumerator OpenAIClient_ListAvailableModels_ContainsGpt4o()
     {
         // Skip test if API key is not configured
-        if (string.IsNullOrEmpty(TestApiKey) || TestApiKey == "YOUR_API_KEY_HERE")
+        if (!HasOpenAIApiKey)
         {
-            Assert.Ignore("API key not configured. Set TestApiKey in OpenAIClientTests.cs to run this test.");
+            Assert.Ignore("API key not configured. Create Assets/Tests/Helper/testsecrets.json from testsecrets.example.json");
             yield break;
         }
 
         // Arrange
-        var client = new OpenAIClient(TestApiKey, timeout: 30);
+        var client = new OpenAIClient(OpenAIApiKey, timeout: 30);
         List<string> availableModels = null;
         System.Exception error = null;
 
@@ -230,13 +229,13 @@ public class OpenAIClientTests
     {
         // Test file upload via Files API with a text document
         // Skip test if API key is not configured
-        if (string.IsNullOrEmpty(TestApiKey) || TestApiKey == "YOUR_API_KEY_HERE")
+        if (!HasOpenAIApiKey)
         {
-            Assert.Ignore("API key not configured. Set TestApiKey in OpenAIClientTests.cs to run this test.");
+            Assert.Ignore("API key not configured. Create Assets/Tests/Helper/testsecrets.json from testsecrets.example.json");
             yield break;
         }
 
-        var client = new OpenAIClient(TestApiKey, timeout: 60);
+        var client = new OpenAIClient(OpenAIApiKey, timeout: 60);
 
         Debug.Log($"Testing file upload workflow with:");
         Debug.Log($"  Model: {ProductionModel}");
@@ -325,14 +324,14 @@ public class OpenAIClientTests
         // If this test passes, the real application should work
 
         // Skip test if API key is not configured
-        if (string.IsNullOrEmpty(TestApiKey) || TestApiKey == "YOUR_API_KEY_HERE")
+        if (!HasOpenAIApiKey)
         {
-            Assert.Ignore("API key not configured. Set TestApiKey in OpenAIClientTests.cs to run this test.");
+            Assert.Ignore("API key not configured. Create Assets/Tests/Helper/testsecrets.json from testsecrets.example.json");
             yield break;
         }
 
         // Use production settings - matches what's configured in AI component
-        var client = new OpenAIClient(TestApiKey, timeout: 60);
+        var client = new OpenAIClient(OpenAIApiKey, timeout: 60);
 
         Debug.Log($"Testing complete workflow with:");
         Debug.Log($"  Model: {ProductionModel}");
@@ -402,13 +401,13 @@ public class OpenAIClientTests
         // - PDF: uploaded via Files API with input_file
 
         // Skip test if API key is not configured
-        if (string.IsNullOrEmpty(TestApiKey) || TestApiKey == "YOUR_API_KEY_HERE")
+        if (!HasOpenAIApiKey)
         {
-            Assert.Ignore("API key not configured. Set TestApiKey in OpenAIClientTests.cs to run this test.");
+            Assert.Ignore("API key not configured. Create Assets/Tests/Helper/testsecrets.json from testsecrets.example.json");
             yield break;
         }
 
-        var client = new OpenAIClient(TestApiKey, timeout: 60);
+        var client = new OpenAIClient(OpenAIApiKey, timeout: 60);
 
         Debug.Log($"=== Testing PNG (base64 embedded) ===");
 

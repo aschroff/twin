@@ -64,7 +64,10 @@ namespace Code.AI
             {
                 if (!string.IsNullOrEmpty(request.error) || request.responseCode >= 400)
                 {
-                    var errorMsg = $"File upload failed: {request.error}\nResponse: {request.downloadHandler?.text}";
+                    var maskedKey = _apiKey.Length > 8
+                        ? _apiKey.Substring(0, 4) + "..." + _apiKey.Substring(_apiKey.Length - 4)
+                        : "***";
+                    var errorMsg = $"File upload failed: {request.error}\nResponse: {request.downloadHandler?.text}\nAPI Key: {maskedKey}";
                     Debug.LogError(errorMsg);
                     tcs.SetException(new OpenAIException(request.responseCode, errorMsg));
                 }
@@ -147,7 +150,10 @@ namespace Code.AI
             {
                 if (!string.IsNullOrEmpty(request.error) || request.responseCode >= 400)
                 {
-                    var errorMsg = $"Request failed: {request.error}\nResponse: {request.downloadHandler?.text}";
+                    var maskedKey = _apiKey.Length > 8
+                        ? _apiKey.Substring(0, 4) + "..." + _apiKey.Substring(_apiKey.Length - 4)
+                        : "***";
+                    var errorMsg = $"Request failed: {request.error}\nResponse: {request.downloadHandler?.text}\nModel: {model}\nAPI Key: {maskedKey}";
                     // Don't log as error - let the caller decide how to handle it
                     tcs.SetException(new OpenAIException(request.responseCode, errorMsg));
                 }
@@ -250,7 +256,10 @@ namespace Code.AI
             {
                 if (!string.IsNullOrEmpty(request.error) || request.responseCode >= 400)
                 {
-                    var errorMsg = $"Failed to list models: {request.error}\nResponse: {request.downloadHandler?.text}";
+                    var maskedKey = _apiKey.Length > 8
+                        ? _apiKey.Substring(0, 4) + "..." + _apiKey.Substring(_apiKey.Length - 4)
+                        : "***";
+                    var errorMsg = $"Failed to list models: {request.error}\nResponse: {request.downloadHandler?.text}\nAPI Key: {maskedKey}";
                     tcs.SetException(new OpenAIException(request.responseCode, errorMsg));
                 }
                 else

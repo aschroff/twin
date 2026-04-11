@@ -7,7 +7,11 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
-public abstract class PlayModeTestBase
+/// <summary>
+/// Base class for Play Mode tests with scene loading and Unity-specific helpers.
+/// Inherits test secrets management from TestBase.
+/// </summary>
+public abstract class PlayModeTestBase : TestBase
 {
     protected InteractionController Controller;
     protected InteractionModeDictionary InteractionModes;
