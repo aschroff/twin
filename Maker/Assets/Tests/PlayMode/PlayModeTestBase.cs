@@ -147,6 +147,53 @@ public abstract class PlayModeTestBase : TestBase
         return null;
     }
 
+    protected static void SetInputByName(string name, string value)
+    {
+        var gameObjects = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        foreach (var go in gameObjects)
+        {
+            if (go != null && go.name == name)
+            {
+                var inputField = go.GetComponent<InputField>();
+                if (inputField != null)
+                {
+                    inputField.text = value;
+                    return;
+                }
+            }
+        }
+
+        Assert.Fail($"Active GameObject with name '{name}' and InputField component not found in scene.");
+    }
+
+    protected GameObject FindChildWithTextValue(string parentPath, string textValue)
+    {
+        var parent = FindGameObjectByPath(parentPath);
+        if (parent == null)
+        {
+            return null;
+        }
+
+        foreach (Transform child in parent.transform)
+        {
+            var nameChild = child.Find("Name");
+            if (nameChild != null)
+            {
+                var textChild = nameChild.Find("Text");
+                if (textChild != null)
+                {
+                    var textComponent = textChild.GetComponent<Text>();
+                    if (textComponent != null && textComponent.text == textValue)
+                    {
+                        return child.gameObject;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     protected static string GetTransformPath(Transform target)
     {
         if (target == null)
