@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using PaintCore;
 
 /// <summary>
 /// Base class for Play Mode tests with scene loading and Unity-specific helpers.
@@ -21,6 +22,8 @@ public abstract class PlayModeTestBase : TestBase
     public virtual IEnumerator SetUp()
     {
         var testDataPath = Path.Combine(Application.temporaryCachePath, "MakerPlayModeTests");
+        if (Directory.Exists(testDataPath))
+            Directory.Delete(testDataPath, recursive: true);
         Directory.CreateDirectory(testDataPath);
         DataPaths.SetPersistentDataPathForTests(testDataPath);
         _saveNameScope = PaintableSaveNameOverride.Begin("PlayModeTest");
@@ -46,7 +49,28 @@ public abstract class PlayModeTestBase : TestBase
     {
         _saveNameScope?.Dispose();
         DataPaths.ClearPersistentDataPathOverride();
+        
+        yield return SceneManager.LoadSceneAsync("EmptyScene", LoadSceneMode.Single);
         yield return null;
+
+        CwSerialization.HashToModel.Clear();
+        CwSerialization.ModelToHash.Clear();
+
+    }
+
+    protected IEnumerator WaitForModeActive(string modeName, float timeout = 10f)
+    {
+        Assert.IsTrue(
+            InteractionModes.TryGetValue(modeName, out var modeObject),
+            $"Mode '{modeName}' not configured in interactionModes."
+        );
+        float elapsed = 0f;
+        while (!modeObject.activeInHierarchy && elapsed < timeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        Assert.IsTrue(modeObject.activeInHierarchy, $"Mode '{modeName}' was not active after {timeout}s.");
     }
 
     protected void AssertModeActive(string modeName)
@@ -102,10 +126,42 @@ public abstract class PlayModeTestBase : TestBase
         yield return null;
         yield return null;
     }
+    
+    protected static IEnumerator ClickButtonByNameDebug(string name, float timeout = 10f)
+    {
+        var button = FindButtonByName(name);
+        float elapsed = 0f;
+        while ((!button.gameObject.activeInHierarchy || !button.interactable) && elapsed < timeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        if (!button.gameObject.activeInHierarchy)
+        {
+            var t = button.transform;
+            while (t != null)
+            {
+                Debug.Log($"[Test] Hierarchy: '{t.name}' activeSelf={t.gameObject.activeSelf}");
+                t = t.parent;
+            }
+        }
+        Debug.Log($"[Test] ClickButtonByName: '{name}', active={button.gameObject.activeInHierarchy}, interactable={button.interactable}, waited={elapsed:F2}s");
+        Assert.IsTrue(button.gameObject.activeInHierarchy, $"Button '{name}' is not active after {timeout}s.");
+        button.onClick.Invoke();
+        yield return null;
+        yield return null;
+    }
 
-    protected static IEnumerator ClickButtonByPath(string path)
+    protected static IEnumerator ClickButtonByPath(string path, float timeout = 10f)
     {
         var button = FindButtonByPath(path);
+        float elapsed = 0f;
+        while ((!button.gameObject.activeInHierarchy || !button.interactable) && elapsed < timeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        Assert.IsTrue(button.gameObject.activeInHierarchy, $"Button at path '{path}' is not active after {timeout}s.");
         button.onClick.Invoke();
         yield return null;
         yield return null;
@@ -113,7 +169,7 @@ public abstract class PlayModeTestBase : TestBase
 
     protected static Button FindButtonByName(string name)
     {
-        var buttons = Object.FindObjectsOfType<Button>(true);
+        var buttons = Object.FindObjectsOfType<Button>(false);
         foreach (var button in buttons)
         {
             if (button != null && button.gameObject.name == name)
