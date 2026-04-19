@@ -5,7 +5,6 @@
         "CW.Common",
         "LeanGUI",
         "PaintIn3D",
-        "AiToolbox",
         "LeanTouchPlus",
         "NativeFilePicker.Runtime",
         "NativeGallery.Runtime",
@@ -17,16 +16,17 @@
         "LeanTouch",
         "RotaryHeart.SerializableDictionary",
         "RotaryHeart.Shared",
-        "Unity.Localization",
         "Unity.TextMeshPro",
-        "Unity.ResourceManager",
-        ""
+        "Unity.Localization",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "Newtonsoft.json"
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
