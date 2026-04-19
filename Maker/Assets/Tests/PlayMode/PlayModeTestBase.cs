@@ -1,8 +1,10 @@
 using System.Collections;
 using System.IO;
 using System.Reflection;
+using CW.Common;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -127,85 +129,148 @@ public abstract class PlayModeTestBase : TestBase
 
     protected static IEnumerator ClickButtonByName(string name)
     {
-        var button = FindButtonByName(name);
-        button.onClick.Invoke();
+        var button = TryFindButtonByName(name);
+        if (button != null)
+        {
+            button.onClick.Invoke();
+        }
+        else
+        {
+            var cwButton = FindCwDemoButtonByName(name);
+            cwButton.OnPointerDown(new PointerEventData(EventSystem.current));
+        }
         yield return null;
         yield return null;
     }
-    
+
     protected static IEnumerator ClickButtonByNameDebug(string name, float timeout = 10f)
     {
-        var button = FindButtonByName(name);
-        float elapsed = 0f;
-        while ((!button.gameObject.activeInHierarchy || !button.interactable) && elapsed < timeout)
+        var button = TryFindButtonByName(name);
+        if (button != null)
         {
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        if (!button.gameObject.activeInHierarchy)
-        {
-            var t = button.transform;
-            while (t != null)
+            float elapsed = 0f;
+            while ((!button.gameObject.activeInHierarchy || !button.interactable) && elapsed < timeout)
             {
-                Debug.Log($"[Test] Hierarchy: '{t.name}' activeSelf={t.gameObject.activeSelf}");
-                t = t.parent;
+                elapsed += Time.deltaTime;
+                yield return null;
             }
+            if (!button.gameObject.activeInHierarchy)
+            {
+                var t = button.transform;
+                while (t != null)
+                {
+                    Debug.Log($"[Test] Hierarchy: '{t.name}' activeSelf={t.gameObject.activeSelf}");
+                    t = t.parent;
+                }
+            }
+            Debug.Log($"[Test] ClickButtonByName: '{name}', active={button.gameObject.activeInHierarchy}, interactable={button.interactable}, waited={elapsed:F2}s");
+            Assert.IsTrue(button.gameObject.activeInHierarchy, $"Button '{name}' is not active after {timeout}s.");
+            button.onClick.Invoke();
         }
-        Debug.Log($"[Test] ClickButtonByName: '{name}', active={button.gameObject.activeInHierarchy}, interactable={button.interactable}, waited={elapsed:F2}s");
-        Assert.IsTrue(button.gameObject.activeInHierarchy, $"Button '{name}' is not active after {timeout}s.");
-        button.onClick.Invoke();
+        else
+        {
+            var cwButton = FindCwDemoButtonByName(name);
+            float elapsed = 0f;
+            while (!cwButton.gameObject.activeInHierarchy && elapsed < timeout)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            Debug.Log($"[Test] ClickButtonByName (CwDemoButton): '{name}', active={cwButton.gameObject.activeInHierarchy}, waited={elapsed:F2}s");
+            Assert.IsTrue(cwButton.gameObject.activeInHierarchy, $"CwDemoButton '{name}' is not active after {timeout}s.");
+            cwButton.OnPointerDown(new PointerEventData(EventSystem.current));
+        }
         yield return null;
         yield return null;
     }
 
     protected static IEnumerator ClickButtonByPath(string path, float timeout = 10f)
     {
-        var button = FindButtonByPath(path);
-        float elapsed = 0f;
-        while ((!button.gameObject.activeInHierarchy || !button.interactable) && elapsed < timeout)
+        var button = TryFindButtonByPath(path);
+        if (button != null)
         {
-            elapsed += Time.deltaTime;
-            yield return null;
+            float elapsed = 0f;
+            while ((!button.gameObject.activeInHierarchy || !button.interactable) && elapsed < timeout)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            Assert.IsTrue(button.gameObject.activeInHierarchy, $"Button at path '{path}' is not active after {timeout}s.");
+            button.onClick.Invoke();
         }
-        Assert.IsTrue(button.gameObject.activeInHierarchy, $"Button at path '{path}' is not active after {timeout}s.");
-        button.onClick.Invoke();
+        else
+        {
+            var cwButton = FindCwDemoButtonByPath(path);
+            float elapsed = 0f;
+            while (!cwButton.gameObject.activeInHierarchy && elapsed < timeout)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            Assert.IsTrue(cwButton.gameObject.activeInHierarchy, $"CwDemoButton at path '{path}' is not active after {timeout}s.");
+            cwButton.OnPointerDown(new PointerEventData(EventSystem.current));
+        }
         yield return null;
         yield return null;
     }
 
     protected static Button FindButtonByName(string name)
     {
-        var buttons = Object.FindObjectsOfType<Button>(false);
-        foreach (var button in buttons)
-        {
-            if (button != null && button.gameObject.name == name)
-            {
-                return button;
-            }
-        }
-
-        Assert.IsNotNull(null, $"Button with name '{name}' not found in scene.");
-        return null;
+        var button = TryFindButtonByName(name);
+        Assert.IsNotNull(button, $"Button with name '{name}' not found in scene.");
+        return button;
     }
 
     protected static Button FindButtonByPath(string path)
     {
+        var button = TryFindButtonByPath(path);
+        Assert.IsNotNull(button, $"Button with path '{path}' not found in scene.");
+        return button;
+    }
+
+    private static Button TryFindButtonByName(string name)
+    {
+        var buttons = Object.FindObjectsOfType<Button>(false);
+        foreach (var button in buttons)
+        {
+            if (button != null && button.gameObject.name == name)
+                return button;
+        }
+        return null;
+    }
+
+    private static Button TryFindButtonByPath(string path)
+    {
         var buttons = Object.FindObjectsOfType<Button>(true);
         foreach (var button in buttons)
         {
-            if (button == null)
-            {
-                continue;
-            }
-
-            var buttonPath = GetTransformPath(button.transform);
-            if (buttonPath == path)
-            {
+            if (button != null && GetTransformPath(button.transform) == path)
                 return button;
-            }
         }
+        return null;
+    }
 
-        Assert.IsNotNull(null, $"Button with path '{path}' not found in scene.");
+    private static CwDemoButton FindCwDemoButtonByName(string name)
+    {
+        var buttons = Object.FindObjectsOfType<CwDemoButton>(false);
+        foreach (var button in buttons)
+        {
+            if (button != null && button.gameObject.name == name)
+                return button;
+        }
+        Assert.Fail($"Neither Button nor CwDemoButton with name '{name}' found in scene.");
+        return null;
+    }
+
+    private static CwDemoButton FindCwDemoButtonByPath(string path)
+    {
+        var buttons = Object.FindObjectsOfType<CwDemoButton>(true);
+        foreach (var button in buttons)
+        {
+            if (button != null && GetTransformPath(button.transform) == path)
+                return button;
+        }
+        Assert.Fail($"Neither Button nor CwDemoButton at path '{path}' found in scene.");
         return null;
     }
 
