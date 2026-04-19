@@ -57,6 +57,12 @@ public abstract class PlayModeTestBase : TestBase
         CwSerialization.ModelToHash.Clear();
 
     }
+    
+    protected IEnumerator ResetApp()
+    {
+        yield return ClickButtonByName("Settings Button");
+        yield return ClickButtonByPath("Canvas/Settings UI/SettingsPanel/Reset");
+    }
 
     protected IEnumerator WaitForModeActive(string modeName, float timeout = 10f)
     {
