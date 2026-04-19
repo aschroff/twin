@@ -6,16 +6,19 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "RotaryHeart.SerializableDictionary",
-        "RotaryHeart.Shared"
+        "RotaryHeart.Shared",
+        "Helper",
+        "PaintCore",
+        "CW.Common"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [
         "nunit.framework.dll"
     ],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],

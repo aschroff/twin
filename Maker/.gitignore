@@ -69,3 +69,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Test secrets (contains API keys and credentials)
+Assets/Tests/Helper/testsecrets.json
+Assets/Tests/Helper/testsecrets.json.meta

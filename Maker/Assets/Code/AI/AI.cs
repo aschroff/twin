@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using AiToolbox;
 using Code.AI.PromptGeneration;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.AI
 {
-    public class AI : MonoBehaviour {
-    
+    /// <summary>
+    /// Medical AI component for Unity integration.
+    /// Bridges Unity UI and game objects with MedicalAI service.
+    /// </summary>
+    public class AI : MedicalAI
+    {
         public enum Help
         {
             ShortSummary,
@@ -18,77 +20,78 @@ namespace Code.AI
             Situation
         }
 
-        public ISet<Help> Whatever; 
-        public ChatGptParameters parameters;
+        public ISet<Help> Whatever;
 
         [Space]
         public Text characterDescription;
 
         public string path;
         public SettingsManager settingsManager;
-    
-        private ChatGptParameters _parametersWithCharacterRole;
 
-        private void Start() {
-            // Check if the API Key is set in the Inspector, just in case.
-            if (parameters == null || string.IsNullOrEmpty(parameters.apiKey)) {
-                const string errorMessage = "Please set the <b>API Key</b> in the <b>ChatGPT Dialogue</b> Game Object.";
-                characterDescription.text = errorMessage;
-                characterDescription.color = Color.magenta;
+        protected override void Start()
+        {
+            base.Start();
+
+            // UI feedback for missing API key
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                const string errorMessage = "Please set the <b>API Key</b> in the AI component.";
+                if (characterDescription != null)
+                {
+                    characterDescription.text = errorMessage;
+                    characterDescription.color = Color.magenta;
+                }
             }
-        
         }
         
 
-        private string getPromptOfLabel(string label, ItemPrompt.PromptLevel level = ItemPrompt.PromptLevel.Unknown)
+        private string GetPromptOfLabel(string label, ItemPrompt.PromptLevel level = ItemPrompt.PromptLevel.Unknown)
         {
             Debug.Log("getPromptOfLabel");
             Debug.Log(label);
             Debug.Log(level);
-            return this.getPromptResultOfLabel(label, level).gameObject.GetComponentInChildren<InputField>().text;
+            return GetPromptResultOfLabel(label, level).gameObject.GetComponentInChildren<InputField>().text;
         }
-        
-        private ItemPrompt getPromptResultOfLabel(string label, ItemPrompt.PromptLevel level = ItemPrompt.PromptLevel.Unknown)
+
+        private ItemPrompt GetPromptResultOfLabel(string label, ItemPrompt.PromptLevel level = ItemPrompt.PromptLevel.Unknown)
         {
             return settingsManager.getPromptObject(label, level);
         }
         
         
-        private IEnumerator WaitForFileCoroutine(string path)
-        {
-            while (!File.Exists(path))
-            {
-                yield return new WaitForSeconds(0.5f); // Wait for 0.5 seconds
-            }
-
-            Debug.Log("File exists: " + path);
-        }
-        
-        
         private IEnumerator DescribePartCoroutine(PartManager.PartData part, string variant)
         {
-            string prompt = getPromptOfLabel(variant, ItemPrompt.PromptLevel.Part);
-            
+            string prompt = GetPromptOfLabel(variant, ItemPrompt.PromptLevel.Part);
             prompt += Part.Description(part);
 
+            string imagePath = !string.IsNullOrEmpty(part.pathScreenshot) ? part.pathScreenshot : null;
 
-            if (!string.IsNullOrEmpty(part.pathScreenshot))
-            {
-                yield return StartCoroutine(WaitForFileCoroutine(part.pathScreenshot));
-                prompt += "#IMAGEPATH#" + part.pathScreenshot + "#IMAGEPATHEND#";
-            }
+            // Use MedicalAI's injury analysis
+            yield return StartCoroutine(AnalyzeInjuryCoroutine(
+                prompt,
+                imagePath,
+                response => OnInjuryAnalyzed(part, response),
+                error => OnInjuryAnalysisError(part, error)
+            ));
+        }
 
-            ChatGPTwin.Request(prompt, parameters, completeCallback: text =>
+        private void OnInjuryAnalyzed(PartManager.PartData part, InjuryDescriptionResponse response)
+        {
+            part.description = response.Description;
+            Debug.Log($"AI response for {part.meaning}: {response.Description} (Category: {response.Category})");
+
+            if (characterDescription != null)
             {
-                part.description = text;
-                Debug.Log("AI response " + part.meaning + " :" + text);
                 characterDescription.text += "---------------------------------------------------\n";
-                characterDescription.text += text + "\n";
-            }, failureCallback: (errorCode, errorMessage) =>
-            {
-                var errorType = (ErrorCodes)errorCode;
-                part.description = $"Error {errorCode}: {errorType} - {errorMessage}";
-            });
+                characterDescription.text += $"{response.Description}\n";
+                characterDescription.text += $"Category: {response.Category}\n";
+            }
+        }
+
+        private void OnInjuryAnalysisError(PartManager.PartData part, string errorMessage)
+        {
+            part.description = $"Error: {errorMessage}";
+            Debug.LogError($"AI request failed for {part.meaning}: {errorMessage}");
         }
 
         public string DescribePart(PartManager.PartData part, string variant)
@@ -101,13 +104,12 @@ namespace Code.AI
         {
             string prompt = "The person is 1.60 m tall. Describe the medical findings depicted on the body and make a recommendation for treating these problems.";
             prompt += PromptGeneration.PromptContributor.GeneratePrompt(Help.CompleteReport);
-            OneShot(prompt, path);
-
+            GenerateSummary(prompt, path);
         }
-        
-        public void DescribeVersion(PartManager partManager,  string variant)
+
+        public void DescribeVersion(PartManager partManager, string variant)
         {
-            string prompt = getPromptOfLabel(variant, ItemPrompt.PromptLevel.Version);
+            string prompt = GetPromptOfLabel(variant, ItemPrompt.PromptLevel.Version);
             int countFinding = 0;
             foreach (PartManager.GroupData group in partManager.groups)
             {
@@ -118,30 +120,49 @@ namespace Code.AI
                     prompt += part.description + "\n";
                 }
             }
-            OneShot(prompt, variant);
+            GenerateSummary(prompt, variant);
         }
-     
-        private void OneShot(string prompt, string variant, string imagePath="")
+
+        private void GenerateSummary(string prompt, string variant, string imagePath = "")
         {
-            if (!string.IsNullOrEmpty(imagePath))
+            StartCoroutine(GenerateSummaryCoroutine(prompt, variant, imagePath));
+        }
+
+        private IEnumerator GenerateSummaryCoroutine(string prompt, string variant, string imagePath)
+        {
+            ItemPrompt itemPrompt = GetPromptResultOfLabel(variant, ItemPrompt.PromptLevel.Version);
+
+            if (characterDescription != null)
             {
-                prompt +=  "#IMAGEPATH#" + imagePath + "#IMAGEPATHEND#";              
+                characterDescription.text = "<in progress> ";
             }
 
-            ItemPrompt itemPrompt = getPromptResultOfLabel(variant, ItemPrompt.PromptLevel.Version);
-            characterDescription.text = "<in progress> ";
-            ChatGPTwin.Request(prompt, parameters, completeCallback: text => {
-                characterDescription.text = text;
-                itemPrompt.promptResult = text;
-            }, failureCallback: (errorCode, errorMessage) => {
-                var errorType = (ErrorCodes)errorCode;
-                characterDescription.text = $"Error {errorCode}: {errorType} - {errorMessage}";
-                characterDescription.color = Color.red;
-            });
+            // Use MedicalAI's patient summary generation
+            yield return StartCoroutine(GeneratePatientSummaryCoroutine(
+                prompt,
+                response => OnPatientSummaryGenerated(itemPrompt, response),
+                error => OnPatientSummaryError(error),
+                string.IsNullOrEmpty(imagePath) ? null : imagePath
+            ));
         }
-        
-        
-        
-        
+
+        private void OnPatientSummaryGenerated(ItemPrompt itemPrompt, PatientSummaryResponse response)
+        {
+            if (characterDescription != null)
+            {
+                characterDescription.text = $"{response.Description}\n\nCondition: {response.Condition}";
+            }
+            itemPrompt.promptResult = response.Description;
+        }
+
+        private void OnPatientSummaryError(string errorMessage)
+        {
+            if (characterDescription != null)
+            {
+                characterDescription.text = $"Error: {errorMessage}";
+                characterDescription.color = Color.red;
+            }
+            Debug.LogError($"AI request failed: {errorMessage}");
+        }
     }
 }

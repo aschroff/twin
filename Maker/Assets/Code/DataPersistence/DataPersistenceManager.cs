@@ -120,7 +120,7 @@ public class DataPersistenceManager : MonoBehaviour
 
     private void InitializeSelectedProfileId() 
     {
-        this.selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId();
+        this.selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId() ?? "default.000";
     }
 
     public void NewConfig(string modelName, string modelVersion = "") 

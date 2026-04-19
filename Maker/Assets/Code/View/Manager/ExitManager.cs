@@ -34,7 +34,11 @@ public class ExitManager : MonoBehaviour
     {
         Debug.Log("ExitProcessing");
         DataPersistenceManager manager = (DataPersistenceManager)FindObjectOfType(typeof(DataPersistenceManager));
-        manager.SaveConfig();
+        if (manager != null)
+        {
+            manager.SaveConfig();
+        }
+        
     }
 
     [RuntimeInitializeOnLoadMethod]
