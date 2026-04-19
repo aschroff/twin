@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine.TestTools;
+using UnityEngine;
 
 namespace NoAPICalls
 {
@@ -9,7 +10,16 @@ namespace NoAPICalls
         public IEnumerator EditButton_EnablesEditMode()
         {
             yield return ResetApp();
+            
+            yield return ClickButtonByName("Save Button");
 
+            var twinEntry = FindChildWithTextValue("Canvas/Save UI/Bottom/Scroll/Panel", "LipEdema");
+            
+            yield return ClickButtonByPath(path: "Unselect", root: twinEntry);
+            
+            AssertModeActive("Save");
+            
+            
             yield return ClickButtonByName("Edit Button");
 
             AssertModeActive("Edit");
@@ -20,6 +30,11 @@ namespace NoAPICalls
             AssertGameObjectActive("Canvas/Edit UI/Bottom/Marker");
             AssertGameObjectActive("Canvas/Edit UI/Bottom/Filler");
             AssertGameObjectActive("Canvas/Edit UI/Bottom/Shape");
+            
+            var viewEntry = FindChildWithTextValue("Canvas/Overlays/View Overlay/Scroll/Panel", "Head front", "ReadOnlyMode/Text Background/ViewName");
+            
+            yield return ClickButtonByPath(path: "ReadOnlyMode/Icon", root: viewEntry);
+            
 
             yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Marker/Text Background/Text");
             

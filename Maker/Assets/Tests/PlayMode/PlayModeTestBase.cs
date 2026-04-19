@@ -107,8 +107,15 @@ public abstract class PlayModeTestBase : TestBase
         Assert.AreEqual(expectedValue, textComponent.text, $"Text value at path '{path}' does not match.");
     }
 
-    protected GameObject FindGameObjectByPath(string path)
+    protected GameObject FindGameObjectByPath(string path, GameObject root = null)
     {
+        if (root != null)
+        {
+            var found = root.transform.Find(path);
+            Assert.IsNotNull(found, $"GameObject at path '{path}' not found under '{root.name}'.");
+            return found.gameObject;
+        }
+
         var gameObjects = Object.FindObjectsOfType<GameObject>(true);
         foreach (var go in gameObjects)
         {
@@ -184,9 +191,9 @@ public abstract class PlayModeTestBase : TestBase
         yield return null;
     }
 
-    protected static IEnumerator ClickButtonByPath(string path, float timeout = 10f)
+    protected static IEnumerator ClickButtonByPath(string path, float timeout = 10f, GameObject root = null)
     {
-        var button = TryFindButtonByPath(path);
+        var button = TryFindButtonByPath(path, root);
         if (button != null)
         {
             float elapsed = 0f;
@@ -200,7 +207,7 @@ public abstract class PlayModeTestBase : TestBase
         }
         else
         {
-            var cwButton = FindCwDemoButtonByPath(path);
+            var cwButton = FindCwDemoButtonByPath(path, root);
             float elapsed = 0f;
             while (!cwButton.gameObject.activeInHierarchy && elapsed < timeout)
             {
@@ -221,9 +228,9 @@ public abstract class PlayModeTestBase : TestBase
         return button;
     }
 
-    protected static Button FindButtonByPath(string path)
+    protected static Button FindButtonByPath(string path, GameObject root = null)
     {
-        var button = TryFindButtonByPath(path);
+        var button = TryFindButtonByPath(path, root);
         Assert.IsNotNull(button, $"Button with path '{path}' not found in scene.");
         return button;
     }
@@ -239,12 +246,17 @@ public abstract class PlayModeTestBase : TestBase
         return null;
     }
 
-    private static Button TryFindButtonByPath(string path)
+    private static Button TryFindButtonByPath(string path, GameObject root = null)
     {
-        var buttons = Object.FindObjectsOfType<Button>(true);
+        var buttons = root != null
+            ? root.GetComponentsInChildren<Button>(true)
+            : Object.FindObjectsOfType<Button>(true);
         foreach (var button in buttons)
         {
-            if (button != null && GetTransformPath(button.transform) == path)
+            var buttonPath = root != null
+                ? GetRelativeTransformPath(button.transform, root.transform)
+                : GetTransformPath(button.transform);
+            if (button != null && buttonPath == path)
                 return button;
         }
         return null;
@@ -262,12 +274,17 @@ public abstract class PlayModeTestBase : TestBase
         return null;
     }
 
-    private static CwDemoButton FindCwDemoButtonByPath(string path)
+    private static CwDemoButton FindCwDemoButtonByPath(string path, GameObject root = null)
     {
-        var buttons = Object.FindObjectsOfType<CwDemoButton>(true);
+        var buttons = root != null
+            ? root.GetComponentsInChildren<CwDemoButton>(true)
+            : Object.FindObjectsOfType<CwDemoButton>(true);
         foreach (var button in buttons)
         {
-            if (button != null && GetTransformPath(button.transform) == path)
+            var buttonPath = root != null
+                ? GetRelativeTransformPath(button.transform, root.transform)
+                : GetTransformPath(button.transform);
+            if (button != null && buttonPath == path)
                 return button;
         }
         Assert.Fail($"Neither Button nor CwDemoButton at path '{path}' found in scene.");
@@ -293,29 +310,18 @@ public abstract class PlayModeTestBase : TestBase
         Assert.Fail($"Active GameObject with name '{name}' and InputField component not found in scene.");
     }
 
-    protected GameObject FindChildWithTextValue(string parentPath, string textValue)
+    protected GameObject FindChildWithTextValue(string parentPath, string textValue, string textPath = "Name/Text")
     {
         var parent = FindGameObjectByPath(parentPath);
-        if (parent == null)
-        {
-            return null;
-        }
+        if (parent == null) return null;
 
         foreach (Transform child in parent.transform)
         {
-            var nameChild = child.Find("Name");
-            if (nameChild != null)
-            {
-                var textChild = nameChild.Find("Text");
-                if (textChild != null)
-                {
-                    var textComponent = textChild.GetComponent<Text>();
-                    if (textComponent != null && textComponent.text == textValue)
-                    {
-                        return child.gameObject;
-                    }
-                }
-            }
+            var textTransform = child.Find(textPath);
+            if (textTransform == null) continue;
+            var textComponent = textTransform.GetComponent<Text>();
+            if (textComponent != null && textComponent.text == textValue)
+                return child.gameObject;
         }
 
         return null;
@@ -337,5 +343,18 @@ public abstract class PlayModeTestBase : TestBase
         }
 
         return path;
+    }
+
+    private static string GetRelativeTransformPath(Transform target, Transform root)
+    {
+        if (target == null) return string.Empty;
+        var path = target.name;
+        var parent = target.parent;
+        while (parent != null && parent != root)
+        {
+            path = $"{parent.name}/{path}";
+            parent = parent.parent;
+        }
+        return parent == root ? path : string.Empty;
     }
 }
