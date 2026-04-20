@@ -1,4 +1,5 @@
 using System.Collections;
+using NUnit.Framework;
 using UnityEngine.TestTools;
 using UnityEngine;
 
@@ -59,7 +60,17 @@ namespace NoAPICalls
             AssertModeActive("GroupDetail");
 
             AssertDirectChildCount("Canvas/GroupDetailUI/ScrollDetails/Panel", 1);
-
+            
+            var groupEntry = FindChildWithTextValue("Canvas/Overlays/Group Overlay/Scroll/Panel", "Swell", "Radio/Text");
+            
+            Assert.IsTrue(
+                groupEntry != null,
+                $"Group Swell not found"
+            );
+            Assert.IsTrue(
+                    groupEntry.GetComponent<Group>().groupdata.groupParts.Count == 1,
+                    $"Group Swell has no part"
+            );
         }
     }
 }
