@@ -44,6 +44,21 @@ namespace NoAPICalls
             
             AssertGameObjectActive("Tools/Red");
 
+            yield return DragOnCanvas("Canvas", new Vector2(20, 0));
+            
+            yield return ClickButtonByPath("Canvas/EditMarker UI/Bottom/Buttons/Link");
+            
+            AssertModeActive("Edit");
+           
+            yield return ClickButtonByPath("Canvas/Edit UI/Top/GameObject/Back Button");
+
+            AssertModeActive("Main");
+
+            yield return ClickButtonByPath("Canvas/Main UI/Bottom/GroupDetail/Icon");
+            
+            AssertModeActive("GroupDetail");
+
+            AssertDirectChildCount("Canvas/GroupDetailUI/ScrollDetails/Panel", 1);
 
         }
     }

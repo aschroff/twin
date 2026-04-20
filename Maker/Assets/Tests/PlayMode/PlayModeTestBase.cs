@@ -2,6 +2,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using CW.Common;
+using PaintIn3D;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -91,6 +92,12 @@ public abstract class PlayModeTestBase : TestBase
             modeObject.activeInHierarchy,
             $"Mode '{modeName}' GameObject is not active."
         );
+    }
+
+    protected void AssertDirectChildCount(string path, int expectedCount)
+    {
+        var go = FindGameObjectByPath(path);
+        Assert.AreEqual(expectedCount, go.transform.childCount, $"Expected {expectedCount} direct children at '{path}' but found {go.transform.childCount}.");
     }
 
     protected void AssertGameObjectActive(string path)
@@ -325,6 +332,77 @@ public abstract class PlayModeTestBase : TestBase
         }
 
         return null;
+    }
+
+    protected IEnumerator DragOnCanvas(string canvasPath, Vector2 dragDelta)
+    {
+        var canvas = FindGameObjectByPath(canvasPath);
+        var rectTransform = canvas.GetComponent<RectTransform>();
+
+        var corners = new Vector3[4];
+        rectTransform.GetWorldCorners(corners);
+        // For ScreenSpaceOverlay the world corners are already in screen space
+        var center = new Vector2((corners[0].x + corners[2].x) / 2f, (corners[0].y + corners[2].y) / 2f);
+
+        var hitScreens = Object.FindObjectsOfType<CwHitScreen>(false);
+        if (hitScreens.Length > 0)
+        {
+            // CW painting pipeline: CwPointerMouse drives CwHitScreen which raycasts into 3D.
+            // GuiLayers is zeroed so the "started over GUI" guard doesn't block painting in tests.
+            foreach (var hitScreen in hitScreens)
+            {
+                var pointerMouse = hitScreen.GetComponent<CwPointerMouse>();
+                if (pointerMouse == null) continue;
+                hitScreen.GuiLayers = 0;
+                CwInputManager.Finger finger;
+                pointerMouse.GetFinger(1, center, 1.0f, true, out finger);
+                hitScreen.HandleFingerUpdate(finger, true, false);
+            }
+            yield return null;
+
+            foreach (var hitScreen in hitScreens)
+            {
+                var pointerMouse = hitScreen.GetComponent<CwPointerMouse>();
+                if (pointerMouse == null) continue;
+                CwInputManager.Finger finger;
+                pointerMouse.GetFinger(1, center + dragDelta, 1.0f, true, out finger);
+                hitScreen.HandleFingerUpdate(finger, false, false);
+            }
+            yield return null;
+
+            foreach (var hitScreen in hitScreens)
+            {
+                var pointerMouse = hitScreen.GetComponent<CwPointerMouse>();
+                if (pointerMouse == null) continue;
+                pointerMouse.TryNullFinger(1);
+            }
+        }
+        else
+        {
+            var eventSystem = EventSystem.current;
+            var pointerData = new PointerEventData(eventSystem)
+            {
+                position = center,
+                button = PointerEventData.InputButton.Left
+            };
+
+            var hits = new System.Collections.Generic.List<RaycastResult>();
+            eventSystem.RaycastAll(pointerData, hits);
+            var target = hits.Count > 0 ? hits[0].gameObject : canvas;
+
+            ExecuteEvents.Execute(target, pointerData, ExecuteEvents.pointerDownHandler);
+            yield return null;
+
+            pointerData.position = center + dragDelta;
+            pointerData.delta = dragDelta;
+            ExecuteEvents.Execute(target, pointerData, ExecuteEvents.dragHandler);
+            yield return null;
+
+            ExecuteEvents.Execute(target, pointerData, ExecuteEvents.pointerUpHandler);
+        }
+
+        yield return null;
+        yield return null;
     }
 
     protected static string GetTransformPath(Transform target)
