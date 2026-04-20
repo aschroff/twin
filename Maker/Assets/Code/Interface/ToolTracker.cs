@@ -53,8 +53,12 @@ public class ToolTracker : MonoBehaviour
                 //in case the gameobject has been destroyed, e.g. app is stopped in edit mode
                 if (toolNameDisplay != null)
                 {
-                    Debug.Log("old value tool" + toolNameDisplay.GetComponent<Text>().text);
-                    toolNameDisplay.GetComponent<Text>().text = "-"; //TODO change to TMPUGUI
+                    var label = toolNameDisplay.GetComponent<TextMeshProUGUI>();
+                    if (label != null)
+                    {
+                        Debug.Log("old value tool" + label.text);
+                        label.text = "-";
+                    }
                 }
 
             }
