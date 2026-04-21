@@ -16,7 +16,7 @@ public class GroupListSelectionManager : MonoBehaviour, ItemFile
     [SerializeField] public PartListManager partListManager;
     public void build()
     {
-        partmanager.Listening = false;
+        //partmanager.Listening = false;
         foreach (PartManager.GroupData groupdata in partmanager.groups) 
         {
             GroupSelect group = createPersistentGroup(groupdata);
