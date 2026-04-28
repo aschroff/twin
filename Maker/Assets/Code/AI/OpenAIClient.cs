@@ -21,6 +21,7 @@ namespace Code.AI
         private readonly string _apiKey;
         private readonly int _timeout;
         private const string BaseUrl = "https://api.openai.com/v1";
+        public string LastResponseId { get; private set; }
 
         public OpenAIClient(string apiKey, int timeout = 120)
         {
@@ -171,6 +172,10 @@ namespace Code.AI
 
                         Debug.Log($"Raw API Response: {responseText}");
 
+                        // extract session ID 
+                        var parsed = JObject.Parse(responseText);
+                        LastResponseId = parsed["id"]?.ToString();
+
                         // Just return the raw response - let the caller parse it
                         // This way we can see what we actually get and handle it properly
                         tcs.SetResult(responseText);
@@ -209,6 +214,7 @@ namespace Code.AI
 
             // Parse the response using JObject
             var apiResponse = JObject.Parse(rawResponse);
+            LastResponseId = apiResponse["id"]?.ToString();
 
             // Extract the JSON content from the Responses API structure
             // Based on actual API response, the structure is: output[0].content[0].text
