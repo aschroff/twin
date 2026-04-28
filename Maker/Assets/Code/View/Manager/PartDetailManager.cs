@@ -33,6 +33,8 @@ namespace Code
             if (input_field != null)
             {
                 input_field.text = partdata.description;
+                input_field.onEndEdit.RemoveAllListeners();
+                input_field.onEndEdit.AddListener(text => InteractionController.Partdata.description = text);
             }
             string name = dataManager.selectedProfileId + " - " + partdata.group.name + " - part " + partdata.id;
             string folder = dataManager.selectedProfileId;
