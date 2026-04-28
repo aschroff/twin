@@ -18,6 +18,16 @@ namespace Code
             Display();
         }
 
+        void OnDisable()
+        {
+            storeDataDescription();
+        }
+
+        void OnApplicationQuit()
+        {
+            storeDataDescription();
+        }
+
     
         // Start is called before the first frame update
         void Start()
@@ -59,6 +69,15 @@ namespace Code
             }
             
             
+        }
+
+        void storeDataDescription()
+        {
+            InputField input_field = this.transform.GetComponentInChildren<InputField>();
+            if(input_field != null)
+            {
+                InteractionController.Partdata.description = input_field.text;
+            }
         }
     }
 }
