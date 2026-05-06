@@ -3382,7 +3382,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2730589644314581939, guid: 570be41bf7ac241c2a2ff15fbbbcca67, type: 3}
       propertyPath: apiKey
-      value: 
+      value: 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
       objectReference: {fileID: 0}
     - target: {fileID: 2730589644314581939, guid: 570be41bf7ac241c2a2ff15fbbbcca67, type: 3}
       propertyPath: m_Enabled
@@ -13555,7 +13555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1010931180720044315, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: apiKey
-      value: 
+      value: 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
       objectReference: {fileID: 0}
     - target: {fileID: 1543173053446714261, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -13655,7 +13655,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.size
@@ -13675,7 +13675,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -13696,7 +13696,7 @@ PrefabInstance:
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 6090065621094729983}
+      objectReference: {fileID: 687084933}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -13735,7 +13735,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: showDetail
+      value: Handle
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -13755,7 +13755,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: AnswerManager, Assembly-CSharp
+      value: Code.PartDescriptionProcess, Maker.Runtime
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -13941,6 +13941,10 @@ PrefabInstance:
       propertyPath: dataManager
       value: 
       objectReference: {fileID: 609004393}
+    - target: {fileID: 7655103276206345984, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
+      propertyPath: partDescriptionProcess
+      value: 
+      objectReference: {fileID: 687084933}
     - target: {fileID: 7913025953020078549, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: m_Size
       value: 0.39999998
