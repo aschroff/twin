@@ -3382,7 +3382,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2730589644314581939, guid: 570be41bf7ac241c2a2ff15fbbbcca67, type: 3}
       propertyPath: apiKey
-      value: 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
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2730589644314581939, guid: 570be41bf7ac241c2a2ff15fbbbcca67, type: 3}
       propertyPath: m_Enabled
@@ -13555,7 +13555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1010931180720044315, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: apiKey
-      value: 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
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1543173053446714261, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -13675,7 +13675,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -13696,7 +13696,7 @@ PrefabInstance:
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 687084933}
+      objectReference: {fileID: 8178503565325386243}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -13735,7 +13735,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Handle
+      value: DescribePart
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -13755,7 +13755,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[1].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Code.PartDescriptionProcess, Maker.Runtime
+      value: Code.PartDetailManager, Maker.Runtime
       objectReference: {fileID: 0}
     - target: {fileID: 3600169209000951701, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
       propertyPath: menu._values.Array.data[2].onClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -18979,6 +18979,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7286011482114519073, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
   m_PrefabInstance: {fileID: 3375394921239152139}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8178503565325386243 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7655103276206345984, guid: af0cdad1e2fde4627981fae970e62ce5, type: 3}
+  m_PrefabInstance: {fileID: 3375394921239152139}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe7af9bb4814c8b9bafe862a06a7aaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8306256389819307809
 PrefabInstance:
   m_ObjectHideFlags: 0
