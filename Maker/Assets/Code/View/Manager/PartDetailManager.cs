@@ -13,6 +13,7 @@ namespace Code
     public class PartDetailManager: MonoBehaviour
     {
         [SerializeField] public DataPersistenceManager dataManager;
+        [SerializeField] public PartDescriptionProcess partDescriptionProcess;
         void OnEnable()
         {
             Display();
@@ -23,6 +24,14 @@ namespace Code
         void Start()
         {
             Display();
+        }
+
+        public void DescribePart()
+        {
+            
+            PartManager.PartData partdata = InteractionController.Partdata;
+            partDescriptionProcess.Execute("##" + partdata.id); 
+            
         }
 
         void Display()
