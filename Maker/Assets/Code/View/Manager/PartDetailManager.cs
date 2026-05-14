@@ -26,11 +26,13 @@ namespace Code
             Display();
         }
 
+        //get called in Part UI when generating new part description without starting the whole summary process in helpUI
         public void DescribePart()
         {
             
             PartManager.PartData partdata = InteractionController.Partdata;
-            partDescriptionProcess.Execute("##" + partdata.id); 
+            partDescriptionProcess.Execute("Part Description" + "##" + partdata.id); 
+            Display();
             
         }
 
