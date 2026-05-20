@@ -24,6 +24,8 @@ namespace Code.AI
 
         [Space]
         public Text characterDescription;
+        [Space]
+        public Text partDescription;
 
         public string path;
         public SettingsManager settingsManager;
@@ -85,6 +87,10 @@ namespace Code.AI
                 characterDescription.text += "---------------------------------------------------\n";
                 characterDescription.text += $"{response.Description}\n";
                 characterDescription.text += $"Category: {response.Category}\n";
+            }
+            else if (partDescription != null)
+            {
+                partDescription.text = response.Description;
             }
         }
 
