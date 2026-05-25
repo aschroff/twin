@@ -459,7 +459,6 @@ GameObject:
   - component: {fileID: 7286011482114519073}
   - component: {fileID: 2675473578843972907}
   - component: {fileID: 9009015951324240063}
-  - component: {fileID: 1010931180720044315}
   - component: {fileID: 8331130420547587876}
   - component: {fileID: 7655103276206345984}
   m_Layer: 5
@@ -513,25 +512,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3856077590853063696}
   m_CullTransparentMesh: 1
---- !u!114 &1010931180720044315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3856077590853063696}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d787e7911201f412e9b9333d187271c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  apiKey: 
-  model: gpt-4o-mini
-  timeout: 120
-  characterDescription: {fileID: 0}
-  partDescription: {fileID: 5949765517118559265}
-  path: 
-  settingsManager: {fileID: 0}
 --- !u!114 &8331130420547587876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -913,10 +893,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Text, UnityEngine.UI
-        m_MethodName: set_text
-        m_Mode: 0
+      - m_Target: {fileID: 7655103276206345984}
+        m_TargetAssemblyTypeName: Code.PartDetailManager, Maker.Runtime
+        m_MethodName: PartChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

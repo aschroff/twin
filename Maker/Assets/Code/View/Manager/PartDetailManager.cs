@@ -69,7 +69,17 @@ namespace Code
                 transform.Find("Icon").gameObject.SetActive(false);
             }
             
-            
+        }
+        
+        public void PartChanged()
+        {
+            PartManager.PartData partdata = InteractionController.Partdata;
+            InputField input_field = this.transform.GetComponentInChildren<InputField>();
+            if (input_field != null)
+            {
+                partdata.description = input_field.text;
+            }
+           
         }
     }
 }

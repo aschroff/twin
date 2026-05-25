@@ -258,7 +258,6 @@ GameObject:
   - component: {fileID: 6449004706426838526}
   - component: {fileID: 7857138719648170584}
   - component: {fileID: 9041431041242117340}
-  - component: {fileID: 2730589644314581939}
   m_Layer: 5
   m_Name: Help UI
   m_TagString: Untagged
@@ -307,32 +306,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2751227137947987381}
   m_CullTransparentMesh: 1
---- !u!114 &2730589644314581939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2751227137947987381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d787e7911201f412e9b9333d187271c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parameters:
-    apiKey: mHiQeis7KJUeAOZH88-nolTxbupsiXJUibFdZyIwmV6SwE1EFVg9kfR7FalOFM0e6eVgZAxZEDXiqFqo3_XlriQLprOtXwWbIT2ZZ65v-3Yo1jkY6TIwRl1HJKVuUvbNlxvc
-    apiKeyEncryption: 1
-    apiKeyRemoteConfigKey: openai_api_key
-    apiKeyEncryptionPassword: 52abb01a-314c-43e4-9f32-e375dbdd7610
-    model: 3
-    temperature: 1
-    role: 
-    timeout: 0
-    throttle: 0
-    _serialized: 1
-  characterDescription: {fileID: 6581765109713913885}
-  path: 
-  settingsManager: {fileID: 0}
 --- !u!1 &2938879672972153928
 GameObject:
   m_ObjectHideFlags: 0
