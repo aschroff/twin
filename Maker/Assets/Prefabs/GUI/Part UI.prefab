@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -225, y: 2089.9998}
-  m_SizeDelta: {x: 100, y: 110}
+  m_AnchoredPosition: {x: 275, y: 400}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &6440768738307884414
 CanvasRenderer:
@@ -283,9 +283,9 @@ RectTransform:
   - {fileID: 6240584893873131921}
   m_Father: {fileID: 7286011482114519073}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -784.00006}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 120, y: 200}
   m_SizeDelta: {x: 450, y: 120}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6187727054248229423
@@ -441,7 +441,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 40
-    m_Alignment: 3
+    m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 0
     m_HorizontalOverflow: 0
@@ -459,7 +459,6 @@ GameObject:
   - component: {fileID: 7286011482114519073}
   - component: {fileID: 2675473578843972907}
   - component: {fileID: 9009015951324240063}
-  - component: {fileID: 1010931180720044315}
   - component: {fileID: 8331130420547587876}
   - component: {fileID: 7655103276206345984}
   m_Layer: 5
@@ -513,31 +512,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3856077590853063696}
   m_CullTransparentMesh: 1
---- !u!114 &1010931180720044315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3856077590853063696}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d787e7911201f412e9b9333d187271c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parameters:
-    apiKey: mHiQeis7KJUeAOZH88-nolTxbupsiXJUibFdZyIwmV6SwE1EFVg9kfR7FalOFM0e6eVgZAxZEDXiqFqo3_XlriQLprOtXwWbIT2ZZ65v-3Yo1jkY6TIwRl1HJKVuUvbNlxvc
-    apiKeyEncryption: 1
-    apiKeyRemoteConfigKey: openai_api_key
-    apiKeyEncryptionPassword: 52abb01a-314c-43e4-9f32-e375dbdd7610
-    model: 3
-    temperature: 1
-    role: 
-    timeout: 0
-    throttle: 0
-    _serialized: 1
-  characterDescription: {fileID: 0}
-  path: 
 --- !u!114 &8331130420547587876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -581,6 +555,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataManager: {fileID: 0}
+  partDescriptionProcess: {fileID: 0}
 --- !u!1 &5751617684702155312
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,8 +590,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -225, y: 2089.9998}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 275, y: 400}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &2023423538033189404
 CanvasRenderer:
@@ -815,10 +790,10 @@ RectTransform:
   - {fileID: 5806483435558077760}
   m_Father: {fileID: 7286011482114519073}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -720}
-  m_SizeDelta: {x: 0, y: 600}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -120}
+  m_SizeDelta: {x: 900, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5998444977244879226
 CanvasRenderer:
@@ -918,10 +893,10 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Text, UnityEngine.UI
-        m_MethodName: set_text
-        m_Mode: 0
+      - m_Target: {fileID: 7655103276206345984}
+        m_TargetAssemblyTypeName: Code.PartDetailManager, Maker.Runtime
+        m_MethodName: PartChanged
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

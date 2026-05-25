@@ -24,6 +24,8 @@ namespace Code.AI
 
         [Space]
         public Text characterDescription;
+        [Space]
+        public InputField partDescription;
 
         public string path;
         public SettingsManager settingsManager;
@@ -80,11 +82,15 @@ namespace Code.AI
             part.description = response.Description;
             Debug.Log($"AI response for {part.meaning}: {response.Description} (Category: {response.Category})");
 
-            if (characterDescription != null)
+            if (characterDescription != null & characterDescription.isActiveAndEnabled)
             {
                 characterDescription.text += "---------------------------------------------------\n";
                 characterDescription.text += $"{response.Description}\n";
                 characterDescription.text += $"Category: {response.Category}\n";
+            }
+            else if (partDescription != null & partDescription.isActiveAndEnabled)
+            {
+                partDescription.text = response.Description;
             }
         }
 

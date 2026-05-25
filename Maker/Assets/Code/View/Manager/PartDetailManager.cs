@@ -13,6 +13,7 @@ namespace Code
     public class PartDetailManager: MonoBehaviour
     {
         [SerializeField] public DataPersistenceManager dataManager;
+        [SerializeField] public PartDescriptionProcess partDescriptionProcess;
         void OnEnable()
         {
             Display();
@@ -23,6 +24,16 @@ namespace Code
         void Start()
         {
             Display();
+        }
+
+        //get called in Part UI when generating new part description without starting the whole summary process in helpUI
+        public void DescribePart()
+        {
+            
+            PartManager.PartData partdata = InteractionController.Partdata;
+            partDescriptionProcess.Execute("Part Description" + "##" + partdata.id); 
+            Display();
+            
         }
 
         void Display()
@@ -58,7 +69,17 @@ namespace Code
                 transform.Find("Icon").gameObject.SetActive(false);
             }
             
-            
+        }
+        
+        public void PartChanged()
+        {
+            PartManager.PartData partdata = InteractionController.Partdata;
+            InputField input_field = this.transform.GetComponentInChildren<InputField>();
+            if (input_field != null)
+            {
+                partdata.description = input_field.text;
+            }
+           
         }
     }
 }
