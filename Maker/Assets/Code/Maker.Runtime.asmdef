@@ -1,0 +1,34 @@
+{
+    "name": "Maker.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "CW.Common",
+        "LeanGUI",
+        "PaintIn3D",
+        "LeanTouchPlus",
+        "NativeFilePicker.Runtime",
+        "NativeGallery.Runtime",
+        "LeanTransition",
+        "PaintCore",
+        "LeanCommon",
+        "SMPLX",
+        "LeanCommonPlus",
+        "LeanTouch",
+        "RotaryHeart.SerializableDictionary",
+        "RotaryHeart.Shared",
+        "Unity.TextMeshPro",
+        "Unity.Localization",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        "Newtonsoft.json"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

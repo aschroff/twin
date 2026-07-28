@@ -1,0 +1,28 @@
+{
+    "name": "PlayModeTests",
+    "rootNamespace": "",
+    "references": [
+        "Maker.Runtime",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "RotaryHeart.SerializableDictionary",
+        "RotaryHeart.Shared",
+        "Helper",
+        "PaintCore",
+        "CW.Common",
+        "PaintIn3D"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

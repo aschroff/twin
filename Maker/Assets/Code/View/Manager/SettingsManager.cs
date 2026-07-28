@@ -78,5 +78,33 @@ public class SettingsManager : MonoBehaviour
         }
         return childrenWithItemPrompt;
     }
+    
+    public string getInput(string label)
+    {
+        
+
+        GameObject FindChildByName(Transform current, string searchName)
+        {
+            foreach (Transform child in current)
+            {
+                if (child.name == searchName)
+                    return child.gameObject;
+                var found = FindChildByName(child, searchName);
+                if (found != null)
+                    return found;
+            }
+            return null;
+        }
+
+        GameObject target = FindChildByName(this.transform.parent, label);
+        if (target != null)
+        {
+            var inputField = target.GetComponentInChildren<InputField>();
+            if (inputField != null)
+                return inputField.text;
+        }
+        return null;
+    }
+
 
 }

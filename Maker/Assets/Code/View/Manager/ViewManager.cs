@@ -22,6 +22,7 @@ public class ViewManager : SceneManagement, IDataPersistence
             partManager = this.transform.parent.parent.parent.GetComponentInParent<PartManager>();
         }
     }
+    
 
     public void build()
     {
@@ -49,7 +50,8 @@ public class ViewManager : SceneManagement, IDataPersistence
     public View getDefaultView() {
 
         View defaultView = new View();
-        defaultView.name = "Default View";
+        //defaultView.name = "Default View"; 
+        defaultView.name = StringLocalizer.localizeString("Default view");
         defaultView.positionCamera_x = 0.0f;
         defaultView.positionCamera_y = 0.5f;
         defaultView.positionCamera_z = 1.0f;

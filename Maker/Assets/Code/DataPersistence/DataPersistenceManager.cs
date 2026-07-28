@@ -61,14 +61,14 @@ public class DataPersistenceManager : MonoBehaviour
             Debug.LogWarning("Data Persistence is currently disabled!");
         }
 
-        this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
+        this.dataHandler = new FileDataHandler(DataPaths.PersistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
 
         InitializeSelectedProfileId();
     }
 
     private void Start()
     {
-        this.dataHandler = new FileDataHandler(Application.persistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
+        this.dataHandler = new FileDataHandler(DataPaths.PersistentDataPath, Path.Combine(Application.streamingAssetsPath, "templates"), fileName, useEncryption);
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadConfig();
         initPersistentObjects();
@@ -120,7 +120,7 @@ public class DataPersistenceManager : MonoBehaviour
 
     private void InitializeSelectedProfileId() 
     {
-        this.selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId();
+        this.selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId() ?? "default.000";
     }
 
     public void NewConfig(string modelName, string modelVersion = "") 
@@ -190,13 +190,13 @@ public class DataPersistenceManager : MonoBehaviour
         foreach (KeyValuePair<string, Template> template in templates)
         {
             string content = template.Value.configFile.text;
-            string path = Path.Combine(Application.persistentDataPath,template.Key);
+            string path = Path.Combine(DataPaths.PersistentDataPath,template.Key);
             Directory.CreateDirectory(path);
-            System.IO.File.WriteAllText(Path.Combine(Application.persistentDataPath,template.Key, "ConfigTwin"), content);
+            System.IO.File.WriteAllText(Path.Combine(DataPaths.PersistentDataPath,template.Key, "ConfigTwin"), content);
             foreach (KeyValuePair<string, Texture2D> stickerFile in template.Value.stickerFiles)
             {
                 byte[] bytes = stickerFile.Value.EncodeToPNG();
-                File.WriteAllBytes(Path.Combine(Application.persistentDataPath,template.Key, stickerFile.Key + ".png"), bytes);
+                File.WriteAllBytes(Path.Combine(DataPaths.PersistentDataPath,template.Key, stickerFile.Key + ".png"), bytes);
             }
 
             
@@ -301,25 +301,49 @@ public class DataPersistenceManager : MonoBehaviour
             return;
         }
 
-        // if we don't have any data to save, log a warning here
-        if (this.configData == null) 
+        bool flowControl = PrepareConfigStorage();
+        if (!flowControl)
         {
-            Debug.LogWarning("No data was found. A New Game needs to be started before data can be saved.");
             return;
         }
 
+        // save that data to a file using the data handler
+        dataHandler.Save(configData, selectedProfileId);
+    }
+
+    public void ExportConfig()
+    {
+        bool flowControl = PrepareConfigStorage();
+        if (!flowControl)
+        {
+            return;
+        }
+
+        // save that data to a file using the data handler
+        dataHandler.ExportData(configData, selectedProfileId);
+    }
+
+    /*
+    * Collects the saveable data
+    */
+    private bool PrepareConfigStorage()
+    {
+        // if we don't have any data to save, log a warning here
+        if (this.configData == null)
+        {
+            Debug.LogWarning("No data was found. A New Game needs to be started before data can be saved.");
+            return false;
+        }
+
         // pass the data to other scripts so they can update it
-        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
         {
             dataPersistenceObj.SaveData(configData);
         }
 
         // timestamp the data so we know when it was last saved
         configData.lastUpdated = System.DateTime.Now.ToBinary();
-
-
-        // save that data to a file using the data handler
-        dataHandler.Save(configData, selectedProfileId);
+        return true;
     }
 
     private void OnApplicationQuit() 

@@ -15,6 +15,7 @@ public class  InteractionController : Singleton<InteractionController>
     [SerializeField] private static string version;
     [SerializeField] private static PartManager.GroupData groupdata;
     [SerializeField] private static PartManager.PartData partdata;
+    [SerializeField] GameObject currentMode;
 
     public static string Twin
     {
@@ -40,7 +41,7 @@ public class  InteractionController : Singleton<InteractionController>
         set { partdata = value; }
     }
     
-    GameObject currentMode;
+    
     
         
     public delegate void ModeChange(GameObject modeOld, GameObject modeNew);

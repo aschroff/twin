@@ -158,4 +158,13 @@ public class ConfigManager : MonoBehaviour
         return nameValidator.IsValidInput(inputNameWithVersion);
         //return true;
     }
+
+    /*
+    Export current twin selection 
+    */
+    public void ExportTwin()
+    {
+        dataPersistenceManager.ExportConfig();
+    }
+
 }

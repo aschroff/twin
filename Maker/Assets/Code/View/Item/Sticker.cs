@@ -198,7 +198,7 @@ public class Sticker : ItemHash, ItemFile
 	{   
 		DataPersistenceManager dataManager = this.transform.parent.gameObject.GetComponent<StickerRepo>().dataManager;
 		string profile = dataManager.selectedProfileId;
-		return Path.Combine(Application.persistentDataPath,profile,
+		return Path.Combine(DataPaths.PersistentDataPath,profile,
 			this.gameObject.GetComponent<Item>().getId() + ".png");
 		
 	}

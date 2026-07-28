@@ -36,7 +36,7 @@ public class PartListManager : MonoBehaviour
                 }
                 string name = dataManager.selectedProfileId + " - " + group.groupdata.name + " - part " + partData.id;
                 string folder = dataManager.selectedProfileId;
-                string fullPath = Path.Combine(Application.persistentDataPath,folder,
+                string fullPath = Path.Combine(DataPaths.PersistentDataPath,folder,
                         "screenshot_" + name + ".png");
                 if (File.Exists(fullPath))
                 {

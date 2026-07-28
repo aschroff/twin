@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
-
+using static NativeFilePicker;
+using System.IO.Compression;
 
 
 public class FileDataHandler
@@ -14,6 +15,7 @@ public class FileDataHandler
     private bool useEncryption = false;
     private readonly string encryptionCodeWord = "word";
     private readonly string backupExtension = ".bak";
+    private readonly string compressExtension = ".zip";
 
     public FileDataHandler(string dataDirPath, string templateDirPath, string dataFileName, bool useEncryption) 
     {
@@ -391,7 +393,46 @@ public class FileDataHandler
                     File.Copy(fullPathSourceFilePng, fullPathTargetFilePng, true);
                 }
             }
+        }      
+    }
+    
+    public void ExportData(ConfigData data, string profileId)
+    {
+        // Saving file before exporting it
+        Save(data, profileId);
+        string zipFilePath = CompressFolder(profileId);
+        ExportFile(zipFilePath);
+    }
+
+    private string CompressFolder(string profileId)
+    {   
+        string profileDirectoryPath = Path.Combine( dataDirPath, profileId );
+        string zipFilePath = Path.Combine( dataDirPath, profileId ) + compressExtension;
+
+        // manually overwrite an already existing version of a zip file with this name because we don't wand to provide a version history and to avoid conflicts with already existing files
+        try 
+        {
+            if (File.Exists(zipFilePath))
+            {
+                File.Delete(zipFilePath);
+            }
+            ZipFile.CreateFromDirectory( profileDirectoryPath, zipFilePath);
+            return zipFilePath;
+
+        } catch (Exception e)
+        {
+            Debug.Log("Compressing Folder didn't work, throwing this Exception Message: " + e.Message);
+            throw e;
         }
-            
+    }
+
+    private void ExportFile(string filePath)
+    {
+        // Don't attempt to import/export files if the file picker is already open
+        if( IsFilePickerBusy() )
+        {
+            return;
+        }
+        NativeFilePicker.ExportFile( filePath, ( success ) => Debug.Log( "File exported:" + success ) );
     }
 }

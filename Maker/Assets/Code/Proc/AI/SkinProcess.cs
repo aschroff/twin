@@ -17,7 +17,7 @@ namespace Code
             byte[] bodyBytes = bodyTexture.GetPngData();
             DataPersistenceManager dataManager = getDataManager();
             name = dataManager.selectedProfileId;
-            string fullPath =  Path.Combine(Application.persistentDataPath,name, "skin_" + name + ".png");
+            string fullPath =  Path.Combine(DataPaths.PersistentDataPath,name, "skin_" + name + ".png");
             File.WriteAllBytes(fullPath, bodyBytes);
             NativeGallery.SaveImageToGallery(bodyBytes, "twinAlbum", "skin_" + name + ".png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ) );
             LeanPulse notification = getNotification();

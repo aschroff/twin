@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3697226621704615350}
   m_Layer: 5
-  m_Name: New
+  m_Name: Create
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -817,7 +817,11 @@ RectTransform:
   m_Children:
   - {fileID: 1608279116538234196}
   - {fileID: 7260145422006575110}
+<<<<<<< HEAD
   - {fileID: 522743595740426380}
+=======
+  - {fileID: 2462491667097495500}
+>>>>>>> master
   m_Father: {fileID: 8213253634244721918}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1691,7 +1695,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+<<<<<<< HEAD
 --- !u!1001 &4437219734317045837
+=======
+--- !u!1001 &1799615000098197261
+>>>>>>> master
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1701,7 +1709,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+<<<<<<< HEAD
       value: 129722068390371328
+=======
+      value: 129652683139178496
+>>>>>>> master
       objectReference: {fileID: 0}
     - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_StringReference.m_TableReference.m_TableCollectionName
@@ -1709,7 +1721,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4239298270747373838, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_Text
+<<<<<<< HEAD
       value: Import Twin
+=======
+      value: 'Export Twin
+
+'
+>>>>>>> master
       objectReference: {fileID: 0}
     - target: {fileID: 4239298270747373838, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_Color.b
@@ -1821,7 +1839,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4239298271117699265, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_AnchoredPosition.x
+<<<<<<< HEAD
       value: 700
+=======
+      value: 593
+>>>>>>> master
       objectReference: {fileID: 0}
     - target: {fileID: 4239298271117699265, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1846,10 +1868,17 @@ PrefabInstance:
     - target: {fileID: 4239298271117699269, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_Sprite
       value: 
+<<<<<<< HEAD
       objectReference: {fileID: 21300000, guid: 089cab63eb733434da8b6b5975099160, type: 3}
     - target: {fileID: 4239298271117699390, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_Name
       value: Import
+=======
+      objectReference: {fileID: 21300000, guid: a14c988b782724153a2c0144b5797321, type: 3}
+    - target: {fileID: 4239298271117699390, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_Name
+      value: Export
+>>>>>>> master
       objectReference: {fileID: 0}
     - target: {fileID: 4684022689559253548, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_Colors.m_ColorMultiplier
@@ -1865,7 +1894,11 @@ PrefabInstance:
       objectReference: {fileID: 34455528108144745}
     - target: {fileID: 4684022689559253548, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+<<<<<<< HEAD
       value: 
+=======
+      value: ExportTwin
+>>>>>>> master
       objectReference: {fileID: 0}
     - target: {fileID: 4684022689559253548, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -1880,10 +1913,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+<<<<<<< HEAD
 --- !u!224 &522743595740426380 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4239298271117699265, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
   m_PrefabInstance: {fileID: 4437219734317045837}
+=======
+--- !u!224 &2462491667097495500 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4239298271117699265, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+  m_PrefabInstance: {fileID: 1799615000098197261}
+>>>>>>> master
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6779101178258294983
 PrefabInstance:
