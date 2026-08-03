@@ -139,6 +139,23 @@ Circumferential complaints ("around the …") map to both sides of the joint:
 - **Extended:** 24 keys — face detail, jaw joints, ears, armpit, genital region, palm, heel, toes, soles.
 - **Total:** 98 region keys.
 
+## Generation status & problem kids (2026-07-31, batches 03–09)
+
+All 98 regions generated and promoted to bundled template twins under
+`Assets/Resources/templates/`: `Torso.twin` (21), `Arms.twin` (20), `Legs.twin` (14),
+`Feet.twin` (12), `Head.twin` (17), `Hands.twin` (14) — split per body area so the
+group overlay stays scrollable. All regions raycast-verified with correct 3D positions. **Problem kids** — regions flagged
+for manual rework or later tuning, in descending severity:
+
+| Region keys | Problem | Severity |
+|---|---|---|
+| `big_toe_L/R`, `toes_L/R` | Only 1–3 commands recorded — most stroke points missed the thin toe geometry. Needs re-aiming (zoom/pitch) or manual painting. | Data too sparse |
+| `hip_L/R` | Fill renders as thin arc (curved surface) — consider stroke instead. | Visual |
+| `elbow_front/back_L/R`, `wrist_L/R`, `knee_front/back_L/R` | Fill circles render as half-moons on the thin limbs (mild curvature effect). Consider cross-strokes ("band" look) if not acceptable. | Visual/taste |
+| `thigh_back_L/R`, `calf_L/R`, `heel_L/R`, `knee_back_L/R` | Data positions verified correct (back side); rendered faintly in harness overviews — **verify in-app** before judging. | Verify |
+| `hand_palm_L/R` vs `hand_back_L/R` | Fingers/backs confirmed hit at pitch ±50°; whether palm vs. back sides are correctly distinguished needs in-app review. | Verify |
+| `foot_sole_L/R` | 56 commands at plausible under-foot positions (y≈−1.25) — surprisingly successful, verify in-app. | Verify |
+
 ## Open review questions
 
 1. Breast as separate region (`breast_left/right`) vs. covered by `chest_left/right`? (medical relevance vs. sensitivity)
