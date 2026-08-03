@@ -33,7 +33,7 @@ public static class TemplatePoCRunner
         Run("NoAPICalls.SaveTwinPlayModeTests.SaveButton_OpensSaveMode");
     }
 
-    private const string Gen = "NoAPICalls.TemplateLibraryGenerator.";
+    private const string Gen = "TemplateLibraryTools.TemplateLibraryGenerator.";
 
     [MenuItem("Tools/Template Library/Batch 01 Torso Front")]
     public static void GenBatch01() { Run(Gen + "Batch01_TorsoFront"); }
