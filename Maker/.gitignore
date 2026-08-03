@@ -73,3 +73,7 @@ crashlytics-build.properties
 # Test secrets (contains API keys and credentials)
 Assets/Tests/Helper/testsecrets.json
 Assets/Tests/Helper/testsecrets.json.meta
+# Template library generation workspace: everything is transient staging except the README.
+# Finished areas are promoted to Assets/Resources/templates/<Area>.twin (the real deliverable).
+TemplateLibrary/*
+!TemplateLibrary/README.md

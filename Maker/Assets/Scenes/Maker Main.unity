@@ -1950,9 +1950,11 @@ MonoBehaviour:
     _keyValues:
     - LipEdema.twin
     - Violence.tbd
+    - Torso.twin
     _keys:
     - LipEdema.twin
     - Violence.tbd
+    - Torso.twin
     _values:
     - configFile: {fileID: 4900000, guid: 2cb451d0b3016413fb6aa3d9b125703a, type: 3}
       stickerFiles:
@@ -2004,6 +2006,34 @@ MonoBehaviour:
         - {fileID: 2800000, guid: f2082cb237d5d40fdab74ddb8022015e, type: 3}
         - {fileID: 2800000, guid: 3799b462ccfce4cf3bbcdfd1ea65cb00, type: 3}
     - configFile: {fileID: 4900000, guid: 0adf22c38698a47a6ae45ab3a81118b2, type: 3}
+      stickerFiles:
+        reorderableList:
+          canAdd: 1
+          canRemove: 1
+          draggable: 1
+          expandable: 1
+          multipleSelection: 1
+          isExpanded: 0
+          label:
+            m_Text: Keys
+            m_Image: {fileID: 0}
+            m_Tooltip: 
+            m_TextWithWhitespace: "Keys\u200B"
+          headerHeight: 18
+          footerHeight: 13
+          slideEasing: 0.15
+          verticalSpacing: 2
+          showDefaultBackground: 1
+          elementDisplayType: 0
+          elementNameProperty: 
+          elementNameOverride: 
+          elementIcon: {fileID: 0}
+        reqReferences: {fileID: 0}
+        isExpanded: 0
+        _keyValues: []
+        _keys: []
+        _values: []
+    - configFile: {fileID: 4900000, guid: 554f6f0ea86b743cc91da32412da93c0, type: 3}
       stickerFiles:
         reorderableList:
           canAdd: 1
@@ -6072,7 +6102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d787e7911201f412e9b9333d187271c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Maker.Runtime::Code.AI.AI
-  apiKey: 
+  apiKey: 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
   model: gpt-4o-mini
   timeout: 120
   characterDescription: {fileID: 1729867414}

@@ -175,3 +175,9 @@ Assets/
 - API keys / credentials should be stored in environment variables or a git-ignored `credentials.json` – **never** committed to the repository.
 - Unity version: check `ProjectSettings/ProjectVersion.txt` for the exact editor version.
 - When editing data models (`ConfigData`, etc.), ensure backwards compatibility with existing saved files.
+- **Twin names are limited to 11 characters** (`TwinNameValidator`: `^[a-zA-Z0-9_()-]{1,11}$`; the code comment claims 14 but the regex enforces 11). Invalid names fail silently apart from a toast — the New/Save-as buttons then simply don't switch modes.
+- `PartData.description` is the free-text field the user edits in the Part detail UI; `meaning`/`nameTool`/`colorTool` are stamped from the active tool by `PartManager.StoreCurrentPartInformation()`.
+- `PartManager.SaveData` serialises via `JsonUtility.ToJson(this)`; the `PartData.group` ↔ `GroupData.groupParts` cycle triggers "Serialization depth limit 10 exceeded" warnings — known/pre-existing behaviour, the saved format relies on it.
+- PlayMode tests can be launched from automation via **Tools → Template PoC → Run PlayMode Test** (`Assets/Tests/Editor/TemplatePoCRunner.cs`); results are written to `Temp/TemplatePoCResults.json`. The body-region template library is generated via **Tools → Template Library → Batch …** (output in `TemplateLibrary/`, see its README).
+- For programmatic painting in tests, read `Assets/Tests/PlayMode/NoAPICalls/CwPaintingTestGuide.md` first — especially the single-frame stroke gotcha.
+- Paint commands reference the `CwPaintableTexture` by session-local `instanceID`; the ID is stable while the project doesn't change but shifts after recompiles with new assets/asmdefs. Bundled sample twins ship without command data (visuals come from image files). The app saves on quit (`OnApplicationQuit → SaveConfig`) — never edit config files while the app runs. App Reset deletes all profiles.
