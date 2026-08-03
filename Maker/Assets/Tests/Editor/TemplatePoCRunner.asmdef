@@ -1,20 +1,13 @@
 {
-    "name": "PlayModeTests",
+    "name": "TemplatePoCRunner",
     "rootNamespace": "",
     "references": [
-        "Maker.Runtime",
-        "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "RotaryHeart.SerializableDictionary",
-        "RotaryHeart.Shared",
-        "Helper",
-        "PaintCore",
-        "CW.Common",
-        "PaintIn3D",
-        "LeanCommon",
-        "LeanCommonPlus"
+        "UnityEngine.TestRunner"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
