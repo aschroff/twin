@@ -166,5 +166,9 @@ public class ConfigManager : MonoBehaviour
     {
         dataPersistenceManager.ExportConfig();
     }
+    public void ImportTwin()
+    {
+        dataPersistenceManager.ImportConfig();
+    }
 
 }
