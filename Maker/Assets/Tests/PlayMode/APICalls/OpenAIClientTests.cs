@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.TestTools;
 
+namespace APICalls {
 public class OpenAIClientTests : TestBase
 {
     private const string TestModel = "gpt-4o-mini"; // For basic tests
@@ -540,4 +541,6 @@ public class OpenAIClientTests : TestBase
 
         Debug.Log($"\n✅ Both file handling approaches work correctly!");
     }
+}
+
 }
