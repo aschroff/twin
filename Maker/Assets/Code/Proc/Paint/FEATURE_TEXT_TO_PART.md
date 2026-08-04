@@ -87,7 +87,9 @@ Scaling to the full library:
 - **Storage decision (2026-07-31):** templates ship as bundled area twins under
   `Assets/Resources/templates/<Area>.twin/ConfigTwin.txt` (registered in the scene's
   `DataPersistenceManager.templates`, so they also appear in the app after Reset for review).
-  Promoted so far: `Torso.twin` (21 regions). Generation workspace + promotion recipe:
+  All six area twins are promoted (98 regions total): `Torso.twin` (21), `Arms.twin` (20),
+  `Legs.twin` (14), `Feet.twin` (12), `Head.twin` (17), `Hands.twin` (14) — split per area
+  so the group overlay stays scrollable. Generation workspace + promotion recipe:
   `TemplateLibrary/README.md`.
 - **Open design decision for PartTemplateService (step 5):** a runtime **manifest** is needed
   either way (region key → area twin, EN/DE display names, tool kind, default size — feeds the
@@ -185,7 +187,7 @@ Scaling to the full library:
 
 ## Template Library Generation — Findings (2026-07-30)
 
-Generator: `Assets/Tests/PlayMode/NoAPICalls/TemplateLibraryGenerator.cs` (+ `TemplateRegionTable.cs`),
+Generator: `Assets/Tests/PlayMode/TemplateLibraryTools/TemplateLibraryGenerator.cs` (+ `TemplateRegionTable.cs`),
 run via **Tools → Template Library → Batch …**. Output persists in `<project>/TemplateLibrary/`
 (twin data, per-region screenshots, exported `commandDetails.json`). Batches are idempotent:
 existing regions are skipped; keys listed in `TemplateLibrary/regenerate.txt` are deleted and repainted.
