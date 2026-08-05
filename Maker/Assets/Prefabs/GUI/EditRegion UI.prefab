@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 6364195641283781980}
   - component: {fileID: 4310045425916440323}
   - component: {fileID: 8701350957069522710}
-  - component: {fileID: 2988672587906496135}
+  - component: {fileID: 3540111569851128095}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -297,7 +297,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 1
---- !u!114 &2988672587906496135
+--- !u!114 &3540111569851128095
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -306,9 +306,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4309902798955195142}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfb7ebd25c9e46a381e2c0be5fab3fde, type: 3}
+  m_Script: {fileID: 11500000, guid: d27d6f38d62c419c89a29f496e1e54ab, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Maker.Runtime::RegionManager
+  prefab: {fileID: 5312884301122456701, guid: 7c3f9b2d84e6a4f1b9d5c8a7e2f60413, type: 3}
 --- !u!1 &5839411898785233806
 GameObject:
   m_ObjectHideFlags: 0

@@ -7658,6 +7658,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1668881093281699679, guid: 1ed159dc2f72941dcb34bc4115d9bb77, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5513377015833497343}
+    - target: {fileID: 1668881093281699679, guid: 1ed159dc2f72941dcb34bc4115d9bb77, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EnableMode
+      objectReference: {fileID: 0}
+    - target: {fileID: 1668881093281699679, guid: 1ed159dc2f72941dcb34bc4115d9bb77, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InteractionController, Maker.Runtime
+      objectReference: {fileID: 0}
     - target: {fileID: 1932606955148567358, guid: 1ed159dc2f72941dcb34bc4115d9bb77, type: 3}
       propertyPath: m_Name
       value: EditRegion UI

@@ -103,6 +103,77 @@ public static class PartTemplateService
         return newGroup;
     }
 
+    /// <summary>
+    /// Paints a region with the tool the user currently has selected in the app. Region
+    /// templates are sphere-painted, so only marker/filler tools can carry them — if the
+    /// active tool is a sticker/text tool (or nothing is active), the first marker tool
+    /// found in the Tools container is used instead.
+    /// </summary>
+    public static PartManager.GroupData PaintTemplateGroupWithCurrentTool(string twinName, string groupName)
+    {
+        return PaintTemplateGroup(twinName, groupName, ResolveCurrentOrDefaultToolName());
+    }
+
+    /// <summary>Name of the active marker/filler tool, or of the first marker tool as fallback.</summary>
+    public static string ResolveCurrentOrDefaultToolName()
+    {
+        GameObject active = FindActiveTool();
+        if (active != null && IsRegionCapableTool(active))
+        {
+            return active.name;
+        }
+        GameObject marker = FindFirstMarkerTool();
+        if (marker == null)
+        {
+            throw new InvalidOperationException("No marker tool found in the Tools container.");
+        }
+        return marker.name;
+    }
+
+    /// <summary>Region templates consist of CwCommandSphere data — only tools that paint
+    /// spheres (markers, fillers) can be used for them; stickers/text paint decals.</summary>
+    private static bool IsRegionCapableTool(GameObject tool)
+    {
+        return tool.GetComponent<CwPaintSphere>() != null;
+    }
+
+    private static GameObject FindActiveTool()
+    {
+        Transform container = FindToolsContainer();
+        foreach (Transform child in container)
+        {
+            if (child.gameObject.activeSelf)
+            {
+                return child.gameObject;
+            }
+        }
+        return null;
+    }
+
+    private static GameObject FindFirstMarkerTool()
+    {
+        Transform container = FindToolsContainer();
+        foreach (Transform child in container)
+        {
+            // markers paint spheres and are not fills
+            if (child.GetComponent<CwPaintSphere>() != null && child.GetComponent<CwHitScreenFill>() == null)
+            {
+                return child.gameObject;
+            }
+        }
+        return null;
+    }
+
+    private static Transform FindToolsContainer()
+    {
+        GameObject[] containers = GameObject.FindGameObjectsWithTag("Tools");
+        if (containers.Length == 0)
+        {
+            throw new InvalidOperationException("Tools container not found in scene.");
+        }
+        return containers[0].transform;
+    }
+
     /// <summary>Region names available in a bundled template twin (for prompts/UI).</summary>
     public static List<string> GetTemplateGroupNames(string twinName)
     {

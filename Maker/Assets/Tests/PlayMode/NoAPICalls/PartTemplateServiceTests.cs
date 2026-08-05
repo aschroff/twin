@@ -128,6 +128,58 @@ namespace NoAPICalls
                 () => PartTemplateService.PaintTemplateGroup("Arms.twin", "wrist_right", "NoSuchTool", partManager));
         }
 
+        /// <summary>The manual region-selection feature (RegionManager icon click) paints with
+        /// the tool the user currently has selected, falling back to a marker when the active
+        /// tool cannot carry sphere-based region templates.</summary>
+        [UnityTest]
+        public IEnumerator PaintWithCurrentTool_UsesActiveTool_AndFallsBackToMarker()
+        {
+            yield return ClickButtonByName("Save Button");
+            yield return WaitForModeActive("Save");
+            SetInputByName("InputField", "CurToolTest");
+            yield return ClickButtonByName("New");
+            yield return WaitForModeActive("Main");
+
+            var toolsRoot = GameObject.FindGameObjectsWithTag("Tools")[0];
+
+            // (a) no paint tool selected -> marker fallback.
+            // Only DEactivating tools here: activating one directly would run ToolTracker.OnEnable
+            // outside the UI flow (its myButton is wired by the tool buttons).
+            foreach (Transform tool in toolsRoot.transform)
+                tool.gameObject.SetActive(false);
+
+            string fallback = PartTemplateService.ResolveCurrentOrDefaultToolName();
+            var fallbackTool = toolsRoot.transform.Find(fallback);
+            Assert.IsNotNull(fallbackTool, $"Fallback tool '{fallback}' should exist in the Tools container.");
+            Assert.IsNotNull(fallbackTool.GetComponent<PaintIn3D.CwPaintSphere>(),
+                "Fallback must be a sphere-painting tool (markers/fillers only).");
+            Assert.IsNull(fallbackTool.GetComponent<PaintIn3D.CwHitScreenFill>(),
+                "Fallback must be a marker, not a filler.");
+
+            var group = PartTemplateService.PaintTemplateGroupWithCurrentTool("Arms.twin", "elbow_front_left");
+            yield return null;
+            Assert.AreEqual(fallback, group.groupParts[0].nameTool,
+                "Part should carry the fallback marker tool.");
+
+            // (b) tool selected through the real UI -> exactly that tool is used
+            yield return ClickButtonByName("Edit Button");
+            yield return WaitForModeActive("Edit");
+            yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Filler/Text Background/Text");
+            yield return WaitForModeActive("EditFiller");
+            yield return ClickButtonByPath("Canvas/EditFiller UI/Bottom/Scroll/Panel/Cyan");
+            AssertGameObjectActive("Tools/Cyan Filling");
+
+            Assert.AreEqual("Cyan Filling", PartTemplateService.ResolveCurrentOrDefaultToolName(),
+                "The active filler tool should be used as-is.");
+
+            var fillerGroup = PartTemplateService.PaintTemplateGroupWithCurrentTool("Arms.twin", "elbow_front_right");
+            yield return null;
+            Assert.AreEqual("Cyan Filling", fillerGroup.groupParts[0].nameTool);
+            var expectedColor = toolsRoot.transform.Find("Cyan Filling").GetComponent<PaintIn3D.CwPaintSphere>().Color;
+            Assert.AreEqual(expectedColor, fillerGroup.groupParts[0].colorTool,
+                "Part should carry the active tool's color.");
+        }
+
         /// <summary>Regression for the rebind-on-load fix in PartManager.LoadData: loading a
         /// twin whose serialized PaintableTexture instanceIDs are stale (always true for
         /// bundled templates inside the test harness — it allocates different IDs than app
