@@ -202,6 +202,85 @@ namespace NoAPICalls
                 "Part should carry the active tool's color.");
         }
 
+        /// <summary>Regression for the save-file blow-up: PartData.group ↔ GroupData.groupParts
+        /// used to be inlined by JsonUtility up to depth 10, growing the file by roughly
+        /// (parts per group)^5 — 8 parts in one group once produced 635 MB. With the cycle
+        /// broken, size must grow LINEARLY with the number of parts in a group.</summary>
+        [UnityTest]
+        public IEnumerator SaveFileSize_GrowsLinearly_WithPartsInOneGroup()
+        {
+            yield return ClickButtonByName("Save Button");
+            yield return WaitForModeActive("Save");
+            SetInputByName("InputField", "SizeTest");
+            yield return ClickButtonByName("New");
+            yield return WaitForModeActive("Main");
+
+            var partManager = Object.FindObjectOfType<PartManager>();
+            EnsureActiveGroup(partManager, "Test");
+            var dpm = DataPersistenceManager.instance;
+            string configPath = System.IO.Path.Combine(DataPaths.PersistentDataPath, dpm.selectedProfileId, "ConfigTwin");
+
+            long sizeOnePart = 0;
+            long sizeFiveParts = 0;
+            for (int i = 1; i <= 5; i++)
+            {
+                // spine_central is a small stroke template (7 commands) — keeps the payload tiny
+                PartTemplateService.PaintRegion("Torso.twin", "spine_central", null, partManager);
+                yield return null;
+                dpm.SaveConfig();
+                long size = new System.IO.FileInfo(configPath).Length;
+                Debug.Log($"[SizeTest] {i} part(s) in one group -> ConfigTwin {size} bytes");
+                if (i == 1) sizeOnePart = size;
+                if (i == 5) sizeFiveParts = size;
+            }
+
+            // linear growth: 5 parts must stay well below 10x a single part
+            // (the old cycle would have produced ~5^5 = 3125x)
+            Assert.Less(sizeFiveParts, sizeOnePart * 10,
+                $"Save file grows non-linearly: 1 part={sizeOnePart} bytes, 5 parts={sizeFiveParts} bytes.");
+            Assert.Less(sizeFiveParts, 2 * 1024 * 1024,
+                "Five small parts in one group must not produce a multi-megabyte save file.");
+        }
+
+        /// <summary>PartData.group is [NonSerialized]; LoadData must restore the link, because
+        /// the AI prompt builder (PromptGeneration/Part.cs) and PartDetailManager read
+        /// part.group.name.</summary>
+        [UnityTest]
+        public IEnumerator LoadTwin_RelinksPartsToTheirGroups()
+        {
+            yield return ClickButtonByName("Save Button");
+            yield return WaitForModeActive("Save");
+            SetInputByName("InputField", "RelinkTest");
+            yield return ClickButtonByName("New");
+            yield return WaitForModeActive("Main");
+
+            var partManager = Object.FindObjectOfType<PartManager>();
+            var group = EnsureActiveGroup(partManager, "Pain");
+            PartTemplateService.PaintRegion("Torso.twin", "spine_central", null, partManager);
+            yield return null;
+
+            var dpm = DataPersistenceManager.instance;
+            dpm.SaveConfig();
+            string profileId = dpm.selectedProfileId;
+
+            // round trip through a different twin and back
+            dpm.ChangeSelectedProfileId("default.000");
+            yield return null;
+            dpm.ChangeSelectedProfileId(profileId);
+            yield return null;
+
+            partManager = Object.FindObjectOfType<PartManager>();
+            var reloaded = partManager.groups.FirstOrDefault(g => g.name == "Pain");
+            Assert.IsNotNull(reloaded, "Group should survive the round trip.");
+            Assert.AreEqual(1, reloaded.groupParts.Count);
+            foreach (var part in reloaded.groupParts)
+            {
+                Assert.IsNotNull(part.group, "part.group must be re-linked after loading.");
+                Assert.AreSame(reloaded, part.group, "part.group must point at its owning group.");
+                Assert.AreEqual("Pain", part.group.name);
+            }
+        }
+
         /// <summary>Regression for the rebind-on-load fix in PartManager.LoadData: loading a
         /// twin whose serialized PaintableTexture instanceIDs are stale (always true for
         /// bundled templates inside the test harness — it allocates different IDs than app

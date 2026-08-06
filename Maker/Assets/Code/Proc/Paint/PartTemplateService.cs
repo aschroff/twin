@@ -7,21 +7,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Text→Part feature (see FEATURE_TEXT_TO_PART.md in this folder): stamps a pre-painted
+/// Text→Part feature (see FEATURE_TEXT_TO_PART.md in this folder): paints a pre-painted
 /// body-region template onto the currently loaded twin.
 ///
-/// Templates are the bundled area twins under Resources/templates/&lt;Area&gt;.twin/ConfigTwin
-/// (generated via TemplateLibraryGenerator, one group per region — see
-/// Assets/Resources/BODY_REGIONS.md for the region catalog).
+/// Templates are the bundled area twins under Resources/templates/&lt;Area&gt;.twin/ConfigTwin,
+/// where each group is one body region (region catalog: Assets/Resources/BODY_REGIONS.md).
 ///
-/// The cloned commands are re-bound to the live CwPaintableMeshTexture at insertion time,
-/// because serialized PaintableTexture references are session-local instanceIDs and never
-/// survive into another session.
-///
-/// A stamped region behaves exactly like normal painting with a tool: the new part is added
-/// to the twin's CURRENTLY ACTIVE group. Groups are the user's semantic categories
-/// (Injuries, Pain, Treatment, …) — region names are NOT groups; the region key is carried
-/// on the part itself (PartData.description).
+/// Painting a region works like painting with a tool by hand: the new part is added to the
+/// twin's currently active group. Groups are the user's categories (Injuries, Pain,
+/// Treatment, …); the region key is carried on the part (PartData.description).
 /// </summary>
 public static class PartTemplateService
 {
@@ -41,7 +35,7 @@ public static class PartTemplateService
     [Serializable]
     public class TemplateTwinInfo
     {
-        public string twinName;      // e.g. "Arms.twin" — pass to PaintTemplateGroup
+        public string twinName;      // e.g. "Arms.twin" — pass to PaintRegion
         public List<string> regions; // region keys, e.g. "shoulder_front_left" (see BODY_REGIONS.md)
     }
 
@@ -66,7 +60,7 @@ public static class PartTemplateService
 
     /// <param name="toolName">Name of a marker/filler tool GameObject under the app's Tools
     /// container (e.g. "Yellow", "Cyan Filling"). Its color and meaning are applied to the
-    /// stamped part. Null keeps the template's own (Red) tool.</param>
+    /// stamped part. Null keeps the tool the template was painted with.</param>
     public static List<PartManager.PartData> PaintRegion(string twinName, string regionName, string toolName)
     {
         var partManager = UnityEngine.Object.FindObjectOfType<PartManager>();
@@ -256,8 +250,8 @@ public static class PartTemplateService
         var newParts = new List<PartManager.PartData>();
         foreach (var templatePart in templateGroup.groupParts)
         {
-            // the deserialized template objects are fresh instances owned by nobody else,
-            // so they can be adopted directly — only ids and texture bindings must be renewed
+            // the deserialized template objects are private to this call, so they can be
+            // adopted directly — only ids and the texture binding must be renewed
             var newPart = templatePart;
             newPart.id = Guid.NewGuid().ToString();
             newPart.group = targetGroup;

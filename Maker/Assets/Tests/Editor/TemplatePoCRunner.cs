@@ -77,7 +77,9 @@ public static class TemplatePoCRunner
             "NoAPICalls.PartTemplateServiceTests.GetTemplateGroupNames_ListsAllArmRegions",
             "NoAPICalls.PartTemplateServiceTests.GetTemplateCatalog_ListsAllTwinsAndRegions",
             "NoAPICalls.PartTemplateServiceTests.PaintWithCurrentTool_UsesActiveTool_AndFallsBackToMarker",
-            "NoAPICalls.PartTemplateServiceTests.LoadTwin_WithStaleTextureReferences_RebindsOnLoad");
+            "NoAPICalls.PartTemplateServiceTests.LoadTwin_WithStaleTextureReferences_RebindsOnLoad",
+            "NoAPICalls.PartTemplateServiceTests.SaveFileSize_GrowsLinearly_WithPartsInOneGroup",
+            "NoAPICalls.PartTemplateServiceTests.LoadTwin_RelinksPartsToTheirGroups");
     }
 
     private static void Run(params string[] testNames)

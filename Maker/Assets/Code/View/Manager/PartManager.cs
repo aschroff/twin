@@ -98,7 +98,12 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		public string meaning;
 		public string textTool;
 		public string description = "";
-		public GroupData group;
+
+		/// <summary>The group this part belongs to. Not serialized: it forms a cycle with
+		/// GroupData.groupParts that JsonUtility would inline, bloating the save file.
+		/// RelinkPartsToGroups() restores the link after loading.</summary>
+		[System.NonSerialized] public GroupData group;
+
 		public string pathScreenshot;
 	}
 
@@ -296,16 +301,27 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 			}
 		}
 
+		RelinkPartsToGroups();
 		RebindLoadedCommandTextures();
 	}
 
+	/// <summary>Restores the PartData.group link, which is not part of the saved data.</summary>
+	private void RelinkPartsToGroups()
+	{
+		foreach (GroupData group in groups)
+		{
+			foreach (PartData part in group.groupParts)
+			{
+				part.group = group;
+			}
+		}
+	}
+
 	/// <summary>
-	/// Serialized PaintableTexture references are session-local instanceIDs (JsonUtility
-	/// limitation) — after an app restart, an app update or a template import they resolve
-	/// to null, and the affected commands would silently be skipped on replay (hiding and
-	/// unhiding a group would then lose its paint permanently). Re-bind such null references
-	/// to the scene's paintable texture. Commands whose reference still resolves are left
-	/// untouched. See Assets/Code/Proc/Paint/FEATURE_TEXT_TO_PART.md, findings #2/#3.
+	/// Binds loaded commands whose PaintableTexture reference is null to the scene's paintable
+	/// texture. The reference is saved as a session-local instanceID and does not survive into
+	/// another session; without this, those commands would be skipped on replay and a group
+	/// hide/unhide would lose its paint.
 	/// </summary>
 	private void RebindLoadedCommandTextures()
 	{
