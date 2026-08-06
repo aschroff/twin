@@ -12,8 +12,22 @@ namespace NoAPICalls
     /// </summary>
     public class PartTemplateServiceTests : PlayModeTestBase
     {
+        /// <summary>A twin needs a user group (Injuries/Pain/…) before regions can be painted
+        /// into it — same precondition as normal painting.</summary>
+        private static PartManager.GroupData EnsureActiveGroup(PartManager partManager, string name)
+        {
+            PartManager.GroupData group = partManager.StartNewGroup(null);
+            group.id = System.Guid.NewGuid().ToString();
+            group.name = name;
+            group.visible = true;
+            partManager.currentGroup = group;
+            return group;
+        }
+
+        /// <summary>A stamped region behaves like normal painting: the new part lands in the
+        /// ACTIVE group (groups are the user's categories — Injuries/Pain/… — not regions).</summary>
         [UnityTest]
-        public IEnumerator PaintTemplateGroup_StampsRegionOntoCurrentTwin()
+        public IEnumerator PaintRegion_AddsPartToActiveGroup()
         {
             // fresh twin so assertions start from a clean data model
             yield return ClickButtonByName("Save Button");
@@ -24,22 +38,25 @@ namespace NoAPICalls
 
             var partManager = Object.FindObjectOfType<PartManager>();
             Assert.IsNotNull(partManager, "PartManager not found.");
-            int groupsBefore = partManager.groups?.Count ?? 0;
 
-            var group = PartTemplateService.PaintTemplateGroup("Arms.twin", "shoulder_front_left", partManager);
+            // arrange: one user group, like "Injuries", selected as active
+            var injuries = EnsureActiveGroup(partManager, "Injuries");
+            int groupsBefore = partManager.groups.Count;
+            int partsBefore = injuries.groupParts.Count;
+
+            var parts = PartTemplateService.PaintRegion("Arms.twin", "shoulder_front_left", null, partManager);
             yield return null;
             yield return null; // let CwPaintableManager flush the replayed commands
 
-            // group inserted and named after the region
-            Assert.AreEqual(groupsBefore + 1, partManager.groups.Count, "Exactly one group should be added.");
-            Assert.AreEqual("shoulder_front_left", group.name);
-            Assert.IsTrue(group.visible);
-            Assert.IsFalse(string.IsNullOrEmpty(group.id));
+            // NO new group — the part joins the active one
+            Assert.AreEqual(groupsBefore, partManager.groups.Count, "No group may be created for a region.");
+            Assert.AreEqual(partsBefore + 1, injuries.groupParts.Count, "Active group should gain the part.");
+            Assert.AreEqual(1, parts.Count, "Region templates hold exactly one part.");
 
-            // part carries the template's tool metadata, commands and a stored view
-            Assert.AreEqual(1, group.groupParts.Count, "Region templates hold exactly one part.");
-            var part = group.groupParts[0];
-            Assert.AreEqual("shoulder_front_left", part.description);
+            var part = parts[0];
+            Assert.AreSame(injuries, part.group, "Part must reference the active group.");
+            Assert.AreSame(part, injuries.groupParts[injuries.groupParts.Count - 1]);
+            Assert.AreEqual("shoulder_front_left", part.description, "Region key is carried on the part.");
             Assert.Greater(part.partCommands.Count, 50, "shoulder fill should carry its full command set.");
             Assert.IsNotNull(part.view, "Template camera view should be carried over.");
             Assert.IsFalse(string.IsNullOrEmpty(part.id));
@@ -53,27 +70,29 @@ namespace NoAPICalls
                 Assert.IsFalse(string.IsNullOrEmpty(command.id));
             }
 
-            // ids are fresh — no collisions with a second stamp of the same region
-            var secondGroup = PartTemplateService.PaintTemplateGroup("Arms.twin", "shoulder_front_left", partManager);
+            // stamping the same region again adds a second part with fresh ids
+            var secondParts = PartTemplateService.PaintRegion("Arms.twin", "shoulder_front_left", null, partManager);
             yield return null;
-            Assert.AreNotEqual(group.id, secondGroup.id);
-            Assert.AreNotEqual(group.groupParts[0].id, secondGroup.groupParts[0].id);
+            Assert.AreEqual(partsBefore + 2, injuries.groupParts.Count);
+            Assert.AreNotEqual(part.id, secondParts[0].id);
+            Assert.AreEqual(groupsBefore, partManager.groups.Count, "Still no extra group.");
 
             // persists through the save pipeline
             DataPersistenceManager.instance.SaveConfig();
             var profiles = DataPersistenceManager.instance.GetAllProfilesGameData();
             var saved = profiles[DataPersistenceManager.instance.selectedProfileId].commandDetails;
             StringAssert.Contains("shoulder_front_left", saved);
+            StringAssert.Contains("Injuries", saved);
         }
 
         [UnityTest]
-        public IEnumerator PaintTemplateGroup_UnknownRegion_ThrowsWithAvailableNames()
+        public IEnumerator PaintRegion_UnknownRegion_ThrowsWithAvailableNames()
         {
             yield return WaitForModeActive("Main");
             var partManager = Object.FindObjectOfType<PartManager>();
 
             var ex = Assert.Throws<System.ArgumentException>(
-                () => PartTemplateService.PaintTemplateGroup("Arms.twin", "no_such_region", partManager));
+                () => PartTemplateService.PaintRegion("Arms.twin", "no_such_region", null, partManager));
             StringAssert.Contains("shoulder_front_left", ex.Message,
                 "Error should list the available region names.");
         }
@@ -89,7 +108,7 @@ namespace NoAPICalls
         }
 
         [UnityTest]
-        public IEnumerator PaintTemplateGroup_WithTool_AppliesToolColorAndMetadata()
+        public IEnumerator PaintRegion_WithTool_AppliesToolColorAndMetadata()
         {
             yield return ClickButtonByName("Save Button");
             yield return WaitForModeActive("Save");
@@ -99,15 +118,16 @@ namespace NoAPICalls
 
             var partManager = Object.FindObjectOfType<PartManager>();
             var toolsRoot = GameObject.FindGameObjectsWithTag("Tools")[0];
+            EnsureActiveGroup(partManager, "Pain");
             var yellowTool = toolsRoot.transform.Find("Yellow");
             Assert.IsNotNull(yellowTool, "Yellow tool not found in scene.");
             var expectedColor = yellowTool.GetComponent<PaintIn3D.CwPaintSphere>().Color;
 
-            var group = PartTemplateService.PaintTemplateGroup("Arms.twin", "wrist_left", "Yellow", partManager);
+            var parts = PartTemplateService.PaintRegion("Arms.twin", "wrist_left", "Yellow", partManager);
             yield return null;
             yield return null;
 
-            var part = group.groupParts[0];
+            var part = parts[0];
             Assert.AreEqual("Yellow", part.nameTool, "Part should carry the chosen tool's name.");
             Assert.AreEqual(expectedColor, part.colorTool, "Part should carry the chosen tool's color.");
             Assert.AreEqual(PartManager.Tool.MarkerLine, part.typeTool, "Yellow is a line marker tool.");
@@ -121,11 +141,11 @@ namespace NoAPICalls
 
             // sticker tools are not valid for region templates
             Assert.Throws<System.ArgumentException>(
-                () => PartTemplateService.PaintTemplateGroup("Arms.twin", "wrist_right", "Sticker 1", partManager));
+                () => PartTemplateService.PaintRegion("Arms.twin", "wrist_right", "Sticker 1", partManager));
 
             // unknown tool name
             Assert.Throws<System.ArgumentException>(
-                () => PartTemplateService.PaintTemplateGroup("Arms.twin", "wrist_right", "NoSuchTool", partManager));
+                () => PartTemplateService.PaintRegion("Arms.twin", "wrist_right", "NoSuchTool", partManager));
         }
 
         /// <summary>The manual region-selection feature (RegionManager icon click) paints with
@@ -140,6 +160,8 @@ namespace NoAPICalls
             yield return ClickButtonByName("New");
             yield return WaitForModeActive("Main");
 
+            var partManager = Object.FindObjectOfType<PartManager>();
+            EnsureActiveGroup(partManager, "Treatment");
             var toolsRoot = GameObject.FindGameObjectsWithTag("Tools")[0];
 
             // (a) no paint tool selected -> marker fallback.
@@ -156,9 +178,9 @@ namespace NoAPICalls
             Assert.IsNull(fallbackTool.GetComponent<PaintIn3D.CwHitScreenFill>(),
                 "Fallback must be a marker, not a filler.");
 
-            var group = PartTemplateService.PaintTemplateGroupWithCurrentTool("Arms.twin", "elbow_front_left");
+            var fallbackParts = PartTemplateService.PaintRegionWithCurrentTool("Arms.twin", "elbow_front_left");
             yield return null;
-            Assert.AreEqual(fallback, group.groupParts[0].nameTool,
+            Assert.AreEqual(fallback, fallbackParts[0].nameTool,
                 "Part should carry the fallback marker tool.");
 
             // (b) tool selected through the real UI -> exactly that tool is used
@@ -172,11 +194,11 @@ namespace NoAPICalls
             Assert.AreEqual("Cyan Filling", PartTemplateService.ResolveCurrentOrDefaultToolName(),
                 "The active filler tool should be used as-is.");
 
-            var fillerGroup = PartTemplateService.PaintTemplateGroupWithCurrentTool("Arms.twin", "elbow_front_right");
+            var fillerParts = PartTemplateService.PaintRegionWithCurrentTool("Arms.twin", "elbow_front_right");
             yield return null;
-            Assert.AreEqual("Cyan Filling", fillerGroup.groupParts[0].nameTool);
+            Assert.AreEqual("Cyan Filling", fillerParts[0].nameTool);
             var expectedColor = toolsRoot.transform.Find("Cyan Filling").GetComponent<PaintIn3D.CwPaintSphere>().Color;
-            Assert.AreEqual(expectedColor, fillerGroup.groupParts[0].colorTool,
+            Assert.AreEqual(expectedColor, fillerParts[0].colorTool,
                 "Part should carry the active tool's color.");
         }
 

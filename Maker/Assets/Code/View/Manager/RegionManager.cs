@@ -56,10 +56,11 @@ public class RegionManager : MonoBehaviour
     /// <summary>
     /// Paints the selected region onto the current twin, using the tool the user currently
     /// has selected (falls back to the first marker tool when the active tool cannot carry
-    /// region templates, e.g. a sticker).
+    /// region templates, e.g. a sticker). As with normal painting, the new part is added to
+    /// the currently active group.
     /// </summary>
     public void Paint(string twinName, string region)
     {
-        PartTemplateService.PaintTemplateGroupWithCurrentTool(twinName, region);
+        PartTemplateService.PaintRegionWithCurrentTool(twinName, region);
     }
 }
