@@ -76,6 +76,7 @@ public static class TemplatePoCRunner
             "NoAPICalls.PartTemplateServiceTests.PaintTemplateGroup_WithTool_AppliesToolColorAndMetadata",
             "NoAPICalls.PartTemplateServiceTests.GetTemplateGroupNames_ListsAllArmRegions",
             "NoAPICalls.PartTemplateServiceTests.GetTemplateCatalog_ListsAllTwinsAndRegions",
+            "NoAPICalls.PartTemplateServiceTests.PaintWithCurrentTool_UsesActiveTool_AndFallsBackToMarker",
             "NoAPICalls.PartTemplateServiceTests.LoadTwin_WithStaleTextureReferences_RebindsOnLoad");
     }
 
