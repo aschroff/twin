@@ -99,7 +99,7 @@ public static class PartTemplateService
             partManager.RefreshPart(part);
         partManager.Listening = oldListening;
 
-        RefreshGroupOverlay();
+        AddGroupToOverlay(newGroup);
         return newGroup;
     }
 
@@ -346,12 +346,18 @@ public static class PartTemplateService
         return fallback;
     }
 
-    private static void RefreshGroupOverlay()
+    /// <summary>Adds the UI entry for the new group to the group overlay — mirroring what
+    /// GroupManager.build() does per group. Deliberately NOT GroupManager.rebuild(): that
+    /// tears down the whole overlay and re-runs HandleEdit on the current group, which plays
+    /// the group-selection sound and resets selection/scroll position.</summary>
+    private static void AddGroupToOverlay(PartManager.GroupData groupData)
     {
         var groupManager = UnityEngine.Object.FindObjectOfType<GroupManager>(true);
-        if (groupManager != null && groupManager.isActiveAndEnabled)
+        if (groupManager == null)
         {
-            groupManager.rebuild();
+            return;
         }
+        Group group = groupManager.createPersistentGroup(groupData);
+        group.gameObject.transform.GetComponentInChildren<Text>().text = groupData.name;
     }
 }
