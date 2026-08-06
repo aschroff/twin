@@ -98,7 +98,17 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		public string meaning;
 		public string textTool;
 		public string description = "";
-		public GroupData group;
+
+		/// <summary>The group this part belongs to. Deliberately NOT serialized: together with
+		/// GroupData.groupParts it forms a reference cycle, and JsonUtility has no reference
+		/// tracking — it inlines the cycle until serialization depth 10, which expands
+		/// groupParts five times and grows the save file by roughly (parts per group)^5
+		/// (measured: 8 parts in one group produced a 635 MB file). The link is restored after
+		/// loading by RelinkPartsToGroups(). Old saves that still contain the inlined "group"
+		/// blocks load fine — JsonUtility ignores fields it no longer serializes — and the next
+		/// save writes the compact format.</summary>
+		[System.NonSerialized] public GroupData group;
+
 		public string pathScreenshot;
 	}
 
@@ -296,7 +306,24 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 			}
 		}
 
+		RelinkPartsToGroups();
 		RebindLoadedCommandTextures();
+	}
+
+	/// <summary>
+	/// Restores PartData.group after loading. The field is [NonSerialized] to keep the save
+	/// file small (see PartData.group), so the parent link has to be re-established from the
+	/// group that owns each part.
+	/// </summary>
+	private void RelinkPartsToGroups()
+	{
+		foreach (GroupData group in groups)
+		{
+			foreach (PartData part in group.groupParts)
+			{
+				part.group = group;
+			}
+		}
 	}
 
 	/// <summary>
