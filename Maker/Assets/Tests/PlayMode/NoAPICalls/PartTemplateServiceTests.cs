@@ -61,7 +61,7 @@ namespace NoAPICalls
             Assert.IsNotNull(part.view, "Template camera view should be carried over.");
             Assert.IsFalse(string.IsNullOrEmpty(part.id));
 
-            // every command is re-bound to the LIVE paintable texture (never the stale template ref)
+            // every command is bound to the live paintable texture
             foreach (var command in part.partCommands)
             {
                 Assert.IsNotNull(command.data.PaintableTexture,
@@ -242,6 +242,31 @@ namespace NoAPICalls
                 "Five small parts in one group must not produce a multi-megabyte save file.");
         }
 
+        /// <summary>The paintable texture is a runtime binding, not saved data: saved twins must
+        /// not contain PaintableTexture references.</summary>
+        [UnityTest]
+        public IEnumerator SavedTwin_ContainsNoPaintableTextureReferences()
+        {
+            yield return ClickButtonByName("Save Button");
+            yield return WaitForModeActive("Save");
+            SetInputByName("InputField", "FormatTest");
+            yield return ClickButtonByName("New");
+            yield return WaitForModeActive("Main");
+
+            var partManager = Object.FindObjectOfType<PartManager>();
+            EnsureActiveGroup(partManager, "Pain");
+            PartTemplateService.PaintRegion("Torso.twin", "spine_central", null, partManager);
+            yield return null;
+
+            var dpm = DataPersistenceManager.instance;
+            dpm.SaveConfig();
+            var saved = dpm.GetAllProfilesGameData()[dpm.selectedProfileId].commandDetails;
+
+            StringAssert.Contains("spine_central", saved, "Sanity: the part should be in the saved data.");
+            StringAssert.DoesNotContain("PaintableTexture", saved,
+                "The paintable texture must not be serialized — it is bound at load time.");
+        }
+
         /// <summary>PartData.group is [NonSerialized]; LoadData must restore the link, because
         /// the AI prompt builder (PromptGeneration/Part.cs) and PartDetailManager read
         /// part.group.name.</summary>
@@ -281,19 +306,17 @@ namespace NoAPICalls
             }
         }
 
-        /// <summary>Regression for the rebind-on-load fix in PartManager.LoadData: loading a
-        /// twin whose serialized PaintableTexture instanceIDs are stale (always true for
-        /// bundled templates inside the test harness — it allocates different IDs than app
-        /// sessions) must re-bind every command to the live texture instead of leaving nulls
-        /// that silently break group hide/unhide.</summary>
+        /// <summary>Loading a twin must bind its commands to the live paintable texture — the
+        /// texture is not part of the saved data, so unbound commands would be silently skipped
+        /// on replay (group hide/unhide would lose its paint).</summary>
         [UnityTest]
-        public IEnumerator LoadTwin_WithStaleTextureReferences_RebindsOnLoad()
+        public IEnumerator LoadTwin_BindsCommandsToPaintableTexture()
         {
             yield return ResetApp(); // materializes the bundled templates into the (fresh) data dir
             yield return WaitForModeActive("Main");
 
             var dpm = DataPersistenceManager.instance;
-            dpm.ChangeSelectedProfileId("Arms.twin"); // bundled template — its baked app-session IDs are stale here
+            dpm.ChangeSelectedProfileId("Arms.twin"); // bundled template twin
             yield return null;
 
             var partManager = Object.FindObjectOfType<PartManager>();
