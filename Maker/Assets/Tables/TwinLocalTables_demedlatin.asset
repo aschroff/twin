@@ -1,0 +1,645 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: TwinLocalTables_demedlatin
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: demedlatin
+  m_SharedData: {fileID: 11400000, guid: d12d872ce99d54eb4977c7b9daa8702f, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 2423135786389995679
+  m_TableData:
+  - m_Id: 246218599948288
+    m_Localized: '{0:dd-MM-yyyy - hh:mm}'
+    m_Metadata:
+      m_Items:
+      - rid: 2423135786389995679
+  - m_Id: 5390009120055296
+    m_Localized: '{0:MM-dd-yy-mmss}'
+    m_Metadata:
+      m_Items:
+      - rid: 2423135786389995679
+  - m_Id: 177539637248
+    m_Localized: Akten
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4709246033920
+    m_Localized: Sektion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5637059633152
+    m_Localized: Speichern
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5908171055104
+    m_Localized: Liste
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7868882345984
+    m_Localized: "\xDCbersicht"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8010230390784
+    m_Localized: 'Aktuell:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8185711681536
+    m_Localized: 'Akte:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9300746428416
+    m_Localized: 'Patient:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10266740776960
+    m_Localized: Patienten
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10390967672832
+    m_Localized: Ansicht
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10581196136448
+    m_Localized: Erfassen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10868396908544
+    m_Localized: Drehen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 242222485200896
+    m_Localized: "R\xFCckg\xE4ngig"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245341004750848
+    m_Localized: Wiederholen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245356280406016
+    m_Localized: 'Modus:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245617442938880
+    m_Localized: Frontalansicht
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245775882772480
+    m_Localized: ' Entfernen '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245873492615168
+    m_Localized: Stift
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245888470474752
+    m_Localized: " F\xFCllung "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245905214136320
+    m_Localized: " K\xF6rperform "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245917956431872
+    m_Localized: "\xC4ndern"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245944539930624
+    m_Localized: Arme
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245958951559168
+    m_Localized: "H\xE4nde"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245976055930880
+    m_Localized: Gesicht
+    m_Metadata:
+      m_Items: []
+  - m_Id: 245990132015104
+    m_Localized: "Zur\xFCcksetzen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246010629578752
+    m_Localized: "W\xE4hlen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246021769650176
+    m_Localized: ' Versionen '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246042934108160
+    m_Localized: "Alle andere Versionen l\xF6schen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246091286044672
+    m_Localized: Haut exportieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246119459184640
+    m_Localized: Bildschirm exportieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246159397347328
+    m_Localized: Standardansichten exportieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246196428857344
+    m_Localized: ' Hilfe '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 246306030215168
+    m_Localized: ' Aufkleber '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5408222356692992
+    m_Localized: "App zur\xFCcksetzen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9368150435946496
+    m_Localized: Einstellungen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45644500087857152
+    m_Localized: Eintrag exportieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45644896667688960
+    m_Localized: Eintrag exportieren NEU
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45646451944972288
+    m_Localized: "Beschreibung der Eintr\xE4ge"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45647122157002752
+    m_Localized: Beschreibe diesen Version
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45648029099745280
+    m_Localized: Beschreibe diese Version (mit Bildern)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45649124622589952
+    m_Localized: Textdetail
+    m_Metadata:
+      m_Items: []
+  - m_Id: 57501905553711104
+    m_Localized: Neuer Patient
+    m_Metadata:
+      m_Items: []
+  - m_Id: 57502216653627392
+    m_Localized: Patient duplizieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63782590983692288
+    m_Localized: Sektionen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63641083312070656
+    m_Localized: ' Gruppendetails '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65475254925910016
+    m_Localized: ' Neue Version '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76327309114597376
+    m_Localized: Neue Ansicht
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78939278015455232
+    m_Localized: Version klonen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78951610787553280
+    m_Localized: Versionsname
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80423784232771584
+    m_Localized: <unbenannt>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80423881116999680
+    m_Localized: <unbesetzt>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 129652683139178496
+    m_Localized: Patient exportieren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229391279508676608
+    m_Localized: "K\xF6rperteil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026503368704
+    m_Localized: Vertex
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894656
+    m_Localized: Regio frontalis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894657
+    m_Localized: Regio temporalis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894658
+    m_Localized: Regio temporalis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894659
+    m_Localized: Regio orbitalis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894660
+    m_Localized: Regio orbitalis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894661
+    m_Localized: Regio nasalis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894662
+    m_Localized: Regio buccalis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894663
+    m_Localized: Regio buccalis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894664
+    m_Localized: Regio oralis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894665
+    m_Localized: Articulatio temporomandibularis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894666
+    m_Localized: Articulatio temporomandibularis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894667
+    m_Localized: Regio auricularis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894668
+    m_Localized: Regio auricularis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894669
+    m_Localized: Regio occipitalis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894670
+    m_Localized: Regio cervicalis anterior
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894671
+    m_Localized: Regio nuchalis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894672
+    m_Localized: Regio pectoralis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894673
+    m_Localized: Regio pectoralis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894674
+    m_Localized: Regio sternalis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894675
+    m_Localized: Hypochondrium links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894676
+    m_Localized: Regio epigastrica
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894677
+    m_Localized: Hypochondrium rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894678
+    m_Localized: Regio umbilicalis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894679
+    m_Localized: Regio iliaca links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894680
+    m_Localized: Regio pubica
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894681
+    m_Localized: Regio iliaca rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894682
+    m_Localized: Regio inguinalis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894683
+    m_Localized: Regio inguinalis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894684
+    m_Localized: Regio pudendalis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894685
+    m_Localized: Regio scapularis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894686
+    m_Localized: Regio scapularis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894687
+    m_Localized: Regio vertebralis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894688
+    m_Localized: Regio lumbalis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894689
+    m_Localized: Regio lumbalis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894690
+    m_Localized: Regio sacralis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894691
+    m_Localized: Regio glutealis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894692
+    m_Localized: Regio glutealis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894693
+    m_Localized: Regio deltoidea anterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894694
+    m_Localized: Regio deltoidea anterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894695
+    m_Localized: Regio deltoidea posterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894696
+    m_Localized: Regio deltoidea posterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894697
+    m_Localized: Regio axillaris links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894698
+    m_Localized: Regio axillaris rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894699
+    m_Localized: Regio brachialis anterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894700
+    m_Localized: Regio brachialis anterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894701
+    m_Localized: Regio brachialis posterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894702
+    m_Localized: Regio brachialis posterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894703
+    m_Localized: Fossa cubitalis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894704
+    m_Localized: Fossa cubitalis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894705
+    m_Localized: Regio cubitalis posterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894706
+    m_Localized: Regio cubitalis posterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894707
+    m_Localized: Regio antebrachialis anterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894708
+    m_Localized: Regio antebrachialis anterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894709
+    m_Localized: Regio antebrachialis posterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894710
+    m_Localized: Regio antebrachialis posterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894711
+    m_Localized: Regio carpalis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894712
+    m_Localized: Regio carpalis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894713
+    m_Localized: Palma manus links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894714
+    m_Localized: Palma manus rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894715
+    m_Localized: Dorsum manus links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894716
+    m_Localized: Dorsum manus rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894717
+    m_Localized: Pollex links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894718
+    m_Localized: Pollex rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088960
+    m_Localized: Index links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088961
+    m_Localized: Index rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088962
+    m_Localized: Digitus medius links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088963
+    m_Localized: Digitus medius rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088964
+    m_Localized: Digitus anularis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088965
+    m_Localized: Digitus anularis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088966
+    m_Localized: Digitus minimus links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088967
+    m_Localized: Digitus minimus rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088968
+    m_Localized: Regio coxae links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088969
+    m_Localized: Regio coxae rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088970
+    m_Localized: Regio femoralis anterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088971
+    m_Localized: Regio femoralis anterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088972
+    m_Localized: Regio femoralis posterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088973
+    m_Localized: Regio femoralis posterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088974
+    m_Localized: Regio genus anterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088975
+    m_Localized: Regio genus anterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088976
+    m_Localized: Fossa poplitea links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088977
+    m_Localized: Fossa poplitea rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088978
+    m_Localized: Regio cruris anterior links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088979
+    m_Localized: Regio cruris anterior rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088980
+    m_Localized: Regio suralis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088981
+    m_Localized: Regio suralis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088982
+    m_Localized: Regio talocruralis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088983
+    m_Localized: Regio talocruralis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088984
+    m_Localized: Dorsum pedis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088985
+    m_Localized: Dorsum pedis rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088986
+    m_Localized: Regio calcanea links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088987
+    m_Localized: Regio calcanea rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088988
+    m_Localized: Hallux links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088989
+    m_Localized: Hallux rechts
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088990
+    m_Localized: "Digiti pedis II\u2013V links"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088991
+    m_Localized: "Digiti pedis II\u2013V rechts"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088992
+    m_Localized: Planta pedis links
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088993
+    m_Localized: Planta pedis rechts
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2423135786389995679
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 246218599948288
+        - id: 5390009120055296
