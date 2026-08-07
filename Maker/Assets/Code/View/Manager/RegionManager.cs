@@ -25,7 +25,7 @@ public class RegionManager : MonoBehaviour
     {
         foreach (PartTemplateService.TemplateTwinInfo twin in PartTemplateService.GetTemplateCatalog().twins)
         {
-            foreach (string region in twin.regions)
+            foreach (PartTemplateService.TemplateRegionInfo region in twin.regions)
             {
                 CreateRegionEntry(twin.twinName, region);
             }
@@ -41,16 +41,16 @@ public class RegionManager : MonoBehaviour
         }
     }
 
-    private void CreateRegionEntry(string twinName, string region)
+    private void CreateRegionEntry(string twinName, PartTemplateService.TemplateRegionInfo region)
     {
         GameObject entry = Instantiate(prefab);
         entry.transform.SetParent(this.transform, false);
         entry.transform.localScale = prefab.transform.localScale;
         Transform action = entry.transform.Find("Action");
         action.Find("Twin").GetComponent<Text>().text = twinName;
-        action.Find("Region").GetComponent<Text>().text = region;
+        action.Find("Region").GetComponent<Text>().text = region.displayName;
         Button buttonPaint = entry.transform.Find("Icon").GetComponentInChildren<Button>();
-        buttonPaint.onClick.AddListener(() => { Paint(twinName, region); });
+        buttonPaint.onClick.AddListener(() => { Paint(twinName, region.key); });
     }
 
     /// <summary>

@@ -99,6 +99,10 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 		public string textTool;
 		public string description = "";
 
+		/// <summary>Body region this part was painted from (see RegionNames), empty for
+		/// hand-painted parts. Language independent — the localized name goes to description.</summary>
+		public string regionKey = "";
+
 		/// <summary>The group this part belongs to. Not serialized: it forms a cycle with
 		/// GroupData.groupParts that JsonUtility would inline, bloating the save file.
 		/// RelinkPartsToGroups() restores the link after loading.</summary>

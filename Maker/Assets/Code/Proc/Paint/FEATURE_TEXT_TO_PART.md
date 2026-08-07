@@ -89,7 +89,8 @@ Scaling to the full library:
   `DataPersistenceManager.templates`, so they also appear in the app after Reset for review).
   All six area twins are promoted (98 regions total): `Torso.twin` (21), `Arms.twin` (20),
   `Legs.twin` (14), `Feet.twin` (12), `Head.twin` (17), `Hands.twin` (14) — split per area
-  so the group overlay stays scrollable. Generation workspace + promotion recipe:
+  so the group overlay stays scrollable (13 MB total; the command data is what dominates —
+  the fill regions carry 100–300 spheres each). Generation workspace + promotion recipe:
   `TemplateLibrary/README.md`.
 - **Open design decision for PartTemplateService (step 5):** a runtime **manifest** is needed
   either way (region key → area twin, EN/DE display names, tool kind, default size — feeds the
@@ -155,27 +156,22 @@ Scaling to the full library:
        remaining: arms front/back, legs front/back, head/neck, hands (palm-orientation
        pitch experiments), extended (ears/jaw side views, soles)
 4. [ ] Sticker-based templates (needs investigation of the sticker placement flow)
-5. [~] Implement `PartTemplateService` class — **MVP done (2026-07-31)**:
-       `PartTemplateService.PaintTemplateGroup(twinName, groupName)` in this folder loads a
-       bundled area twin, clones the region group (fresh GUIDs), re-binds every command to
-       the live `CwPaintableTexture`, inserts it as a NEW group named like the region
-       (deliberate: parts-per-group grows the save file exponentially, and per-region groups
-       give free visibility toggling), replays via `PartManager.RefreshPart`, refreshes the
-       group overlay. `GetTemplateGroupNames(twinName)` lists a twin's regions;
-       `GetTemplateCatalog()` / `GetTemplateCatalogJson()` deliver the full manifest
-       (6 template twins × 98 regions, read from the bundled assets — no separate manifest
-       file to maintain) for LLM prompts and UI pickers.
-       **Tool override (done):** `PaintTemplateGroup(twin, region, toolName)` — toolName is a
-       marker/filler GameObject under the Tools container (e.g. "Yellow", "Cyan Filling");
-       its color recolors every cloned command and its name/color/type/meaning become the
-       part metadata (a tool IS the semantic unit — color and meaning are its fixed
-       properties, never passed separately). Null = keep the template's own Red tool.
-       Sticker/text tools are rejected (decal commands — separate work item). Verified:
-       markers and fillers share one paint material (hash `-88418687`), so no hash rewrite
-       is needed for sphere-tool swaps.
-       Covered by `Assets/Tests/PlayMode/NoAPICalls/PartTemplateServiceTests.cs` (5 tests:
-       stamp + rebind + GUID freshness + save round trip + error listing + catalog + tool
-       override incl. sticker rejection).
+5. [x] **`PartTemplateService`** (this folder) — `PaintRegion(twin, region [, toolName])` and
+       `PaintRegionWithCurrentTool(twin, region)`: loads the region from a bundled area twin,
+       clones its part(s) with fresh GUIDs, binds the commands to the live paintable texture,
+       recolors them to the chosen tool, and adds the part to the twin's **active group**
+       (groups are the user's categories; the region is not a group). The part carries
+       `regionKey` (language independent) and the localized region name as `description`.
+       Without a tool argument the template's own tool is kept; `PaintRegionWithCurrentTool`
+       uses the tool the user has selected and falls back to the first marker when that tool
+       cannot carry sphere templates (stickers/text paint decals and are rejected).
+       `GetTemplateCatalog()` / `GetTemplateCatalogJson()` return all template twins with their
+       regions (`key` + localized `displayName`), read from the bundled assets.
+       **Languages:** region names live in `TwinLocalTables` (`region.<key>`), see
+       `Assets/Resources/BODY_REGIONS.md`; `enmed`, `demed` and `demedlatin` (Latin anatomy)
+       are filled from `Assets/Resources/region_names.tsv`.
+       Manual selection UI: `RegionManager` + prefab `Scroll read only two texts and icon`.
+       Tests: `Assets/Tests/PlayMode/NoAPICalls/PartTemplateServiceTests.cs` (11 tests).
 6. [ ] Build LLM prompt that includes available regions + tools as structured output schema
        (incl. multi-region selection for circumferential descriptions, joint vocabulary
        table from Assets/Resources/BODY_REGIONS.md)
