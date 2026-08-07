@@ -2,6 +2,8 @@ using System.Collections;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using UnityEngine.TestTools;
 
 namespace NoAPICalls
@@ -56,7 +58,8 @@ namespace NoAPICalls
             var part = parts[0];
             Assert.AreSame(injuries, part.group, "Part must reference the active group.");
             Assert.AreSame(part, injuries.groupParts[injuries.groupParts.Count - 1]);
-            Assert.AreEqual("shoulder_front_left", part.description, "Region key is carried on the part.");
+            Assert.AreEqual("shoulder_front_left", part.regionKey, "Region key is carried on the part.");
+            Assert.IsFalse(string.IsNullOrEmpty(part.description), "Part should carry the localized region name.");
             Assert.Greater(part.partCommands.Count, 50, "shoulder fill should carry its full command set.");
             Assert.IsNotNull(part.view, "Template camera view should be carried over.");
             Assert.IsFalse(string.IsNullOrEmpty(part.id));
@@ -81,7 +84,7 @@ namespace NoAPICalls
             DataPersistenceManager.instance.SaveConfig();
             var profiles = DataPersistenceManager.instance.GetAllProfilesGameData();
             var saved = profiles[DataPersistenceManager.instance.selectedProfileId].commandDetails;
-            StringAssert.Contains("shoulder_front_left", saved);
+            StringAssert.Contains("shoulder_front_left", saved, "regionKey should be saved.");
             StringAssert.Contains("Injuries", saved);
         }
 
@@ -242,6 +245,57 @@ namespace NoAPICalls
                 "Five small parts in one group must not produce a multi-megabyte save file.");
         }
 
+        /// <summary>Region names come from the TwinLocalTables in the twin's language, and the
+        /// stamped part carries the localized name plus the language-independent key.</summary>
+        [UnityTest]
+        public IEnumerator RegionNames_FollowTheSelectedLanguage()
+        {
+            yield return ClickButtonByName("Save Button");
+            yield return WaitForModeActive("Save");
+            SetInputByName("InputField", "LangTest");
+            yield return ClickButtonByName("New");
+            yield return WaitForModeActive("Main");
+
+            var partManager = Object.FindObjectOfType<PartManager>();
+            EnsureActiveGroup(partManager, "Pain");
+
+            var expected = new (string locale, string name)[]
+            {
+                ("enmed", "Left chest"),
+                ("demed", "Brust links"),
+                ("demedlatin", "Regio pectoralis links"),
+            };
+
+            foreach ((string locale, string name) in expected)
+            {
+                yield return SelectLocale(locale);
+
+                Assert.AreEqual(name, RegionNames.Get("chest_left"), $"wrong name for locale {locale}");
+
+                var torso = PartTemplateService.GetTemplateCatalog().twins
+                    .First(t => t.twinName == "Torso.twin");
+                var chest = torso.regions.First(r => r.key == "chest_left");
+                Assert.AreEqual(name, chest.displayName, $"catalog name wrong for locale {locale}");
+
+                var parts = PartTemplateService.PaintRegion("Torso.twin", "chest_left", null, partManager);
+                yield return null;
+                Assert.AreEqual("chest_left", parts[0].regionKey, "key must stay language independent");
+                Assert.AreEqual(name, parts[0].description, $"part description wrong for locale {locale}");
+            }
+        }
+
+        /// <summary>Switches the app language. Localization is already initialized while the
+        /// app scene runs, so no wait on InitializationOperation is needed (which would pull in
+        /// the ResourceManager assembly).</summary>
+        private static IEnumerator SelectLocale(string code)
+        {
+            var locale = LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier(code));
+            Assert.IsNotNull(locale, $"locale '{code}' not available");
+            LocalizationSettings.SelectedLocale = locale;
+            yield return null;
+            yield return null;
+        }
+
         /// <summary>The paintable texture is a runtime binding, not saved data: saved twins must
         /// not contain PaintableTexture references.</summary>
         [UnityTest]
@@ -349,9 +403,18 @@ namespace NoAPICalls
             Assert.AreEqual(98, totalRegions, "Catalog should expose the full 98-region library.");
 
             var torso = catalog.twins.First(t => t.twinName == "Torso.twin");
-            CollectionAssert.Contains(torso.regions, "abdomen_upper_left");
+            CollectionAssert.Contains(torso.regions.Select(r => r.key).ToList(), "abdomen_upper_left");
             var hands = catalog.twins.First(t => t.twinName == "Hands.twin");
-            CollectionAssert.Contains(hands.regions, "index_finger_right");
+            CollectionAssert.Contains(hands.regions.Select(r => r.key).ToList(), "index_finger_right");
+
+            // every region carries a display name, and it is a name, not the raw key
+            foreach (var twin in catalog.twins)
+                foreach (var region in twin.regions)
+                {
+                    Assert.IsFalse(string.IsNullOrEmpty(region.displayName), $"{region.key} has no display name.");
+                    Assert.AreNotEqual(region.key, region.displayName,
+                        $"{region.key} falls back to the key — missing localization entry?");
+                }
 
             // JSON form usable for LLM prompts
             var json = PartTemplateService.GetTemplateCatalogJson();

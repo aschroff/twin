@@ -1026,7 +1026,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
       propertyPath: m_Options.m_Options.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
       propertyPath: m_Options.m_Options.Array.data[0].m_Text
@@ -1045,6 +1045,10 @@ PrefabInstance:
       value: Medizinerdeutsch
       objectReference: {fileID: 0}
     - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Text
+      value: Deutsch (Medizin Latein)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
       propertyPath: m_Options.m_Options.Array.data[3].m_Color.a
       value: 1
       objectReference: {fileID: 0}
@@ -1058,6 +1062,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
       propertyPath: m_Options.m_Options.Array.data[3].m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Color.r
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1413160097978642415, guid: b7d6c7bdfcd4049c59954d956ff78a16, type: 3}

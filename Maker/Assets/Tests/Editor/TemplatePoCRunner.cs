@@ -80,7 +80,8 @@ public static class TemplatePoCRunner
             "NoAPICalls.PartTemplateServiceTests.LoadTwin_BindsCommandsToPaintableTexture",
             "NoAPICalls.PartTemplateServiceTests.SaveFileSize_GrowsLinearly_WithPartsInOneGroup",
             "NoAPICalls.PartTemplateServiceTests.LoadTwin_RelinksPartsToTheirGroups",
-            "NoAPICalls.PartTemplateServiceTests.SavedTwin_ContainsNoPaintableTextureReferences");
+            "NoAPICalls.PartTemplateServiceTests.SavedTwin_ContainsNoPaintableTextureReferences",
+            "NoAPICalls.PartTemplateServiceTests.RegionNames_FollowTheSelectedLanguage");
     }
 
     private static void Run(params string[] testNames)

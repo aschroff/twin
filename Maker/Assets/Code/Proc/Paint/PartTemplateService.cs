@@ -15,7 +15,8 @@ using UnityEngine.UI;
 ///
 /// Painting a region works like painting with a tool by hand: the new part is added to the
 /// twin's currently active group. Groups are the user's categories (Injuries, Pain,
-/// Treatment, …); the region key is carried on the part (PartData.description).
+/// Treatment, …). The part carries the region as PartData.regionKey (language independent)
+/// and its localized name as PartData.description.
 /// </summary>
 public static class PartTemplateService
 {
@@ -35,8 +36,15 @@ public static class PartTemplateService
     [Serializable]
     public class TemplateTwinInfo
     {
-        public string twinName;      // e.g. "Arms.twin" — pass to PaintRegion
-        public List<string> regions; // region keys, e.g. "shoulder_front_left" (see BODY_REGIONS.md)
+        public string twinName;                  // e.g. "Arms.twin" — pass to PaintRegion
+        public List<TemplateRegionInfo> regions; // the twin's body regions
+    }
+
+    [Serializable]
+    public class TemplateRegionInfo
+    {
+        public string key;         // language independent, e.g. "shoulder_front_left"
+        public string displayName; // name in the current language, e.g. "Schulter vorne links"
     }
 
     /// <summary>Shape-compatible subset of PartManager's serialized JSON (commandDetails).
@@ -80,7 +88,7 @@ public static class PartTemplateService
         var templateGroup = LoadTemplateGroup(twinName, regionName);
         var tool = toolName != null ? ResolveTool(toolName) : null;
         PartManager.GroupData targetGroup = ResolveTargetGroup(partManager);
-        var newParts = ClonePartsInto(templateGroup, targetGroup, paintableTexture, tool);
+        var newParts = ClonePartsInto(templateGroup, targetGroup, paintableTexture, tool, regionName);
 
         // replay the cloned commands onto the body texture
         var oldListening = partManager.Listening;
@@ -197,11 +205,13 @@ public static class PartTemplateService
         {
             try
             {
-                catalog.twins.Add(new TemplateTwinInfo
+                var regions = new List<TemplateRegionInfo>();
+                foreach (string key in GetTemplateGroupNames(twinName))
                 {
-                    twinName = twinName,
-                    regions = GetTemplateGroupNames(twinName),
-                });
+                    regions.Add(new TemplateRegionInfo { key = key, displayName = RegionNames.Get(key) });
+                }
+                regions.Sort((a, b) => string.Compare(a.displayName, b.displayName, System.StringComparison.CurrentCulture));
+                catalog.twins.Add(new TemplateTwinInfo { twinName = twinName, regions = regions });
             }
             catch (Exception e)
             {
@@ -245,7 +255,7 @@ public static class PartTemplateService
     }
 
     private static List<PartManager.PartData> ClonePartsInto(PartManager.GroupData templateGroup,
-        PartManager.GroupData targetGroup, CwPaintableTexture paintableTexture, ToolInfo tool)
+        PartManager.GroupData targetGroup, CwPaintableTexture paintableTexture, ToolInfo tool, string regionKey)
     {
         var newParts = new List<PartManager.PartData>();
         foreach (var templatePart in templateGroup.groupParts)
@@ -255,6 +265,8 @@ public static class PartTemplateService
             var newPart = templatePart;
             newPart.id = Guid.NewGuid().ToString();
             newPart.group = targetGroup;
+            newPart.regionKey = regionKey;
+            newPart.description = RegionNames.Get(regionKey);
             if (tool != null)
             {
                 newPart.nameTool = tool.name;

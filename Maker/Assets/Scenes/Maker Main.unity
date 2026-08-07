@@ -6618,13 +6618,6 @@ MonoBehaviour:
     meaning: 
     textTool: 
     description: 
-    group:
-      groupParts: []
-      group: {fileID: 0}
-      id: 
-      name: 
-      visible: 0
-      selected: 0
     pathScreenshot: 
   references:
     version: 2
@@ -16230,6 +16223,30 @@ PrefabInstance:
     - target: {fileID: 6199921708383996008, guid: d588761cd794f4524964e1326abdc07c, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6570167850992355447, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Options.m_Options.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6570167850992355447, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Text
+      value: Deutsch (Medizin Latein)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6570167850992355447, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6570167850992355447, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6570167850992355447, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6570167850992355447, guid: d588761cd794f4524964e1326abdc07c, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[4].m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6953139088345341095, guid: d588761cd794f4524964e1326abdc07c, type: 3}
       propertyPath: m_Sprite
