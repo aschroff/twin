@@ -8,7 +8,7 @@ using System;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
+public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 {
 	[SerializeField] public ViewManager viewManager;
 	[SerializeField] public List<GroupData> groups;
@@ -170,18 +170,7 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 	}
 
 
-	protected virtual void OnEnable()
-	{
-		CwPaintableTexture.OnAddCommandGlobal += HandleAddCommandGlobal;
-	}
-
-	protected virtual void OnDisable()
-	{
-		CwPaintableTexture.OnAddCommandGlobal -= HandleAddCommandGlobal;
-	}
-	
-
-	private void HandleAddCommandGlobal(CwPaintableTexture paintableTexture, CwCommand command)
+	protected override void HandleAddCommandGlobal(CwPaintableTexture paintableTexture, CwCommand command)
 	{
 		base.HandleAddCommandGlobal(paintableTexture, command);
 		if (base.Listening == true)
@@ -302,7 +291,7 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		}
 
 		RelinkPartsToGroups();
-		RebindLoadedCommandTextures();
+		BindLoadedCommandsToTexture();
 	}
 
 	/// <summary>Restores the PartData.group link, which is not part of the saved data.</summary>
@@ -318,12 +307,11 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 	}
 
 	/// <summary>
-	/// Binds loaded commands whose PaintableTexture reference is null to the scene's paintable
-	/// texture. The reference is saved as a session-local instanceID and does not survive into
-	/// another session; without this, those commands would be skipped on replay and a group
-	/// hide/unhide would lose its paint.
+	/// Binds the loaded commands to the scene's paintable texture. The target texture is not
+	/// part of the saved data (see PaintCommandSerialization.CommandData.PaintableTexture),
+	/// so without this the commands would be skipped on replay.
 	/// </summary>
-	private void RebindLoadedCommandTextures()
+	private void BindLoadedCommandsToTexture()
 	{
 		if (CwPaintableTexture.Instances.Count == 0)
 		{
@@ -332,37 +320,25 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		CwPaintableTexture liveTexture = CwPaintableTexture.Instances.First.Value;
 		if (CwPaintableTexture.Instances.Count > 1)
 		{
-			Debug.LogWarning("Multiple paintable textures in scene — rebinding loaded commands to the first one.");
+			Debug.LogWarning("Multiple paintable textures in scene — binding loaded commands to the first one.");
 		}
 
-		int rebound = 0;
 		foreach (GroupData group in groups)
 		{
 			foreach (PartData part in group.groupParts)
 			{
 				foreach (CommandDataTwin commandData in part.partCommands)
 				{
-					if (commandData.data.PaintableTexture == null)
-					{
-						commandData.data.PaintableTexture = liveTexture;
-						rebound++;
-					}
+					commandData.data.PaintableTexture = liveTexture;
 				}
 			}
 		}
 		// keep the internal command list consistent as well (structs: write back required)
 		for (int i = 0; i < commandDatas.Count; i++)
 		{
-			if (commandDatas[i].PaintableTexture == null)
-			{
-				CommandData commandData = commandDatas[i];
-				commandData.PaintableTexture = liveTexture;
-				commandDatas[i] = commandData;
-			}
-		}
-		if (rebound > 0)
-		{
-			Debug.Log("Rebound " + rebound + " loaded paint commands to the live paintable texture.");
+			CommandData commandData = commandDatas[i];
+			commandData.PaintableTexture = liveTexture;
+			commandDatas[i] = commandData;
 		}
 	}
 

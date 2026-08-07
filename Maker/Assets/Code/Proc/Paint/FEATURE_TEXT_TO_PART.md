@@ -200,32 +200,17 @@ Hard-won lessons — all of these affect the eventual `PartTemplateService`:
    **one group per region** (group name = region key) → 21 regions ≈ 8 MB.
    The PartTemplateService must keep inserted template parts in *small* groups, or the
    serialization cycle must be fixed app-side first.
-2. **`CommandData.PaintableTexture` is serialized as a Unity `instanceID`.**
-   **FIXED (2026-07-31): `PartManager.LoadData` now re-binds null texture references to the
-   scene's paintable texture on every load** (regression test:
-   `PartTemplateServiceTests.LoadTwin_WithStaleTextureReferences_RebindsOnLoad`). Bundled
-   templates therefore load correctly regardless of baked IDs, and the latent bug where a
-   group hide/unhide after an app restart/update silently lost its paint is gone. Follow-up
-   ticket (Andreas): the "as CW intended" fix — hashed texture reference in CommandData
-   (adopt the CW example class into app code; the rebind stays as migration fallback for
-   old saves). Historical detail of the instanceID saga, kept for context:
-   in the app's editor runtime the ID is stable **as long as the
-   project doesn't change** (it was `47276` for a long time, shifted to `47226` after this
-   week's new asmdefs/test files). The bundled sample twins ship WITHOUT command data
-   (their visuals come from image files), so saved configs only ever carry the machine's
-   current ID. In the PlayMode test harness, repeated scene loads shuffle IDs every run.
-   Consequences:
-   - Template files from the harness must have their `PaintableTexture` IDs **re-anchored**
-     for in-app use: paint a dot in any twin, quit (quit-save writes the current ID), read
-     that ID, regex-replace it into the template config. Verified working end-to-end
-     (all 21 torso regions reviewed in-app via group toggling).
-   - `PartTemplateService` should not rely on IDs at all — re-bind cloned commands to the
-     live `CwPaintableMeshTexture` at insertion time (proven in the generator). This is an
-     ADDITIVE step in the service, not a change to existing app logic.
-   - The app **saves on quit** (`OnApplicationQuit → SaveConfig`) — always stop the app
-     before manipulating config files, and expect unresolved references to be persisted
-     as `instanceID: 0` afterwards.
-   - App **Reset deletes all profiles** including a manually installed review twin.
+2. **The paintable texture is a runtime binding, not saved data.** `PaintCommandSerialization`
+   (`Assets/Code/DataPersistence/`) is the app-owned base class of `PartManager`, adopted from
+   the PaintIn3D example `CwCommandSerialization` so plugin updates need no patching. Its
+   `CommandData.PaintableTexture` is `[NonSerialized]` — a Unity object reference is stored as
+   a session-local `instanceID` and never resolves in a later session. `PartManager.LoadData`
+   binds all loaded commands to the scene's paintable texture; `PartTemplateService` does the
+   same for cloned template parts. Old saves (and the bundled template twins) still contain
+   the old `instanceID` entries — they are ignored on load and disappear on the next save.
+   Same pattern for `PartData.group`: not serialized, re-linked on load (it formed a cycle
+   with `GroupData.groupParts` that JsonUtility inlined, growing files by ~(parts/group)^5;
+   now every part costs a constant ~17.5 KB).
 3. **Cold-replay rendering artifact (test-harness only — confirmed in practice):** the first
    command replay in a harness session can render misaligned (crescent remnants); a warm-up
    paint usually fixes it. In the real app, replay renders correctly (dot experiment +
