@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-String-Tables-GermanMediLatin (demedlatin)
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-String-Tables-GermanMediLatin (demedlatin)
+  m_GUID: bbc1d0f5230e2483a8fdba7916e3baf5
+  m_SerializeEntries:
+  - m_GUID: 4bd3b94ae4cd14ba6a58a0d493d854ab
+    m_Address: TwinLocalTables_demedlatin
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-demedlatin
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 71c7059db144744198a4ab36e0af81f2, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 7d4a69dc74b104f61948341cc1248c59, type: 2}
+    - {fileID: 11400000, guid: 97ec4b4aa38164ca3939ab38c706d8ec, type: 2}

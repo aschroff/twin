@@ -8,7 +8,7 @@ using System;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
+public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 {
 	[SerializeField] public ViewManager viewManager;
 	[SerializeField] public List<GroupData> groups;
@@ -98,7 +98,16 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		public string meaning;
 		public string textTool;
 		public string description = "";
-		public GroupData group;
+
+		/// <summary>Body region this part was painted from (see RegionNames), empty for
+		/// hand-painted parts. Language independent — the localized name goes to description.</summary>
+		public string regionKey = "";
+
+		/// <summary>The group this part belongs to. Not serialized: it forms a cycle with
+		/// GroupData.groupParts that JsonUtility would inline, bloating the save file.
+		/// RelinkPartsToGroups() restores the link after loading.</summary>
+		[System.NonSerialized] public GroupData group;
+
 		public string pathScreenshot;
 	}
 
@@ -165,18 +174,7 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 	}
 
 
-	protected virtual void OnEnable()
-	{
-		CwPaintableTexture.OnAddCommandGlobal += HandleAddCommandGlobal;
-	}
-
-	protected virtual void OnDisable()
-	{
-		CwPaintableTexture.OnAddCommandGlobal -= HandleAddCommandGlobal;
-	}
-	
-
-	private void HandleAddCommandGlobal(CwPaintableTexture paintableTexture, CwCommand command)
+	protected override void HandleAddCommandGlobal(CwPaintableTexture paintableTexture, CwCommand command)
 	{
 		base.HandleAddCommandGlobal(paintableTexture, command);
 		if (base.Listening == true)
@@ -296,18 +294,28 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 			}
 		}
 
-		RebindLoadedCommandTextures();
+		RelinkPartsToGroups();
+		BindLoadedCommandsToTexture();
+	}
+
+	/// <summary>Restores the PartData.group link, which is not part of the saved data.</summary>
+	private void RelinkPartsToGroups()
+	{
+		foreach (GroupData group in groups)
+		{
+			foreach (PartData part in group.groupParts)
+			{
+				part.group = group;
+			}
+		}
 	}
 
 	/// <summary>
-	/// Serialized PaintableTexture references are session-local instanceIDs (JsonUtility
-	/// limitation) — after an app restart, an app update or a template import they resolve
-	/// to null, and the affected commands would silently be skipped on replay (hiding and
-	/// unhiding a group would then lose its paint permanently). Re-bind such null references
-	/// to the scene's paintable texture. Commands whose reference still resolves are left
-	/// untouched. See Assets/Code/Proc/Paint/FEATURE_TEXT_TO_PART.md, findings #2/#3.
+	/// Binds the loaded commands to the scene's paintable texture. The target texture is not
+	/// part of the saved data (see PaintCommandSerialization.CommandData.PaintableTexture),
+	/// so without this the commands would be skipped on replay.
 	/// </summary>
-	private void RebindLoadedCommandTextures()
+	private void BindLoadedCommandsToTexture()
 	{
 		if (CwPaintableTexture.Instances.Count == 0)
 		{
@@ -316,37 +324,25 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		CwPaintableTexture liveTexture = CwPaintableTexture.Instances.First.Value;
 		if (CwPaintableTexture.Instances.Count > 1)
 		{
-			Debug.LogWarning("Multiple paintable textures in scene — rebinding loaded commands to the first one.");
+			Debug.LogWarning("Multiple paintable textures in scene — binding loaded commands to the first one.");
 		}
 
-		int rebound = 0;
 		foreach (GroupData group in groups)
 		{
 			foreach (PartData part in group.groupParts)
 			{
 				foreach (CommandDataTwin commandData in part.partCommands)
 				{
-					if (commandData.data.PaintableTexture == null)
-					{
-						commandData.data.PaintableTexture = liveTexture;
-						rebound++;
-					}
+					commandData.data.PaintableTexture = liveTexture;
 				}
 			}
 		}
 		// keep the internal command list consistent as well (structs: write back required)
 		for (int i = 0; i < commandDatas.Count; i++)
 		{
-			if (commandDatas[i].PaintableTexture == null)
-			{
-				CommandData commandData = commandDatas[i];
-				commandData.PaintableTexture = liveTexture;
-				commandDatas[i] = commandData;
-			}
-		}
-		if (rebound > 0)
-		{
-			Debug.Log("Rebound " + rebound + " loaded paint commands to the live paintable texture.");
+			CommandData commandData = commandDatas[i];
+			commandData.PaintableTexture = liveTexture;
+			commandDatas[i] = commandData;
 		}
 	}
 

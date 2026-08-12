@@ -139,6 +139,28 @@ Circumferential complaints ("around the …") map to both sides of the joint:
 - **Extended:** 24 keys — face detail, jaw joints, ears, armpit, genital region, palm, heel, toes, soles.
 - **Total:** 98 region keys.
 
+## Display names & languages
+
+The tables above are the source for the region **display names**. The names the app shows live
+in the `TwinLocalTables` string tables under the key `region.<region key>`; the region key
+itself is language independent and identifies the template.
+
+- Editable source: **`Assets/Resources/region_names.tsv`** (columns `key`, `enmed`, `demed`,
+  `demedlatin`), generated from the tables above.
+- Import into the string tables: **Tools → Localization → Import Region Names**
+  (`Assets/Editor/RegionNamesImporter.cs`). Re-running updates existing entries, adds missing
+  ones, and never deletes. `en`/`de` receive the same wording as `enmed`/`demed` as a fallback.
+- Naming rules applied when generating the TSV: for `A / B` entries only the first alternative
+  is used and parentheticals are dropped (a label needs one short string); paired rows get the
+  side appended (`Schulter vorne links` / `… rechts`, `Shoulder, front left`); German prefers
+  separate words where they read better (`Oberer Bauch`, `Unterer Bauch`, `Große Zehe`).
+
+**`demedlatin` (German with Latin anatomy, dropdown "Deutsch (Medizin Latein)")** is a full copy
+of `demed`; only the region names differ. It follows German clinical practice: Latin structure
+name with German laterality — `Regio pectoralis links`, `Hypochondrium links`, `Hallux links`,
+`Fossa poplitea links`. The generator can also emit fully Latin forms (`… sinistra/dextrum/…`)
+via its `MODE` switch if a formal anatomical wording is ever preferred.
+
 ## Generation status & problem kids (2026-07-31, batches 03–09)
 
 All 98 regions generated and promoted to bundled template twins under

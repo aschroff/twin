@@ -7,19 +7,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Text→Part feature (see FEATURE_TEXT_TO_PART.md in this folder): stamps a pre-painted
+/// Text→Part feature (see FEATURE_TEXT_TO_PART.md in this folder): paints a pre-painted
 /// body-region template onto the currently loaded twin.
 ///
-/// Templates are the bundled area twins under Resources/templates/&lt;Area&gt;.twin/ConfigTwin
-/// (generated via TemplateLibraryGenerator, one group per region — see
-/// Assets/Resources/BODY_REGIONS.md for the region catalog).
+/// Templates are the bundled area twins under Resources/templates/&lt;Area&gt;.twin/ConfigTwin,
+/// where each group is one body region (region catalog: Assets/Resources/BODY_REGIONS.md).
 ///
-/// The cloned commands are re-bound to the live CwPaintableMeshTexture at insertion time,
-/// because serialized PaintableTexture references are session-local instanceIDs and never
-/// survive into another session.
-/// Each stamped region goes into its OWN new group (named like the region): this keeps the
-/// save file small (parts-per-group grows it exponentially via the PartData.group cycle,
-/// see FEATURE_TEXT_TO_PART.md finding #1) and gives per-region visibility toggling for free.
+/// Painting a region works like painting with a tool by hand: the new part is added to the
+/// twin's currently active group. Groups are the user's categories (Injuries, Pain,
+/// Treatment, …). The part carries the region as PartData.regionKey (language independent)
+/// and its localized name as PartData.description.
 /// </summary>
 public static class PartTemplateService
 {
@@ -39,8 +36,15 @@ public static class PartTemplateService
     [Serializable]
     public class TemplateTwinInfo
     {
-        public string twinName;      // e.g. "Arms.twin" — pass to PaintTemplateGroup
-        public List<string> regions; // region keys, e.g. "shoulder_front_left" (see BODY_REGIONS.md)
+        public string twinName;                  // e.g. "Arms.twin" — pass to PaintRegion
+        public List<TemplateRegionInfo> regions; // the twin's body regions
+    }
+
+    [Serializable]
+    public class TemplateRegionInfo
+    {
+        public string key;         // language independent, e.g. "shoulder_front_left"
+        public string displayName; // name in the current language, e.g. "Schulter vorne links"
     }
 
     /// <summary>Shape-compatible subset of PartManager's serialized JSON (commandDetails).
@@ -52,30 +56,26 @@ public static class PartTemplateService
     }
 
     /// <summary>
-    /// Paints all parts of the template group <paramref name="groupName"/> from the bundled
-    /// template twin <paramref name="twinName"/> (e.g. "Arms.twin") onto the current twin.
-    /// Creates a new group named like the template group and returns it.
+    /// Paints the body region <paramref name="regionName"/> from the bundled template twin
+    /// <paramref name="twinName"/> (e.g. "Arms.twin") onto the current twin, adding the new
+    /// part(s) to the currently active group — exactly like painting with a tool by hand.
+    /// Returns the created part(s).
     /// </summary>
-    public static PartManager.GroupData PaintTemplateGroup(string twinName, string groupName)
+    public static List<PartManager.PartData> PaintRegion(string twinName, string regionName)
     {
-        return PaintTemplateGroup(twinName, groupName, toolName: null);
-    }
-
-    public static PartManager.GroupData PaintTemplateGroup(string twinName, string groupName, PartManager partManager)
-    {
-        return PaintTemplateGroup(twinName, groupName, null, partManager);
+        return PaintRegion(twinName, regionName, toolName: null);
     }
 
     /// <param name="toolName">Name of a marker/filler tool GameObject under the app's Tools
     /// container (e.g. "Yellow", "Cyan Filling"). Its color and meaning are applied to the
-    /// stamped part. Null keeps the template's own (Red) tool — the default.</param>
-    public static PartManager.GroupData PaintTemplateGroup(string twinName, string groupName, string toolName)
+    /// stamped part. Null keeps the tool the template was painted with.</param>
+    public static List<PartManager.PartData> PaintRegion(string twinName, string regionName, string toolName)
     {
         var partManager = UnityEngine.Object.FindObjectOfType<PartManager>();
-        return PaintTemplateGroup(twinName, groupName, toolName, partManager);
+        return PaintRegion(twinName, regionName, toolName, partManager);
     }
 
-    public static PartManager.GroupData PaintTemplateGroup(string twinName, string groupName, string toolName, PartManager partManager)
+    public static List<PartManager.PartData> PaintRegion(string twinName, string regionName, string toolName, PartManager partManager)
     {
         if (partManager == null)
             throw new ArgumentNullException(nameof(partManager), "PartManager not found — is the app scene loaded?");
@@ -84,23 +84,109 @@ public static class PartTemplateService
         if (paintableTexture == null)
             throw new InvalidOperationException("No CwPaintableTexture in scene — cannot bind template commands.");
 
+        // validate the inputs first, then the app state — so callers get the precise error
+        var templateGroup = LoadTemplateGroup(twinName, regionName);
         var tool = toolName != null ? ResolveTool(toolName) : null;
-        var templateGroup = LoadTemplateGroup(twinName, groupName);
-        var newGroup = CloneGroup(templateGroup, paintableTexture, tool);
-
-        if (partManager.groups == null)
-            partManager.groups = new List<PartManager.GroupData>();
-        partManager.groups.Add(newGroup);
+        PartManager.GroupData targetGroup = ResolveTargetGroup(partManager);
+        var newParts = ClonePartsInto(templateGroup, targetGroup, paintableTexture, tool, regionName);
 
         // replay the cloned commands onto the body texture
         var oldListening = partManager.Listening;
         partManager.Listening = false;
-        foreach (var part in newGroup.groupParts)
+        foreach (var part in newParts)
             partManager.RefreshPart(part);
         partManager.Listening = oldListening;
 
-        RefreshGroupOverlay();
-        return newGroup;
+        return newParts;
+    }
+
+    /// <summary>The group the new part belongs to: the active group, as with normal painting.
+    /// Falls back to the twin's first group when nothing is selected yet (same helper the app
+    /// uses); throws when the twin has no group at all — the user must create one first.</summary>
+    private static PartManager.GroupData ResolveTargetGroup(PartManager partManager)
+    {
+        PartManager.GroupData group = partManager.currentGroup;
+        if (group == null)
+        {
+            group = partManager.trySetCurrentGroupIfEmpty();
+        }
+        if (group == null)
+        {
+            throw new InvalidOperationException(
+                "No group available in the current twin — create or select a group before painting a region.");
+        }
+        return group;
+    }
+
+    /// <summary>
+    /// Paints a region with the tool the user currently has selected in the app. Region
+    /// templates are sphere-painted, so only marker/filler tools can carry them — if the
+    /// active tool is a sticker/text tool (or nothing is active), the first marker tool
+    /// found in the Tools container is used instead.
+    /// </summary>
+    public static List<PartManager.PartData> PaintRegionWithCurrentTool(string twinName, string regionName)
+    {
+        return PaintRegion(twinName, regionName, ResolveCurrentOrDefaultToolName());
+    }
+
+    /// <summary>Name of the active marker/filler tool, or of the first marker tool as fallback.</summary>
+    public static string ResolveCurrentOrDefaultToolName()
+    {
+        GameObject active = FindActiveTool();
+        if (active != null && IsRegionCapableTool(active))
+        {
+            return active.name;
+        }
+        GameObject marker = FindFirstMarkerTool();
+        if (marker == null)
+        {
+            throw new InvalidOperationException("No marker tool found in the Tools container.");
+        }
+        return marker.name;
+    }
+
+    /// <summary>Region templates consist of CwCommandSphere data — only tools that paint
+    /// spheres (markers, fillers) can be used for them; stickers/text paint decals.</summary>
+    private static bool IsRegionCapableTool(GameObject tool)
+    {
+        return tool.GetComponent<CwPaintSphere>() != null;
+    }
+
+    private static GameObject FindActiveTool()
+    {
+        Transform container = FindToolsContainer();
+        foreach (Transform child in container)
+        {
+            if (child.gameObject.activeSelf)
+            {
+                return child.gameObject;
+            }
+        }
+        return null;
+    }
+
+    private static GameObject FindFirstMarkerTool()
+    {
+        Transform container = FindToolsContainer();
+        foreach (Transform child in container)
+        {
+            // markers paint spheres and are not fills
+            if (child.GetComponent<CwPaintSphere>() != null && child.GetComponent<CwHitScreenFill>() == null)
+            {
+                return child.gameObject;
+            }
+        }
+        return null;
+    }
+
+    private static Transform FindToolsContainer()
+    {
+        GameObject[] containers = GameObject.FindGameObjectsWithTag("Tools");
+        if (containers.Length == 0)
+        {
+            throw new InvalidOperationException("Tools container not found in scene.");
+        }
+        return containers[0].transform;
     }
 
     /// <summary>Region names available in a bundled template twin (for prompts/UI).</summary>
@@ -119,11 +205,13 @@ public static class PartTemplateService
         {
             try
             {
-                catalog.twins.Add(new TemplateTwinInfo
+                var regions = new List<TemplateRegionInfo>();
+                foreach (string key in GetTemplateGroupNames(twinName))
                 {
-                    twinName = twinName,
-                    regions = GetTemplateGroupNames(twinName),
-                });
+                    regions.Add(new TemplateRegionInfo { key = key, displayName = RegionNames.Get(key) });
+                }
+                regions.Sort((a, b) => string.Compare(a.displayName, b.displayName, System.StringComparison.CurrentCulture));
+                catalog.twins.Add(new TemplateTwinInfo { twinName = twinName, regions = regions });
             }
             catch (Exception e)
             {
@@ -166,23 +254,19 @@ public static class PartTemplateService
         return template;
     }
 
-    private static PartManager.GroupData CloneGroup(PartManager.GroupData templateGroup, CwPaintableTexture paintableTexture, ToolInfo tool)
+    private static List<PartManager.PartData> ClonePartsInto(PartManager.GroupData templateGroup,
+        PartManager.GroupData targetGroup, CwPaintableTexture paintableTexture, ToolInfo tool, string regionKey)
     {
-        var newGroup = new PartManager.GroupData
-        {
-            id = Guid.NewGuid().ToString(),
-            name = templateGroup.name,
-            visible = true,
-            selected = false,
-        };
-
+        var newParts = new List<PartManager.PartData>();
         foreach (var templatePart in templateGroup.groupParts)
         {
-            // the deserialized template objects are fresh instances owned by nobody else,
-            // so they can be adopted directly — only ids and texture bindings must be renewed
+            // the deserialized template objects are private to this call, so they can be
+            // adopted directly — only ids and the texture binding must be renewed
             var newPart = templatePart;
             newPart.id = Guid.NewGuid().ToString();
-            newPart.group = newGroup;
+            newPart.group = targetGroup;
+            newPart.regionKey = regionKey;
+            newPart.description = RegionNames.Get(regionKey);
             if (tool != null)
             {
                 newPart.nameTool = tool.name;
@@ -199,9 +283,10 @@ public static class PartTemplateService
                     sphere.Color = tool.color; // region templates are sphere-painted (markers/fillers)
                 }
             }
-            newGroup.groupParts.Add(newPart);
+            targetGroup.groupParts.Add(newPart);
+            newParts.Add(newPart);
         }
-        return newGroup;
+        return newParts;
     }
 
     // ---------------- Tool resolution (Tools container GameObjects) ----------------
@@ -273,14 +358,5 @@ public static class PartTemplateService
             }
         }
         return fallback;
-    }
-
-    private static void RefreshGroupOverlay()
-    {
-        var groupManager = UnityEngine.Object.FindObjectOfType<GroupManager>(true);
-        if (groupManager != null && groupManager.isActiveAndEnabled)
-        {
-            groupManager.rebuild();
-        }
     }
 }

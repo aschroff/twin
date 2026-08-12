@@ -71,12 +71,17 @@ public static class TemplatePoCRunner
     [MenuItem("Tools/Template Library/Run PartTemplateService Tests")]
     public static void RunServiceTests()
     {
-        Run("NoAPICalls.PartTemplateServiceTests.PaintTemplateGroup_StampsRegionOntoCurrentTwin",
-            "NoAPICalls.PartTemplateServiceTests.PaintTemplateGroup_UnknownRegion_ThrowsWithAvailableNames",
-            "NoAPICalls.PartTemplateServiceTests.PaintTemplateGroup_WithTool_AppliesToolColorAndMetadata",
+        Run("NoAPICalls.PartTemplateServiceTests.PaintRegion_AddsPartToActiveGroup",
+            "NoAPICalls.PartTemplateServiceTests.PaintRegion_UnknownRegion_ThrowsWithAvailableNames",
+            "NoAPICalls.PartTemplateServiceTests.PaintRegion_WithTool_AppliesToolColorAndMetadata",
             "NoAPICalls.PartTemplateServiceTests.GetTemplateGroupNames_ListsAllArmRegions",
             "NoAPICalls.PartTemplateServiceTests.GetTemplateCatalog_ListsAllTwinsAndRegions",
-            "NoAPICalls.PartTemplateServiceTests.LoadTwin_WithStaleTextureReferences_RebindsOnLoad");
+            "NoAPICalls.PartTemplateServiceTests.PaintWithCurrentTool_UsesActiveTool_AndFallsBackToMarker",
+            "NoAPICalls.PartTemplateServiceTests.LoadTwin_BindsCommandsToPaintableTexture",
+            "NoAPICalls.PartTemplateServiceTests.SaveFileSize_GrowsLinearly_WithPartsInOneGroup",
+            "NoAPICalls.PartTemplateServiceTests.LoadTwin_RelinksPartsToTheirGroups",
+            "NoAPICalls.PartTemplateServiceTests.SavedTwin_ContainsNoPaintableTextureReferences",
+            "NoAPICalls.PartTemplateServiceTests.RegionNames_FollowTheSelectedLanguage");
     }
 
     private static void Run(params string[] testNames)

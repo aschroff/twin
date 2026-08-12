@@ -87,7 +87,10 @@ Scaling to the full library:
 - **Storage decision (2026-07-31):** templates ship as bundled area twins under
   `Assets/Resources/templates/<Area>.twin/ConfigTwin.txt` (registered in the scene's
   `DataPersistenceManager.templates`, so they also appear in the app after Reset for review).
-  Promoted so far: `Torso.twin` (21 regions). Generation workspace + promotion recipe:
+  All six area twins are promoted (98 regions total): `Torso.twin` (21), `Arms.twin` (20),
+  `Legs.twin` (14), `Feet.twin` (12), `Head.twin` (17), `Hands.twin` (14) — split per area
+  so the group overlay stays scrollable (13 MB total; the command data is what dominates —
+  the fill regions carry 100–300 spheres each). Generation workspace + promotion recipe:
   `TemplateLibrary/README.md`.
 - **Open design decision for PartTemplateService (step 5):** a runtime **manifest** is needed
   either way (region key → area twin, EN/DE display names, tool kind, default size — feeds the
@@ -153,27 +156,22 @@ Scaling to the full library:
        remaining: arms front/back, legs front/back, head/neck, hands (palm-orientation
        pitch experiments), extended (ears/jaw side views, soles)
 4. [ ] Sticker-based templates (needs investigation of the sticker placement flow)
-5. [~] Implement `PartTemplateService` class — **MVP done (2026-07-31)**:
-       `PartTemplateService.PaintTemplateGroup(twinName, groupName)` in this folder loads a
-       bundled area twin, clones the region group (fresh GUIDs), re-binds every command to
-       the live `CwPaintableTexture`, inserts it as a NEW group named like the region
-       (deliberate: parts-per-group grows the save file exponentially, and per-region groups
-       give free visibility toggling), replays via `PartManager.RefreshPart`, refreshes the
-       group overlay. `GetTemplateGroupNames(twinName)` lists a twin's regions;
-       `GetTemplateCatalog()` / `GetTemplateCatalogJson()` deliver the full manifest
-       (6 template twins × 98 regions, read from the bundled assets — no separate manifest
-       file to maintain) for LLM prompts and UI pickers.
-       **Tool override (done):** `PaintTemplateGroup(twin, region, toolName)` — toolName is a
-       marker/filler GameObject under the Tools container (e.g. "Yellow", "Cyan Filling");
-       its color recolors every cloned command and its name/color/type/meaning become the
-       part metadata (a tool IS the semantic unit — color and meaning are its fixed
-       properties, never passed separately). Null = keep the template's own Red tool.
-       Sticker/text tools are rejected (decal commands — separate work item). Verified:
-       markers and fillers share one paint material (hash `-88418687`), so no hash rewrite
-       is needed for sphere-tool swaps.
-       Covered by `Assets/Tests/PlayMode/NoAPICalls/PartTemplateServiceTests.cs` (5 tests:
-       stamp + rebind + GUID freshness + save round trip + error listing + catalog + tool
-       override incl. sticker rejection).
+5. [x] **`PartTemplateService`** (this folder) — `PaintRegion(twin, region [, toolName])` and
+       `PaintRegionWithCurrentTool(twin, region)`: loads the region from a bundled area twin,
+       clones its part(s) with fresh GUIDs, binds the commands to the live paintable texture,
+       recolors them to the chosen tool, and adds the part to the twin's **active group**
+       (groups are the user's categories; the region is not a group). The part carries
+       `regionKey` (language independent) and the localized region name as `description`.
+       Without a tool argument the template's own tool is kept; `PaintRegionWithCurrentTool`
+       uses the tool the user has selected and falls back to the first marker when that tool
+       cannot carry sphere templates (stickers/text paint decals and are rejected).
+       `GetTemplateCatalog()` / `GetTemplateCatalogJson()` return all template twins with their
+       regions (`key` + localized `displayName`), read from the bundled assets.
+       **Languages:** region names live in `TwinLocalTables` (`region.<key>`), see
+       `Assets/Resources/BODY_REGIONS.md`; `enmed`, `demed` and `demedlatin` (Latin anatomy)
+       are filled from `Assets/Resources/region_names.tsv`.
+       Manual selection UI: `RegionManager` + prefab `Scroll read only two texts and icon`.
+       Tests: `Assets/Tests/PlayMode/NoAPICalls/PartTemplateServiceTests.cs` (11 tests).
 6. [ ] Build LLM prompt that includes available regions + tools as structured output schema
        (incl. multi-region selection for circumferential descriptions, joint vocabulary
        table from Assets/Resources/BODY_REGIONS.md)
@@ -185,7 +183,7 @@ Scaling to the full library:
 
 ## Template Library Generation — Findings (2026-07-30)
 
-Generator: `Assets/Tests/PlayMode/NoAPICalls/TemplateLibraryGenerator.cs` (+ `TemplateRegionTable.cs`),
+Generator: `Assets/Tests/PlayMode/TemplateLibraryTools/TemplateLibraryGenerator.cs` (+ `TemplateRegionTable.cs`),
 run via **Tools → Template Library → Batch …**. Output persists in `<project>/TemplateLibrary/`
 (twin data, per-region screenshots, exported `commandDetails.json`). Batches are idempotent:
 existing regions are skipped; keys listed in `TemplateLibrary/regenerate.txt` are deleted and repainted.
@@ -198,32 +196,17 @@ Hard-won lessons — all of these affect the eventual `PartTemplateService`:
    **one group per region** (group name = region key) → 21 regions ≈ 8 MB.
    The PartTemplateService must keep inserted template parts in *small* groups, or the
    serialization cycle must be fixed app-side first.
-2. **`CommandData.PaintableTexture` is serialized as a Unity `instanceID`.**
-   **FIXED (2026-07-31): `PartManager.LoadData` now re-binds null texture references to the
-   scene's paintable texture on every load** (regression test:
-   `PartTemplateServiceTests.LoadTwin_WithStaleTextureReferences_RebindsOnLoad`). Bundled
-   templates therefore load correctly regardless of baked IDs, and the latent bug where a
-   group hide/unhide after an app restart/update silently lost its paint is gone. Follow-up
-   ticket (Andreas): the "as CW intended" fix — hashed texture reference in CommandData
-   (adopt the CW example class into app code; the rebind stays as migration fallback for
-   old saves). Historical detail of the instanceID saga, kept for context:
-   in the app's editor runtime the ID is stable **as long as the
-   project doesn't change** (it was `47276` for a long time, shifted to `47226` after this
-   week's new asmdefs/test files). The bundled sample twins ship WITHOUT command data
-   (their visuals come from image files), so saved configs only ever carry the machine's
-   current ID. In the PlayMode test harness, repeated scene loads shuffle IDs every run.
-   Consequences:
-   - Template files from the harness must have their `PaintableTexture` IDs **re-anchored**
-     for in-app use: paint a dot in any twin, quit (quit-save writes the current ID), read
-     that ID, regex-replace it into the template config. Verified working end-to-end
-     (all 21 torso regions reviewed in-app via group toggling).
-   - `PartTemplateService` should not rely on IDs at all — re-bind cloned commands to the
-     live `CwPaintableMeshTexture` at insertion time (proven in the generator). This is an
-     ADDITIVE step in the service, not a change to existing app logic.
-   - The app **saves on quit** (`OnApplicationQuit → SaveConfig`) — always stop the app
-     before manipulating config files, and expect unresolved references to be persisted
-     as `instanceID: 0` afterwards.
-   - App **Reset deletes all profiles** including a manually installed review twin.
+2. **The paintable texture is a runtime binding, not saved data.** `PaintCommandSerialization`
+   (`Assets/Code/DataPersistence/`) is the app-owned base class of `PartManager`, adopted from
+   the PaintIn3D example `CwCommandSerialization` so plugin updates need no patching. Its
+   `CommandData.PaintableTexture` is `[NonSerialized]` — a Unity object reference is stored as
+   a session-local `instanceID` and never resolves in a later session. `PartManager.LoadData`
+   binds all loaded commands to the scene's paintable texture; `PartTemplateService` does the
+   same for cloned template parts. Old saves (and the bundled template twins) still contain
+   the old `instanceID` entries — they are ignored on load and disappear on the next save.
+   Same pattern for `PartData.group`: not serialized, re-linked on load (it formed a cycle
+   with `GroupData.groupParts` that JsonUtility inlined, growing files by ~(parts/group)^5;
+   now every part costs a constant ~17.5 KB).
 3. **Cold-replay rendering artifact (test-harness only — confirmed in practice):** the first
    command replay in a harness session can render misaligned (crescent remnants); a warm-up
    paint usually fixes it. In the real app, replay renders correctly (dot experiment +
