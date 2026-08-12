@@ -27,6 +27,20 @@ public static class TemplatePoCRunner
         Run("NoAPICalls.ProgrammaticPaintingTests.PaintTemplateParts_ThreeRegions");
     }
 
+    /// <summary>Runs the whole PlayMode suite (the [Explicit] template generation batches are
+    /// skipped automatically).</summary>
+    [MenuItem("Tools/Template PoC/Run All PlayMode Tests")]
+    public static void RunAllPlayModeTests()
+    {
+        Run();
+    }
+
+    [MenuItem("Tools/Template PoC/Run GroupDetail Test")]
+    public static void StartGroupDetailRun()
+    {
+        Run("NoAPICalls.GroupDetailPlayModeTests.PaintingPerGroup_ShowsOnePartPerSelectedGroup");
+    }
+
     [MenuItem("Tools/Template PoC/Run SaveTwin Baseline Test")]
     public static void StartBaselineRun()
     {
@@ -93,10 +107,12 @@ public static class TemplatePoCRunner
         var filter = new Filter
         {
             testMode = TestMode.PlayMode,
-            testNames = testNames
+            // no names = run everything (an empty array would match nothing)
+            testNames = testNames != null && testNames.Length > 0 ? testNames : null
         };
         api.Execute(new ExecutionSettings(filter));
-        Debug.Log("[TemplatePoCRunner] PlayMode test run started: " + string.Join(", ", testNames));
+        Debug.Log("[TemplatePoCRunner] PlayMode test run started: "
+            + (testNames != null && testNames.Length > 0 ? string.Join(", ", testNames) : "all tests"));
     }
 
     private class ResultWriter : ICallbacks
