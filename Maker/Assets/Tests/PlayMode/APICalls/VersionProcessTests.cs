@@ -79,7 +79,7 @@ public class VersionProcessTests : PlayModeTestBase
         part.description = "Mild swelling observed.";
         Assert.IsTrue(partManager.AllPartsDescribed(), "Expected all parts to be described after setting the part description.");
 
-        var settingsManager = Object.FindFirstObjectByType<SettingsManager>();
+        var settingsManager = Object.FindFirstObjectByType<SettingsManager>(FindObjectsInactive.Include);
         Assert.IsNotNull(settingsManager, "SettingsManager not found in scene.");
         var itemPrompt = settingsManager.getPromptObject(Variant, ItemPrompt.PromptLevel.Version);
         Assert.IsNotNull(itemPrompt, $"No Version-level ItemPrompt found for label '{Variant}'.");
