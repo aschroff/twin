@@ -13,9 +13,8 @@ namespace NoAPICalls
     /// plus one into a newly created group, then checks on the group detail page that selecting
     /// a single group lists exactly that group's one part.
     /// </summary>
-    public class GroupDetailPlayModeTests : PlayModeTestBase
+    public class GroupDetailPlayModeTests : TwinPaintTestBase
     {
-        private const string GroupOverlayPanel = "Canvas/Overlays/Group Overlay/Scroll/Panel";
         private const string DetailGroupPanel = "Canvas/GroupDetailUI/Scroll/Panel";
         private const string DetailPartPanel = "Canvas/GroupDetailUI/ScrollDetails/Panel";
         private const string NewGroupName = "TestGroup";
@@ -27,17 +26,9 @@ namespace NoAPICalls
         [UnityTest]
         public IEnumerator PaintingPerGroup_ShowsOnePartPerSelectedGroup()
         {
-            yield return ResetApp();
+            yield return LoadLipEdemaTwin();
 
-            // load the LipEdema twin (ships with empty groups: Pain, Injuries, Treatment, Swell)
-            yield return ClickButtonByName("Save Button");
-            yield return WaitForModeActive("Save");
-            var twinEntry = FindChildWithTextValue("Canvas/Save UI/Bottom/Scroll/Panel", "LipEdema");
-            Assert.IsNotNull(twinEntry, "LipEdema twin not found in the save list.");
-            yield return ClickButtonByPath(path: "Unselect", root: twinEntry);
-
-            var partManager = Object.FindObjectOfType<PartManager>();
-            Assert.IsNotNull(partManager, "PartManager not found.");
+            var partManager = FindPartManager();
             var groups = new List<PartManager.GroupData>(partManager.groups);
             Assert.Greater(groups.Count, 0, "LipEdema should ship with groups.");
             Assert.LessOrEqual(groups.Count, Markers.Length - 1,
@@ -52,9 +43,7 @@ namespace NoAPICalls
             yield return ClickButtonByName("Edit Button");
             yield return WaitForModeActive("Edit");
 
-            // the twin's saved camera frames the lower body, where the screen centre falls
-            // between the legs — pick a view that puts the body under the paint position
-            yield return SelectView("Upper body");
+            yield return SelectView(BodyView);
             for (int i = 0; i < groups.Count; i++)
             {
                 yield return SelectGroupForPainting(groups[i]);
@@ -88,44 +77,6 @@ namespace NoAPICalls
                 Assert.AreEqual(1, CountListedParts(),
                     $"With only '{group.name}' selected, its single part should be listed.");
             }
-        }
-
-        /// <summary>Selects a stored view, which frames the body for painting.</summary>
-        private IEnumerator SelectView(string viewName)
-        {
-            var viewEntry = FindChildWithTextValue("Canvas/Overlays/View Overlay/Scroll/Panel",
-                viewName, "ReadOnlyMode/Text Background/ViewName");
-            Assert.IsNotNull(viewEntry, $"View '{viewName}' not found in the view overlay.");
-            yield return ClickButtonByPath(path: "ReadOnlyMode/Icon", root: viewEntry);
-        }
-
-        /// <summary>Makes the group the current one, so new paint goes into it — the same handler
-        /// the group overlay entry invokes.</summary>
-        private IEnumerator SelectGroupForPainting(PartManager.GroupData group)
-        {
-            var panel = FindGameObjectByPath(GroupOverlayPanel);
-            Group entry = panel.GetComponentsInChildren<Group>(true)
-                .FirstOrDefault(g => g.groupdata == group);
-            Assert.IsNotNull(entry, $"No group overlay entry for '{group.name}'.");
-            entry.HandleEdit();
-            yield return null;
-
-            var partManager = Object.FindObjectOfType<PartManager>();
-            Assert.AreSame(group, partManager.currentGroup,
-                $"Group '{group.name}' should be the current group.");
-        }
-
-        private IEnumerator PaintWithMarker(string marker)
-        {
-            yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Marker/Text Background/Text");
-            yield return WaitForModeActive("EditMarker");
-            yield return ClickButtonByPath($"Canvas/EditMarker UI/Bottom/Scroll/Panel/{marker}");
-            AssertGameObjectActive($"Tools/{marker}");
-
-            yield return DragOnCanvas("Canvas", new Vector2(20, 0));
-
-            yield return ClickButtonByPath("Canvas/EditMarker UI/Bottom/Buttons/Link");
-            yield return WaitForModeActive("Edit");
         }
 
         /// <summary>Creates a group the way the group list does for a newly named entry.</summary>

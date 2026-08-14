@@ -35,10 +35,13 @@ public static class TemplatePoCRunner
         Run();
     }
 
-    [MenuItem("Tools/Template PoC/Run GroupDetail Test")]
-    public static void StartGroupDetailRun()
+    [MenuItem("Tools/Template PoC/Run Group Tests")]
+    public static void StartGroupRun()
     {
-        Run("NoAPICalls.GroupDetailPlayModeTests.PaintingPerGroup_ShowsOnePartPerSelectedGroup");
+        Run("NoAPICalls.GroupDetailPlayModeTests.PaintingPerGroup_ShowsOnePartPerSelectedGroup",
+            "NoAPICalls.GroupPlayModeTests.HideAndShowGroup_KeepsItsParts",
+            "NoAPICalls.GroupPlayModeTests.GroupList_ShowsPartCounts_AddsAndDeletesGroups",
+            "NoAPICalls.GroupPlayModeTests.SaveAndReload_KeepsGroupsPartsAndTheirLinks");
     }
 
     [MenuItem("Tools/Template PoC/Run SaveTwin Baseline Test")]
