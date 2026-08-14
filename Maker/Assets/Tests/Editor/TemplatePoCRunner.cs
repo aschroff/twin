@@ -44,6 +44,16 @@ public static class TemplatePoCRunner
             "NoAPICalls.GroupPlayModeTests.SaveAndReload_KeepsGroupsPartsAndTheirLinks");
     }
 
+    [MenuItem("Tools/Template PoC/Run Info Display Tests")]
+    public static void RunInfoDisplayTests()
+    {
+        Run("NoAPICalls.InfoDisplayPlayModeTests.Reset_ShowsTheTwinLoadedAfterTheReset",
+            "NoAPICalls.InfoDisplayPlayModeTests.SelectTwin_UpdatesNameAndVersion",
+            "NoAPICalls.InfoDisplayPlayModeTests.CreateTwin_UpdatesNameAndVersion",
+            "NoAPICalls.InfoDisplayPlayModeTests.SelectTool_ShowsTheCurrentTool",
+            "NoAPICalls.InfoDisplayPlayModeTests.SelectGroup_ShowsTheCurrentGroup");
+    }
+
     [MenuItem("Tools/Template PoC/Run SaveTwin Baseline Test")]
     public static void StartBaselineRun()
     {
