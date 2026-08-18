@@ -466,4 +466,35 @@ public class FileDataHandler
             allowedExtractionFormats );
         return await tcs.Task;
     }
+
+    private string ExtractDirectory( string zipFilePath )
+    {   
+        if ( !File.Exists( zipFilePath ) )
+        {
+            Debug.Log( "Error: ZIP-File does not exist. Ensure the existence of the chosen file." );
+            return null;
+        } else
+        {   
+            string directoryName = Path.GetFileNameWithoutExtension( zipFilePath );
+            string profileDirectoryPath = Path.Combine( dataDirPath, directoryName);//Combine
+            try
+            {
+                if ( Directory.Exists( profileDirectoryPath ) )
+                {
+                    // we expect the new file to be the newest one, therefore we replace the old one
+                    Directory.Delete( profileDirectoryPath, true );
+                }
+                ZipFile.ExtractToDirectory( zipFilePath, profileDirectoryPath ); 
+                if ( !Directory.Exists( profileDirectoryPath ) )
+                {
+                    Debug.Log( "Error: Directory was not extracted." );
+                    return null;
+                }
+            } catch ( Exception e ) {
+                Debug.Log( "Error: Due to an exception the directory was not extracted: " + e.Message );
+                return null;
+            }
+            return profileDirectoryPath;
+        }
+    }
 }
