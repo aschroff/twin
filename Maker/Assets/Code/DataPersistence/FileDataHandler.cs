@@ -451,5 +451,19 @@ public class FileDataHandler
             return null;
         }
         return ExtractDirectory( zipFilePath );
-}
+    }
+
+    private async Task<string> PickFileAsync()
+    {
+        TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+        if ( IsFilePickerBusy() )
+        {
+            Debug.Log( "FilePicker is busy." );
+            return null;
+        }
+        NativeFilePicker.PickFile(
+            filePath => tcs.TrySetResult( filePath ),
+            allowedExtractionFormats );
+        return await tcs.Task;
+    }
 }
