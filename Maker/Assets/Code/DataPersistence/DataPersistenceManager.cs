@@ -324,6 +324,26 @@ public class DataPersistenceManager : MonoBehaviour
     }
 
     /*
+    * Coordinates Twin Configuration import and reloading the app to use the newly imported twin.
+    */
+    public async void ImportConfig()
+    {
+        // delegating data import to responsible (File)DataHandler
+        string pathToExtractedDirectory =  await dataHandler.ImportZipConfigAsync();
+        string profileId = Path.GetFileName( pathToExtractedDirectory );
+        //even though we want to get the directory name we have to call GetFileName here to get the correct attribute back
+        
+        dataHandler.LoadAllProfiles();
+        if ( !dataHandler.Exists( profileId ) )
+        {
+            Debug.Log( " Error: Config importation did not work. " );
+            return;
+        }
+        ChangeSelectedProfileId( profileId );
+        LoadConfig();
+    }
+
+    /*
     * Collects the saveable data
     */
     private bool PrepareConfigStorage()
