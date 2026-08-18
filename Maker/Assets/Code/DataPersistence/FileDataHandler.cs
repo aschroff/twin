@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using static NativeFilePicker;
 using System.IO.Compression;
+using System.Threading.Tasks;
 
 
 public class FileDataHandler
@@ -16,6 +17,7 @@ public class FileDataHandler
     private readonly string encryptionCodeWord = "word";
     private readonly string backupExtension = ".bak";
     private readonly string compressExtension = ".zip";
+    private readonly string allowedExtractionFormats = "com.pkware.zip-archive, application/epub+zip";
 
     public FileDataHandler(string dataDirPath, string templateDirPath, string dataFileName, bool useEncryption) 
     {
@@ -435,4 +437,19 @@ public class FileDataHandler
         }
         NativeFilePicker.ExportFile( filePath, ( success ) => Debug.Log( "File exported:" + success ) );
     }
+
+    /*
+    * Responsible method for calling method to pick twin config zip file (asynchronous) 
+    * following with the call of the method to extract this zip file 
+    */
+    public async Task<string> ImportZipConfigAsync()
+    {
+        string zipFilePath = await PickFileAsync();
+        if ( string.IsNullOrEmpty( zipFilePath ) || !File.Exists( zipFilePath ) )
+        {
+            Debug.Log( "Error: No file was selected or the file does not exist. Path: " + zipFilePath );
+            return null;
+        }
+        return ExtractDirectory( zipFilePath );
+}
 }
