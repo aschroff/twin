@@ -27,6 +27,33 @@ public static class TemplatePoCRunner
         Run("NoAPICalls.ProgrammaticPaintingTests.PaintTemplateParts_ThreeRegions");
     }
 
+    /// <summary>Runs the whole PlayMode suite (the [Explicit] template generation batches are
+    /// skipped automatically).</summary>
+    [MenuItem("Tools/Template PoC/Run All PlayMode Tests")]
+    public static void RunAllPlayModeTests()
+    {
+        Run();
+    }
+
+    [MenuItem("Tools/Template PoC/Run Group Tests")]
+    public static void StartGroupRun()
+    {
+        Run("NoAPICalls.GroupDetailPlayModeTests.PaintingPerGroup_ShowsOnePartPerSelectedGroup",
+            "NoAPICalls.GroupPlayModeTests.HideAndShowGroup_KeepsItsParts",
+            "NoAPICalls.GroupPlayModeTests.GroupList_ShowsPartCounts_AddsAndDeletesGroups",
+            "NoAPICalls.GroupPlayModeTests.SaveAndReload_KeepsGroupsPartsAndTheirLinks");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Info Display Tests")]
+    public static void RunInfoDisplayTests()
+    {
+        Run("NoAPICalls.InfoDisplayPlayModeTests.Reset_ShowsTheTwinLoadedAfterTheReset",
+            "NoAPICalls.InfoDisplayPlayModeTests.SelectTwin_UpdatesNameAndVersion",
+            "NoAPICalls.InfoDisplayPlayModeTests.CreateTwin_UpdatesNameAndVersion",
+            "NoAPICalls.InfoDisplayPlayModeTests.SelectTool_ShowsTheCurrentTool",
+            "NoAPICalls.InfoDisplayPlayModeTests.SelectGroup_ShowsTheCurrentGroup");
+    }
+
     [MenuItem("Tools/Template PoC/Run SaveTwin Baseline Test")]
     public static void StartBaselineRun()
     {
@@ -71,12 +98,17 @@ public static class TemplatePoCRunner
     [MenuItem("Tools/Template Library/Run PartTemplateService Tests")]
     public static void RunServiceTests()
     {
-        Run("NoAPICalls.PartTemplateServiceTests.PaintTemplateGroup_StampsRegionOntoCurrentTwin",
-            "NoAPICalls.PartTemplateServiceTests.PaintTemplateGroup_UnknownRegion_ThrowsWithAvailableNames",
-            "NoAPICalls.PartTemplateServiceTests.PaintTemplateGroup_WithTool_AppliesToolColorAndMetadata",
+        Run("NoAPICalls.PartTemplateServiceTests.PaintRegion_AddsPartToActiveGroup",
+            "NoAPICalls.PartTemplateServiceTests.PaintRegion_UnknownRegion_ThrowsWithAvailableNames",
+            "NoAPICalls.PartTemplateServiceTests.PaintRegion_WithTool_AppliesToolColorAndMetadata",
             "NoAPICalls.PartTemplateServiceTests.GetTemplateGroupNames_ListsAllArmRegions",
             "NoAPICalls.PartTemplateServiceTests.GetTemplateCatalog_ListsAllTwinsAndRegions",
-            "NoAPICalls.PartTemplateServiceTests.LoadTwin_WithStaleTextureReferences_RebindsOnLoad");
+            "NoAPICalls.PartTemplateServiceTests.PaintWithCurrentTool_UsesActiveTool_AndFallsBackToMarker",
+            "NoAPICalls.PartTemplateServiceTests.LoadTwin_BindsCommandsToPaintableTexture",
+            "NoAPICalls.PartTemplateServiceTests.SaveFileSize_GrowsLinearly_WithPartsInOneGroup",
+            "NoAPICalls.PartTemplateServiceTests.LoadTwin_RelinksPartsToTheirGroups",
+            "NoAPICalls.PartTemplateServiceTests.SavedTwin_ContainsNoPaintableTextureReferences",
+            "NoAPICalls.PartTemplateServiceTests.RegionNames_FollowTheSelectedLanguage");
     }
 
     private static void Run(params string[] testNames)
@@ -88,10 +120,12 @@ public static class TemplatePoCRunner
         var filter = new Filter
         {
             testMode = TestMode.PlayMode,
-            testNames = testNames
+            // no names = run everything (an empty array would match nothing)
+            testNames = testNames != null && testNames.Length > 0 ? testNames : null
         };
         api.Execute(new ExecutionSettings(filter));
-        Debug.Log("[TemplatePoCRunner] PlayMode test run started: " + string.Join(", ", testNames));
+        Debug.Log("[TemplatePoCRunner] PlayMode test run started: "
+            + (testNames != null && testNames.Length > 0 ? string.Join(", ", testNames) : "all tests"));
     }
 
     private class ResultWriter : ICallbacks

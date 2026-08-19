@@ -118,7 +118,6 @@ namespace TemplateLibraryTools
             Directory.CreateDirectory(diagDir);
 
             // 1) replay data loaded from the previous session
-            RebindLoadedCommandTextures();
             partManager.Refresh();
             yield return null; yield return null;
             yield return CaptureShotTo(diagDir, "diag_1_loaded_replay");
@@ -193,18 +192,11 @@ namespace TemplateLibraryTools
             Assert.IsNotNull(partManager, "PartManager not found.");
             CacheBones();
             SetupBodyControl();
-            // Loaded command data is not re-applied to the paint texture automatically.
-            // Worse: CommandData.PaintableTexture is serialized as a Unity instanceID and is
-            // ALWAYS stale after a scene reload / new session — rebind every loaded command
-            // to the live paintable texture, then replay. (The future PartTemplateService
-            // must do exactly the same when inserting cloned template commands.)
-            //
-            // ALSO: the very first replay of a session renders misaligned (crescent artifacts)
-            // until one live paint has gone through the pipeline (suspected skinned-mesh bake
-            // happening on first hit-based paint). Warm up with a throwaway dot first, then
-            // erase and replay everything.
+            // Loaded command data is not re-applied to the paint texture automatically, and the
+            // very first replay of a session renders misaligned (crescent artifacts) until one
+            // live paint has gone through the pipeline (suspected skinned-mesh bake happening on
+            // first hit-based paint). Warm up with a throwaway dot first, then erase and replay.
             yield return WarmUpPaintPipeline();
-            RebindLoadedCommandTextures();
             partManager.Erase();
             partManager.Refresh();
             yield return null;
@@ -520,26 +512,6 @@ namespace TemplateLibraryTools
             }
             partManager.groups.RemoveAll(g => g.name == "warmup" && g.groupParts.Count == 0);
             partManager.startNewPart = true; // the deleted warm-up part must not receive further commands
-        }
-
-        /// <summary>Commands loaded from a previous session reference their CwPaintableTexture
-        /// by a stale instanceID (always null after reload). Rebind them to the scene's live
-        /// paintable texture so PartManager.Refresh/Apply can replay them.</summary>
-        private void RebindLoadedCommandTextures()
-        {
-            var texture = Object.FindObjectOfType<CwPaintableMeshTexture>();
-            if (texture == null || partManager.groups == null) return;
-            int rebound = 0;
-            foreach (var group in partManager.groups)
-                foreach (var part in group.groupParts)
-                    foreach (var command in part.partCommands)
-                        if (command.data.PaintableTexture == null)
-                        {
-                            command.data.PaintableTexture = texture;
-                            rebound++;
-                        }
-            if (rebound > 0)
-                Debug.Log($"[TemplateLibrary] Rebound {rebound} loaded commands to the live paintable texture.");
         }
 
         private void Fail(string key, string reason)
