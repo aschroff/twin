@@ -169,7 +169,7 @@ public class ConfigManager : MonoBehaviour
     public void ImportTwin()
     {
         dataPersistenceManager.ImportConfig();
-        InteractionController.EnableMode("Main");
+        fileManager.Refresh();
     }
 
 }

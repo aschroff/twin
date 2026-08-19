@@ -339,8 +339,6 @@ public class DataPersistenceManager : MonoBehaviour
             Debug.Log( " Error: Config importation did not work. " );
             return;
         }
-        ChangeSelectedProfileId( profileId );
-        LoadConfig();
     }
 
     /*
