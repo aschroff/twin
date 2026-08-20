@@ -168,8 +168,9 @@ public class ConfigManager : MonoBehaviour
     }
     public void ImportTwin()
     {
-        dataPersistenceManager.ImportConfig();
-        fileManager.Refresh();
+        // the callback runs once the file is picked and the twin is unpacked, which is when the
+        // list has something new to show
+        dataPersistenceManager.ImportConfig( profileId => fileManager.Refresh() );
     }
 
 }

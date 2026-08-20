@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using RotaryHeart.Lib.SerializableDictionary;
+using PaintCore;
 using Application = UnityEngine.Application;
 
 [Serializable]
@@ -313,32 +314,83 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void ExportConfig()
     {
-        bool flowControl = PrepareConfigStorage();
-        if (!flowControl)
+        string zipFilePath = ExportConfigZip();
+        if (zipFilePath == null)
         {
             return;
         }
+        dataHandler.ExportFile(zipFilePath);
+    }
+
+    /*
+    * Saves the current twin and packs it into a zip file. Returns the path of that zip file,
+    * without handing it to the user - that is what ExportConfig adds on top.
+    */
+    public string ExportConfigZip()
+    {
+        bool flowControl = PrepareConfigStorage();
+        if (!flowControl)
+        {
+            return null;
+        }
+
+        // the painted texture is only cached on this device, so it has to be written into the
+        // twin directory to travel with the export
+        foreach (Body body in FindObjectsOfType<Body>(true))
+        {
+            body.StoreTextureFile(selectedProfileId);
+        }
 
         // save that data to a file using the data handler
-        dataHandler.ExportData(configData, selectedProfileId);
+        return dataHandler.ExportZip(configData, selectedProfileId);
     }
 
     /*
     * Coordinates Twin Configuration import and reloading the app to use the newly imported twin.
+    * Picking the file is asynchronous, so the profile id of the imported twin is handed to
+    * onImported once the import is through - that is the point at which the twin exists.
     */
-    public async void ImportConfig()
+    public async void ImportConfig( Action<string> onImported = null )
     {
         // delegating data import to responsible (File)DataHandler
         string pathToExtractedDirectory =  await dataHandler.ImportZipConfigAsync();
+        string profileId = FinishImport( pathToExtractedDirectory );
+        if ( onImported != null )
+        {
+            onImported( profileId );
+        }
+    }
+
+    /*
+    * Imports an already chosen zip file (no file picker involved).
+    * Returns the profile id of the imported twin, or null if the import failed.
+    */
+    public string ImportConfig( string zipFilePath )
+    {
+        return FinishImport( dataHandler.ImportZipConfig( zipFilePath ) );
+    }
+
+    private string FinishImport( string pathToExtractedDirectory )
+    {
+        if ( string.IsNullOrEmpty( pathToExtractedDirectory ) )
+        {
+            Debug.Log( " Error: Config importation did not work. " );
+            return null;
+        }
         string profileId = Path.GetFileName( pathToExtractedDirectory );
         //even though we want to get the directory name we have to call GetFileName here to get the correct attribute back
-        
-        dataHandler.LoadAllProfiles();
+
         if ( !dataHandler.Exists( profileId ) )
         {
             Debug.Log( " Error: Config importation did not work. " );
-            return;
+            return null;
         }
+
+        // The painted texture is cached per twin and that cache is local to this device, so
+        // anything stored under the id of the imported twin belongs to a different twin.
+        // Dropping it makes the app pick up the texture that came with the import.
+        CwPaintableTexture.ClearSave( profileId );
+        return profileId;
     }
 
     /*

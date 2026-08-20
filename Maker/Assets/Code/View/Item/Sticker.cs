@@ -114,31 +114,38 @@ public class Sticker : ItemHash, ItemFile
 	}
 
 
+	/*
+	 * Makes the image of this sticker slot the one that paint commands carrying its hash draw.
+	 * The hash belongs to the slot and not to the image, so every twin uses the same hash for
+	 * this slot with an image of its own - loading a twin has to point the registration at the
+	 * image of that twin.
+	 */
 	private void Register()
-
-
 	{
 		int intHash = this.gameObject.GetComponent<Item>().getHash();
-		if (is_registered(intHash) == false)
+		GameObject decalhash = get_registration(intHash);
+		if (decalhash == null)
 		{
-			GameObject decalhash = Instantiate(Resources.Load("Decal Hash", typeof(GameObject))) as GameObject;
+			decalhash = Instantiate(Resources.Load("Decal Hash", typeof(GameObject))) as GameObject;
 			decalhash.transform.SetParent(FolderHash().transform);
-			CwTextureHash textureHash = decalhash.GetComponent<CwTextureHash>();
-			textureHash.Texture = loadedTexture;
-			//Debug.Log("Texture assigned " + hash);
-			//int intHash = this.gameObject.GetComponent<Item>().getHash();
-			//Debug.Log("hash" + intHash.ToString());
-			textureHash.Hash = new CwHash(intHash);
 		}
+		CwTextureHash textureHash = decalhash.GetComponent<CwTextureHash>();
+		// a hash can only be held by one texture, so it has to be released before the image of
+		// this twin can take it
+		textureHash.Hash = new CwHash();
+		textureHash.Texture = loadedTexture;
+		textureHash.Hash = new CwHash(intHash);
 	}
 
 	private void Unregister()
-	
 	{
 		int intHash = this.gameObject.GetComponent<Item>().getHash();
-		if (is_registered(intHash) == true)
+		GameObject decalhash = get_registration(intHash);
+		if (decalhash != null)
 		{
-			Destroy(get_registration(intHash));
+			// the object itself goes at the end of the frame, the hash has to be free now
+			decalhash.GetComponent<CwTextureHash>().Hash = new CwHash();
+			Destroy(decalhash);
 		}
 	}
 	
@@ -148,27 +155,6 @@ public class Sticker : ItemHash, ItemFile
 		if (twinPrefab != null)
 		{
 			return twinPrefab.IsInstanceOfPrefabWithName(name);
-		}
-		return false;
-	}
-
-	private bool is_registered(int hash)
-
-
-	{
-		for (int j = 0; j < FolderHash().transform.childCount; j++) {
-
-			GameObject child = FolderHash().transform.GetChild(j).gameObject;
-			if (IsInstanceOfPrefabWithName(child, "Decal Hash"))
-            {
-				CwTextureHash hashPrefab = child.GetComponent<CwTextureHash>();
-
-				if (hashPrefab.Hash.ToString() == hash.ToString())
-				{
-					return true;
-				};
-            }
-
 		}
 		return false;
 	}

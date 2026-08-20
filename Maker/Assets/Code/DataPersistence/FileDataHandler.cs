@@ -18,6 +18,12 @@ public class FileDataHandler
     private readonly string backupExtension = ".bak";
     private readonly string compressExtension = ".zip";
     private readonly string allowedExtractionFormats = "com.pkware.zip-archive, application/epub+zip";
+    /// <summary>Where an import is unpacked before it is moved to its own directory.</summary>
+    private readonly string importDirectory = "__import";
+    /// <summary>Marks an imported twin whose name and version are taken already: V01, V02, ...</summary>
+    private readonly string versionSuffix = "V";
+    private const int maxImportedVersions = 100;
+    private readonly string defaultVersion = "000";
 
     public FileDataHandler(string dataDirPath, string templateDirPath, string dataFileName, bool useEncryption) 
     {
@@ -400,10 +406,18 @@ public class FileDataHandler
     
     public void ExportData(ConfigData data, string profileId)
     {
+        ExportFile(ExportZip(data, profileId));
+    }
+
+    /*
+    * Saves the twin and packs its directory into a zip file next to it. Returns the path of
+    * that zip file - handing it to the user is a separate step (ExportFile).
+    */
+    public string ExportZip(ConfigData data, string profileId)
+    {
         // Saving file before exporting it
         Save(data, profileId);
-        string zipFilePath = CompressFolder(profileId);
-        ExportFile(zipFilePath);
+        return CompressFolder(profileId);
     }
 
     private string CompressFolder(string profileId)
@@ -428,7 +442,7 @@ public class FileDataHandler
         }
     }
 
-    private void ExportFile(string filePath)
+    public void ExportFile(string filePath)
     {
         // Don't attempt to import/export files if the file picker is already open
         if( IsFilePickerBusy() )
@@ -450,6 +464,15 @@ public class FileDataHandler
             Debug.Log( "Error: No file was selected or the file does not exist. Path: " + zipFilePath );
             return null;
         }
+        return ImportZipConfig( zipFilePath );
+    }
+
+    /*
+    * Imports an already chosen zip file (no file picker involved). Returns the path of the
+    * extracted twin directory, or null if the zip could not be extracted.
+    */
+    public string ImportZipConfig( string zipFilePath )
+    {
         return ExtractDirectory( zipFilePath );
     }
 
@@ -467,34 +490,145 @@ public class FileDataHandler
         return await tcs.Task;
     }
 
+    /*
+    * Unpacks the zip into a directory of its own. The twin is unpacked to a temporary place
+    * first and only moved to its final directory once that worked, so an import can never
+    * damage a twin that is already on this device.
+    */
     private string ExtractDirectory( string zipFilePath )
-    {   
+    {
         if ( !File.Exists( zipFilePath ) )
         {
             Debug.Log( "Error: ZIP-File does not exist. Ensure the existence of the chosen file." );
             return null;
-        } else
-        {   
-            string directoryName = Path.GetFileNameWithoutExtension( zipFilePath );
-            string profileDirectoryPath = Path.Combine( dataDirPath, directoryName);//Combine
-            try
+        }
+
+        string extractPath = Path.Combine( dataDirPath, importDirectory );
+        try
+        {
+            if ( Directory.Exists( extractPath ) )
             {
-                if ( Directory.Exists( profileDirectoryPath ) )
-                {
-                    // we expect the new file to be the newest one, therefore we replace the old one
-                    Directory.Delete( profileDirectoryPath, true );
-                }
-                ZipFile.ExtractToDirectory( zipFilePath, profileDirectoryPath ); 
-                if ( !Directory.Exists( profileDirectoryPath ) )
-                {
-                    Debug.Log( "Error: Directory was not extracted." );
-                    return null;
-                }
-            } catch ( Exception e ) {
-                Debug.Log( "Error: Due to an exception the directory was not extracted: " + e.Message );
+                Directory.Delete( extractPath, true );
+            }
+            ZipFile.ExtractToDirectory( zipFilePath, extractPath );
+
+            string extractedProfileId = FindConfigDirectory( importDirectory );
+            if ( extractedProfileId == null )
+            {
+                Debug.Log( "Error: The chosen file does not contain a twin (no " + dataFileName + " in it)." );
                 return null;
             }
+
+            ConfigData importedData = Load( extractedProfileId );
+            string profileId = FreeProfileId( ProfileIdOf( importedData, zipFilePath ) );
+            string profileDirectoryPath = Path.Combine( dataDirPath, profileId );
+
+            // the only step that touches the data directory, and it only ever adds to it
+            Directory.Move( Path.Combine( dataDirPath, extractedProfileId ), profileDirectoryPath );
+
+            if ( importedData != null )
+            {
+                // the directory name is what identifies a twin in the app, and the twin list
+                // reads name and version out of the config, so the two have to agree
+                importedData.name = NameOf( profileId );
+                importedData.version = VersionOf( profileId );
+                // it arrived now, so it is the newest version of that twin on this device -
+                // that is what the twin list and the twin loaded at startup go by
+                importedData.lastUpdated = DateTime.Now.ToBinary();
+                Save( importedData, profileId );
+            }
+            Debug.Log( "Imported twin " + profileId + "." );
             return profileDirectoryPath;
         }
+        catch ( Exception e )
+        {
+            Debug.Log( "Error: Due to an exception the directory was not extracted: " + e.Message );
+            return null;
+        }
+        finally
+        {
+            if ( Directory.Exists( extractPath ) )
+            {
+                Directory.Delete( extractPath, true );
+            }
+        }
+    }
+
+    /*
+    * The twin can sit at the root of the zip or inside a single directory in it, depending on
+    * how it was packed. Returns the profile id (relative to the data directory) of whichever
+    * directory holds the config, or null if the zip holds no twin at all.
+    */
+    private string FindConfigDirectory( string profileId )
+    {
+        if ( File.Exists( Path.Combine( dataDirPath, profileId, dataFileName ) ) )
+        {
+            return profileId;
+        }
+        foreach ( DirectoryInfo dirInfo in new DirectoryInfo( Path.Combine( dataDirPath, profileId ) ).EnumerateDirectories() )
+        {
+            string candidate = Path.Combine( profileId, dirInfo.Name );
+            if ( File.Exists( Path.Combine( dataDirPath, candidate, dataFileName ) ) )
+            {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    /*
+    * A twin is identified by its name and version, and both come out of its config. The name
+    * of the zip file is no help here: everything that carries the file around - mail clients,
+    * file managers, a server - may rename it.
+    */
+    private string ProfileIdOf( ConfigData data, string zipFilePath )
+    {
+        if ( data == null || string.IsNullOrEmpty( data.name ) )
+        {
+            Debug.LogWarning( "The imported twin has no name in its config, using the file name instead." );
+            return WithVersion( Path.GetFileNameWithoutExtension( zipFilePath ), defaultVersion );
+        }
+        return WithVersion( data.name, data.version );
+    }
+
+    private string WithVersion( string name, string version )
+    {
+        return name + "." + ( string.IsNullOrEmpty( version ) ? defaultVersion : version );
+    }
+
+    /*
+    * Keeps the twins that are already on this device: an imported twin whose directory exists
+    * gets a V01, V02, ... suffix on its version instead of replacing it.
+    */
+    private string FreeProfileId( string profileId )
+    {
+        if ( !IsTaken( profileId ) )
+        {
+            return profileId;
+        }
+        for ( int counter = 1; counter < maxImportedVersions; counter++ )
+        {
+            string candidate = profileId + versionSuffix + counter.ToString( "00" );
+            if ( !IsTaken( candidate ) )
+            {
+                return candidate;
+            }
+        }
+        throw new Exception( "Cannot import " + profileId + ", too many versions of it are stored already." );
+    }
+
+    private bool IsTaken( string profileId )
+    {
+        return Directory.Exists( Path.Combine( dataDirPath, profileId ) );
+    }
+
+    private string NameOf( string profileId )
+    {
+        return profileId.Contains( "." ) ? profileId.Remove( profileId.LastIndexOf( "." ) ) : profileId;
+    }
+
+    private string VersionOf( string profileId )
+    {
+        return profileId.Contains( "." ) ? profileId.Substring( profileId.LastIndexOf( "." ) + 1 ) : "";
     }
 }

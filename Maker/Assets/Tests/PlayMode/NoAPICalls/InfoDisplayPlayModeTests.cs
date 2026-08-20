@@ -12,7 +12,7 @@ namespace NoAPICalls
     /// The status displays of the app: the twin name in the header of every screen and the
     /// Twin / Version / Tool / Group block of the overview overlay. Each of them is fed from a
     /// different place — the config load, the tool activation and the current group — so every
-    /// one of them can go stale on its own (the header did after a reset, TWIN-421).
+    /// one of them can go stale on its own.
     /// </summary>
     public class InfoDisplayPlayModeTests : TwinPaintTestBase
     {
@@ -36,8 +36,8 @@ namespace NoAPICalls
         /// characters, and the app then silently stays on the save screen.</summary>
         const string CreatedTwin = "InfoTwin";
 
-        /// <summary>A reset drops the current twin and loads a fresh "default.000". Name and
-        /// version have to follow — they used to keep showing the twin from before the reset.</summary>
+        /// <summary>A reset drops the current twin and loads a fresh "default.000", so every
+        /// display of the twin name and version has to follow.</summary>
         [UnityTest]
         public IEnumerator Reset_ShowsTheTwinLoadedAfterTheReset()
         {
