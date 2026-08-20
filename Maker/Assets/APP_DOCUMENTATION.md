@@ -33,6 +33,40 @@ The core interaction revolves around an **interactive 3D human mesh** that users
 - `DataPersistenceManager` / `FileDataHandler` – load/save pipeline via `IDataPersistence`
 - Serialisation uses `SerializableDictionary` and Newtonsoft JSON (`com.unity.nuget.newtonsoft-json`)
 
+Every twin version is one directory under the persistent data path, named `<name>.<version>`,
+and that directory name is what identifies the twin in the app (`selectedProfileId`):
+
+```
+LipEdema.twin/
+  ConfigTwin              # the ConfigData json (+ ConfigTwin.bak)
+  Texture.png             # the painted body texture, written on export
+  <sticker slot id>.png   # one image per sticker slot the twin uses
+```
+
+`ConfigData.name` / `.version` must match the directory name: the twin list shows them from the
+config while selecting a twin looks up the directory, so a mismatch gives a row that cannot be
+opened.
+
+The painted body texture is also cached per twin in **PlayerPrefs** (`CwPaintableTexture.Save`
+via `CwCommon.SaveBytes`) so switching twins does not replay every paint command. That cache is
+local to the device, which is why `Texture.png` exists: on load, `Body.handleChange` takes the
+cache when there is one and otherwise reads the file and fills the cache from it.
+
+### Export / import of a twin
+
+- **Export** (`DataPersistenceManager.ExportConfig`) saves the twin, writes `Texture.png` into
+  its directory, zips the directory and hands the zip to the OS. `ExportConfigZip()` is the same
+  without the OS step.
+- **Import** (`ImportConfig`) unpacks into a temporary directory, reads the identity from the
+  **config** – never from the zip filename, which any transport may rename – and moves the twin
+  to `<name>.<version>`. If that exists, the version gets a `V01`, `V02`, … suffix, so an import
+  never overwrites or deletes a twin on the device. The moved twin's config is rewritten to match
+  its directory and stamped as the newest version of that name.
+- Picking the file is asynchronous: `ImportConfig` reports the imported profile id through a
+  callback, and `ConfigManager.ImportTwin` refreshes the twin list from there.
+- Import/export is the groundwork for exchanging twin versions between users over a server, so
+  everything a twin needs has to live in its directory.
+
 ---
 
 ## 3. Architecture & Code Structure
@@ -55,7 +89,8 @@ Assets/
 │   ├── DataPersistence/           # Save / load system
 │   │   ├── Data/                  # Data classes (ConfigData, AttributesData)
 │   │   ├── DataPersistenceManager.cs
-│   │   ├── FileDataHandler.cs
+│   │   ├── FileDataHandler.cs     # files, zip export/import
+│   │   ├── TwinTextureFile.cs     # the painted texture as a file in the twin directory
 │   │   ├── IDataPersistence.cs
 │   │   └── SerializableTypes/
 │
@@ -189,4 +224,15 @@ Assets/
 - A **new part** is started by a tool change, a paintable-texture change, leaving an Edit mode to Main/Shape/Move, or selecting a view — **not** by switching the current group (known bug, ticket pending: `PartManager.SetCurrentGroup` never sets `startNewPart`, and the `startNewPart = true` in `StartNewGroup` is unreachable dead code). Consequence: after switching groups without changing the tool, the next stroke is appended to the previous part and stays in the old group.
 - For programmatic painting in tests, read `Assets/Tests/PlayMode/NoAPICalls/CwPaintingTestGuide.md` first — especially the single-frame stroke gotcha.
 - Paint commands are recorded by `PaintCommandSerialization` (`Assets/Code/DataPersistence/`), the app-owned base class of `PartManager`. It is adopted from the PaintIn3D example script `CwCommandSerialization`, which is therefore unused and can be overwritten freely on CW updates. The target texture is a runtime binding (bound in `PartManager.LoadData`), not saved data; `PartData.group` is likewise re-linked on load instead of serialized (it would inline a cycle and bloat the file). The app saves on quit (`OnApplicationQuit → SaveConfig`) — never edit config files while the app runs. App Reset deletes all profiles.
+- **Sticker images and their hashes**: a sticker *slot* (`Sticker` + `Item` in the EditSticker UI,
+  10 of them) has a fixed `Item.id`, its image is `<Item.id>.png` in the twin directory, and its
+  hash is `sum of the id characters % 100` (`Item.getHash`). Paint commands store that hash, so the
+  hash belongs to the slot and **all twins share it** while the image behind it is per twin. Loading
+  a twin therefore re-points the registration (`Sticker.Register` → `CwTextureHash` →
+  `CwSerialization.HashToTexture`) at the image of that twin, and frees the hash when the twin has
+  no image for the slot — otherwise replayed sticker commands draw the previous twin's image. Two
+  consequences: only one twin's stickers can be registered at a time (a side-by-side view would
+  need the twin in the hash), and `Item.getHash` must not be changed — the hashes are stored inside
+  saved paint commands. A slot whose id hashed to `0` would count as "no hash"; none of the current
+  ids do.
 - **Text → Part feature** (`Assets/Code/Proc/Paint/`): `PartTemplateService.PaintRegion(twin, region)` paints a pre-painted body-region template (bundled twins under `Resources/templates/`, 98 regions — catalog in `Assets/Resources/BODY_REGIONS.md`) into the twin's active group, optionally as a chosen marker/filler tool. The part carries `regionKey` plus the localized region name as its description. Region names live in `TwinLocalTables` under `region.<key>` for `enmed`/`demed`/`demedlatin` and are imported from `Assets/Resources/region_names.tsv` via **Tools → Localization → Import Region Names**. Manual selection UI: `RegionManager`. Spec and findings: `Assets/Code/Proc/Paint/FEATURE_TEXT_TO_PART.md`. Generation tooling: `Assets/Tests/PlayMode/TemplateLibraryTools/` (marked `[Explicit]` — not part of the app test suite).

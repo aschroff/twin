@@ -54,6 +54,27 @@ public static class TemplatePoCRunner
             "NoAPICalls.InfoDisplayPlayModeTests.SelectGroup_ShowsTheCurrentGroup");
     }
 
+    [MenuItem("Tools/Template PoC/Run Import Tests")]
+    public static void RunImportTests()
+    {
+        Run("NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_ShowsItsPaintWhenOpened",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_KeepsItsGroupsAndParts",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_KeepsTheTwinThatIsAlreadyThere",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_IgnoresTheNameOfTheZipFile",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_TakesTheIdFromItsConfigWhenItIsFree",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_AddsTheSuffixToTheVersionItBringsAlong",
+            "NoAPICalls.ImportTwinPlayModeTests.Import_WhileTheSameTwinIsOpen_KeepsBothApart",
+            "NoAPICalls.ImportTwinPlayModeTests.Import_LeavesTheOpenTwinMarkedInTheList",
+            "NoAPICalls.ImportTwinPlayModeTests.Import_OfABrokenZip_KeepsTheTwinsOnTheDevice");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Sticker Tests")]
+    public static void RunStickerTests()
+    {
+        Run("NoAPICalls.StickerPlayModeTests.StickerImage_FollowsTheTwinThatIsOpen",
+            "NoAPICalls.StickerPlayModeTests.ImportedTwin_BringsAllItsStickerImages");
+    }
+
     [MenuItem("Tools/Template PoC/Run SaveTwin Baseline Test")]
     public static void StartBaselineRun()
     {
