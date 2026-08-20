@@ -64,6 +64,7 @@ public static class TemplatePoCRunner
             "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_TakesTheIdFromItsConfigWhenItIsFree",
             "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_AddsTheSuffixToTheVersionItBringsAlong",
             "NoAPICalls.ImportTwinPlayModeTests.Import_WhileTheSameTwinIsOpen_KeepsBothApart",
+            "NoAPICalls.ImportTwinPlayModeTests.Import_LeavesTheOpenTwinMarkedInTheList",
             "NoAPICalls.ImportTwinPlayModeTests.Import_OfABrokenZip_KeepsTheTwinsOnTheDevice");
     }
 

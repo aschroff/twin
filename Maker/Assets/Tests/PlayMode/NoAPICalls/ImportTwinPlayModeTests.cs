@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using PaintCore;
@@ -130,7 +131,7 @@ namespace NoAPICalls
 
         /// <summary>The zip file may arrive under any name - a mail client or a file manager
         /// renames it, a server hands it over under an id. The twin keeps the name from its
-        /// config, and stays selectable in the twin list.</summary>
+        /// config, and can be reached and opened under that name.</summary>
         [UnityTest]
         public IEnumerator ImportedTwin_IgnoresTheNameOfTheZipFile()
         {
@@ -147,10 +148,13 @@ namespace NoAPICalls
                 $"The twin should be named after its config, but its directory is '{importedProfileId}'.");
             AssertConfigMatchesDirectory(importedProfileId);
 
-            RefreshTwinList();
-            yield return SelectTwin("LipEdema");
+            // the versions screen is where the versions of a twin are listed
+            Assert.IsTrue(VersionsOf("LipEdema").Contains(VersionOf(importedProfileId)),
+                $"Version '{VersionOf(importedProfileId)}' is missing from the versions of LipEdema.");
+
+            yield return OpenTwin(importedProfileId);
             Assert.AreEqual(importedProfileId, DataPersistenceManager.instance.selectedProfileId,
-                "The imported twin could not be selected in the twin list.");
+                "The imported twin could not be opened.");
         }
 
         /// <summary>The version an import gets is derived from the id in its config: that id when
@@ -167,7 +171,7 @@ namespace NoAPICalls
             string zipFilePath = DataPersistenceManager.instance.ExportConfigZip();
             Assert.AreEqual(baseProfileId + "V01", DataPersistenceManager.instance.ImportConfig(zipFilePath),
                 "Setup: with the id taken the import should get the first free suffix.");
-            RefreshTwinList();
+            yield return RefreshTwinList();
 
             // free the id again through the app - a twin can only be deleted while another one
             // is the current twin
@@ -192,11 +196,10 @@ namespace NoAPICalls
             string firstZip = DataPersistenceManager.instance.ExportConfigZip();
             string firstImport = DataPersistenceManager.instance.ImportConfig(firstZip);
             Assert.AreEqual(baseProfileId + "V01", firstImport, "Setup: the first import should be V01.");
-            RefreshTwinList();
+            yield return RefreshTwinList();
 
             // export the imported twin, so its config carries the suffixed version
-            DataPersistenceManager.instance.ChangeSelectedProfileId(firstImport);
-            yield return null;
+            yield return OpenTwin(firstImport);
             string secondZip = DataPersistenceManager.instance.ExportConfigZip();
             Assert.AreNotEqual(firstZip, secondZip, "Setup: the two exports should be separate files.");
 
@@ -237,20 +240,75 @@ namespace NoAPICalls
             string importedProfileId = DataPersistenceManager.instance.ImportConfig(zipFilePath);
             Assert.AreEqual(openProfileId + "V01", importedProfileId,
                 "The import must not land on the twin that is open.");
-            RefreshTwinList();
+            yield return RefreshTwinList();
 
             // opening the imported twin saves the one that was open - which must not reach into
             // the directory of the imported one
-            yield return SelectTwin("LipEdema");
-            Assert.AreEqual(importedProfileId, DataPersistenceManager.instance.selectedProfileId,
-                "Setup: the twin list should offer the imported version.");
+            yield return OpenTwin(importedProfileId);
             Assert.AreEqual(1, FindPartManager().groups[0].groupParts.Count,
                 "The imported twin should hold the one part it was exported with.");
 
-            DataPersistenceManager.instance.ChangeSelectedProfileId(openProfileId);
-            yield return null;
+            yield return OpenTwin(openProfileId);
             Assert.AreEqual(2, FindPartManager().groups[0].groupParts.Count,
                 "The twin that was open should have kept both of its parts.");
+        }
+
+        /// <summary>The twin list holds one row per twin name, so a twin with several versions is
+        /// represented by one of them. While one of its versions is open, that has to be the one
+        /// on the row - otherwise the list marks no twin as open although the app shows one.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator Import_LeavesTheOpenTwinMarkedInTheList()
+        {
+            yield return LoadLipEdemaTwin();
+            string openProfileId = DataPersistenceManager.instance.selectedProfileId;
+            string openVersion = openProfileId.Substring(openProfileId.LastIndexOf(".") + 1);
+
+            string zipFilePath = DataPersistenceManager.instance.ExportConfigZip();
+            string importedProfileId = DataPersistenceManager.instance.ImportConfig(zipFilePath);
+            Assert.AreEqual(openProfileId + "V01", importedProfileId, "Setup: the import should add a version.");
+            yield return RefreshTwinList();
+
+            GameObject row = FindChildWithTextValue(SaveTwinPanel, "LipEdema");
+            Assert.IsNotNull(row, "The twin is missing from the twin list.");
+            Assert.AreEqual(openVersion, RowVersion(row),
+                "The row should show the version the app has open, not another one.");
+            Assert.IsFalse(RowChild(row, "Unselect").activeSelf,
+                "The row of the open twin should not offer to open it.");
+            Assert.IsTrue(RowChild(row, "Select").activeSelf,
+                "The row of the open twin should be marked as the open one.");
+        }
+
+        /// <summary>Opens a twin version, the way the versions screen does. The twin list only
+        /// offers one version per twin name, so a version that is not on the row is reached
+        /// through the versions behind it.</summary>
+        IEnumerator OpenTwin(string profileId)
+        {
+            DataPersistenceManager.instance.ChangeSelectedProfileId(profileId);
+            yield return null;
+        }
+
+        /// <summary>The versions of a twin name, as the versions screen lists them.</summary>
+        static ICollection<string> VersionsOf(string twinName)
+        {
+            return DataPersistenceManager.instance.GetAllVersionsGameData(twinName).Keys;
+        }
+
+        static string VersionOf(string profileId)
+        {
+            return profileId.Substring(profileId.LastIndexOf(".") + 1);
+        }
+
+        static string RowVersion(GameObject row)
+        {
+            return RowChild(row, "Version/Text").GetComponent<UnityEngine.UI.Text>().text;
+        }
+
+        static GameObject RowChild(GameObject row, string path)
+        {
+            Transform child = row.transform.Find(path);
+            Assert.IsNotNull(child, $"The twin list row has no '{path}'.");
+            return child.gameObject;
         }
 
         /// <summary>A broken archive must leave the twins on the device alone, even the one
@@ -275,8 +333,9 @@ namespace NoAPICalls
 
         /// <summary>Rebuilds the twin list, the way the app does it after an import (see the
         /// callback in ConfigManager.ImportTwin). A list that is already on screen is only
-        /// rebuilt when asked to, since the save screen fills it when it becomes active.</summary>
-        static void RefreshTwinList()
+        /// rebuilt when asked to, since the save screen fills it when it becomes active.
+        /// Yields a frame, because the rows it replaces are destroyed at the end of it.</summary>
+        static IEnumerator RefreshTwinList()
         {
             FileManager[] fileManagers = Object.FindObjectsOfType<FileManager>(true);
             Assert.IsNotEmpty(fileManagers, "No FileManager found in the scene.");
@@ -284,6 +343,7 @@ namespace NoAPICalls
             {
                 fileManager.Refresh();
             }
+            yield return null;
         }
 
         /// <summary>Creates a twin through the save screen and leaves the app on it. The name has

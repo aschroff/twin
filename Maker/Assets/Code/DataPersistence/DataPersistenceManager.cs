@@ -439,21 +439,33 @@ public class DataPersistenceManager : MonoBehaviour
     {
         return dataHandler.LoadAllProfiles();
     }
-    public Dictionary<string, ConfigData> GetAllProfileNamesGameData() 
+    /*
+    * One entry per twin name, for the twin list. A twin with several versions is represented by
+    * the version that is currently open, and by its most recently updated version otherwise -
+    * the open twin has to be the one the list marks as open.
+    */
+    public Dictionary<string, ConfigData> GetAllProfileNamesGameData()
     {
         Dictionary<string, ConfigData> profiles =  dataHandler.LoadAllProfiles();
         Dictionary<string, ConfigData> profileDictionary = new Dictionary<string, ConfigData>();
+        Dictionary<string, string> representingProfileId = new Dictionary<string, string>();
         foreach (KeyValuePair<string, ConfigData> profile in profiles)
         {
-            if (profileDictionary.ContainsKey(profile.Value.name))
+            string name = profile.Value.name;
+            if (!profileDictionary.ContainsKey(name))
             {
-                if (profileDictionary[profile.Value.name].lastUpdated < profile.Value.lastUpdated)
-                {
-                    profileDictionary[profile.Value.name] = profile.Value;
-                }
+                profileDictionary.Add(name, profile.Value);
+                representingProfileId.Add(name, profile.Key);
                 continue;
-            } 
-            profileDictionary.Add(profile.Value.name, profile.Value);
+            }
+            bool representedByOpenVersion = representingProfileId[name] == selectedProfileId;
+            bool isOpenVersion = profile.Key == selectedProfileId;
+            bool isNewer = profileDictionary[name].lastUpdated < profile.Value.lastUpdated;
+            if (isOpenVersion || (!representedByOpenVersion && isNewer))
+            {
+                profileDictionary[name] = profile.Value;
+                representingProfileId[name] = profile.Key;
+            }
         }
 
 
