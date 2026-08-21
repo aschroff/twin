@@ -26,7 +26,18 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
     
     private string getUniqueDescription()
     {
-        return this.gameObject.transform.Find("Label").GetComponent<Text>().text;
+        return LabelText();
+    }
+
+    /// <summary>The row's visible Label. It is the key this prompt is stored under, and the only
+    /// way to tell rows apart that share label and level - three rows carry label
+    /// "Medical Report" on level Version, two of them leftovers whose Labels read differently.
+    /// </summary>
+    public string LabelText()
+    {
+        Transform label = this.gameObject.transform.Find("Label");
+        Text text = label != null ? label.GetComponent<Text>() : null;
+        return text != null ? text.text : "";
     }
 
     public GameObject relatedGameObject()

@@ -1,9 +1,11 @@
 # Feature: Document → Twin (map a document's findings onto the twin)
 
-> **Status:** step 1 done — the way in (Upload button, photo or document, picker).
-> Step 2 done — the dynamic prompt, and the review screen it will be shown on.
-> Step 3 done — schema, call, and the parsed proposal on the screen; verified against the real API.
-> The applying is open.
+> **Status:** the whole path works — pick, prompt, call, review, apply.
+> Step 1: the way in (Upload button, photo or document, picker).
+> Step 2: the dynamic prompt, and the review screen it is shown on.
+> Step 3: schema, call, the parsed proposal on the screen; verified against the real API.
+> Steps 6 + 7: the review list with a toggle per proposal, and the applier behind Apply.
+> Open: tests with real documents of other kinds, and the region-library gaps below.
 
 ---
 
@@ -110,15 +112,38 @@ which makes the prompt reviewable on the device, against a real twin with its ow
 meanings. `DocumentUploadProcess.ShowPicked(path, photo)` is the same entry without an OS dialog,
 which is how the test drives it.
 
-The proposal list (groups, tool meanings, paintings, each with a toggle, all unchecked to start)
-goes above the text on this screen, with an Apply button; the text area then holds the
-patient-level text. Nothing is written to the twin until Apply.
+### The list (done)
+
+The screen is two things. **Above:** a row per proposal, each with a toggle, all unticked — that
+is the gate. **Below:** the whole proposal as text (`DocumentMappingText.Describe`), which is
+where the detail lives: the regions of a finding, the reasons, the patient text in full. The rows
+are for deciding, the text is for reading.
+
+| Piece | Where |
+|-------|-------|
+| One row | `DocumentReviewRow` (`Assets/Code/View/Item/`) — an `ItemKind` (`Painting`/`Group`/`Tool`/`PatientText`/`Heading`) plus the index in the matching list of the `DocumentMapping`, so reading the rows back gives a `DocumentMappingSelection` |
+| The row prefab | `Assets/Prefabs/GUI/UploadReview Row.prefab` — a copy of `Scroll readonly text and toggle` (the group-list row) with its `Group` component and its `InputField` Button removed and `DocumentReviewRow` added |
+| Building and reading the list | `DocumentReviewManager.Show(mapping, body, apply)` / `.Selection()` / `.HandleApply()` |
+| Apply | bottom centre of the panel, label from `TwinLocalTables` key `UPLOAD_APPLY`, `onClick` → `DocumentReviewManager.HandleApply` (wired inside the prefab), hidden while there is no mapping |
+
+The scroll content is now a column: `Scroll Answer/Viewport/Content` (`VerticalLayoutGroup` +
+`ContentSizeFitter`) holding `Proposals` (where the rows are instantiated) and `Text Overview`.
+`Text Overview` lost its own `ContentSizeFitter` — its height comes from the column now, and two
+fitters would fight over it.
+
+A row reads `<finding>  -  <tool>, <group>, <n> regions` (`DocumentMappingText.Row`). **The region
+count is on the row on purpose**: it is what ticking the row costs. A treatment line over both
+legs is one row and fourteen parts, and this is where that becomes visible before it is paid — see
+"treatments" below. `, uncertain` is appended when the model's own confidence is below 0.6.
+
+Headings carry no toggle (their `Selector` is hidden) and are English, like the rest of the text on
+this screen; the *content* is in the language of the app, because the prompt asks for it.
+
+`Show(string)` is the text-only form — the prompt, the progress line, an error — and hides the list
+and the Apply button.
 
 Two things worth keeping in mind about the panel:
 
-- The text is a single `Text` with a `ContentSizeFitter` (`PreferredSize`) and
-  `verticalOverflow = Overflow`, top-anchored, and it is the `ScrollRect`'s content. `Answer UI`
-  instead has a fixed 1500-unit height and `Truncate`, which would have cut a 6.4 kB prompt off.
 - The Back Button copied from `Answer UI` did nothing: its onClick is a **static** call with a
   null `m_Target` and `m_TargetAssemblyTypeName: "InteractionController, Assembly-CSharp"`, and
   `InteractionController` lives in `Maker.Runtime`, so UnityEvent cannot find the method. It is
@@ -158,8 +183,14 @@ long patient text — all names valid. Worth knowing before the applier is built
 - **Treatments come back as body paintings, and they are broad.** "Compression garments for both
   legs" mapped to 14 regions, and six treatment lines did the same. That is defensible — the dotted
   tools *are* the treatments in this twin — but one line of a plan then becomes 14 parts. 24
-  findings across ~100 regions is ~1.8 MB of save file at ~17.5 KB per part. Decide whether a
-  treatment belongs on the body at all, or whether the review step should collapse it.
+  findings across ~100 regions is ~1.8 MB of save file at ~17.5 KB per part.
+  **Decided (2026-08-21): the review row carries the cost.** A treatment stays on the body — that
+  is what the twin's dotted tools mean — but every proposal is one row with its region count on it
+  and starts unticked, so 14 parts are only paid when someone ticks a row that says "14 regions".
+  No filter in the prompt, none in the applier: the user decides per import. The alternatives were
+  keeping treatments off the body (loses the twin's own convention) and merging a finding's regions
+  into a single part (needs new code in the paint layer, and the part then has no single
+  `regionKey`) — both rejected.
 - **The region library has no medial or lateral thigh.** The model said so itself: "outer thigh
   approximated using available thigh regions", "inner aspect approximated using front thigh
   regions". Candidates for `BODY_REGIONS.md` if inner/outer matters clinically.
@@ -175,7 +206,8 @@ long patient text — all names valid. Worth knowing before the applier is built
   already carries a meaning, the model filled that list with the three tools it *used*, restating
   their existing meanings. The rules default now says a tool belongs in that list only when it was
   taken from the free list, and that the list stays empty when nothing was free. The applier
-  should reject an assignment for a tool that is already in use regardless.
+  rejects an assignment for a tool that is already in use regardless — it reports the meaning it
+  kept instead of writing the proposed one.
 - **The API key no longer lives on the `AI` component.** The one that did was committed into the
   scene and had gone invalid (`401`). The field is empty now and the key is resolved from outside
   version control by `Code.AI.ApiKeys` — in the editor from the `testsecrets.json` the tests
@@ -183,7 +215,72 @@ long patient text — all names valid. Worth knowing before the applier is built
 
 ---
 
-## Open — the analysis step
+## Steps 6 + 7 — applying it (done)
+
+`DocumentMappingApplier.Apply(mapping, selection, partManager, settingsManager)` — a plain static
+class, so a test drives it without going through the screen. It is **the only place in this feature
+that changes anything**: pick, prompt, call and review all leave the twin untouched.
+
+| Piece | Where |
+|-------|-------|
+| The applier | `DocumentMappingApplier` (this folder) |
+| What the user ticked | `DocumentMappingSelection` — the indices per list, plus the patient text. `Nothing()` / `Everything(mapping)` |
+| What it did | `DocumentApplyResult` — created groups, claimed tools, findings and parts painted, whether the report grew, and `problems` (everything refused, in the user's words) plus `Summary()` for the toast |
+| The button behind it | `DocumentReviewManager.HandleApply` → `DocumentUploadProcess.ApplyConfirmed(selection)` |
+| Region key → template twin | `PartTemplateService.TwinOfRegion` / `PaintRegionByKey` — the answer only ever names a key, so the app resolves the area itself |
+| The report row | `SettingsManager.getPromptObjectByLabelText("Medical Report", Version)` + `ItemPrompt.LabelText()` |
+| Tests | `Assets/Tests/PlayMode/NoAPICalls/DocumentApplyPlayModeTests.cs` (4), **Tools → Template PoC → Run Document Apply Tests** |
+
+**The order is load bearing.** Groups, then tool meanings, then the paintings, then the report text.
+A part copies the tool's meaning at the moment it is painted, so a tool that is being taken into use
+has to get its meaning *before* anything is painted with it. The test asserts exactly that (the
+chest part must carry `healed scar`, not `Yellow`).
+
+What it refuses, per item, without giving up the rest of the run:
+
+- a tool that **already carries a meaning** keeps it — the answer is a proposal, and the meanings are
+  the user's vocabulary for this twin. The refusal names the meaning that was kept.
+- a tool or a region **the app does not know** costs only its own item; the other regions of the same
+  finding are still painted. The same region twice in one finding becomes one part, not two.
+- a finding with **no region or no tool** is skipped.
+
+Two decisions worth knowing:
+
+- **A ticked finding gets its group even when the group's own row was left unticked.** A confirmed
+  finding has to live somewhere, and the review screen offers no way to say where else. So the group
+  toggle really only decides about groups that no ticked finding needs. Reported as created either
+  way.
+- **The part's description becomes the finding's text**, not the region name (`PaintRegion`'s
+  default). That is what the group detail page shows and what the version report is built from;
+  the region stays readable through `PartData.regionKey`.
+
+Afterwards: the user's current group is put back (painting moves it), the group overlay is rebuilt —
+which is also what wires `GroupData.group` for a group created here — the twin is saved, and the app
+returns to the main screen so the result is looked at on the body.
+
+### A trap in the row prefab: the tick that was always on
+
+`Scroll readonly text and toggle` is the group-list row, where the toggle means *visible*. Its
+`Checkmark` sits **inside** the `Foreground` image that the `Toggle` fades — and Unity fades only
+that graphic's own `CanvasRenderer`, not its children's. So the square around the tick was hidden
+and the tick itself stayed at full alpha: every row looked ticked while `Selection()` correctly
+said none was. The row now has the tick as the `Toggle`'s `graphic` directly, with the empty box as
+`targetGraphic`, and the test asserts the tick's alpha — a tick that stops following the toggle
+fails loudly instead of quietly inviting an Apply nobody meant.
+
+### A bug found on the way: painted parts carried no meaning
+
+`PartTemplateService.ExtractMeaning` read the tool's meaning through `ToolTracker.myButton`, and
+**`ToolTracker` wires that field in `OnEnable`** — so it is null for every tool that is not the one
+the user currently has selected, which is every tool a programmatic paint uses. Every part painted
+from a template silently got the fallback (the colour name) as its `meaning`. It now finds the
+tool's row through its `CwDemoButton` and reads that row's InputField, the way `ToolInventory` does.
+The 11 `PartTemplateServiceTests` still pass; the one that touched this only asserted the meaning
+was *non-empty*, which the fallback satisfied.
+
+---
+
+## Open — background on the design
 
 ### What the LLM has to be told
 
@@ -227,18 +324,34 @@ which area twin a key belongs to, so that pairing cannot go wrong. The keys shou
        plus the document, with the target structure as a structured output schema
        (`Assets/Code/AI/StructuredOutputs.cs`)
 5. [x] The review screen (shows the prompt until there is an answer to show)
-6. [ ] Apply the answer: create the new groups, claim the markers/fillers, paint the regions via
+6. [x] Apply the answer: create the new groups, claim the markers/fillers, paint the regions via
        `PartTemplateService.PaintRegion` — mind the save-file size rule from
        `FEATURE_TEXT_TO_PART.md` (parts per group)
-7. [ ] Fill the review screen with the proposal, one toggle per item, and an Apply button
-8. [ ] Tests with real documents (body chart, referral letter, hand drawing)
+7. [x] Fill the review screen with the proposal, one toggle per item, and an Apply button
+8. [ ] Tests with real documents (body chart, referral letter, hand drawing) — only the fictional
+       lipoedema PDF has been through the whole path so far
 
 ### Open questions
 
 Decided: the whole file goes in one call; unmappable findings go into the patient-level text; the
-document itself is not kept; review items start unchecked. Model: `gpt-5.5-2026-04-23`, which
+document itself is not kept; review items start unchecked; a treatment stays on the body and the
+review row carries its region count (see "treatments" above). Model: `gpt-5.5-2026-04-23`, which
 needs a per-call model override — the other flows stay on the component's `gpt-4o-mini`.
 
 Still open:
-- How is a wrong mapping corrected — undo the whole import, or edit part by part?
+- How is a wrong mapping corrected — undo the whole import, or edit part by part? Nothing exists for
+  this yet: Apply saves straight away, so the only route back today is not applying in the first
+  place.
 - Does the region list stay affordable once the prompt also carries a long document?
+- **Which `Medical Report`/`Version` row does the *report* flow write to?** The applier picks the row
+  by its visible Label, deliberately. `AI.DescribeVersion` still goes through
+  `SettingsManager.getPromptObject`, which returns whichever of the three rows comes first in the
+  hierarchy — possibly one of the Meshcapade leftovers. If it is not the same row, a document's
+  patient text and a generated report end up in different places. The two leftover rows should go.
+- **Applying ~100 regions loads a template twin per region.** `PartTemplateService.PaintRegion`
+  parses the whole `commandDetails` of the area twin on every call, and it may not be cached: the
+  cloned parts are *adopted* from that parse, so a shared parse would hand the same `PartData`
+  objects out twice. A batch form (one parse, several regions, keys deduped) is the way out if a
+  big import turns out to be slow.
+- The review rows and the text below them are English; only the model's own text follows the app's
+  language. `DocumentMappingText` would need the localization table for that.

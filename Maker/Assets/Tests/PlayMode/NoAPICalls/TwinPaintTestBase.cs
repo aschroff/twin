@@ -105,6 +105,39 @@ namespace NoAPICalls
             return entry;
         }
 
+        /// <summary>The InputField of a tool's row under the EditMarker / EditFiller panels —
+        /// where the meaning of a tool lives (Item → ConfigData.itemTexts).</summary>
+        protected static InputField FindToolMeaningField(string toolName)
+        {
+            foreach (Code.AI.PromptGeneration.Tools panel in Object.FindObjectsOfType<Code.AI.PromptGeneration.Tools>(true))
+            {
+                foreach (Transform row in panel.transform)
+                {
+                    var button = row.GetComponent<CW.Common.CwDemoButton>();
+                    if (button == null || button.IsolateTarget == null) continue;
+                    if (button.IsolateTarget.gameObject.name != toolName) continue;
+
+                    var input = row.GetComponentInChildren<InputField>(true);
+                    Assert.IsNotNull(input, $"Tool row of '{toolName}' has no input field.");
+                    return input;
+                }
+            }
+            Assert.Fail($"No tool row for '{toolName}'.");
+            return null;
+        }
+
+        /// <summary>Clears the meaning of one tool row and returns the meaning it had. The
+        /// LipEdema twin ships a meaning for every marker and filler, so a test that needs a
+        /// free tool has to make one.</summary>
+        protected static string FreeOneTool(string toolName)
+        {
+            InputField input = FindToolMeaningField(toolName);
+            string had = input.text;
+            Assert.IsNotEmpty(had, $"'{toolName}' was expected to carry a meaning before being freed.");
+            input.text = "";
+            return had;
+        }
+
         /// <summary>Asserts that every part is linked to its group and that its commands are
         /// bound to the paintable texture — without that binding the paint is silently dropped
         /// on the next replay.</summary>

@@ -1,0 +1,444 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Code;
+using Code.AI.PromptGeneration;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+using UnityEngine.UI;
+
+namespace NoAPICalls
+{
+    /// <summary>
+    /// Applying a document mapping to the twin (Assets/Code/Proc/Document/DocumentMappingApplier.cs)
+    /// — the only step of Document → Twin that changes anything, so the whole point of these tests
+    /// is that it changes exactly what the user ticked and nothing else.
+    ///
+    /// Driven against the LipEdema twin, which ships four groups and a meaning for every marker
+    /// and filler; the tests free one tool so a claim can be tested.
+    /// </summary>
+    public class DocumentApplyPlayModeTests : TwinPaintTestBase
+    {
+        /// <summary>A tool that carries a meaning in this twin — it may be painted with, but its
+        /// meaning may not be overwritten.</summary>
+        private const string ToolInUse = "Red";
+
+        /// <summary>The tool the tests free, so the mapping has something to claim.</summary>
+        private const string ToolToClaim = "Yellow";
+
+        private const string ProposedGroupName = "Skin changes";
+        private const string ClaimedMeaning = "healed scar";
+
+        // real region keys, from two different template twins — the applier has to resolve which
+        // twin a key comes from, which is all an LLM answer ever says about a region
+        private const string LegLeft = "thigh_front_left";
+        private const string LegRight = "thigh_front_right";
+        private const string Chest = "chest_left";
+
+        // ------------------------------------------------------------------ nothing confirmed
+
+        /// <summary>The review screen starts with every item unticked, so an Apply straight away
+        /// must be a no-op — this is what makes the whole flow safe up to that button.</summary>
+        [UnityTest]
+        public IEnumerator Apply_NothingConfirmed_LeavesTheTwinAlone()
+        {
+            yield return LoadLipEdemaTwin();
+            PartManager partManager = FindPartManager();
+            SettingsManager settingsManager = FindSettingsManager();
+
+            int groupsBefore = partManager.groups.Count;
+            int partsBefore = TotalParts(partManager);
+            string reportBefore = ReportRow(settingsManager).promptResult;
+            string meaningBefore = FindToolMeaningField(ToolToClaim).text;
+
+            DocumentApplyResult result = DocumentMappingApplier.Apply(
+                FullMapping(), DocumentMappingSelection.Nothing(), partManager, settingsManager);
+            yield return null;
+
+            Assert.IsFalse(result.ChangedAnything, "Nothing was ticked, so nothing may have changed.");
+            Assert.AreEqual(groupsBefore, partManager.groups.Count, "No group may be created.");
+            Assert.AreEqual(partsBefore, TotalParts(partManager), "No part may be painted.");
+            Assert.AreEqual(reportBefore, ReportRow(settingsManager).promptResult, "The report may not change.");
+            Assert.AreEqual(meaningBefore, FindToolMeaningField(ToolToClaim).text, "No tool may be claimed.");
+            Assert.IsEmpty(result.problems, "A no-op run has nothing to complain about.");
+            StringAssert.Contains("nothing was applied", result.Summary());
+        }
+
+        // ------------------------------------------------------------------ everything confirmed
+
+        [UnityTest]
+        public IEnumerator Apply_WhatWasConfirmed_ReachesTheTwin()
+        {
+            yield return LoadLipEdemaTwin();
+            PartManager partManager = FindPartManager();
+            SettingsManager settingsManager = FindSettingsManager();
+
+            // the twin has to have somewhere to put a finding that names an existing group
+            PartManager.GroupData existingGroup = partManager.groups[0];
+            PartManager.GroupData groupBefore = partManager.currentGroup;
+            int groupsBefore = partManager.groups.Count;
+            FreeOneTool(ToolToClaim);
+
+            // an existing report has to survive: the patient text is appended, not written over
+            ItemPrompt report = ReportRow(settingsManager);
+            report.promptResult = "An earlier report.";
+
+            DocumentMapping mapping = FullMapping(existingGroup.name);
+            DocumentApplyResult result = DocumentMappingApplier.Apply(
+                mapping, DocumentMappingSelection.Everything(mapping), partManager, settingsManager);
+            yield return null;
+            yield return null; // let CwPaintableManager flush the replayed commands
+
+            Assert.IsEmpty(result.problems, "Nothing in this mapping should have been refused: "
+                + string.Join(" | ", result.problems.ToArray()));
+
+            // 1. the proposed group exists, and only that one was added
+            Assert.AreEqual(groupsBefore + 1, partManager.groups.Count, "Exactly one group was proposed.");
+            PartManager.GroupData created = FindGroup(partManager, ProposedGroupName);
+            Assert.IsNotNull(created, $"The group '{ProposedGroupName}' should have been created.");
+            Assert.IsNotEmpty(created.id, "A group without an id cannot be saved.");
+            Assert.IsTrue(created.visible, "A created group has to be visible, or its parts are invisible.");
+            Assert.AreEqual(new[] { ProposedGroupName }, result.createdGroups.ToArray());
+
+            // 2. the free tool now carries the proposed meaning
+            Assert.AreEqual(ClaimedMeaning, FindToolMeaningField(ToolToClaim).text);
+            Assert.AreEqual(new[] { ToolToClaim }, result.claimedTools.ToArray());
+            ToolInfo claimed = ToolInventory.All().First(t => t.name == ToolToClaim);
+            Assert.IsTrue(claimed.inUse, "The claimed tool has to count as in use afterwards.");
+
+            // 3. the findings are on the body: two findings, three parts (one covers both legs)
+            Assert.AreEqual(2, result.paintedFindings, "Both findings should have been painted.");
+            Assert.AreEqual(3, result.paintedParts, "Two regions for the legs plus one for the chest.");
+
+            // the two-region finding went into the existing group it named
+            List<PartManager.PartData> legParts = existingGroup.groupParts
+                .Where(p => p.regionKey == LegLeft || p.regionKey == LegRight).ToList();
+            Assert.AreEqual(2, legParts.Count, $"Both thigh regions belong to '{existingGroup.name}'.");
+            foreach (PartManager.PartData part in legParts)
+            {
+                Assert.AreEqual("Swelling of both thighs.", part.description,
+                    "The part carries what the document says, not the region name.");
+                Assert.AreSame(existingGroup, part.group);
+            }
+
+            // the finding painted with the just-claimed tool carries its NEW meaning - which only
+            // holds because the meaning is claimed before anything is painted with the tool
+            PartManager.PartData chestPart = created.groupParts.FirstOrDefault(p => p.regionKey == Chest);
+            Assert.IsNotNull(chestPart, $"The chest finding belongs to '{ProposedGroupName}'.");
+            Assert.AreEqual(ClaimedMeaning, chestPart.meaning,
+                "A part copies the tool's meaning when it is painted, so claiming has to come first.");
+            Assert.AreEqual(ToolToClaim, chestPart.nameTool);
+
+            // 4. the patient text was appended to the report, keeping what was there
+            Assert.IsTrue(result.patientTextAppended);
+            StringAssert.StartsWith("An earlier report.", report.promptResult);
+            StringAssert.EndsWith("The Stemmer sign is negative on both sides.", report.promptResult);
+
+            // 5. the user's current group is theirs again
+            Assert.AreSame(groupBefore, partManager.currentGroup,
+                "Applying may move the current group while it paints, but has to put it back.");
+
+            // 6. all of it is real paint, and all of it survives the save pipeline
+            AssertPartsAreUsable(partManager);
+            DataPersistenceManager.instance.SaveConfig();
+            string saved = DataPersistenceManager.instance
+                .GetAllProfilesGameData()[DataPersistenceManager.instance.selectedProfileId].commandDetails;
+            StringAssert.Contains(ProposedGroupName, saved);
+            StringAssert.Contains(LegLeft, saved);
+            StringAssert.Contains(Chest, saved);
+
+            StringAssert.Contains("2 findings on the body (3 parts)", result.Summary());
+        }
+
+        // ------------------------------------------------------------------ what it refuses
+
+        /// <summary>The answer is a proposal, not a command: a tool that already means something
+        /// keeps its meaning, a tool or region the app does not know is dropped, and one bad item
+        /// never costs the good ones.</summary>
+        [UnityTest]
+        public IEnumerator Apply_RefusesWhatTheTwinDoesNotAllow()
+        {
+            yield return LoadLipEdemaTwin();
+            PartManager partManager = FindPartManager();
+            SettingsManager settingsManager = FindSettingsManager();
+
+            string keptMeaning = FindToolMeaningField(ToolInUse).text;
+            Assert.IsNotEmpty(keptMeaning, $"'{ToolInUse}' is expected to carry a meaning in this twin.");
+            ItemPrompt report = ReportRow(settingsManager);
+            report.promptResult = "Untouched.";
+
+            var mapping = new DocumentMapping
+            {
+                PatientText = "This must not be written - it was not ticked.",
+                // a meaning for a tool that already has one
+                ToolAssignments = new List<ProposedToolMeaning>
+                {
+                    new ProposedToolMeaning { ToolName = ToolInUse, Meaning = "something else entirely" }
+                },
+                NewGroups = new List<ProposedGroup>
+                {
+                    new ProposedGroup { Name = ProposedGroupName, Reason = "left unticked on purpose" }
+                },
+                Paintings = new List<ProposedPainting>
+                {
+                    // a tool this app does not have
+                    new ProposedPainting
+                    {
+                        FindingText = "painted with a tool that does not exist",
+                        Group = partManager.groups[0].name, ToolName = "Chartreuse",
+                        RegionKeys = new List<string> { Chest }, Description = "should not appear"
+                    },
+                    // one good region and one the region library does not have; the good one still
+                    // has to be painted, and the same key twice may not become two parts
+                    new ProposedPainting
+                    {
+                        FindingText = "one region known, one not, one repeated",
+                        Group = ProposedGroupName, ToolName = ToolInUse,
+                        RegionKeys = new List<string> { LegLeft, "left_earlobe_inner", LegLeft },
+                        Description = "Swelling of the left thigh."
+                    }
+                }
+            };
+
+            // the paintings are ticked, the group and the patient text are not
+            var selection = new DocumentMappingSelection();
+            selection.SetTool(0, true);
+            selection.SetPainting(0, true);
+            selection.SetPainting(1, true);
+
+            DocumentApplyResult result = DocumentMappingApplier.Apply(
+                mapping, selection, partManager, settingsManager);
+            yield return null;
+            yield return null;
+
+            // the tool kept its meaning, and the refusal says so
+            Assert.AreEqual(keptMeaning, FindToolMeaningField(ToolInUse).text,
+                "A tool that already means something keeps its meaning.");
+            Assert.IsEmpty(result.claimedTools);
+            Assert.IsTrue(result.problems.Any(p => p.Contains(ToolInUse) && p.Contains(keptMeaning)),
+                "The refusal has to name the tool and the meaning that was kept: "
+                + string.Join(" | ", result.problems.ToArray()));
+
+            // the unknown tool cost only its own finding
+            Assert.IsTrue(result.problems.Any(p => p.Contains("Chartreuse")),
+                "An unknown tool has to be reported: " + string.Join(" | ", result.problems.ToArray()));
+            Assert.IsFalse(partManager.groups.SelectMany(g => g.groupParts)
+                    .Any(p => p.description == "should not appear"),
+                "A finding with an unknown tool may not be painted.");
+
+            // the unknown region cost only itself - the good region of the same finding is painted
+            Assert.IsTrue(result.problems.Any(p => p.Contains("left_earlobe_inner")),
+                "An unknown region has to be reported: " + string.Join(" | ", result.problems.ToArray()));
+            Assert.AreEqual(1, result.paintedFindings);
+            Assert.AreEqual(1, result.paintedParts, "The repeated region may not become a second part.");
+
+            // a ticked finding gets its group even when the group's own row was left unticked -
+            // a confirmed finding has to have somewhere to live
+            PartManager.GroupData created = FindGroup(partManager, ProposedGroupName);
+            Assert.IsNotNull(created, "A confirmed finding creates the group it names.");
+            Assert.AreEqual(1, created.groupParts.Count);
+            Assert.AreEqual(LegLeft, created.groupParts[0].regionKey);
+
+            // the patient text was not ticked, so the report is as it was
+            Assert.IsFalse(result.patientTextAppended);
+            Assert.AreEqual("Untouched.", report.promptResult);
+
+            AssertPartsAreUsable(partManager);
+        }
+
+        // ------------------------------------------------------------------ the review list
+
+        /// <summary>The review screen is the gate: a row per proposal, all unticked, the region
+        /// count on the row that costs the parts, and an Apply button that writes exactly the
+        /// ticked rows. Driven through the real screen and the real button.</summary>
+        [UnityTest]
+        public IEnumerator ReviewList_OffersEveryProposalUntickedAndAppliesOnlyWhatIsTicked()
+        {
+            yield return LoadLipEdemaTwin();
+            PartManager partManager = FindPartManager();
+            SettingsManager settingsManager = FindSettingsManager();
+            var upload = Object.FindObjectOfType<DocumentUploadProcess>(true);
+            Assert.IsNotNull(upload, "DocumentUploadProcess not found in the scene.");
+            var review = Object.FindObjectOfType<DocumentReviewManager>(true);
+            Assert.IsNotNull(review, "DocumentReviewManager not found in the scene.");
+
+            PartManager.GroupData existingGroup = partManager.groups[0];
+            int groupsBefore = partManager.groups.Count;
+            int partsBefore = TotalParts(partManager);
+            ItemPrompt report = ReportRow(settingsManager);
+            report.promptResult = "";
+
+            DocumentMapping mapping = FullMapping(existingGroup.name);
+            upload.ShowMapping("report.pdf", mapping);
+            yield return WaitForModeActive("UploadReview");
+            yield return null;
+
+            // one row per proposal plus one heading per block: 2 findings, 1 group, 1 tool, 1 text
+            List<DocumentReviewRow> rows = review.Rows();
+            Assert.AreEqual(4 + 5, rows.Count, "A row per proposal and a heading per block: "
+                + string.Join(" / ", rows.Select(r => r.kind + ":" + r.Text()).ToArray()));
+            Assert.AreEqual(2, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.Painting));
+            Assert.AreEqual(1, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.Group));
+            Assert.AreEqual(1, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.Tool));
+            Assert.AreEqual(1, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.PatientText));
+
+            // nothing is ticked, so Apply would do nothing - this is what makes the screen a gate
+            Assert.IsFalse(rows.Any(r => r.Confirmed), "Every row has to start unticked.");
+            Assert.AreEqual(0, review.Selection().Count);
+
+            // and it has to LOOK unticked. The row prefab comes from the group list, where the
+            // tick sat inside the toggled graphic and kept its own alpha - every row looked ticked
+            // while Selection() said none was.
+            foreach (DocumentReviewRow row in rows.Where(r => r.kind != DocumentReviewRow.ItemKind.Heading))
+            {
+                AssertTickVisible(row, false);
+            }
+
+            // the row of the two-region finding says how many parts ticking it costs
+            DocumentReviewRow legRow = rows.First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 0);
+            StringAssert.Contains("2 regions", legRow.Text());
+            StringAssert.Contains(existingGroup.name, legRow.Text());
+            StringAssert.Contains(ToolInUse, legRow.Text());
+
+            // a heading offers no toggle to get wrong
+            DocumentReviewRow heading = rows.First(r => r.kind == DocumentReviewRow.ItemKind.Heading);
+            StringAssert.Contains(DocumentMappingText.HeadingPaintings, heading.Text());
+            Assert.IsFalse(heading.Confirmed);
+
+            // the layout of this screen is the one thing a test cannot judge - the shot is written
+            // out so a human can, the way the prompt test writes out the prompt
+            yield return Screenshot("review-screen");
+
+            // tick the two-region finding and the report text, leave the rest
+            legRow.Confirmed = true;
+            rows.First(r => r.kind == DocumentReviewRow.ItemKind.PatientText).Confirmed = true;
+            yield return null;
+            yield return null;
+            Assert.AreEqual(2, review.Selection().Count);
+            AssertTickVisible(legRow, true);
+            AssertTickVisible(rows.First(r => r.kind == DocumentReviewRow.ItemKind.Group), false);
+            yield return Screenshot("review-screen-ticked");
+
+            // Apply through the button of the prefab, so its wiring is covered too
+            yield return ClickButtonByPath("Canvas/UploadReview UI/Apply Button");
+            yield return null;
+            yield return null;
+
+            DocumentApplyResult result = upload.lastResult;
+            Assert.IsNotNull(result, "The Apply button has to reach DocumentUploadProcess.");
+            Assert.AreEqual(1, result.paintedFindings, "Only the ticked finding may be painted.");
+            Assert.AreEqual(partsBefore + 2, TotalParts(partManager), "Its two regions, and nothing else.");
+            Assert.IsTrue(result.patientTextAppended);
+            StringAssert.EndsWith("The Stemmer sign is negative on both sides.", report.promptResult);
+
+            // the unticked rows left no trace
+            Assert.AreEqual(groupsBefore, partManager.groups.Count,
+                "The proposed group was not ticked and no ticked finding needed it.");
+            Assert.IsEmpty(result.claimedTools, "The tool row was not ticked.");
+            Assert.IsFalse(partManager.groups.SelectMany(g => g.groupParts)
+                    .Any(p => p.regionKey == Chest), "The unticked chest finding may not be painted.");
+
+            // applying shows the twin again, so the result is looked at on the body
+            yield return WaitForModeActive("Main");
+            AssertPartsAreUsable(partManager);
+        }
+
+        /// <summary>Whether the row's tick is actually drawn. Unity fades the toggle's graphic, so
+        /// the graphic has to BE the tick - a tick that only sits inside it stays visible.</summary>
+        private static void AssertTickVisible(DocumentReviewRow row, bool expected)
+        {
+            Toggle toggle = row.GetComponentInChildren<Toggle>(true);
+            Assert.IsNotNull(toggle, "The row has no toggle.");
+            Assert.IsNotNull(toggle.graphic, "The row's toggle has no graphic, so nothing shows a tick.");
+            float alpha = toggle.graphic.canvasRenderer.GetAlpha();
+            Assert.AreEqual(expected ? 1f : 0f, alpha, 0.01f,
+                $"'{row.Text()}' is {(row.Confirmed ? "" : "not ")}ticked but its tick alpha is {alpha}.");
+        }
+
+        /// <summary>Writes what the screen looks like to
+        /// Application.temporaryCachePath/UploadReview/ - for reading by eye, not asserted.</summary>
+        private static IEnumerator Screenshot(string name)
+        {
+            yield return new WaitForEndOfFrame();
+            Texture2D shot = ScreenCapture.CaptureScreenshotAsTexture();
+            string directory = Path.Combine(Application.temporaryCachePath, "UploadReview");
+            Directory.CreateDirectory(directory);
+            string path = Path.Combine(directory, name + ".png");
+            File.WriteAllBytes(path, shot.EncodeToPNG());
+            Object.Destroy(shot);
+            Debug.Log("[DocumentApplyPlayModeTests] screen written to " + path);
+        }
+
+        // ------------------------------------------------------------------ helpers
+
+        /// <summary>A mapping in the shape a real answer has: one new group, one free tool taken
+        /// into use, a finding over both legs and one on the chest, plus a patient text.</summary>
+        private static DocumentMapping FullMapping(string existingGroup = null)
+        {
+            return new DocumentMapping
+            {
+                DocumentSummary = "A fictional report, for the tests.",
+                PatientText = "The Stemmer sign is negative on both sides.",
+                NewGroups = new List<ProposedGroup>
+                {
+                    new ProposedGroup { Name = ProposedGroupName, Reason = "the scar fits no existing group" }
+                },
+                ToolAssignments = new List<ProposedToolMeaning>
+                {
+                    new ProposedToolMeaning { ToolName = ToolToClaim, Meaning = ClaimedMeaning, Reason = "no tool means this" }
+                },
+                Paintings = new List<ProposedPainting>
+                {
+                    new ProposedPainting
+                    {
+                        FindingText = "swelling of both thighs",
+                        Group = existingGroup ?? ProposedGroupName,
+                        ToolName = ToolInUse,
+                        RegionKeys = new List<string> { LegLeft, LegRight },
+                        Description = "Swelling of both thighs.",
+                        Confidence = 0.9f
+                    },
+                    new ProposedPainting
+                    {
+                        FindingText = "healed scar on the left chest",
+                        Group = ProposedGroupName,
+                        ToolName = ToolToClaim,
+                        RegionKeys = new List<string> { Chest },
+                        Description = "A healed scar on the left chest.",
+                        Confidence = 0.6f
+                    }
+                }
+            };
+        }
+
+        private static SettingsManager FindSettingsManager()
+        {
+            var settingsManager = Object.FindObjectOfType<SettingsManager>(true);
+            Assert.IsNotNull(settingsManager, "SettingsManager not found in scene.");
+            return settingsManager;
+        }
+
+        /// <summary>The report row the patient text goes to - the one whose visible Label reads
+        /// "Medical Report", not just any row with that label (three share label and level).</summary>
+        private static ItemPrompt ReportRow(SettingsManager settingsManager)
+        {
+            ItemPrompt row = settingsManager.getPromptObjectByLabelText(
+                DocumentMappingApplier.ReportRowLabel, ItemPrompt.PromptLevel.Version);
+            Assert.IsNotNull(row, $"No prompt row labelled '{DocumentMappingApplier.ReportRowLabel}'.");
+            Assert.AreEqual(DocumentMappingApplier.ReportRowLabel, row.LabelText());
+            return row;
+        }
+
+        private static PartManager.GroupData FindGroup(PartManager partManager, string name)
+        {
+            return partManager.groups.FirstOrDefault(g => g.name == name);
+        }
+
+        private static int TotalParts(PartManager partManager)
+        {
+            return partManager.groups.Sum(g => g.groupParts.Count);
+        }
+    }
+}

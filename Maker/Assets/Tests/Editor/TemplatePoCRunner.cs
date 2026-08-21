@@ -91,6 +91,15 @@ public static class TemplatePoCRunner
             "NoAPICalls.DocumentPromptPlayModeTests.ReviewScreen_ShowsThePickedFileAndTheWholePrompt");
     }
 
+    [MenuItem("Tools/Template PoC/Run Document Apply Tests")]
+    public static void RunDocumentApplyTests()
+    {
+        Run("NoAPICalls.DocumentApplyPlayModeTests.Apply_NothingConfirmed_LeavesTheTwinAlone",
+            "NoAPICalls.DocumentApplyPlayModeTests.Apply_WhatWasConfirmed_ReachesTheTwin",
+            "NoAPICalls.DocumentApplyPlayModeTests.Apply_RefusesWhatTheTwinDoesNotAllow",
+            "NoAPICalls.DocumentApplyPlayModeTests.ReviewList_OffersEveryProposalUntickedAndAppliesOnlyWhatIsTicked");
+    }
+
     [MenuItem("Tools/Template PoC/Run Upload Tests")]
     public static void RunUploadTests()
     {

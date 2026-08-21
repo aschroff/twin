@@ -78,6 +78,62 @@ namespace Code
             return text.ToString();
         }
 
+        // ---------------- one line per proposal, for the review rows ----------------
+
+        /*
+         * The rows are for deciding, the text above is for reading: a row says what the finding is,
+         * which tool and group it would use, and HOW MANY REGIONS it covers - the region count is
+         * the cost of ticking it. A treatment line over both legs is one row and fourteen parts,
+         * and the row is where that becomes visible before it is paid.
+         */
+        public const string HeadingPaintings = "FINDINGS ON THE BODY";
+        public const string HeadingGroups = "NEW GROUPS";
+        public const string HeadingTools = "TOOLS TO TAKE INTO USE";
+        public const string HeadingPatientText = "FOR THE REPORT";
+
+        public static string Heading(string heading, int count)
+        {
+            return heading + " (" + count + ")";
+        }
+
+        public static string Row(ProposedPainting painting)
+        {
+            if (painting == null) return "-";
+
+            int regions = Count(painting.RegionKeys);
+            string row = Or(painting.FindingText, "a finding")
+                + "  -  " + Or(painting.ToolName, "no tool")
+                + ", " + Or(painting.Group, "no group")
+                + ", " + regions + (regions == 1 ? " region" : " regions");
+
+            // below this the model itself was unsure - worth seeing without opening anything
+            if (painting.Confidence > 0f && painting.Confidence < 0.6f)
+            {
+                row += ", uncertain";
+            }
+            return row;
+        }
+
+        public static string Row(ProposedGroup group)
+        {
+            if (group == null) return "-";
+            return Or(group.Name, "a group")
+                + (string.IsNullOrWhiteSpace(group.Reason) ? "" : "  -  " + group.Reason.Trim());
+        }
+
+        public static string Row(ProposedToolMeaning tool)
+        {
+            if (tool == null) return "-";
+            return Or(tool.ToolName, "a tool") + " would mean: " + Or(tool.Meaning, "-");
+        }
+
+        /// <summary>The patient text as one row - shortened, the whole of it is in the text below.</summary>
+        public static string RowForPatientText(string patientText)
+        {
+            string text = Or(patientText, "- nothing -");
+            return text.Length > 90 ? text.Substring(0, 90).TrimEnd() + " ..." : text;
+        }
+
         private static string Or(string value, string fallback)
         {
             return string.IsNullOrWhiteSpace(value) ? fallback : value.Trim();

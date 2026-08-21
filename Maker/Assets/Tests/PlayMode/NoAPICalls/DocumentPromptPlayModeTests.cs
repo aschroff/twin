@@ -197,29 +197,6 @@ namespace NoAPICalls
             return settingsManager.getPromptObject(label, ItemPrompt.PromptLevel.Document).GetPromptText().Trim();
         }
 
-        /// <summary>Clears the meaning of one tool row and returns the meaning it had.</summary>
-        private static string FreeOneTool(string toolName)
-        {
-            foreach (Tools panel in Object.FindObjectsOfType<Tools>(true))
-            {
-                foreach (Transform row in panel.transform)
-                {
-                    var button = row.GetComponent<CW.Common.CwDemoButton>();
-                    if (button == null || button.IsolateTarget == null) continue;
-                    if (button.IsolateTarget.gameObject.name != toolName) continue;
-
-                    var input = row.GetComponentInChildren<InputField>(true);
-                    Assert.IsNotNull(input, $"Tool row of '{toolName}' has no input field.");
-                    string had = input.text;
-                    input.text = "";
-                    Assert.IsNotEmpty(had, $"'{toolName}' was expected to carry a meaning before being freed.");
-                    return had;
-                }
-            }
-            Assert.Fail($"No tool row for '{toolName}'.");
-            return null;
-        }
-
         private static List<string> AllRegionKeys()
         {
             var keys = new List<string>();

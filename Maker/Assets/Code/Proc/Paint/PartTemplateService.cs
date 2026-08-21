@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CW.Common;
 using PaintCore;
 using PaintIn3D;
 using UnityEngine;
@@ -221,6 +222,36 @@ public static class PartTemplateService
         return catalog;
     }
 
+    /// <summary>The template twin a region key belongs to ("thigh_front_left" → "Legs.twin"),
+    /// or null when no bundled template carries that key. Lets a caller name only the region —
+    /// which is all an LLM answer contains, so the region/area pairing cannot go wrong.
+    /// The catalog is bundled and does not change at runtime, so it is read once.</summary>
+    public static string TwinOfRegion(string regionKey)
+    {
+        if (string.IsNullOrEmpty(regionKey))
+            return null;
+        if (twinOfRegion == null)
+        {
+            twinOfRegion = new Dictionary<string, string>();
+            foreach (var twin in GetTemplateCatalog().twins)
+                foreach (var region in twin.regions)
+                    twinOfRegion[region.key] = twin.twinName;
+        }
+        return twinOfRegion.TryGetValue(regionKey, out string name) ? name : null;
+    }
+
+    private static Dictionary<string, string> twinOfRegion;
+
+    /// <summary>Paints a region named by its key alone — <see cref="TwinOfRegion"/> resolves
+    /// which template twin it comes from.</summary>
+    public static List<PartManager.PartData> PaintRegionByKey(string regionKey, string toolName, PartManager partManager)
+    {
+        string twinName = TwinOfRegion(regionKey);
+        if (twinName == null)
+            throw new ArgumentException($"Region '{regionKey}' is in no bundled template twin.");
+        return PaintRegion(twinName, regionKey, toolName, partManager);
+    }
+
     /// <summary>The catalog as JSON — ready to embed into an LLM prompt or a structured-output
     /// schema ("pick twinName + region from this catalog").</summary>
     public static string GetTemplateCatalogJson()
@@ -341,21 +372,26 @@ public static class PartTemplateService
         return PartManager.Tool.MarkerLine;
     }
 
-    /// <summary>The tool's user-facing meaning from its UI button (mirrors PartManager.GetText);
-    /// falls back to the tool name when the button text isn't available.</summary>
+    /// <summary>The tool's meaning as the user typed it into the tool's row under the
+    /// EditMarker / EditFiller panels — the same InputField ToolInventory reads, persisted per
+    /// twin in ConfigData.itemTexts.
+    ///
+    /// Found through the row's CwDemoButton, not through the tool's ToolTracker: ToolTracker
+    /// wires myButton in OnEnable, so it is null for every tool that is not the one the user
+    /// currently has selected — which is every tool a programmatic paint uses. Going through the
+    /// tracker silently produced the fallback (the colour name) instead of the meaning.
+    ///
+    /// Falls back to the tool name when the tool has no row, or its row no meaning.</summary>
     private static string ExtractMeaning(GameObject tool, string fallback)
     {
-        var tracker = tool.GetComponent<ToolTracker>();
-        if (tracker != null && tracker.myButton != null)
+        foreach (var button in UnityEngine.Object.FindObjectsOfType<CwDemoButton>(true))
         {
-            foreach (var text in tracker.myButton.gameObject.GetComponentsInChildren<Text>(true))
-            {
-                if (text.text != "Placeholder" && !string.IsNullOrEmpty(text.text)
-                    && text.transform.parent != null && text.transform.parent.name == "InputField")
-                {
-                    return text.text;
-                }
-            }
+            if (button.IsolateTarget == null || button.IsolateTarget.gameObject != tool)
+                continue;
+
+            var field = button.GetComponentInChildren<InputField>(true);
+            if (field != null && !string.IsNullOrWhiteSpace(field.text))
+                return field.text.Trim();
         }
         return fallback;
     }

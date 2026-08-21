@@ -38,6 +38,9 @@ namespace Code
 
         public DocumentMapping lastMapping;
 
+        /// <summary>What the last Apply did - what a test reads back.</summary>
+        public DocumentApplyResult lastResult;
+
         public override ProcessResult Execute(string variant = "")
         {
             switch (variant)
@@ -169,10 +172,51 @@ namespace Code
             int findings = mapping != null && mapping.Paintings != null ? mapping.Paintings.Count : 0;
             int groups = mapping != null && mapping.NewGroups != null ? mapping.NewGroups.Count : 0;
             Debug.Log("DocumentUploadProcess: mapping received, " + findings + " findings");
-            review.Show(PickedSummary() + "\n\n" + DocumentMappingText.Describe(mapping));
+            review.Show(mapping, PickedSummary() + "\n\n" + DocumentMappingText.Describe(mapping),
+                selection => ApplyConfirmed(selection));
             // the second notification: says it is done even when the user left the screen
             Report(Path.GetFileName(pickedPath) + ": " + findings + " findings"
                 + (groups > 0 ? ", " + groups + " new groups" : "") + " to review");
+        }
+
+        /*
+         * Apply on the review screen: what the user ticked is written to the twin and the twin is
+         * shown again, so the result is looked at on the body rather than in a list. Nothing else
+         * in this feature changes the twin.
+         *
+         * The result is saved right away: painting by hand is saved by leaving the screen, and a
+         * change nobody made by hand should not depend on the user finding that out.
+         */
+        public DocumentApplyResult ApplyConfirmed(DocumentMappingSelection selection)
+        {
+            if (lastMapping == null)
+            {
+                Report("There is nothing to apply.");
+                return new DocumentApplyResult();
+            }
+            if (selection == null || selection.Count == 0)
+            {
+                Report("Nothing was ticked, so nothing was applied.");
+                return new DocumentApplyResult();
+            }
+
+            DocumentApplyResult result = DocumentMappingApplier.Apply(
+                lastMapping, selection, getPartManager(), getSettingsManager());
+            lastResult = result;
+
+            foreach (string problem in result.problems)
+            {
+                Debug.LogWarning("DocumentUploadProcess: " + problem);
+            }
+
+            if (result.ChangedAnything)
+            {
+                getDataManager().SaveConfig();
+                InteractionController.EnableMode("Main");
+            }
+
+            Report(Path.GetFileName(pickedPath) + ": " + result.Summary());
+            return result;
         }
 
         private void Failed(string what, string error)
@@ -189,6 +233,15 @@ namespace Code
             pickedPath = path;
             pickedPhoto = photo;
             Accept();
+        }
+
+        /// <summary>Puts a mapping on the review screen without calling the API - how a test
+        /// reaches the review list and the Apply button.</summary>
+        public void ShowMapping(string path, DocumentMapping mapping)
+        {
+            pickedPath = path;
+            pickedPhoto = null;
+            Mapped(mapping);
         }
 
         /// <summary>
