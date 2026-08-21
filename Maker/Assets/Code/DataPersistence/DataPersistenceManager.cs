@@ -472,7 +472,12 @@ public class DataPersistenceManager : MonoBehaviour
         return profileDictionary;
     }
     
-    public Dictionary<string, ConfigData> GetAllVersionsGameData(string name) 
+    /*
+    * The versions of one twin, keyed by version. Two twin directories cannot hold the same
+    * version - but reading the versions of a twin must not be what takes the app down if they
+    * ever do, so a repeated version is reported and skipped instead of added twice.
+    */
+    public Dictionary<string, ConfigData> GetAllVersionsGameData(string name)
     {
         Dictionary<string, ConfigData> profiles =  dataHandler.LoadAllProfiles();
         Dictionary<string, ConfigData> profileDictionary = new Dictionary<string, ConfigData>();
@@ -480,6 +485,12 @@ public class DataPersistenceManager : MonoBehaviour
         {
             if (profile.Value.name == name)
             {
+                if (profileDictionary.ContainsKey(profile.Value.version))
+                {
+                    Debug.LogError("Twin " + name + " has more than one version " + profile.Value.version
+                        + ", skipping the one in " + profile.Key + ".");
+                    continue;
+                }
                 profileDictionary.Add(profile.Value.version, profile.Value);
             }
         }

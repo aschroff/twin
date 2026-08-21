@@ -311,6 +311,42 @@ namespace NoAPICalls
             return child.gameObject;
         }
 
+        /// <summary>A twin directory can appear without the app writing it - a file manager copies
+        /// one, a second download lands as "&lt;name&gt; 2". Its config then says something else than
+        /// its directory, and listing the versions of that twin must still work.</summary>
+        [UnityTest]
+        public IEnumerator TwinDirectoryTheAppDidNotWrite_DoesNotBreakTheVersionList()
+        {
+            yield return LoadLipEdemaTwin();
+            string openProfileId = DataPersistenceManager.instance.selectedProfileId;
+
+            // a copy of the twin, the way a file manager or a repeated download leaves it: the
+            // directory is called something else while the config still names the original
+            string copyProfileId = openProfileId + " 2";
+            CopyTwinDirectory(openProfileId, copyProfileId);
+
+            ICollection<string> versions = VersionsOf("LipEdema");
+            Assert.IsTrue(versions.Contains(VersionOf(openProfileId)),
+                "The twin itself is missing from its versions.");
+            Assert.IsTrue(versions.Contains(VersionOf(copyProfileId)),
+                $"The copied directory should be listed under its own version '{VersionOf(copyProfileId)}'.");
+
+            // and the list of twins still holds exactly one row for the name
+            Assert.IsTrue(DataPersistenceManager.instance.GetAllProfileNamesGameData().ContainsKey("LipEdema"),
+                "The twin is missing from the twin list.");
+        }
+
+        static void CopyTwinDirectory(string fromProfileId, string toProfileId)
+        {
+            string from = Path.Combine(DataPaths.PersistentDataPath, fromProfileId);
+            string to = Path.Combine(DataPaths.PersistentDataPath, toProfileId);
+            Directory.CreateDirectory(to);
+            foreach (string file in Directory.GetFiles(from))
+            {
+                File.Copy(file, Path.Combine(to, Path.GetFileName(file)), true);
+            }
+        }
+
         /// <summary>A broken archive must leave the twins on the device alone, even the one
         /// whose name it carries.</summary>
         [UnityTest]
