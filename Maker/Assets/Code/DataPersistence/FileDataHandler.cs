@@ -269,8 +269,9 @@ public class FileDataHandler
             ConfigData profileData = Load(profileId);
             // defensive programming - ensure the profile data isn't null,
             // because if it is then something went wrong and we should let ourselves know
-            if (profileData != null) 
+            if (profileData != null)
             {
+                StampIdentity(profileData, profileId);
                 profileDictionary.Add(profileId, profileData);
             }
             else 
@@ -281,7 +282,26 @@ public class FileDataHandler
         return profileDictionary;
     }
 
-    public string GetMostRecentlyUpdatedProfileId() 
+    /*
+    * A twin is identified by its directory, so that is where its name and version come from.
+    * Anything that puts a directory there without the app - a file manager copying a twin, a
+    * download that lands as "<name> 2", a sync tool - leaves a config that says something else,
+    * and every list built from those values would then point at the wrong directory.
+    */
+    private void StampIdentity(ConfigData data, string profileId)
+    {
+        string name = NameOf(profileId);
+        string version = VersionOf(profileId);
+        if (data.name != name || data.version != version)
+        {
+            Debug.LogWarning("Twin directory " + profileId + " holds a config for " + data.name + "."
+                + data.version + ", using the directory as its name and version.");
+            data.name = name;
+            data.version = version;
+        }
+    }
+
+    public string GetMostRecentlyUpdatedProfileId()
     {
         string mostRecentProfileId = null;
 
