@@ -69,6 +69,12 @@ public static class TemplatePoCRunner
             "NoAPICalls.ImportTwinPlayModeTests.Import_OfABrokenZip_KeepsTheTwinsOnTheDevice");
     }
 
+    [MenuItem("Tools/Template PoC/Run Upload Tests")]
+    public static void RunUploadTests()
+    {
+        Run("NoAPICalls.UploadPlayModeTests.UploadButton_OffersPhotoAndDocument");
+    }
+
     [MenuItem("Tools/Template PoC/Run Sticker Tests")]
     public static void RunStickerTests()
     {

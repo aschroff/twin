@@ -103,7 +103,8 @@ Assets/
 │   │   ├── Process.cs / ProcessManager.cs / ProcessSync.cs
 │   │   ├── AI/                    # AI-specific processes
 │   │   ├── Meshcapade/            # Meshcapade avatar API client
-│   │   └── Paint/                 # Text→Part: PartTemplateService + feature spec
+│   │   ├── Paint/                 # Text→Part: PartTemplateService + feature spec
+│   │   └── Document/              # Document→Twin: upload process + feature spec
 │   │
 │   └── View/                      # UI layer (MVC-ish)
 │       ├── Item/                  # UI item components (Body, Group, Part, Sticker, …)
@@ -183,7 +184,15 @@ Assets/
 5. The LLM returns a structured medical description of the part.
 6. Descriptions can later be aggregated per **Version** to produce an overall patient report, or across **multiple Versions** to analyse progression over time.
 
+### Document → Twin (in progress)
 
+A photo or a PDF of a document (referral letter, body chart, hand drawing) is to be analysed and
+its findings mapped onto the twin as groups, tools and painted body regions. Step one — the way
+in — exists: the **Upload** button in the bottom row of the main screen opens the `Upload` panel,
+which offers a photo (gallery picker, as in the sticker upload) or a document (OS file picker, as
+in the twin import); `DocumentUploadProcess` (`Assets/Code/Proc/Document/`) does the picking.
+Spec, target structure and the remaining steps:
+`Assets/Code/Proc/Document/FEATURE_DOCUMENT_TO_TWIN.md`.
 
 ---
 
@@ -235,4 +244,14 @@ Assets/
   need the twin in the hash), and `Item.getHash` must not be changed — the hashes are stored inside
   saved paint commands. A slot whose id hashed to `0` would count as "no hash"; none of the current
   ids do.
+- **Document → Twin feature** (`Assets/Code/Proc/Document/`): the Upload button of the main
+  screen offers a photo or a PDF, to be analysed and mapped onto the twin. Only the way in is
+  built so far — spec: `Assets/Code/Proc/Document/FEATURE_DOCUMENT_TO_TWIN.md`. Adding the fourth
+  bottom button meant tightening the bottom row's grid spacing from 95 to 70; the row is
+  ~593 units wide on a phone in portrait, so a fourth 80-unit button does not fit otherwise.
+- **UI belongs in the prefab, not in the scene instance.** Every panel under `Canvas` is a prefab
+  instance, so new buttons and panels are added to the prefab asset (`Assets/Prefabs/GUI/…`).
+  The scene keeps only what cannot live in a prefab: references to scene objects, above all the
+  `Maker` object (`InteractionController`) that button clicks target. `Canvas` itself is not a
+  prefab, so panels are children of it in the scene.
 - **Text → Part feature** (`Assets/Code/Proc/Paint/`): `PartTemplateService.PaintRegion(twin, region)` paints a pre-painted body-region template (bundled twins under `Resources/templates/`, 98 regions — catalog in `Assets/Resources/BODY_REGIONS.md`) into the twin's active group, optionally as a chosen marker/filler tool. The part carries `regionKey` plus the localized region name as its description. Region names live in `TwinLocalTables` under `region.<key>` for `enmed`/`demed`/`demedlatin` and are imported from `Assets/Resources/region_names.tsv` via **Tools → Localization → Import Region Names**. Manual selection UI: `RegionManager`. Spec and findings: `Assets/Code/Proc/Paint/FEATURE_TEXT_TO_PART.md`. Generation tooling: `Assets/Tests/PlayMode/TemplateLibraryTools/` (marked `[Explicit]` — not part of the app test suite).
