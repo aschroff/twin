@@ -26,10 +26,26 @@ Run them from the Unity Test Runner, or from the automation menu **Tools → Tem
 | **GroupPlayModeTests**<br>`SaveAndReload_KeepsGroupsPartsAndTheirLinks` | Groups, their parts, part↔group links, visibility flags and the selected group survive leaving the twin and coming back. |
 | **InfoDisplayPlayModeTests** (5 tests) | The status displays: the twin name in the header of every screen and the Twin/Version/Tool/Group block of the overview overlay — after a reset (the app falls back to `default.000`), after loading and after creating a twin, when a tool is picked and when the current group changes. |
 | **ImportTwinPlayModeTests** (8 tests) | Export/import of a twin: the paint is visible as soon as an imported twin is opened (it travels as `Texture.png` in the twin folder, because the in-app texture cache never leaves the device); groups, parts and their links survive the round trip; an import never overwrites a twin that is already there (`V01`, `V02`, …, first free slot, and the suffix of a returning twin is kept); the twin is named after its config, not after the zip file (which anything may rename); importing while a twin of the same name is open keeps both apart; and a broken archive leaves the existing twins untouched. |
+| **DocumentPromptPlayModeTests** (3 tests) | The dynamic prompt for Document → Twin: the two editable Settings rows arrive with their shipped default **in full** (a character limit that is too small truncates it), and the assembled prompt carries the language directive, both rows, every group of the twin, the tools split into "has a meaning" and "still free", and all 98 region keys. Also that the tool inventory lists every marker and filler — including the first row of each panel, which the older report prompt skips. The prompt is written to `Application.temporaryCachePath/DocumentPrompt/` for reading. The third test walks Upload → pick →
+review screen (handing the pick over directly, since an OS dialog cannot be driven) and checks the
+screen names the file and carries the whole prompt. |
 | **UploadPlayModeTests**<br>`UploadButton_OffersPhotoAndDocument` | The Upload button of the main screen opens the upload panel, which offers exactly two ways for a document to reach the twin — a photo and a file — each labelled from the localization table and wired to `DocumentUploadProcess` with its variant. The pick itself opens an OS dialog and is not driven. |
 | **StickerPlayModeTests** (2 tests) | Sticker images per twin: the image behind a sticker slot — and the image its hash points at — follows the twin that is open, and an imported twin brings its own images for slots the open twin uses with different ones. |
 | **PartTemplateServiceTests** (11 tests) | The Text→Part service (`Assets/Code/Proc/Paint/`): painting a body region into the active group, tool override (colour, metadata, sticker rejection), current-tool resolution with marker fallback, the region catalog, region names per language (enmed/demed/demedlatin), and the save format (linear file growth, no texture references, part↔group and texture links restored on load). |
 | **ProgrammaticPaintingTests**<br>`PaintTemplateParts_ThreeRegions` | Regression test for driving the CW paint pipeline from code (marker stroke, filler area): parts get the right tool metadata, a stored view, and survive the save round trip. Foundation of the template library generator. |
+
+## `Assets/Tests/EditMode/` — unit tests, no scene, no app
+
+| Test | What it checks |
+|------|----------------|
+| **JsonSchemaBuilderTests** (6 tests) | The JSON schema requested for structured outputs: nested objects and lists are described to the bottom, injected value lists become `enum`s (on the items for an array member), the strict-mode invariants hold recursively over a whole schema, the two responses already in use stay flat, and a self-referencing type fails instead of hanging. |
+
+| **ApiKeysTests** (8 tests) | Reading the OpenAI key from a file outside version control: the member `testsecrets.json` uses plus the other spellings, whitespace trimmed, and a missing, empty or broken file yielding nothing instead of throwing at startup. |
+
+EditMode on purpose. A PlayMode test that does **not** derive from `PlayModeTestBase` starts the
+real app against the real data path — the sandboxing lives in that base class.
+
+Run them from **Tools → Template PoC → Run Schema Tests**.
 
 ## `TemplateLibraryTools/` — not tests
 
@@ -39,6 +55,16 @@ They are `[UnityTest]` only because painting needs play mode; all methods are ma
 See `TemplateLibrary/README.md` for the workflow.
 
 ## Outside `NoAPICalls/`
+
+**DocumentMappingApiTests** (2 tests) send an invented document to the LLM. The first checks the
+answer can be applied: every body region is one of the 98 keys, every tool is a tool of this app,
+every group is existing or proposed, a tool taken into use was free, and what concerns the patient
+as a whole comes back as the patient text. The second drives the same thing **through the app**, with the real
+two-page PDF `Assets/Tests/Helper/lipoedema-report-sample.pdf` (a fictional lipoedema report):
+Upload, pick, upload, call, proposal on the review screen. It also proves the app finds a key, that
+the PDF upload path works — a text file takes a different one — and that a report full of
+symmetrical findings yields at least one multi-region painting.
+**Tools → Template PoC → Run Document Mapping API Test**.
 
 **OpenAIClientTests** (9 tests) call the OpenAI API: simple and structured requests, invalid
 key handling, parallel requests, model listing, file upload, and the AI component with image

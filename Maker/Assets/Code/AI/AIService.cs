@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -14,11 +15,18 @@ namespace Code.AI
     public class AIService : MonoBehaviour
     {
         [Header("OpenAI Settings")]
+        /// <summary>Leave empty. A key here is serialized into the scene and ends up in the
+        /// repository - see ApiKeys for where to put it instead.</summary>
         public string apiKey;
         public string model = "gpt-4o-mini";
         public int timeout = 120;
 
         protected OpenAIClient _openAIClient;
+
+        /// <summary>The key actually in use, wherever it came from. Empty when there is none.</summary>
+        public string resolvedApiKey { get; private set; }
+
+        public bool hasApiKey => !string.IsNullOrEmpty(resolvedApiKey);
 
         protected virtual void Start()
         {
@@ -27,14 +35,34 @@ namespace Code.AI
 
         protected void InitializeClient()
         {
-            if (string.IsNullOrEmpty(apiKey))
+            resolvedApiKey = ApiKeys.OpenAi(apiKey);
+
+            if (!hasApiKey)
             {
-                Debug.LogError("Please set the API Key in the AI component.");
+                Debug.LogError("No OpenAI API key. Put it into " + ApiKeys.SearchedPlaces()
+                    + " as {\"" + ApiKeys.JsonMember + "\": \"sk-...\"} - not onto the AI component,"
+                    + " which would carry it into the repository.");
                 return;
             }
 
-            _openAIClient = new OpenAIClient(apiKey, timeout);
+            _openAIClient = new OpenAIClient(resolvedApiKey, timeout);
             Debug.Log("OpenAI client initialized successfully");
+        }
+
+        /// <summary>
+        /// Uploads a file and hands back its id. Everything that is not an image has to travel
+        /// this way; an image is embedded into the request instead.
+        /// </summary>
+        public async Task<string> UploadFileAsync(string filePath)
+        {
+            try
+            {
+                return await _openAIClient.UploadFileAsync(filePath);
+            }
+            catch (OpenAIException ex)
+            {
+                throw new Exception($"OpenAI file upload failed: {ex.Message}", ex);
+            }
         }
 
         /// <summary>
@@ -77,13 +105,19 @@ namespace Code.AI
         /// <summary>
         /// Generic coroutine wrapper for async structured requests.
         /// </summary>
+        /// <param name="fileId">Id of a file uploaded beforehand - the only way to send anything
+        /// that is not an image, a PDF above all.</param>
+        /// <param name="allowedValues">Value lists for members whose options only exist at
+        /// runtime, keyed by member path. See JsonSchemaBuilder.</param>
         protected IEnumerator RequestStructuredCoroutine<T>(
             string prompt,
             Action<T> onSuccess,
             Action<string> onError,
-            string imagePath = null) where T : class
+            string imagePath = null,
+            string fileId = null,
+            IDictionary<string, IEnumerable<string>> allowedValues = null) where T : class
         {
-            var task = RequestStructuredAsync<T>(prompt, imagePath);
+            var task = RequestStructuredAsync<T>(prompt, imagePath, fileId, allowedValues);
             yield return new WaitUntil(() => task.IsCompleted);
 
             if (task.Exception != null)
@@ -120,14 +154,20 @@ namespace Code.AI
         /// <summary>
         /// Async structured request to OpenAI.
         /// </summary>
-        protected async Task<T> RequestStructuredAsync<T>(string prompt, string imagePath = null) where T : class
+        protected async Task<T> RequestStructuredAsync<T>(
+            string prompt,
+            string imagePath = null,
+            string fileId = null,
+            IDictionary<string, IEnumerable<string>> allowedValues = null) where T : class
         {
             try
             {
                 return await _openAIClient.RequestStructuredAsync<T>(
                     prompt,
                     model,
-                    imagePath: string.IsNullOrEmpty(imagePath) ? null : imagePath
+                    fileId: string.IsNullOrEmpty(fileId) ? null : fileId,
+                    imagePath: string.IsNullOrEmpty(imagePath) ? null : imagePath,
+                    allowedValues: allowedValues
                 );
             }
             catch (OpenAIException ex)

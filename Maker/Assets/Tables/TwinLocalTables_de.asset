@@ -649,6 +649,43 @@ MonoBehaviour:
     m_Localized: Dokument hochladen
     m_Metadata:
       m_Items: []
+  - m_Id: 234806568878596096
+    m_Localized: "Du erh\xE4ltst ein Dokument zu einer Patientin oder einem Patienten:
+      ein Foto, eine Zeichnung, ein K\xF6rperschema oder einen Bericht. Finde jeden
+      medizinischen Befund darin und ordne jeden Befund dem digitalen Zwilling des
+      K\xF6rpers zu - mit den unten aufgef\xFChrten Gruppen, Werkzeugen und K\xF6rperregionen."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984704
+    m_Localized: "Verwende eine bestehende Gruppe, wenn ein Befund dazu passt; schlage
+      eine neue Gruppe nur vor, wenn keine passt. Verwende ein Werkzeug, dessen Bedeutung
+      bereits passt; nimm nur dann ein Werkzeug aus der Liste der freien Werkzeuge
+      und gib ihm eine Bedeutung, wenn kein Werkzeug passt. F\xFChre ein Werkzeug
+      nur dann als neu belegt auf, wenn du es aus dieser Liste der freien Werkzeuge
+      genommen hast - ein Werkzeug, das bereits eine Bedeutung hat, beh\xE4lt sie
+      und geh\xF6rt nicht in diese Liste; lass die Liste leer, wenn kein Werkzeug
+      frei war. W\xE4hle ein Fl\xE4chenwerkzeug f\xFCr eine Fl\xE4che und ein Linienwerkzeug
+      f\xFCr eine Linie oder eine kleine Stelle. Wenn ein Befund beide K\xF6rperseiten
+      oder mehrere K\xF6rperteile betrifft, nenne jede betroffene Region. Alles,
+      was keiner K\xF6rperregion zugeordnet werden kann, und alles, was die Patientin
+      oder den Patienten als Ganzes betrifft, kommt in einen zusammenfassenden Text
+      statt in eine Markierung."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984705
+    m_Localized: "Beschreibe den am K\xF6rper dargestellten medizinischen Befund
+      im Stil eines Arztberichts. Nenne Gr\xF6\xDFe und Form des Befundes, seine
+      Lage am K\xF6rper einschlie\xDFlich der relativen Position am K\xF6rperteil
+      und seiner Orientierung sowie weitere relevante Details."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984706
+    m_Localized: "Erstelle einen Arztbericht von etwa 250 W\xF6rtern: beschreibe
+      jeden medizinischen Befund in zwei bis drei S\xE4tzen und fasse anschlie\xDFend
+      die Gesamtsituation und die empfohlenen Behandlungen zusammen. Die am K\xF6rper
+      dargestellten Befunde sind unten aufgef\xFChrt:"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

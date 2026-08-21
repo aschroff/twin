@@ -7,11 +7,19 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
     {
         Version,
         Part,
-        Unknown
+        Unknown,
+        // new values go at the end - the level is stored as its number in the scene
+        Document
     }
 
     [SerializeField] public PromptLevel level;
     [SerializeField] public string label;
+
+    /// <summary>Key in TwinLocalTables of the text this prompt starts with. A twin stores the
+    /// text the user edited; a twin that has never stored one gets this default, in the
+    /// language of the app. Empty means the prompt starts empty, as it always did.</summary>
+    [SerializeField] public string defaultKey;
+
     private InputField inputField;
     
     public string promptResult = "";
@@ -29,6 +37,31 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
     private void setPrompt()
     {
         inputField = this.GetComponentInChildren<InputField>();
+    }
+
+    /// <summary>The prompt text as it currently stands - what a caller sends to the LLM.</summary>
+    public string GetPromptText()
+    {
+        if (inputField == null)
+        {
+            setPrompt();
+        }
+        return inputField != null ? inputField.text : "";
+    }
+
+    /// <summary>The shipped text for this prompt, in the language of the app. Empty when no
+    /// default is configured, or while the localization table is not loaded yet - in both
+    /// cases the prompt simply starts empty.</summary>
+    private string getDefaultText()
+    {
+        if (string.IsNullOrEmpty(defaultKey))
+        {
+            return "";
+        }
+
+        string localized = StringLocalizer.localizeString(defaultKey);
+        // localizeString hands the key back when the table has no entry for it
+        return localized == defaultKey ? "" : localized;
     }
 
     public void SaveData(ConfigData data)
@@ -76,7 +109,8 @@ public class ItemPrompt : MonoBehaviour, IDataPersistence
             } 
             else if (inputField != null) 
             {
-                inputField.text = "";
+                // no text stored for this twin: start from the shipped default
+                inputField.text = getDefaultText();
             }
             
             data.resultsVersion.TryGetValue(key, out promptResult);

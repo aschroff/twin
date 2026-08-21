@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Code.AI.PromptGeneration;
@@ -34,10 +35,11 @@ namespace Code.AI
         {
             base.Start();
 
-            // UI feedback for missing API key
-            if (string.IsNullOrEmpty(apiKey))
+            // UI feedback for missing API key - the key may come from outside the scene, so it is
+            // the resolved one that matters, not the field
+            if (!hasApiKey)
             {
-                const string errorMessage = "Please set the <b>API Key</b> in the AI component.";
+                const string errorMessage = "No <b>API Key</b> found. See ApiKeys for where to put it.";
                 if (characterDescription != null)
                 {
                     characterDescription.text = errorMessage;
@@ -106,6 +108,50 @@ namespace Code.AI
             return "";
         }
         
+        /// <summary>
+        /// Asks for the findings of a document, mapped onto this twin. The prompt comes from
+        /// DocumentPromptBuilder; the document travels as an image path or, for anything that is
+        /// not an image, as the id of a file uploaded first. The body regions the answer may name
+        /// are handed over as a value list, so the schema itself rules out an unknown region.
+        /// </summary>
+        public void MapDocument(
+            string prompt,
+            string imagePath,
+            string fileId,
+            IEnumerable<string> regionKeys,
+            Action<DocumentMapping> onSuccess,
+            Action<string> onError)
+        {
+            var allowedValues = new Dictionary<string, IEnumerable<string>>
+            {
+                { "paintings.regionKeys", new List<string>(regionKeys) }
+            };
+
+            StartCoroutine(RequestStructuredCoroutine(
+                prompt,
+                onSuccess,
+                onError,
+                imagePath,
+                fileId,
+                allowedValues));
+        }
+
+        /// <summary>Uploads a document so it can be sent as a file - see MapDocument.</summary>
+        public IEnumerator UploadDocumentCoroutine(string path, Action<string> onSuccess, Action<string> onError)
+        {
+            var task = UploadFileAsync(path);
+            yield return new WaitUntil(() => task.IsCompleted);
+
+            if (task.Exception != null)
+            {
+                onError?.Invoke(task.Exception.InnerException?.Message ?? task.Exception.Message);
+            }
+            else
+            {
+                onSuccess?.Invoke(task.Result);
+            }
+        }
+
         public void CompleteReport()
         {
             string prompt = "The person is 1.60 m tall. Describe the medical findings depicted on the body and make a recommendation for treating these problems.";
