@@ -41,16 +41,91 @@ namespace NoAPICalls
 
             var menu = FindGameObjectByPath(UploadPanel).GetComponent<MenuManager>();
             Assert.IsNotNull(menu, "The upload panel is expected to list its actions via a MenuManager.");
-            Assert.AreEqual(2, menu.menu.Count, "Upload offers exactly a photo and a document.");
+            Assert.AreEqual(3, menu.menu.Count,
+                "Upload can offer a photo, a document, and the way back to a proposal in hand.");
 
             AssertEntry(menu, "UPLOAD_PHOTO", DocumentUploadProcess.VariantPhoto);
             AssertEntry(menu, "UPLOAD_DOCUMENT", DocumentUploadProcess.VariantDocument);
+            // the third is not a pick: it reopens the proposal that is still in memory, so leaving
+            // the review screen never costs an upload or a second call to the API
+            AssertEntryIsConfigured(menu, DocumentUploadProcess.ReviewEntryKey,
+                DocumentUploadProcess.VariantReview);
 
-            AssertDirectChildCount(UploadPanel, 2);
+            // ...but nothing has been read yet, so it is not offered - an entry that could only
+            // answer "no document has been read" has no business being tappable
+            Assert.AreEqual(2, CountRows(), "Only the two picks are offered before anything is read.");
+            Assert.IsNull(FindRowWithText(StringLocalizer.localizeString(DocumentUploadProcess.ReviewEntryKey)),
+                "The way back may not be offered while there is nothing to go back to.");
             yield return CaptureShot("upload-panel");
 
             yield return ClickButtonByPath(UploadBackButton);
             yield return WaitForModeActive("Main");
+        }
+
+        /// <summary>Once a document has been read, the way back to its proposal is offered - and it
+        /// goes away again when a twin it does not belong to is opened.</summary>
+        [UnityTest]
+        public IEnumerator ContinueReview_IsOfferedOnlyWhenThereIsSomethingToGoBackTo()
+        {
+            var upload = Object.FindObjectOfType<DocumentUploadProcess>(true);
+            Assert.IsNotNull(upload, "DocumentUploadProcess not found.");
+            Assert.IsFalse(upload.CanReview(), "Nothing has been read at the start of a session.");
+
+            // a proposal arrives, without an upload dialog or a call to the API
+            upload.ShowMapping("report.pdf", new Code.DocumentMapping
+            {
+                DocumentSummary = "A fictional report, for the tests.",
+                PatientText = "Something about the patient.",
+            });
+            yield return WaitForModeActive("UploadReview");
+            Assert.IsTrue(upload.CanReview());
+
+            yield return ClickButtonByPath("Canvas/UploadReview UI/Back Button");
+            yield return ClickButtonByPath(UploadButton);
+            yield return WaitForModeActive("Upload");
+            yield return null;
+
+            string label = StringLocalizer.localizeString(DocumentUploadProcess.ReviewEntryKey);
+            Assert.AreEqual(3, CountRows(), "The way back joins the two picks.");
+            Assert.IsNotNull(FindRowWithText(label), $"No row offers '{label}'.");
+            yield return CaptureShot("upload-panel-with-review");
+
+            // it belongs to the twin it was read for, so for another twin it is gone again
+            upload.mappingProfile = "some other twin";
+            Assert.IsFalse(upload.CanReview());
+            yield return ClickButtonByPath(UploadBackButton);
+            yield return WaitForModeActive("Main");
+            yield return ClickButtonByPath(UploadButton);
+            yield return WaitForModeActive("Upload");
+            yield return null;
+
+            Assert.AreEqual(2, CountRows(),
+                "A proposal read for another twin may not be offered for this one.");
+            Assert.IsNull(FindRowWithText(label));
+        }
+
+        /// <summary>How many entries the panel actually built.</summary>
+        private int CountRows()
+        {
+            return FindGameObjectByPath(UploadPanel).transform.childCount;
+        }
+
+        /// <summary>An entry the panel *can* offer: its label resolves and its click carries the
+        /// variant. Says nothing about whether it is offered right now.</summary>
+        private void AssertEntryIsConfigured(MenuManager menu, string textKey, string variant)
+        {
+            MenuAction action = null;
+            foreach (var candidate in menu.menu.Values)
+            {
+                if (candidate.text == textKey) action = candidate;
+            }
+            Assert.IsNotNull(action, $"No upload entry configured for '{textKey}'.");
+            Assert.AreNotEqual(textKey, StringLocalizer.localizeString(textKey),
+                $"'{textKey}' is not in the localization table.");
+            Assert.AreEqual(1, action.onClick.GetPersistentEventCount());
+            Assert.IsNotNull(action.onClick.GetPersistentTarget(0) as DocumentUploadProcess);
+            Assert.AreEqual("Handle", action.onClick.GetPersistentMethodName(0));
+            Assert.AreEqual(variant, GetStringArgument(action.onClick, 0));
         }
 
         /// <summary>

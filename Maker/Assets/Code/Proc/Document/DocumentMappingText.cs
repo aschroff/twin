@@ -98,12 +98,18 @@ namespace Code
 
         public static string Row(ProposedPainting painting)
         {
+            return Row(painting, null);
+        }
+
+        /// <param name="newGroupNames">Groups the twin does not have yet. A finding in one of them
+        /// would create it, which is worth seeing on the row rather than after the fact.</param>
+        public static string Row(ProposedPainting painting, System.Collections.Generic.ICollection<string> newGroupNames)
+        {
             if (painting == null) return "-";
 
             int regions = Count(painting.RegionKeys);
             string row = Or(painting.FindingText, "a finding")
                 + "  -  " + Or(painting.ToolName, "no tool")
-                + ", " + Or(painting.Group, "no group")
                 + ", " + regions + (regions == 1 ? " region" : " regions");
 
             // below this the model itself was unsure - worth seeing without opening anything
@@ -112,6 +118,18 @@ namespace Code
                 row += ", uncertain";
             }
             return row;
+        }
+
+        /// <summary>The group of a finding, as its chip reads. Marked when the twin does not have
+        /// that group yet, because ticking the finding would then create it - which is the one
+        /// consequence of a tick that is not obvious from the finding itself.</summary>
+        public static string GroupChip(ProposedPainting painting,
+            System.Collections.Generic.ICollection<string> newGroupNames)
+        {
+            if (painting == null) return "-";
+
+            string group = Or(painting.Group, "no group");
+            return newGroupNames != null && newGroupNames.Contains(group) ? group + " (new)" : group;
         }
 
         public static string Row(ProposedGroup group)

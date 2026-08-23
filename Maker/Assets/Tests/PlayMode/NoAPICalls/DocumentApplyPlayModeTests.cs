@@ -245,6 +245,16 @@ namespace NoAPICalls
             Assert.IsFalse(result.patientTextAppended);
             Assert.AreEqual("Untouched.", report.promptResult);
 
+            // and what may be remembered as applied is only what actually landed: the refused tool
+            // and the finding with the unknown tool must stay offerable, or they would come back
+            // locked as if they were on the body and could never be tried again
+            Assert.IsFalse(result.written.IsToolConfirmed(0), "A refused tool meaning was not written.");
+            Assert.IsFalse(result.written.IsPaintingConfirmed(0), "That finding was never painted.");
+            Assert.IsTrue(result.written.IsPaintingConfirmed(1), "This one did reach the body.");
+            Assert.IsFalse(result.written.PatientTextConfirmed);
+            Assert.IsTrue(result.written.IsGroupConfirmed(0),
+                "The group exists now, so it counts as applied even though its own row was unticked.");
+
             AssertPartsAreUsable(partManager);
         }
 
@@ -317,8 +327,20 @@ namespace NoAPICalls
             // the row of the two-region finding says how many parts ticking it costs
             DocumentReviewRow legRow = rows.First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 0);
             StringAssert.Contains("2 regions", legRow.Text());
-            StringAssert.Contains(existingGroup.name, legRow.Text());
             StringAssert.Contains(ToolInUse, legRow.Text());
+            // the group is its own chip, because it is the one thing on the row that can be changed
+            Assert.AreEqual(existingGroup.name, legRow.GroupText());
+
+            // a finding whose group does not exist yet says so, right on the row
+            DocumentReviewRow scarRow = rows.First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 1);
+            Assert.AreEqual(ProposedGroupName + " (new)", scarRow.GroupText(),
+                "A finding whose group the twin does not have has to say so.");
+            Assert.IsFalse(legRow.GroupText().Contains("(new)"),
+                "A finding in a group the twin already has may not be marked as new.");
+
+            // only a finding has a group to change - a heading, a group or the report text has none
+            Assert.IsEmpty(rows.First(r => r.kind == DocumentReviewRow.ItemKind.Heading).GroupText());
+            Assert.IsEmpty(rows.First(r => r.kind == DocumentReviewRow.ItemKind.PatientText).GroupText());
 
             // the long row wraps instead of being cut off, so it is taller than a short one and
             // its text fits inside it - a row that clips again fails here
@@ -374,7 +396,170 @@ namespace NoAPICalls
 
             // applying shows the twin again, so the result is looked at on the body
             yield return WaitForModeActive("Main");
+
+            // and coming back offers what is left, with what was applied ticked, locked and dimmed,
+            // because there is no undo
+            upload.Handle(DocumentUploadProcess.VariantReview);
+            yield return WaitForModeActive("UploadReview");
+            yield return null;
+            List<DocumentReviewRow> after = review.Rows();
+            DocumentReviewRow appliedRow = after.First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 0);
+            Assert.IsTrue(appliedRow.Applied, "The applied finding has to come back marked as applied.");
+            Assert.IsTrue(appliedRow.Confirmed, "It is on the twin, so it shows as ticked.");
+            Assert.IsFalse(appliedRow.GetComponentInChildren<Toggle>(true).interactable,
+                "An applied row may not be tickable - there is no undo.");
+            Assert.IsFalse(after.First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 1).Applied,
+                "A finding that was not applied stays open.");
+            yield return Screenshot("review-screen-after-apply");
+
+            // nothing was refused here, so everything that was ticked is remembered as applied
+            Assert.AreEqual(review.Selection().Count, upload.applied.Count,
+                "Only what actually reached the twin may be remembered as applied.");
+
+            // pressing Apply again may not paint the same regions a second time
+            int partsAfterFirstApply = TotalParts(partManager);
+            yield return ClickButtonByPath("Canvas/UploadReview UI/Apply Button");
+            yield return null;
+            yield return null;
+            Assert.AreEqual(partsAfterFirstApply, TotalParts(partManager),
+                "A second Apply may not write anything that is already on the twin.");
+
             AssertPartsAreUsable(partManager);
+        }
+
+        // ------------------------------------------------------------------ changing the group
+
+        /// <summary>The model's group is a recommendation. A part cannot be moved once it is
+        /// painted, so the review screen is the only chance to correct it - the chip on the row
+        /// opens a picker offering the twin's groups and the ones the document proposed.</summary>
+        [UnityTest]
+        public IEnumerator GroupPicker_ChangesWhereAFindingGoes()
+        {
+            yield return LoadLipEdemaTwin();
+            PartManager partManager = FindPartManager();
+            var upload = Object.FindObjectOfType<DocumentUploadProcess>(true);
+            var review = Object.FindObjectOfType<DocumentReviewManager>(true);
+            var picker = Object.FindObjectOfType<GroupPickerManager>(true);
+            Assert.IsNotNull(picker, "No GroupPickerManager on the review screen.");
+
+            PartManager.GroupData first = partManager.groups[0];
+            PartManager.GroupData other = partManager.groups[1];
+
+            DocumentMapping mapping = FullMapping(first.name);
+            upload.ShowMapping("report.pdf", mapping);
+            yield return WaitForModeActive("UploadReview");
+            yield return null;
+
+            Assert.IsFalse(picker.IsAsking(), "The picker only opens when it is asked for.");
+
+            // something is ticked before the group is touched: changing a group rebuilds every row,
+            // and a tick may not die with the row that carried it
+            review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 1)
+                .Confirmed = true;
+            review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.PatientText).Confirmed = true;
+            yield return null;
+            Assert.AreEqual(2, review.Selection().Count);
+
+            // tapping the chip asks, and does NOT tick the row - a Button inside the row's Toggle
+            DocumentReviewRow legRow = review.Rows()
+                .First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 0);
+            legRow.GroupButton().onClick.Invoke();
+            yield return null;
+
+            Assert.IsTrue(picker.IsAsking(), "The chip has to open the picker.");
+            Assert.IsFalse(legRow.Confirmed, "Tapping the chip may not tick the row.");
+
+            // every group of the twin is on offer, and so is the one the document proposed
+            List<string> candidates = picker.Candidates();
+            foreach (PartManager.GroupData group in partManager.groups)
+            {
+                Assert.Contains(group.name, candidates, "Every group of the twin has to be offered.");
+            }
+            Assert.Contains(ProposedGroupName + " (new)", candidates,
+                "A group the document proposed is on offer, marked as new.");
+
+            // pick another one - only the proposal changes, the twin is untouched
+            Assert.IsTrue(picker.Pick(other.name), $"'{other.name}' was not offered.");
+            yield return null;
+            yield return null;
+
+            Assert.IsFalse(picker.IsAsking(), "Picking closes the question.");
+            Assert.AreEqual(other.name, mapping.Paintings[0].Group,
+                "The pick has to be written back into the proposal.");
+            Assert.AreEqual(0, TotalParts(partManager), "Choosing a group may not paint anything.");
+
+            // the ticks set before the group was changed are still there
+            Assert.AreEqual(2, review.Selection().Count,
+                "Changing a group rebuilds the rows, but may not throw the ticks away.");
+            Assert.IsTrue(review.Rows()
+                .First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 1).Confirmed);
+            Assert.IsTrue(review.Rows()
+                .First(r => r.kind == DocumentReviewRow.ItemKind.PatientText).Confirmed);
+
+            // and the row now shows it
+            DocumentReviewRow again = review.Rows()
+                .First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 0);
+            Assert.AreEqual(other.name, again.GroupText());
+            // the text below the rows is regenerated, so it cannot keep claiming the old group
+            StringAssert.Contains("group:   " + other.name, review.GetShownText());
+            Assert.IsFalse(review.GetShownText().Contains("group:   " + first.name),
+                $"The text still says '{first.name}' after the group was changed.");
+            yield return Screenshot("review-screen-group-changed");
+
+            // applying it puts the finding in the group that was picked, not the one proposed
+            // untick the rest, so this assertion is about the group that was picked and nothing else
+            review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 1)
+                .Confirmed = false;
+            review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.PatientText).Confirmed = false;
+            again.Confirmed = true;
+            yield return null;
+            yield return ClickButtonByPath("Canvas/UploadReview UI/Apply Button");
+            yield return null;
+            yield return null;
+
+            Assert.AreEqual(2, other.groupParts.Count, $"Both thigh regions belong to '{other.name}'.");
+            Assert.AreEqual(0, first.groupParts.Count, $"'{first.name}' was the recommendation, not the choice.");
+        }
+
+        // ------------------------------------------------------------- the way back to the review
+
+        /// <summary>The mapping outlives the screen, so leaving it - by accident, or with something
+        /// still ticked - costs neither a pick nor a second call to the API. And it belongs to the
+        /// twin it was read for: applying it to another one would paint onto the wrong body.</summary>
+        [UnityTest]
+        public IEnumerator Review_ComesBackWithoutAnotherUpload_AndOnlyForItsOwnTwin()
+        {
+            yield return LoadLipEdemaTwin();
+            PartManager partManager = FindPartManager();
+            var upload = Object.FindObjectOfType<DocumentUploadProcess>(true);
+            var review = Object.FindObjectOfType<DocumentReviewManager>(true);
+
+            DocumentMapping mapping = FullMapping(partManager.groups[0].name);
+            upload.ShowMapping("report.pdf", mapping);
+            yield return WaitForModeActive("UploadReview");
+            int rowsShown = review.Rows().Count;
+            Assert.Greater(rowsShown, 0);
+
+            // leave the screen without applying anything
+            yield return ClickButtonByPath("Canvas/UploadReview UI/Back Button");
+            yield return null;
+            Assert.AreEqual(0, TotalParts(partManager), "Leaving the screen may not write anything.");
+
+            // and come back to the same proposal - no pick, no second API call
+            upload.Handle(DocumentUploadProcess.VariantReview);
+            yield return WaitForModeActive("UploadReview");
+            Assert.AreEqual(rowsShown, review.Rows().Count,
+                "The proposal has to come back as it was, without uploading the document again.");
+            Assert.AreSame(mapping, upload.lastMapping);
+
+            // a mapping read for another twin may not be applied to this one
+            upload.mappingProfile = "some other twin";
+            upload.ShowReview();
+            yield return null;
+            DocumentApplyResult refused = upload.ApplyConfirmed(DocumentMappingSelection.Everything(mapping));
+            Assert.IsFalse(refused.ChangedAnything,
+                "A mapping read for another twin may not reach this one.");
+            Assert.AreEqual(0, TotalParts(partManager));
         }
 
         /// <summary>Whether the row's tick is actually drawn. Unity fades the toggle's graphic, so

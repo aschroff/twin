@@ -132,7 +132,8 @@ The scroll content is now a column: `Scroll Answer/Viewport/Content` (`VerticalL
 `Text Overview` lost its own `ContentSizeFitter` — its height comes from the column now, and two
 fitters would fight over it.
 
-A row reads `<finding>  -  <tool>, <group>, <n> regions` (`DocumentMappingText.Row`). **The region
+A row reads `<finding>  -  <tool>, <n> regions` with the group on its own chip beneath it
+(`DocumentMappingText.Row` / `.GroupChip`). **The region
 count is on the row on purpose**: it is what ticking the row costs.
 
 **The row wraps and grows with its text.** A real treatment line ("flat-knit compression garments
@@ -140,7 +141,8 @@ class 2 for both legs, worn daily, renewed every six months …") is far wider t
 first build simply cut it off at the row's edge. Horizontal scrolling was considered and rejected:
 it would mean scrolling right on every row separately, with the checkbox either scrolling out of
 view or drifting out of line. Instead the text wraps and the row's height follows it, so the list
-keeps scrolling in the one direction it already scrolls.
+keeps scrolling in the one direction it already scrolls. The twin is deliberately **not** visible
+while selecting: the list gets the whole screen, and Apply closes it onto the body.
 
 How that is wired — the layout has to be read from the inside out, because the height travels
 upwards: the `Text` wraps (`Wrap` + `Overflow`) → its `InputField` parent has a
@@ -150,6 +152,82 @@ which reports the row's preferred height → `Proposals` has `childControlHeight
 No `ContentSizeFitter` anywhere in that chain: the parent asks, so a fitter would only fight it.
 `Selector` (box + tick) is `LayoutElement.ignoreLayout` and stretched over the whole row, with the
 box pinned to the **top** so it lines up with the first line of a wrapped row.
+
+### Changing the group, and coming back (done)
+
+Three things the first version of the list got wrong, and what replaced them:
+
+**A finding that would create a group now says so.** The group sits on its own chip under the
+finding, and reads `Skin changes (new)` when the twin has no such group — creating one is the only
+consequence of a tick that the finding itself does not reveal. `DocumentMappingText.GroupChip`.
+
+**The group can be changed.** The model's group is a recommendation, and a part cannot be moved once
+it is painted, so the review screen is the only chance to correct it. Tapping the chip opens
+`GroupPickerManager`: an overlay on the review screen (**not** a mode of its own, so it needs no
+entry in `InteractionController.interactionModes` or `UIController.uiPanels` — a picker is a modal
+question, not a place). It offers the current choice first, then the twin's own groups, then the
+groups the document proposed, each marked `(new)` when the twin lacks it. Picking writes back into
+the `ProposedPainting` and rebuilds the screen; the twin is untouched until Apply, as everywhere
+else here.
+
+**Leaving the screen costs nothing.** `lastMapping` outlives the screen — nothing ever cleared it —
+so the only thing missing was a way back. `Upload` now offers a third entry, `UPLOAD_REVIEW`
+("Continue review"), calling `DocumentUploadProcess.Handle("Review")` → `ShowReview()`. No pick, no
+second call to the API.
+
+That entry is **only offered while there is something to go back to** — `CanReview()`: a proposal
+has been read, and it was read for the twin that is open now. Otherwise the panel leaves it out
+entirely rather than offering a tap that can only answer "no document has been read yet". Hidden
+rather than greyed on purpose: the entry then appears exactly when it is useful, and after a twin
+switch a greyed one would only puzzle.
+
+How: `MenuManager.entryAvailable` is a `Func<string, bool>` asked for each entry's text key before
+the entry is built, and `MenuManager` rebuilds its entries on every `OnEnable` — so the answer is
+asked afresh each time the panel opens. `DocumentUploadProcess.Awake` sets it on whichever menu
+carries the `UPLOAD_REVIEW` key; the panel is found rather than wired, because "the panel that
+offers this entry" is a fact about the menu and not something a scene reference could keep truer.
+The configured menu stays the full set of what the panel *can* offer, which is what the test asserts
+separately from what is offered right now.
+
+For that to be safe, Apply had to stop being once-only:
+
+- `DocumentUploadProcess.applied` accumulates what every Apply wrote. Those rows come back **ticked,
+  dimmed and not tickable** (`DocumentReviewRow.SetApplied`), and their chip locks too — the part is
+  already painted into that group, so offering to change it would be a lie.
+- `ApplyConfirmed` applies `selection.Without(applied)`, so pressing Apply twice cannot paint the
+  same region again. The test presses it twice and asserts the part count does not move.
+- **What is remembered is what actually landed**, `DocumentApplyResult.written`, not what was ticked.
+  The first version merged the request, so a ticked item the applier *refused* — a tool that already
+  had a meaning, a finding with an unknown tool — came back ticked and locked as if it were painted,
+  and could never be tried again. A refused item now stays offerable. A partly painted finding does
+  count as applied, because retrying it would duplicate the regions that did work; which region
+  failed is in `problems`. And a proposed group that exists by the end counts as settled however it
+  got there, so it stops coming back as a row that would do nothing.
+- **Apply closes the screen and shows the twin.** Seeing the paint appear on the body is the point of
+  applying, and once there is a way back nothing is lost by leaving. Apply briefly kept the screen
+  open instead — that only made sense while leaving was expensive, and "Continue review" removed the
+  reason. The rows are left standing rather than rebuilt; coming back rebuilds them, and the applied
+  ones lock then.
+
+**A mapping belongs to the twin it was read for.** `mappingProfile` records that twin, and both
+`ShowReview` and `ApplyConfirmed` refuse otherwise. Without it a document read against twin A could
+be applied to twin B after a switch — painting A's findings onto a different body, with group and
+tool names that mean something else there. The mapping is still *not* persisted, so it is lost on
+restart; storing it in `ConfigData` would fix that and is not done.
+
+**A rebuild keeps the ticks.** Changing a group rebuilds every row, and the first version threw the
+user's ticks away with the rows that carried them — tick three findings, correct one group, and you
+started over. `Show` now treats being handed the *same* mapping object as a rebuild: it reads
+`Selection()` before `ClearRows` destroys the rows, and puts the ticks back afterwards. A different
+mapping still starts with nothing ticked, which is the guarantee the whole screen rests on. Applied
+rows are skipped when restoring — they are ticked and locked from the twin, not from the user. The
+same path covers the rebuild after an Apply, so an item that was ticked but did not get applied
+stays ticked rather than quietly dropping off the list.
+
+**The proposal text is regenerated on every build.** It used to be composed once by the process and
+handed in, so after changing a group the chip said one thing and the text below still said the old
+one. The process now passes only what it knows — which file was picked — and the screen writes the
+proposal out itself.
 
 **The whole row is the tap target.** The `Toggle` sits on the row root — not on the box — with a
 transparent `Image` there to catch the gaps between the children, so a tap anywhere on the row
@@ -281,6 +359,17 @@ Afterwards: the user's current group is put back (painting moves it), the group 
 which is also what wires `GroupData.group` for a group created here — the twin is saved, and the app
 returns to the main screen so the result is looked at on the body.
 
+### Two more Unity traps, both silent
+
+- **`AddComponent<Button>` returns null on a GameObject that already has a `Toggle`.** The picker
+  first tried to reuse the review row and swap its Toggle for a Button; the add quietly failed and
+  the next line threw. Both derive from `Selectable`. The picker now uses the row's own Toggle —
+  ticking one candidate is what picking a group is anyway.
+- **`Awake` runs on the first activation, so hiding a panel in its own `Awake` makes it unopenable.**
+  `GroupPickerManager.Awake` called `Hide()`; `Ask()` then set the panel active, which ran `Awake`
+  for the first time, which set it straight back inactive. The picker silently never appeared, with
+  nothing in the log. The prefab ships the overlay inactive instead, and there is no `Awake`.
+
 ### A trap in the row prefab: the tick that was always on
 
 `Scroll readonly text and toggle` is the group-list row, where the toggle means *visible*. Its
@@ -362,9 +451,15 @@ review row carries its region count (see "treatments" above). Model: `gpt-5.5-20
 needs a per-call model override — the other flows stay on the component's `gpt-4o-mini`.
 
 Still open:
-- How is a wrong mapping corrected — undo the whole import, or edit part by part? Nothing exists for
-  this yet: Apply saves straight away, so the only route back today is not applying in the first
-  place.
+- How is a wrong mapping corrected — undo the whole import, or edit part by part? Still nothing:
+  Apply saves straight away and there is no undo, which is why an applied row locks. Not applying in
+  the first place, or changing the group *before* Apply, are the only corrections there are.
+- ~~The review screen in the shape of `EditRegion UI`, with the body visible above the rows.~~
+  **Dropped (2026-08-23):** it was only wanted so the result could be seen without losing the list,
+  and the way back plus Apply-closes-the-screen covers that. The full-screen list is also the better
+  shape for a 24-finding report — a 300-unit `Bottom` panel holds about four wrapped rows. Note a 300-unit `Bottom` panel holds about four wrapped rows,
+  which is tight for a 24-finding report — the full-screen list may still be the better one for that
+  case.
 - Does the region list stay affordable once the prompt also carries a long document?
 - **Which `Medical Report`/`Version` row does the *report* flow write to?** The applier picks the row
   by its visible Label, deliberately. `AI.DescribeVersion` still goes through

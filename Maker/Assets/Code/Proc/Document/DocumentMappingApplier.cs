@@ -51,6 +51,7 @@ namespace Code
             ClaimTools(mapping, selection, result);
             Paint(mapping, selection, partManager, result);
             AppendPatientText(mapping, selection, settingsManager, result);
+            SettleProposedGroups(mapping, partManager, result);
 
             if (groupBefore != null)
             {
@@ -115,6 +116,27 @@ namespace Code
             return group;
         }
 
+        /*
+         * A proposed group that now exists needs nothing further, however it got there - its own row
+         * ticked, or a confirmed finding that had to have somewhere to live. Recording it as written
+         * is what stops it coming back as a tickable row that would do nothing.
+         */
+        private static void SettleProposedGroups(DocumentMapping mapping, PartManager partManager,
+            DocumentApplyResult result)
+        {
+            if (mapping.NewGroups == null) return;
+
+            for (int i = 0; i < mapping.NewGroups.Count; i++)
+            {
+                ProposedGroup proposed = mapping.NewGroups[i];
+                if (proposed == null || string.IsNullOrWhiteSpace(proposed.Name)) continue;
+                if (FindGroup(proposed.Name, partManager) != null)
+                {
+                    result.written.SetGroup(i, true);
+                }
+            }
+        }
+
         private static PartManager.GroupData FindGroup(string name, PartManager partManager)
         {
             if (partManager.groups == null || string.IsNullOrWhiteSpace(name)) return null;
@@ -175,6 +197,7 @@ namespace Code
 
                 field.text = proposed.Meaning.Trim();
                 result.claimedTools.Add(tool.name);
+                result.written.SetTool(i, true);
                 Debug.Log("[DocumentMappingApplier] '" + tool.name + "' now means: " + field.text);
             }
         }
@@ -288,6 +311,9 @@ namespace Code
                 if (painted > 0)
                 {
                     result.paintedFindings++;
+                    // partly painted counts as applied: retrying would duplicate the regions that
+                    // did work. Which region failed is in problems.
+                    result.written.SetPainting(i, true);
                 }
             }
         }
@@ -343,6 +369,7 @@ namespace Code
                 ? mapping.PatientText.Trim()
                 : existing.TrimEnd() + "\n\n" + mapping.PatientText.Trim();
             result.patientTextAppended = true;
+            result.written.PatientTextConfirmed = true;
         }
     }
 
@@ -387,6 +414,36 @@ namespace Code
             get { return groups.Count + tools.Count + paintings.Count + (PatientTextConfirmed ? 1 : 0); }
         }
 
+        /// <summary>Takes everything <paramref name="other"/> holds into this one. Used to keep a
+        /// running record of what has already been written to the twin across several Applies.</summary>
+        public void Merge(DocumentMappingSelection other)
+        {
+            if (other == null) return;
+            groups.UnionWith(other.groups);
+            tools.UnionWith(other.tools);
+            paintings.UnionWith(other.paintings);
+            PatientTextConfirmed |= other.PatientTextConfirmed;
+        }
+
+        /// <summary>This selection minus everything <paramref name="other"/> holds - what is left
+        /// to do when part of the mapping has already been applied. Nothing is written twice, so a
+        /// second Apply cannot paint the same region again.</summary>
+        public DocumentMappingSelection Without(DocumentMappingSelection other)
+        {
+            var rest = new DocumentMappingSelection { PatientTextConfirmed = PatientTextConfirmed };
+            rest.groups.UnionWith(groups);
+            rest.tools.UnionWith(tools);
+            rest.paintings.UnionWith(paintings);
+            if (other != null)
+            {
+                rest.groups.ExceptWith(other.groups);
+                rest.tools.ExceptWith(other.tools);
+                rest.paintings.ExceptWith(other.paintings);
+                if (other.PatientTextConfirmed) rest.PatientTextConfirmed = false;
+            }
+            return rest;
+        }
+
         private static void Set(HashSet<int> set, int index, bool confirmed)
         {
             if (confirmed) set.Add(index); else set.Remove(index);
@@ -408,6 +465,11 @@ namespace Code
 
         /// <summary>Everything that was refused or went wrong, in the user's words.</summary>
         public List<string> problems = new List<string>();
+
+        /// <summary>Exactly what reached the twin, by position in the mapping's lists - and the only
+        /// thing that may be remembered as applied. A ticked item that was refused is NOT in here,
+        /// so it stays offerable instead of being locked as if it were on the body.</summary>
+        public DocumentMappingSelection written = new DocumentMappingSelection();
 
         public bool ChangedAnything
         {

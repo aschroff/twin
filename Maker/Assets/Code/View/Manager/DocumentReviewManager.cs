@@ -31,11 +31,26 @@ public class DocumentReviewManager : MonoBehaviour
     /// <summary>Hidden while there is nothing to apply.</summary>
     [SerializeField] private GameObject applyButton;
 
+    /// <summary>Asks which group a finding belongs in. The model's choice is a recommendation, not
+    /// a decision - and a group cannot be changed once its part is painted, so this is the only
+    /// chance to correct it.</summary>
+    [SerializeField] private GroupPickerManager groupPicker;
+
     /// <summary>TwinLocalTables key of the Apply button's label.</summary>
     public const string ApplyLabelKey = "UPLOAD_APPLY";
 
     private readonly List<DocumentReviewRow> rows = new List<DocumentReviewRow>();
     private Action<DocumentMappingSelection> onApply;
+
+    /// <summary>The proposal on the screen - the group chips write their choice back into it.</summary>
+    private DocumentMapping shown;
+
+    private DocumentMappingSelection shownApplied;
+
+    /// <summary>What the caller said about the pick. The proposal text underneath is generated from
+    /// the mapping every time the screen is built, so changing a group cannot leave a stale copy of
+    /// it on screen saying the old one.</summary>
+    private string shownHeader;
 
     /// <summary>Text only: the prompt, a progress line, an error. No rows, no Apply.</summary>
     public void Show(string body)
@@ -52,12 +67,70 @@ public class DocumentReviewManager : MonoBehaviour
     /// what the user ticked.</summary>
     public void Show(DocumentMapping mapping, string body, Action<DocumentMappingSelection> apply)
     {
+        Show(mapping, body, apply, null);
+    }
+
+    /// <param name="applied">What is already on the twin - those rows come back ticked and locked.
+    /// There is no undo, so an applied item may neither be offered again nor applied twice.</param>
+    public void Show(DocumentMapping mapping, string body, Action<DocumentMappingSelection> apply,
+        DocumentMappingSelection applied)
+    {
+        /*
+         * Showing the SAME proposal again is a rebuild, not a fresh start: changing a group and
+         * applying part of the list both rebuild every row, and a tick the user set must not die
+         * with the row that carried it. A different mapping starts from nothing ticked, as it must.
+         *
+         * Read before ClearRows, because that is what destroys the rows the ticks live on.
+         */
+        DocumentMappingSelection ticked = ReferenceEquals(mapping, shown) ? Selection() : null;
+
         ClearRows();
         onApply = apply;
-        BuildRows(mapping);
+        shown = mapping;
+        shownApplied = applied;
+        shownHeader = body;
+        if (groupPicker != null)
+        {
+            groupPicker.Hide();
+        }
+        BuildRows(mapping, applied);
+        Restore(ticked);
         SetApplyVisible(mapping != null && rows.Count > 0);
-        Put(body);
+        Put(body + "\n\n" + DocumentMappingText.Describe(mapping));
         InteractionController.EnableMode("UploadReview");
+    }
+
+    /// <summary>Puts the ticks back on the rebuilt rows. An applied row is skipped: it is ticked and
+    /// locked already, and its state comes from the twin rather than from the user.</summary>
+    private void Restore(DocumentMappingSelection ticked)
+    {
+        if (ticked == null)
+        {
+            return;
+        }
+
+        foreach (DocumentReviewRow row in rows)
+        {
+            if (row.Applied)
+            {
+                continue;
+            }
+            switch (row.kind)
+            {
+                case DocumentReviewRow.ItemKind.Painting:
+                    row.Confirmed = ticked.IsPaintingConfirmed(row.index);
+                    break;
+                case DocumentReviewRow.ItemKind.Group:
+                    row.Confirmed = ticked.IsGroupConfirmed(row.index);
+                    break;
+                case DocumentReviewRow.ItemKind.Tool:
+                    row.Confirmed = ticked.IsToolConfirmed(row.index);
+                    break;
+                case DocumentReviewRow.ItemKind.PatientText:
+                    row.Confirmed = ticked.PatientTextConfirmed;
+                    break;
+            }
+        }
     }
 
     /// <summary>What the user has ticked, ready for the applier.</summary>
@@ -117,7 +190,7 @@ public class DocumentReviewManager : MonoBehaviour
      * user is really deciding about, then the groups and tools that go with it, then the text for
      * the report. A heading precedes each block and carries no toggle.
      */
-    private void BuildRows(DocumentMapping mapping)
+    private void BuildRows(DocumentMapping mapping, DocumentMappingSelection applied)
     {
         if (mapping == null || proposals == null || rowPrefab == null)
         {
@@ -128,12 +201,27 @@ public class DocumentReviewManager : MonoBehaviour
             return;
         }
 
+        // which groups the twin does not have yet, so a finding that would create one says so
+        var newGroups = new List<string>();
+        for (int i = 0; i < Count(mapping.NewGroups); i++)
+        {
+            if (mapping.NewGroups[i] != null && !string.IsNullOrWhiteSpace(mapping.NewGroups[i].Name))
+            {
+                newGroups.Add(mapping.NewGroups[i].Name.Trim());
+            }
+        }
+
         if (Count(mapping.Paintings) > 0)
         {
             AddHeading(DocumentMappingText.Heading(DocumentMappingText.HeadingPaintings, mapping.Paintings.Count));
             for (int i = 0; i < mapping.Paintings.Count; i++)
             {
-                Add(DocumentReviewRow.ItemKind.Painting, i, DocumentMappingText.Row(mapping.Paintings[i]));
+                int painting = i;   // captured for the chip's callback
+                Add(DocumentReviewRow.ItemKind.Painting, i,
+                    DocumentMappingText.Row(mapping.Paintings[i], newGroups),
+                    applied != null && applied.IsPaintingConfirmed(i),
+                    DocumentMappingText.GroupChip(mapping.Paintings[i], newGroups),
+                    () => AskForGroup(painting));
             }
         }
 
@@ -142,7 +230,8 @@ public class DocumentReviewManager : MonoBehaviour
             AddHeading(DocumentMappingText.Heading(DocumentMappingText.HeadingGroups, mapping.NewGroups.Count));
             for (int i = 0; i < mapping.NewGroups.Count; i++)
             {
-                Add(DocumentReviewRow.ItemKind.Group, i, DocumentMappingText.Row(mapping.NewGroups[i]));
+                Add(DocumentReviewRow.ItemKind.Group, i, DocumentMappingText.Row(mapping.NewGroups[i]),
+                    applied != null && applied.IsGroupConfirmed(i));
             }
         }
 
@@ -151,7 +240,8 @@ public class DocumentReviewManager : MonoBehaviour
             AddHeading(DocumentMappingText.Heading(DocumentMappingText.HeadingTools, mapping.ToolAssignments.Count));
             for (int i = 0; i < mapping.ToolAssignments.Count; i++)
             {
-                Add(DocumentReviewRow.ItemKind.Tool, i, DocumentMappingText.Row(mapping.ToolAssignments[i]));
+                Add(DocumentReviewRow.ItemKind.Tool, i, DocumentMappingText.Row(mapping.ToolAssignments[i]),
+                    applied != null && applied.IsToolConfirmed(i));
             }
         }
 
@@ -159,16 +249,63 @@ public class DocumentReviewManager : MonoBehaviour
         {
             AddHeading(DocumentMappingText.Heading(DocumentMappingText.HeadingPatientText, 1));
             Add(DocumentReviewRow.ItemKind.PatientText, 0,
-                DocumentMappingText.RowForPatientText(mapping.PatientText));
+                DocumentMappingText.RowForPatientText(mapping.PatientText),
+                applied != null && applied.PatientTextConfirmed);
         }
+    }
+
+    /*
+     * The chip was tapped: offer the twin's groups and the ones the document proposed, and write the
+     * answer back into the proposal. Only the proposal changes - the twin is untouched until Apply.
+     */
+    private void AskForGroup(int painting)
+    {
+        if (shown == null || shown.Paintings == null || painting >= shown.Paintings.Count) return;
+        ProposedPainting proposal = shown.Paintings[painting];
+        if (proposal == null) return;
+
+        if (groupPicker == null)
+        {
+            Debug.LogWarning("[DocumentReviewManager] No group picker wired - the group cannot be changed.");
+            return;
+        }
+
+        var existing = new List<string>();
+        PartManager partManager = FindObjectOfType<PartManager>();
+        if (partManager != null && partManager.groups != null)
+        {
+            foreach (PartManager.GroupData group in partManager.groups)
+            {
+                if (group != null && !string.IsNullOrWhiteSpace(group.name)) existing.Add(group.name);
+            }
+        }
+
+        var proposed = new List<string>();
+        for (int i = 0; i < Count(shown.NewGroups); i++)
+        {
+            if (shown.NewGroups[i] != null) proposed.Add(shown.NewGroups[i].Name);
+        }
+
+        groupPicker.Ask(proposal.FindingText, proposal.Group, existing, proposed, chosen =>
+        {
+            proposal.Group = chosen;
+            // rebuild, so the chips, the "(new)" marks and the text below all agree again
+            Show(shown, shownHeader, onApply, shownApplied);
+        });
     }
 
     private void AddHeading(string heading)
     {
-        Add(DocumentReviewRow.ItemKind.Heading, 0, heading);
+        Add(DocumentReviewRow.ItemKind.Heading, 0, heading, false, null, null);
     }
 
-    private void Add(DocumentReviewRow.ItemKind kind, int index, string line)
+    private void Add(DocumentReviewRow.ItemKind kind, int index, string line, bool applied)
+    {
+        Add(kind, index, line, applied, null, null);
+    }
+
+    private void Add(DocumentReviewRow.ItemKind kind, int index, string line, bool applied,
+        string group, UnityEngine.Events.UnityAction changeGroup)
     {
         GameObject instance = Instantiate(rowPrefab, proposals, false);
         instance.transform.localScale = rowPrefab.transform.localScale;
@@ -181,7 +318,8 @@ public class DocumentReviewManager : MonoBehaviour
             return;
         }
 
-        row.Fill(kind, index, line);
+        row.Fill(kind, index, line, group, changeGroup);
+        row.SetApplied(applied);
         rows.Add(row);
     }
 

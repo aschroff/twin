@@ -97,13 +97,16 @@ public static class TemplatePoCRunner
         Run("NoAPICalls.DocumentApplyPlayModeTests.Apply_NothingConfirmed_LeavesTheTwinAlone",
             "NoAPICalls.DocumentApplyPlayModeTests.Apply_WhatWasConfirmed_ReachesTheTwin",
             "NoAPICalls.DocumentApplyPlayModeTests.Apply_RefusesWhatTheTwinDoesNotAllow",
-            "NoAPICalls.DocumentApplyPlayModeTests.ReviewList_OffersEveryProposalUntickedAndAppliesOnlyWhatIsTicked");
+            "NoAPICalls.DocumentApplyPlayModeTests.ReviewList_OffersEveryProposalUntickedAndAppliesOnlyWhatIsTicked",
+            "NoAPICalls.DocumentApplyPlayModeTests.Review_ComesBackWithoutAnotherUpload_AndOnlyForItsOwnTwin",
+            "NoAPICalls.DocumentApplyPlayModeTests.GroupPicker_ChangesWhereAFindingGoes");
     }
 
     [MenuItem("Tools/Template PoC/Run Upload Tests")]
     public static void RunUploadTests()
     {
-        Run("NoAPICalls.UploadPlayModeTests.UploadButton_OffersPhotoAndDocument");
+        Run("NoAPICalls.UploadPlayModeTests.UploadButton_OffersPhotoAndDocument",
+            "NoAPICalls.UploadPlayModeTests.ContinueReview_IsOfferedOnlyWhenThereIsSomethingToGoBackTo");
     }
 
     [MenuItem("Tools/Template PoC/Run Sticker Tests")]
