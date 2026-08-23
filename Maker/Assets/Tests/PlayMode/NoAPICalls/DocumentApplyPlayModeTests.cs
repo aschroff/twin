@@ -271,15 +271,33 @@ namespace NoAPICalls
             report.promptResult = "";
 
             DocumentMapping mapping = FullMapping(existingGroup.name);
+            // a real treatment line looks like this - long text over many regions. It is the case
+            // the rows have to survive: before they wrapped, everything past the width was cut off.
+            mapping.Paintings.Add(new ProposedPainting
+            {
+                FindingText = "flat-knit compression garments class 2 for both legs, worn daily, "
+                    + "renewed every six months and combined with manual lymphatic drainage twice a week",
+                Group = existingGroup.name,
+                ToolName = ToolInUse,
+                RegionKeys = new List<string>
+                {
+                    LegLeft, LegRight, "thigh_back_left", "thigh_back_right", "knee_front_left",
+                    "knee_front_right", "shin_left", "shin_right", "calf_left", "calf_right",
+                    "hip_left", "hip_right", "ankle_left", "ankle_right"
+                },
+                Description = "Compression garments for both legs.",
+                Confidence = 0.55f
+            });
+
             upload.ShowMapping("report.pdf", mapping);
             yield return WaitForModeActive("UploadReview");
             yield return null;
 
             // one row per proposal plus one heading per block: 2 findings, 1 group, 1 tool, 1 text
             List<DocumentReviewRow> rows = review.Rows();
-            Assert.AreEqual(4 + 5, rows.Count, "A row per proposal and a heading per block: "
+            Assert.AreEqual(5 + 5, rows.Count, "A row per proposal and a heading per block: "
                 + string.Join(" / ", rows.Select(r => r.kind + ":" + r.Text()).ToArray()));
-            Assert.AreEqual(2, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.Painting));
+            Assert.AreEqual(3, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.Painting));
             Assert.AreEqual(1, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.Group));
             Assert.AreEqual(1, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.Tool));
             Assert.AreEqual(1, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.PatientText));
@@ -301,6 +319,20 @@ namespace NoAPICalls
             StringAssert.Contains("2 regions", legRow.Text());
             StringAssert.Contains(existingGroup.name, legRow.Text());
             StringAssert.Contains(ToolInUse, legRow.Text());
+
+            // the long row wraps instead of being cut off, so it is taller than a short one and
+            // its text fits inside it - a row that clips again fails here
+            DocumentReviewRow longRow = rows.First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 2);
+            StringAssert.Contains("14 regions", longRow.Text());
+            StringAssert.Contains("uncertain", longRow.Text());
+            float shortHeight = ((RectTransform)legRow.transform).rect.height;
+            float longHeight = ((RectTransform)longRow.transform).rect.height;
+            Assert.Greater(longHeight, shortHeight,
+                "The long row has to grow taller than a short one, or its text is cut off again.");
+            Text longLabel = longRow.GetComponentsInChildren<Text>(true)
+                .First(t => t.text == longRow.Text());
+            Assert.LessOrEqual(longLabel.preferredHeight, longHeight + 1f,
+                $"The row is {longHeight} tall but its text needs {longLabel.preferredHeight}.");
 
             // a heading offers no toggle to get wrong
             DocumentReviewRow heading = rows.First(r => r.kind == DocumentReviewRow.ItemKind.Heading);

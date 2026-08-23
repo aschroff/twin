@@ -133,7 +133,7 @@ rendered yet.
 | `VersionProcess` | ProcessSync | waits for `AllPartsDescribed()`, then one report over all part descriptions |
 | `CompleteReportProcess` | QuickHelpProcess | whole-body screenshot + marker/filler legend → report |
 | `SequenceProcess` | Process | runs a configured list of `ProcessSync` in order |
-| `DocumentUploadProcess` | Process | picks a photo or a PDF to be mapped onto the twin and opens the review screen for it (`Proc/Document/`, see its feature spec) |
+| `DocumentUploadProcess` | Process | picks a photo or a PDF, has it mapped onto the twin by the LLM, opens the review screen for it, and on Apply writes what the user ticked (`ApplyConfirmed` → `DocumentMappingApplier`) and saves (`Proc/Document/`, see its feature spec) |
 
 Note that `PartsDescriptionProcess` starts all part coroutines in the same frame — the requests
 run in parallel and `VersionProcess` only waits on `AllPartsDescribed()` with a 10 s timeout.

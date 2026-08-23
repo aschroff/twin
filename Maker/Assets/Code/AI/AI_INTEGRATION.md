@@ -171,6 +171,16 @@ its `characterLimit` is 2000 — it was 400, which silently truncated a shipped 
 Gotcha: `getPromptObject` falls back to a `Default` entry, and **no `Default` entry exists**, so
 an unknown label returns `null` and `GetPromptOfLabel` throws. A new caller must ship its own row.
 
+Worse gotcha: `getPromptObject` matches on `label` + `level`, and **three rows share
+`Medical Report`/`Version`** — the real one plus two leftovers on the `Meshcapade User` /
+`Meshcapade Password` objects. It returns whichever comes first in the hierarchy, which is not
+necessarily the row the user edits in Settings. `getPromptObjectByLabelText(labelText, level)`
+matches on the row's **visible Label** instead (`ItemPrompt.LabelText()`, also the key the row is
+persisted under), which is unambiguous; the document applier uses it to find the report row. The
+version-report flow (`AI.DescribeVersion`) still uses the ambiguous lookup — see the open question
+in `Assets/Code/Proc/Document/FEATURE_DOCUMENT_TO_TWIN.md`. Deleting the two leftover rows would
+settle it.
+
 ### 4.2 The twin context — generated from the scene
 
 `PromptGeneration/PromptContributor.GeneratePrompt(AI.Help)` finds every MonoBehaviour in the

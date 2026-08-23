@@ -106,11 +106,12 @@ the wording is meant to be reviewed by a human, not asserted word by word.
 `UploadReview`, filled by `DocumentReviewManager` (`Assets/Code/View/Manager/`). A pick opens it:
 `DocumentUploadProcess.Accept()` builds the prompt and shows it there.
 
-This is where the user will confirm what may reach the twin, so it is where the picked document
-goes. Until the analysis exists it shows what was picked and the prompt that would be sent —
-which makes the prompt reviewable on the device, against a real twin with its own groups and tool
-meanings. `DocumentUploadProcess.ShowPicked(path, photo)` is the same entry without an OS dialog,
-which is how the test drives it.
+This is where the user confirms what may reach the twin, so it is where the picked document goes.
+While the analysis runs it shows what was picked; `ShowPromptFor(path, photo)` shows the prompt that
+*would* be sent instead of sending anything, which makes the prompt reviewable on the device against
+a real twin with its own groups and tool meanings. `ShowPicked(path, photo)` is the normal entry
+without an OS dialog and `ShowMapping(path, mapping)` puts a proposal on the screen without calling
+the API — the three ways the tests drive this.
 
 ### The list (done)
 
@@ -132,7 +133,29 @@ The scroll content is now a column: `Scroll Answer/Viewport/Content` (`VerticalL
 fitters would fight over it.
 
 A row reads `<finding>  -  <tool>, <group>, <n> regions` (`DocumentMappingText.Row`). **The region
-count is on the row on purpose**: it is what ticking the row costs. A treatment line over both
+count is on the row on purpose**: it is what ticking the row costs.
+
+**The row wraps and grows with its text.** A real treatment line ("flat-knit compression garments
+class 2 for both legs, worn daily, renewed every six months …") is far wider than a phone, and the
+first build simply cut it off at the row's edge. Horizontal scrolling was considered and rejected:
+it would mean scrolling right on every row separately, with the checkbox either scrolling out of
+view or drifting out of line. Instead the text wraps and the row's height follows it, so the list
+keeps scrolling in the one direction it already scrolls.
+
+How that is wired — the layout has to be read from the inside out, because the height travels
+upwards: the `Text` wraps (`Wrap` + `Overflow`) → its `InputField` parent has a
+`VerticalLayoutGroup`, which is what reports the wrapped height as the box's *preferred* height →
+the row root has a `VerticalLayoutGroup` too (`padding.left = 55`, the column the checkbox sits in),
+which reports the row's preferred height → `Proposals` has `childControlHeight = true` and uses it.
+No `ContentSizeFitter` anywhere in that chain: the parent asks, so a fitter would only fight it.
+`Selector` (box + tick) is `LayoutElement.ignoreLayout` and stretched over the whole row, with the
+box pinned to the **top** so it lines up with the first line of a wrapped row.
+
+**The whole row is the tap target.** The `Toggle` sits on the row root — not on the box — with a
+transparent `Image` there to catch the gaps between the children, so a tap anywhere on the row
+(text included) toggles it; a 30-unit box beside a three-line row is nothing to aim at on a phone.
+Consequence for `DocumentReviewRow.Fill`: a heading cannot be un-toggled by hiding the Toggle's
+GameObject any more (that would hide the row), so it disables the `Toggle` and hides `Selector`. A treatment line over both
 legs is one row and fourteen parts, and this is where that becomes visible before it is paid — see
 "treatments" below. `, uncertain` is appended when the model's own confidence is below 0.6.
 
@@ -178,7 +201,7 @@ read on the device what would go out, and how the offline test checks the screen
 `Assets/Tests/Helper/lipoedema-report-sample.pdf` is a fictional two-page lipoedema report written
 against the LipEdema twin's own tool meanings, for hand testing and for the API test. Against that
 twin it comes back with 24 paintings, one new group ("Skin changes"), no tool reassignments, and a
-long patient text — all names valid. Worth knowing before the applier is built:
+long patient text — all names valid. What that told us, and what the applier does about it:
 
 - **Treatments come back as body paintings, and they are broad.** "Compression garments for both
   legs" mapped to 14 regions, and six treatment lines did the same. That is defensible — the dotted
