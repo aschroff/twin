@@ -204,6 +204,44 @@ public class DocumentReviewRow : MonoBehaviour
         }
     }
 
+    /// <summary>Whether a ticked finding needs this row, which is why it cannot be unticked.</summary>
+    public bool Required { get; private set; }
+
+    /// <summary>A row a ticked finding depends on: ticked, and locked so it cannot be unticked while
+    /// that finding is ticked. Unticking it would either change nothing (the group is created for the
+    /// finding regardless) or quietly spoil the result (the part painted in a colour that means
+    /// nothing) - neither is worth offering. Untick the finding instead.</summary>
+    public void SetRequired(bool required)
+    {
+        if (Applied)
+        {
+            return;   // already locked, and for a stronger reason
+        }
+
+        Required = required;
+        Toggle box = Toggle();
+        if (box == null)
+        {
+            return;
+        }
+        if (required)
+        {
+            box.isOn = true;
+        }
+        box.interactable = !required && kind != ItemKind.Heading;
+    }
+
+    /// <summary>Called when this row is ticked or unticked - how the screen keeps the rows a
+    /// finding depends on in step with it.</summary>
+    public void WhenConfirmedChanges(UnityEngine.Events.UnityAction<bool> handler)
+    {
+        Toggle box = Toggle();
+        if (box != null && handler != null)
+        {
+            box.onValueChanged.AddListener(handler);
+        }
+    }
+
     /// <summary>What the row says - what a test reads.</summary>
     public string Text()
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Code;
+using Code.AI.PromptGeneration;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,6 +47,10 @@ public class DocumentReviewManager : MonoBehaviour
     private DocumentMapping shown;
 
     private DocumentMappingSelection shownApplied;
+
+    /// <summary>Guards <see cref="SyncDependencies"/> against re-entering itself through the very
+    /// toggles it sets.</summary>
+    private bool syncing;
 
     /// <summary>What the caller said about the pick. The proposal text underneath is generated from
     /// the mapping every time the screen is built, so changing a group cannot leave a stale copy of
@@ -95,6 +100,7 @@ public class DocumentReviewManager : MonoBehaviour
         }
         BuildRows(mapping, applied);
         Restore(ticked);
+        SyncDependencies();
         SetApplyVisible(mapping != null && rows.Count > 0);
         Put(body + "\n\n" + DocumentMappingText.Describe(mapping));
         InteractionController.EnableMode("UploadReview");
@@ -102,6 +108,112 @@ public class DocumentReviewManager : MonoBehaviour
 
     /// <summary>Puts the ticks back on the rebuilt rows. An applied row is skipped: it is ticked and
     /// locked already, and its state comes from the twin rather than from the user.</summary>
+    /*
+     * A ticked finding needs two other things, and neither is obvious from the finding's own row:
+     * the group it goes into has to exist, and the tool it is painted with has to mean something.
+     * The applier creates a missing group either way - a confirmed finding must live somewhere - but
+     * it claims a tool meaning only when that row is ticked. Left alone, that asymmetry paints a
+     * part in a colour that means nothing, and the version report is built from those meanings.
+     *
+     * So the dependencies are ticked with the finding, on the screen, where they can be seen and
+     * argued with - rather than the applier quietly writing things nobody confirmed. A group or tool
+     * row that no ticked finding needs stays entirely the user's own choice.
+     */
+    private void SyncDependencies()
+    {
+        if (syncing || shown == null || shown.Paintings == null)
+        {
+            return;
+        }
+
+        syncing = true;
+        try
+        {
+            // first: which groups and tools the findings that are ticked right now depend on
+            var neededGroups = new List<int>();
+            var neededTools = new List<int>();
+            foreach (DocumentReviewRow row in rows)
+            {
+                if (row.kind != DocumentReviewRow.ItemKind.Painting || !row.Confirmed) continue;
+                if (row.index >= shown.Paintings.Count) continue;
+
+                ProposedPainting painting = shown.Paintings[row.index];
+                if (painting == null) continue;
+
+                Need(neededGroups, GroupIndex(painting.Group));
+                Need(neededTools, FreeToolIndex(painting.ToolName));
+            }
+
+            // then: a needed row is ticked and locked, and one nothing needs is the user's again
+            foreach (DocumentReviewRow row in rows)
+            {
+                if (row.kind == DocumentReviewRow.ItemKind.Group)
+                {
+                    row.SetRequired(neededGroups.Contains(row.index));
+                }
+                else if (row.kind == DocumentReviewRow.ItemKind.Tool)
+                {
+                    row.SetRequired(neededTools.Contains(row.index));
+                }
+            }
+        }
+        finally
+        {
+            syncing = false;
+        }
+    }
+
+    private static void Need(List<int> needed, int index)
+    {
+        if (index >= 0 && !needed.Contains(index))
+        {
+            needed.Add(index);
+        }
+    }
+
+    /// <summary>The proposed group of that name, or -1 when the twin already has it (then there is
+    /// nothing to create and no row to tick).</summary>
+    private int GroupIndex(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return -1;
+        for (int i = 0; i < Count(shown.NewGroups); i++)
+        {
+            ProposedGroup group = shown.NewGroups[i];
+            if (group != null && string.Equals(group.Name?.Trim(), name.Trim(),
+                    StringComparison.CurrentCultureIgnoreCase))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /// <summary>The proposed meaning for that tool, but only while the tool is still free. A tool
+    /// that already means something keeps its meaning, so ticking that row would only be refused.
+    /// </summary>
+    private int FreeToolIndex(string toolName)
+    {
+        if (string.IsNullOrWhiteSpace(toolName)) return -1;
+        for (int i = 0; i < Count(shown.ToolAssignments); i++)
+        {
+            ProposedToolMeaning proposed = shown.ToolAssignments[i];
+            if (proposed == null || !string.Equals(proposed.ToolName?.Trim(), toolName.Trim(),
+                    StringComparison.CurrentCultureIgnoreCase))
+            {
+                continue;
+            }
+            foreach (ToolInfo tool in ToolInventory.All())
+            {
+                if (string.Equals(tool.name, toolName.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return tool.inUse ? -1 : i;
+                }
+            }
+            return -1;
+        }
+        return -1;
+    }
+
     private void Restore(DocumentMappingSelection ticked)
     {
         if (ticked == null)
@@ -109,6 +221,7 @@ public class DocumentReviewManager : MonoBehaviour
             return;
         }
 
+        syncing = true;   // one sync afterwards, on the finished state, not once per row
         foreach (DocumentReviewRow row in rows)
         {
             if (row.Applied)
@@ -131,6 +244,7 @@ public class DocumentReviewManager : MonoBehaviour
                     break;
             }
         }
+        syncing = false;
     }
 
     /// <summary>What the user has ticked, ready for the applier.</summary>
@@ -216,12 +330,13 @@ public class DocumentReviewManager : MonoBehaviour
             AddHeading(DocumentMappingText.Heading(DocumentMappingText.HeadingPaintings, mapping.Paintings.Count));
             for (int i = 0; i < mapping.Paintings.Count; i++)
             {
-                int painting = i;   // captured for the chip's callback
+                int painting = i;   // captured for the chip's and the toggle's callbacks
                 Add(DocumentReviewRow.ItemKind.Painting, i,
                     DocumentMappingText.Row(mapping.Paintings[i], newGroups),
                     applied != null && applied.IsPaintingConfirmed(i),
                     DocumentMappingText.GroupChip(mapping.Paintings[i], newGroups),
-                    () => AskForGroup(painting));
+                    () => AskForGroup(painting),
+                    on => SyncDependencies());
             }
         }
 
@@ -296,16 +411,17 @@ public class DocumentReviewManager : MonoBehaviour
 
     private void AddHeading(string heading)
     {
-        Add(DocumentReviewRow.ItemKind.Heading, 0, heading, false, null, null);
+        Add(DocumentReviewRow.ItemKind.Heading, 0, heading, false, null, null, null);
     }
 
     private void Add(DocumentReviewRow.ItemKind kind, int index, string line, bool applied)
     {
-        Add(kind, index, line, applied, null, null);
+        Add(kind, index, line, applied, null, null, null);
     }
 
     private void Add(DocumentReviewRow.ItemKind kind, int index, string line, bool applied,
-        string group, UnityEngine.Events.UnityAction changeGroup)
+        string group, UnityEngine.Events.UnityAction changeGroup,
+        UnityEngine.Events.UnityAction<bool> confirmedChanged)
     {
         GameObject instance = Instantiate(rowPrefab, proposals, false);
         instance.transform.localScale = rowPrefab.transform.localScale;
@@ -320,6 +436,7 @@ public class DocumentReviewManager : MonoBehaviour
 
         row.Fill(kind, index, line, group, changeGroup);
         row.SetApplied(applied);
+        row.WhenConfirmedChanges(confirmedChanged);
         rows.Add(row);
     }
 

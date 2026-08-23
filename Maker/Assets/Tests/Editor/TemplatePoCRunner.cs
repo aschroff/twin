@@ -99,7 +99,8 @@ public static class TemplatePoCRunner
             "NoAPICalls.DocumentApplyPlayModeTests.Apply_RefusesWhatTheTwinDoesNotAllow",
             "NoAPICalls.DocumentApplyPlayModeTests.ReviewList_OffersEveryProposalUntickedAndAppliesOnlyWhatIsTicked",
             "NoAPICalls.DocumentApplyPlayModeTests.Review_ComesBackWithoutAnotherUpload_AndOnlyForItsOwnTwin",
-            "NoAPICalls.DocumentApplyPlayModeTests.GroupPicker_ChangesWhereAFindingGoes");
+            "NoAPICalls.DocumentApplyPlayModeTests.GroupPicker_ChangesWhereAFindingGoes",
+            "NoAPICalls.DocumentApplyPlayModeTests.TickingAFinding_AlsoTicksTheGroupAndToolItNeeds");
     }
 
     [MenuItem("Tools/Template PoC/Run Upload Tests")]

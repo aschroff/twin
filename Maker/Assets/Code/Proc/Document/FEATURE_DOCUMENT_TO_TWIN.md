@@ -345,6 +345,27 @@ What it refuses, per item, without giving up the rest of the run:
   finding are still painted. The same region twice in one finding becomes one part, not two.
 - a finding with **no region or no tool** is skipped.
 
+### What a ticked finding drags along with it
+
+A finding needs two things that its own row does not show: the group it goes into has to exist, and
+the tool it is painted with has to mean something. The applier treats those differently, and it has
+to:
+
+| | |
+|---|---|
+| **Group** | created when its own row is ticked **or** when any ticked finding names it. A confirmed finding must live somewhere and the screen offers no alternative, so the group toggle really only decides about groups no ticked finding needs. |
+| **Tool meaning** | written only when that row is ticked, and only when the tool is still free. A tool that already carries a meaning **keeps it** — the meanings are the user's vocabulary for this twin. |
+
+That asymmetry was a trap: tick the scar finding, leave "Yellow would mean: healed scar" alone, and
+the part is painted in a colour that means nothing — and the version report is built from those
+meanings. The applier noted it in `problems` and painted anyway.
+
+The fix is on the screen, not in the applier: **ticking a finding ticks the rows it needs**
+(`DocumentReviewManager.SyncDependencies`), so everything that would be written is visible and can be
+argued with, rather than the applier quietly writing what nobody confirmed. A tool that already
+means something is *not* ticked — that row could only be refused. Rows nothing needs stay entirely
+the user's own choice, and the sync runs once after a rebuild rather than once per row.
+
 Two decisions worth knowing:
 
 - **A ticked finding gets its group even when the group's own row was left unticked.** A confirmed

@@ -427,6 +427,85 @@ namespace NoAPICalls
             AssertPartsAreUsable(partManager);
         }
 
+        // ------------------------------------------------------- what a finding drags along with it
+
+        /// <summary>A ticked finding needs its group to exist and its tool to mean something, and
+        /// neither is visible on the finding's own row. Ticking it ticks those rows too, so the
+        /// screen shows everything that would be written instead of the applier deciding quietly.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator TickingAFinding_AlsoTicksTheGroupAndToolItNeeds()
+        {
+            yield return LoadLipEdemaTwin();
+            PartManager partManager = FindPartManager();
+            var upload = Object.FindObjectOfType<DocumentUploadProcess>(true);
+            var review = Object.FindObjectOfType<DocumentReviewManager>(true);
+
+            FreeOneTool(ToolToClaim);
+            DocumentMapping mapping = FullMapping(partManager.groups[0].name);
+            upload.ShowMapping("report.pdf", mapping);
+            yield return WaitForModeActive("UploadReview");
+            yield return null;
+
+            Assert.AreEqual(0, review.Selection().Count, "Everything starts unticked.");
+
+            // the chest finding goes into a group the twin has not got, painted with a freed tool
+            DocumentReviewRow scar = review.Rows()
+                .First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 1);
+            scar.Confirmed = true;
+            yield return null;
+
+            DocumentReviewRow groupRow = review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Group);
+            DocumentReviewRow toolRow = review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Tool);
+            Assert.IsTrue(groupRow.Confirmed, "The group it needs has to come with it.");
+            Assert.IsTrue(toolRow.Confirmed, "The meaning of the tool it is painted with has to come too.");
+            Assert.IsFalse(review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.PatientText).Confirmed,
+                "The report text is nothing the finding needs.");
+
+            // and it cannot be unticked while the finding needs it - unticking the group would
+            // change nothing (it is created for the finding anyway) and unticking the tool would
+            // quietly paint the part in a colour that means nothing
+            Assert.IsTrue(groupRow.Required);
+            Assert.IsTrue(toolRow.Required);
+            Assert.IsFalse(groupRow.GetComponentInChildren<Toggle>(true).interactable);
+            Assert.IsFalse(toolRow.GetComponentInChildren<Toggle>(true).interactable);
+
+            // the thigh finding needs neither: its group exists and its tool already means something
+            review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 0)
+                .Confirmed = true;
+            yield return null;
+            yield return Screenshot("review-screen-dependencies");
+
+            // untick the finding again and the two rows are the user's own to decide once more
+            scar.Confirmed = false;
+            yield return null;
+            groupRow = review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Group);
+            toolRow = review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Tool);
+            Assert.IsFalse(groupRow.Required, "Nothing needs the group any more.");
+            Assert.IsFalse(toolRow.Required, "Nothing needs the tool meaning any more.");
+            Assert.IsTrue(groupRow.GetComponentInChildren<Toggle>(true).interactable);
+            Assert.IsTrue(toolRow.GetComponentInChildren<Toggle>(true).interactable);
+
+            // put it back for the Apply below
+            scar.Confirmed = true;
+            yield return null;
+
+            // applying writes all three, so the painted part carries a meaning worth reading
+            yield return ClickButtonByPath("Canvas/UploadReview UI/Apply Button");
+            yield return WaitForModeActive("Main");
+
+            DocumentApplyResult result = upload.lastResult;
+            Assert.IsEmpty(result.problems, "Nothing should be missing: "
+                + string.Join(" | ", result.problems.ToArray()));
+            Assert.AreEqual(new[] { ToolToClaim }, result.claimedTools.ToArray());
+            Assert.AreEqual(new[] { ProposedGroupName }, result.createdGroups.ToArray());
+
+            PartManager.GroupData created = FindGroup(partManager, ProposedGroupName);
+            Assert.IsNotNull(created);
+            Assert.AreEqual(ClaimedMeaning, created.groupParts[0].meaning,
+                "The part has to carry the claimed meaning, not the colour's name.");
+        }
+
         // ------------------------------------------------------------------ changing the group
 
         /// <summary>The model's group is a recommendation. A part cannot be moved once it is
@@ -458,7 +537,13 @@ namespace NoAPICalls
                 .Confirmed = true;
             review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.PatientText).Confirmed = true;
             yield return null;
-            Assert.AreEqual(2, review.Selection().Count);
+            // that finding drags its group along - but not its tool: this test never freed Yellow,
+            // so the tool already means something and ticking that row could only be refused
+            int tickedBefore = review.Selection().Count;
+            Assert.AreEqual(3, tickedBefore,
+                "The finding, the report text, and the group the finding needs - not the tool.");
+            Assert.IsFalse(review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Tool).Confirmed,
+                "A tool that already carries a meaning may not be ticked on the user's behalf.");
 
             // tapping the chip asks, and does NOT tick the row - a Button inside the row's Toggle
             DocumentReviewRow legRow = review.Rows()
@@ -489,7 +574,7 @@ namespace NoAPICalls
             Assert.AreEqual(0, TotalParts(partManager), "Choosing a group may not paint anything.");
 
             // the ticks set before the group was changed are still there
-            Assert.AreEqual(2, review.Selection().Count,
+            Assert.AreEqual(tickedBefore, review.Selection().Count,
                 "Changing a group rebuilds the rows, but may not throw the ticks away.");
             Assert.IsTrue(review.Rows()
                 .First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 1).Confirmed);
@@ -511,6 +596,8 @@ namespace NoAPICalls
             review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 1)
                 .Confirmed = false;
             review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.PatientText).Confirmed = false;
+            review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Group).Confirmed = false;
+            review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Tool).Confirmed = false;
             again.Confirmed = true;
             yield return null;
             yield return ClickButtonByPath("Canvas/UploadReview UI/Apply Button");
