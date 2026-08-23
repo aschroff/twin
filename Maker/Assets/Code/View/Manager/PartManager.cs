@@ -627,7 +627,9 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 		}
 	}
 
-	private Tool DeriveType(GameObject tool)
+	/// <summary>Which kind of tool a tool GameObject is, read off its paint components.
+	/// Static and public because the prompt generation classifies the tool rows with it too.</summary>
+	public static Tool DeriveType(GameObject tool)
 	{	
 		CwPaintSphere sphere = tool.GetComponent<CwPaintSphere>();
 		bool hasSphere = (sphere != null);

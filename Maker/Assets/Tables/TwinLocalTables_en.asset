@@ -239,6 +239,8 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 227175816582127616
     m_Localized: Import Twin
+    m_Metadata:
+      m_Items: []
   - m_Id: 229391279508676608
     m_Localized: Region
     m_Metadata:
@@ -633,6 +635,68 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 229785026562088993
     m_Localized: Sole of foot right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102718140416
+    m_Localized: Upload
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102726529024
+    m_Localized: Upload photo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102726529025
+    m_Localized: Upload document
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568878596096
+    m_Localized: 'You are given one document about one patient: a photo, a drawing,
+      a body chart or a report. Find every medical finding in it and map each finding
+      onto the digital twin of the patient''s body, using the groups, tools and body
+      regions listed below.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984704
+    m_Localized: Use an existing group whenever a finding fits it; propose a new
+      group only when none fits. Use a tool whose meaning already fits; only when
+      no tool fits, take one from the list of free tools and give it a meaning. List
+      a tool as taken into use only when you took it from that free list - a tool
+      that already has a meaning keeps it and does not belong in that list, so leave
+      the list empty when no tool was free. Choose a surface tool for an area and
+      a line tool for a line or a small spot. When a finding covers both sides of
+      the body or several body parts, name every region it covers. Anything that
+      cannot be placed on a body region, and anything that concerns the patient as
+      a whole, goes into one summarising text instead of a marking.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984705
+    m_Localized: Describe the medical finding shown on the body in the style of a
+      medical report. Include the size and shape of the finding, its location on
+      the body including the relative position on the body part and its orientation,
+      and any other relevant detail.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984706
+    m_Localized: 'Create a medical report of about 250 words: describe each medical
+      finding in two to three sentences, then summarise the overall situation and
+      the recommended treatments. The medical findings shown on the body are listed
+      below:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234843751060594688
+    m_Localized: Apply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235442572576677888
+    m_Localized: Continue review
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235581215735799808
+    m_Localized: Select all
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235581215765159936
+    m_Localized: Deselect all
     m_Metadata:
       m_Items: []
   references:

@@ -69,6 +69,47 @@ public static class TemplatePoCRunner
             "NoAPICalls.ImportTwinPlayModeTests.Import_OfABrokenZip_KeepsTheTwinsOnTheDevice");
     }
 
+    [MenuItem("Tools/Template PoC/Run Schema Tests")]
+    public static void RunSchemaTests()
+    {
+        RunEditMode("EditModeTests.JsonSchemaBuilderTests", "EditModeTests.ApiKeysTests");
+    }
+
+    /// <summary>Calls the OpenAI API - needs a key in Assets/Tests/Helper/testsecrets.json.</summary>
+    [MenuItem("Tools/Template PoC/Run Document Mapping API Test")]
+    public static void RunDocumentMappingApiTest()
+    {
+        Run("DocumentMappingApiTests.DocumentMapping_ComesBackWithNamesTheAppKnows",
+            "DocumentMappingApiTests.UploadFlow_PutsTheProposalOnTheReviewScreen");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Document Prompt Tests")]
+    public static void RunDocumentPromptTests()
+    {
+        Run("NoAPICalls.DocumentPromptPlayModeTests.DocumentPrompt_DescribesTheTwinTheToolsAndTheRegions",
+            "NoAPICalls.DocumentPromptPlayModeTests.ToolInventory_ListsEveryMarkerAndFiller",
+            "NoAPICalls.DocumentPromptPlayModeTests.ReviewScreen_ShowsThePickedFileAndTheWholePrompt");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Document Apply Tests")]
+    public static void RunDocumentApplyTests()
+    {
+        Run("NoAPICalls.DocumentApplyPlayModeTests.Apply_NothingConfirmed_LeavesTheTwinAlone",
+            "NoAPICalls.DocumentApplyPlayModeTests.Apply_WhatWasConfirmed_ReachesTheTwin",
+            "NoAPICalls.DocumentApplyPlayModeTests.Apply_RefusesWhatTheTwinDoesNotAllow",
+            "NoAPICalls.DocumentApplyPlayModeTests.ReviewList_OffersEveryProposalUntickedAndAppliesOnlyWhatIsTicked",
+            "NoAPICalls.DocumentApplyPlayModeTests.Review_ComesBackWithoutAnotherUpload_AndOnlyForItsOwnTwin",
+            "NoAPICalls.DocumentApplyPlayModeTests.GroupPicker_ChangesWhereAFindingGoes",
+            "NoAPICalls.DocumentApplyPlayModeTests.TickingAFinding_AlsoTicksTheGroupAndToolItNeeds");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Upload Tests")]
+    public static void RunUploadTests()
+    {
+        Run("NoAPICalls.UploadPlayModeTests.UploadButton_OffersPhotoAndDocument",
+            "NoAPICalls.UploadPlayModeTests.ContinueReview_IsOfferedOnlyWhenThereIsSomethingToGoBackTo");
+    }
+
     [MenuItem("Tools/Template PoC/Run Sticker Tests")]
     public static void RunStickerTests()
     {
@@ -133,7 +174,18 @@ public static class TemplatePoCRunner
             "NoAPICalls.PartTemplateServiceTests.RegionNames_FollowTheSelectedLanguage");
     }
 
+    /// <summary>Runs EditMode tests - unit tests that need no scene and never start the app.</summary>
+    private static void RunEditMode(params string[] testNames)
+    {
+        Run(TestMode.EditMode, testNames);
+    }
+
     private static void Run(params string[] testNames)
+    {
+        Run(TestMode.PlayMode, testNames);
+    }
+
+    private static void Run(TestMode testMode, params string[] testNames)
     {
         if (File.Exists(ResultsPath))
             File.Delete(ResultsPath);
@@ -141,12 +193,12 @@ public static class TemplatePoCRunner
         var api = ScriptableObject.CreateInstance<TestRunnerApi>();
         var filter = new Filter
         {
-            testMode = TestMode.PlayMode,
+            testMode = testMode,
             // no names = run everything (an empty array would match nothing)
             testNames = testNames != null && testNames.Length > 0 ? testNames : null
         };
         api.Execute(new ExecutionSettings(filter));
-        Debug.Log("[TemplatePoCRunner] PlayMode test run started: "
+        Debug.Log("[TemplatePoCRunner] " + testMode + " test run started: "
             + (testNames != null && testNames.Length > 0 ? string.Join(", ", testNames) : "all tests"));
     }
 
