@@ -29,16 +29,25 @@ public class DocumentReviewManager : MonoBehaviour
     /// <summary>The row: a toggle and a line of text (<see cref="DocumentReviewRow"/>).</summary>
     [SerializeField] private GameObject rowPrefab;
 
-    /// <summary>Hidden while there is nothing to apply.</summary>
+    /// <summary>The three actions, hidden while there is nothing to apply. Each is an
+    /// "Icon in circle with text" instance, the same button the main screen's bottom row uses.</summary>
     [SerializeField] private GameObject applyButton;
+
+    [SerializeField] private GameObject selectAllButton;
+
+    [SerializeField] private GameObject deselectAllButton;
 
     /// <summary>Asks which group a finding belongs in. The model's choice is a recommendation, not
     /// a decision - and a group cannot be changed once its part is painted, so this is the only
     /// chance to correct it.</summary>
     [SerializeField] private GroupPickerManager groupPicker;
 
-    /// <summary>TwinLocalTables key of the Apply button's label.</summary>
+    /// <summary>TwinLocalTables keys of the three button labels.</summary>
     public const string ApplyLabelKey = "UPLOAD_APPLY";
+
+    public const string SelectAllLabelKey = "UPLOAD_SELECT_ALL";
+
+    public const string DeselectAllLabelKey = "UPLOAD_DESELECT_ALL";
 
     private readonly List<DocumentReviewRow> rows = new List<DocumentReviewRow>();
     private Action<DocumentMappingSelection> onApply;
@@ -99,10 +108,17 @@ public class DocumentReviewManager : MonoBehaviour
             groupPicker.Hide();
         }
         BuildRows(mapping, applied);
+        if (ticked == null)
+        {
+            // a document just read: everything is ticked, because accepting the proposal is the
+            // common case and Deselect all is one tap away. Coming back to a proposal keeps
+            // whatever was ticked then instead.
+            SetAllConfirmed(true);
+        }
         Restore(ticked);
         SyncDependencies();
         SetApplyVisible(mapping != null && rows.Count > 0);
-        Put(body + "\n\n" + DocumentMappingText.Describe(mapping));
+        Put(DocumentMappingText.Header(body, mapping));
         InteractionController.EnableMode("UploadReview");
     }
 
@@ -276,13 +292,30 @@ public class DocumentReviewManager : MonoBehaviour
         onApply(Selection());
     }
 
-    /// <summary>Ticks or unticks every row at once.</summary>
+    /// <summary>Ticks or unticks every row at once. An applied row is left alone - it is on the twin
+    /// and there is no undo, so Deselect all may not make it look otherwise.</summary>
     public void SetAllConfirmed(bool confirmed)
     {
+        syncing = true;   // one sync at the end, not one per row
         foreach (DocumentReviewRow row in rows)
         {
+            if (row.Applied || row.kind == DocumentReviewRow.ItemKind.Heading) continue;
             row.Confirmed = confirmed;
         }
+        syncing = false;
+        SyncDependencies();
+    }
+
+    /// <summary>The Select all button. Wired on the button in the prefab.</summary>
+    public void HandleSelectAll()
+    {
+        SetAllConfirmed(true);
+    }
+
+    /// <summary>The Deselect all button. Wired on the button in the prefab.</summary>
+    public void HandleDeselectAll()
+    {
+        SetAllConfirmed(false);
     }
 
     /// <summary>The rows as they stand - what a test reads.</summary>
@@ -454,20 +487,28 @@ public class DocumentReviewManager : MonoBehaviour
 
     private void SetApplyVisible(bool visible)
     {
-        if (applyButton == null)
+        SetButton(selectAllButton, visible, SelectAllLabelKey);
+        SetButton(deselectAllButton, visible, DeselectAllLabelKey);
+        SetButton(applyButton, visible, ApplyLabelKey);
+    }
+
+    /// <summary>Shows a button and puts its label in the language of the app - done here rather than
+    /// in the prefab, which has no localized-text component.</summary>
+    private static void SetButton(GameObject button, bool visible, string labelKey)
+    {
+        if (button == null)
         {
             return;
         }
 
-        applyButton.SetActive(visible);
-        if (visible)
+        button.SetActive(visible);
+        if (!visible)
         {
-            // in the language of the app, like every other label; done here rather than in the
-            // prefab because the prefab has no localized-text component
-            foreach (Text label in applyButton.GetComponentsInChildren<Text>(true))
-            {
-                label.text = StringLocalizer.localizeString(ApplyLabelKey);
-            }
+            return;
+        }
+        foreach (Text label in button.GetComponentsInChildren<Text>(true))
+        {
+            label.text = StringLocalizer.localizeString(labelKey);
         }
     }
 

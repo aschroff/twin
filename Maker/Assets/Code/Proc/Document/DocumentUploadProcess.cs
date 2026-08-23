@@ -294,7 +294,8 @@ namespace Code
             }
 
             DocumentApplyResult result = DocumentMappingApplier.Apply(
-                lastMapping, todo, getPartManager(), getSettingsManager());
+                lastMapping, todo, getPartManager(), getSettingsManager(),
+                string.IsNullOrEmpty(pickedPath) ? null : Path.GetFileName(pickedPath));
             lastResult = result;
 
             foreach (string problem in result.problems)

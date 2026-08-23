@@ -37,6 +37,16 @@ namespace NoAPICalls
         private const string LegRight = "thigh_front_right";
         private const string Chest = "chest_left";
 
+        // the three actions, in the app's bottom-row idiom; the click lands on the Icon, as it does
+        // for the buttons of the main screen
+        private const string ApplyButton = "Canvas/UploadReview UI/Bottom/Apply/Icon";
+        private const string SelectAllButton = "Canvas/UploadReview UI/Bottom/SelectAll/Icon";
+        private const string DeselectAllButton = "Canvas/UploadReview UI/Bottom/DeselectAll/Icon";
+
+        /// <summary>Long enough for the Toggle's cross-fade (0.1 s) to finish, so the tick's alpha
+        /// can be read as a settled value rather than caught mid-fade.</summary>
+        private const float FadeSettled = 0.25f;
+
         // ------------------------------------------------------------------ nothing confirmed
 
         /// <summary>The review screen starts with every item unticked, so an Apply straight away
@@ -312,19 +322,45 @@ namespace NoAPICalls
             Assert.AreEqual(1, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.Tool));
             Assert.AreEqual(1, rows.Count(r => r.kind == DocumentReviewRow.ItemKind.PatientText));
 
-            // nothing is ticked, so Apply would do nothing - this is what makes the screen a gate
-            Assert.IsFalse(rows.Any(r => r.Confirmed), "Every row has to start unticked.");
-            Assert.AreEqual(0, review.Selection().Count);
+            // a document just read arrives fully ticked: accepting the proposal is the common case
+            Assert.IsTrue(rows.Where(r => r.kind != DocumentReviewRow.ItemKind.Heading).All(r => r.Confirmed),
+                "Everything a document proposes starts ticked.");
+            Assert.AreEqual(rows.Count(r => r.kind != DocumentReviewRow.ItemKind.Heading),
+                review.Selection().Count);
 
-            // and it has to LOOK unticked. The row prefab comes from the group list, where the
-            // tick sat inside the toggled graphic and kept its own alpha - every row looked ticked
-            // while Selection() said none was.
+            // Unity cross-fades the toggle graphic (0.1 s), so let it settle before reading alpha
+            yield return new WaitForSeconds(FadeSettled);
+
+            // and the ticks have to be VISIBLE. The row prefab comes from the group list, where the
+            // tick sat inside the toggled graphic and kept its own alpha, so every row looked ticked
+            // whatever Selection() said - in either direction.
             foreach (DocumentReviewRow row in rows.Where(r => r.kind != DocumentReviewRow.ItemKind.Heading))
+            {
+                AssertTickVisible(row, true);
+            }
+
+            // Deselect all clears the lot, and Select all brings it back
+            yield return ClickButtonByPath(DeselectAllButton);
+            yield return null;
+            Assert.AreEqual(0, review.Selection().Count, "Deselect all leaves nothing ticked.");
+            yield return new WaitForSeconds(FadeSettled);
+            foreach (DocumentReviewRow row in review.Rows().Where(r => r.kind != DocumentReviewRow.ItemKind.Heading))
             {
                 AssertTickVisible(row, false);
             }
 
+            yield return ClickButtonByPath(SelectAllButton);
+            yield return null;
+            Assert.AreEqual(rows.Count(r => r.kind != DocumentReviewRow.ItemKind.Heading),
+                review.Selection().Count, "Select all ticks everything again.");
+
+            // back to nothing ticked, so the rest of this test is about what is chosen by hand
+            yield return ClickButtonByPath(DeselectAllButton);
+            yield return null;
+            rows = review.Rows();
+
             // the row of the two-region finding says how many parts ticking it costs
+            rows = review.Rows();
             DocumentReviewRow legRow = rows.First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 0);
             StringAssert.Contains("2 regions", legRow.Text());
             StringAssert.Contains(ToolInUse, legRow.Text());
@@ -366,17 +402,18 @@ namespace NoAPICalls
             yield return Screenshot("review-screen");
 
             // tick the two-region finding and the report text, leave the rest
+            legRow = review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 0);
             legRow.Confirmed = true;
             rows.First(r => r.kind == DocumentReviewRow.ItemKind.PatientText).Confirmed = true;
             yield return null;
-            yield return null;
+            yield return new WaitForSeconds(FadeSettled);
             Assert.AreEqual(2, review.Selection().Count);
             AssertTickVisible(legRow, true);
             AssertTickVisible(rows.First(r => r.kind == DocumentReviewRow.ItemKind.Group), false);
             yield return Screenshot("review-screen-ticked");
 
             // Apply through the button of the prefab, so its wiring is covered too
-            yield return ClickButtonByPath("Canvas/UploadReview UI/Apply Button");
+            yield return ClickButtonByPath(ApplyButton);
             yield return null;
             yield return null;
 
@@ -418,7 +455,7 @@ namespace NoAPICalls
 
             // pressing Apply again may not paint the same regions a second time
             int partsAfterFirstApply = TotalParts(partManager);
-            yield return ClickButtonByPath("Canvas/UploadReview UI/Apply Button");
+            yield return ClickButtonByPath(ApplyButton);
             yield return null;
             yield return null;
             Assert.AreEqual(partsAfterFirstApply, TotalParts(partManager),
@@ -447,7 +484,10 @@ namespace NoAPICalls
             yield return WaitForModeActive("UploadReview");
             yield return null;
 
-            Assert.AreEqual(0, review.Selection().Count, "Everything starts unticked.");
+            // start from nothing, so this test is about what one finding drags along
+            yield return ClickButtonByPath(DeselectAllButton);
+            yield return null;
+            Assert.AreEqual(0, review.Selection().Count);
 
             // the chest finding goes into a group the twin has not got, painted with a freed tool
             DocumentReviewRow scar = review.Rows()
@@ -491,7 +531,7 @@ namespace NoAPICalls
             yield return null;
 
             // applying writes all three, so the painted part carries a meaning worth reading
-            yield return ClickButtonByPath("Canvas/UploadReview UI/Apply Button");
+            yield return ClickButtonByPath(ApplyButton);
             yield return WaitForModeActive("Main");
 
             DocumentApplyResult result = upload.lastResult;
@@ -530,6 +570,9 @@ namespace NoAPICalls
             yield return null;
 
             Assert.IsFalse(picker.IsAsking(), "The picker only opens when it is asked for.");
+
+            yield return ClickButtonByPath(DeselectAllButton);
+            yield return null;
 
             // something is ticked before the group is touched: changing a group rebuilds every row,
             // and a tick may not die with the row that carried it
@@ -585,10 +628,13 @@ namespace NoAPICalls
             DocumentReviewRow again = review.Rows()
                 .First(r => r.kind == DocumentReviewRow.ItemKind.Painting && r.index == 0);
             Assert.AreEqual(other.name, again.GroupText());
-            // the text below the rows is regenerated, so it cannot keep claiming the old group
-            StringAssert.Contains("group:   " + other.name, review.GetShownText());
-            Assert.IsFalse(review.GetShownText().Contains("group:   " + first.name),
-                $"The text still says '{first.name}' after the group was changed.");
+            // the screen no longer repeats the proposal as text - the rows carry it. What is left
+            // above them is the two things that would otherwise be lost when it closes.
+            string header = review.GetShownText();
+            StringAssert.Contains("report.pdf", header);
+            StringAssert.Contains("A fictional report, for the tests.", header);
+            Assert.IsFalse(header.Contains("regions:"),
+                "The long write-out of the proposal is gone; the rows say all of that.");
             yield return Screenshot("review-screen-group-changed");
 
             // applying it puts the finding in the group that was picked, not the one proposed
@@ -600,7 +646,7 @@ namespace NoAPICalls
             review.Rows().First(r => r.kind == DocumentReviewRow.ItemKind.Tool).Confirmed = false;
             again.Confirmed = true;
             yield return null;
-            yield return ClickButtonByPath("Canvas/UploadReview UI/Apply Button");
+            yield return ClickButtonByPath(ApplyButton);
             yield return null;
             yield return null;
 

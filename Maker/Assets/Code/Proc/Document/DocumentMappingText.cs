@@ -78,6 +78,39 @@ namespace Code
             return text.ToString();
         }
 
+        /// <summary>The two lines above the rows: what was picked, and what the document is. The
+        /// rows carry everything else, so the long write-out below them is gone - it repeated the
+        /// rows, and what it did not repeat lands on the parts anyway.</summary>
+        public static string Header(string picked, DocumentMapping mapping)
+        {
+            var text = new StringBuilder();
+            if (!string.IsNullOrWhiteSpace(picked))
+            {
+                text.AppendLine(picked.Trim());
+            }
+            if (mapping != null && !string.IsNullOrWhiteSpace(mapping.DocumentSummary))
+            {
+                text.Append(mapping.DocumentSummary.Trim());
+            }
+            return text.ToString().TrimEnd();
+        }
+
+        /// <summary>Where these findings came from, for the report - the one thing on the screen that
+        /// would otherwise be lost when it closes.</summary>
+        public static string Provenance(string picked, DocumentMapping mapping)
+        {
+            string summary = mapping != null ? Or(mapping.DocumentSummary, "") : "";
+            if (string.IsNullOrWhiteSpace(picked) && string.IsNullOrWhiteSpace(summary))
+            {
+                return "";
+            }
+            if (string.IsNullOrWhiteSpace(picked))
+            {
+                return summary;
+            }
+            return "From " + picked.Trim() + (string.IsNullOrWhiteSpace(summary) ? "." : ": " + summary);
+        }
+
         // ---------------- one line per proposal, for the review rows ----------------
 
         /*

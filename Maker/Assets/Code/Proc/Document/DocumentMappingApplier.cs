@@ -30,6 +30,14 @@ namespace Code
         public static DocumentApplyResult Apply(DocumentMapping mapping, DocumentMappingSelection selection,
             PartManager partManager, SettingsManager settingsManager)
         {
+            return Apply(mapping, selection, partManager, settingsManager, null);
+        }
+
+        /// <param name="source">What was read, for the report - the document's name. Without it the
+        /// report gains findings with no record of where they came from.</param>
+        public static DocumentApplyResult Apply(DocumentMapping mapping, DocumentMappingSelection selection,
+            PartManager partManager, SettingsManager settingsManager, string source)
+        {
             var result = new DocumentApplyResult();
 
             if (mapping == null)
@@ -50,7 +58,7 @@ namespace Code
             CreateGroups(mapping, selection, partManager, result);
             ClaimTools(mapping, selection, result);
             Paint(mapping, selection, partManager, result);
-            AppendPatientText(mapping, selection, settingsManager, result);
+            AppendPatientText(mapping, selection, settingsManager, source, result);
             SettleProposedGroups(mapping, partManager, result);
 
             if (groupBefore != null)
@@ -345,7 +353,7 @@ namespace Code
          * objects, whose own Labels read differently.
          */
         private static void AppendPatientText(DocumentMapping mapping, DocumentMappingSelection selection,
-            SettingsManager settingsManager, DocumentApplyResult result)
+            SettingsManager settingsManager, string source, DocumentApplyResult result)
         {
             if (!selection.PatientTextConfirmed || string.IsNullOrWhiteSpace(mapping.PatientText))
             {
@@ -364,10 +372,17 @@ namespace Code
                 return;
             }
 
+            // the document's name and what it was travel with the text: the review screen shows them
+            // and then closes, and this is the only place they are kept
+            string provenance = DocumentMappingText.Provenance(source, mapping);
+            string addition = string.IsNullOrWhiteSpace(provenance)
+                ? mapping.PatientText.Trim()
+                : provenance + "\n" + mapping.PatientText.Trim();
+
             string existing = row.promptResult ?? "";
             row.promptResult = string.IsNullOrWhiteSpace(existing)
-                ? mapping.PatientText.Trim()
-                : existing.TrimEnd() + "\n\n" + mapping.PatientText.Trim();
+                ? addition
+                : existing.TrimEnd() + "\n\n" + addition;
             result.patientTextAppended = true;
             result.written.PatientTextConfirmed = true;
         }
