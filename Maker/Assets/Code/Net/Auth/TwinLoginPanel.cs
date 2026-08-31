@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 namespace Code.Net.Auth
@@ -37,6 +39,28 @@ namespace Code.Net.Auth
         /// </summary>
         private const string LastEmailKey = "twin.auth.last_email";
 
+        /// <summary>The one string table collection this app has.</summary>
+        private const string TableName = "TwinLocalTables";
+
+        // Keys rather than sentences, because the app ships in five locales — two
+        // languages in three medical registers. Which of them is showing is not
+        // this class's business; it only says *which* message.
+        private const string KeyEnterCredentials = "LOGIN_ENTER_CREDENTIALS";
+        private const string KeySigningIn = "LOGIN_SIGNING_IN";
+        private const string KeySigningOut = "LOGIN_SIGNING_OUT";
+        private const string KeySignedIn = "LOGIN_SIGNED_IN";
+        private const string KeySignedOut = "LOGIN_SIGNED_OUT";
+        private const string KeyInvalidCredentials = "LOGIN_INVALID_CREDENTIALS";
+        private const string KeyServerUnreachable = "LOGIN_SERVER_UNREACHABLE";
+        private const string KeyUnexpectedError = "LOGIN_UNEXPECTED_ERROR";
+        private const string KeyNotConfigured = "LOGIN_NOT_CONFIGURED";
+
+        /// <summary>
+        /// The message currently on screen, kept as its key so it can be
+        /// re-resolved when the language changes underneath it.
+        /// </summary>
+        private string _messageKey;
+
         private void Awake()
         {
             if (passwordField != null)
@@ -59,6 +83,10 @@ namespace Code.Net.Auth
             TwinAuth.SignedIn += ShowSignedIn;
             TwinAuth.SignedOut += ShowSignedOut;
 
+            // The settings page is where the language is switched, so a status
+            // line sitting here in the old language is not hypothetical.
+            LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+
             ShowCurrentState();
         }
 
@@ -66,7 +94,10 @@ namespace Code.Net.Auth
         {
             TwinAuth.SignedIn -= ShowSignedIn;
             TwinAuth.SignedOut -= ShowSignedOut;
+            LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
         }
+
+        private void OnLocaleChanged(Locale locale) => ApplyMessage();
 
         /// <summary>
         /// Put this on the sign-in Button's <b>OnClick</b> list.
@@ -94,11 +125,11 @@ namespace Code.Net.Auth
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                SetBusy(false, "Enter your email address and password.");
+                SetBusy(false, KeyEnterCredentials);
                 return;
             }
 
-            SetBusy(true, "Signing in…");
+            SetBusy(true, KeySigningIn);
 
             try
             {
@@ -114,12 +145,17 @@ namespace Code.Net.Auth
                 // not exist, because the server answers identically for both on
                 // purpose. Being more specific here would turn this form into a
                 // way to find out who has an account.
-                SetBusy(false, "Email address or password is incorrect.");
+                SetBusy(false, KeyInvalidCredentials);
                 ClearPassword();
             }
             catch (TwinAuthException ex) when (ex.IsNetworkFailure)
             {
-                SetBusy(false, "Could not reach the server. Check your connection and try again.");
+                // The person gets a sentence they can act on; the console gets the
+                // reason. A wrong port, https where the server speaks http, a proxy
+                // in the way and a server that is simply off all produce the same
+                // sentence on screen — and, without this line, the same silence.
+                Debug.Log($"[{nameof(TwinLoginPanel)}] {ex.Message}");
+                SetBusy(false, KeyServerUnreachable);
             }
             catch (TwinAuthException ex)
             {
@@ -127,19 +163,19 @@ namespace Code.Net.Auth
                 // detail goes to the console; the person gets something they can
                 // act on.
                 Debug.LogError($"[{nameof(TwinLoginPanel)}] Sign-in failed: HTTP {ex.StatusCode} {ex.ErrorCode} — {ex.Message}");
-                SetBusy(false, "Something went wrong. Please try again.");
+                SetBusy(false, KeyUnexpectedError);
             }
             catch (System.InvalidOperationException ex)
             {
                 // No TwinApiConfig in Resources — a setup problem, not a user one.
                 Debug.LogError($"[{nameof(TwinLoginPanel)}] {ex.Message}");
-                SetBusy(false, "The app is not configured to reach the server.");
+                SetBusy(false, KeyNotConfigured);
             }
         }
 
         private async Task SignOutAsync()
         {
-            SetBusy(true, "Signing out…");
+            SetBusy(true, KeySigningOut);
             await TwinAuth.SignOutAsync();
             ShowSignedOut();
         }
@@ -147,7 +183,7 @@ namespace Code.Net.Auth
         private void ShowCurrentState()
         {
             if (TwinAuth.IsSignedIn) ShowSignedIn();
-            else SetBusy(false, "Not signed in.");
+            else SetBusy(false, KeySignedOut);
         }
 
         private void ShowSignedIn()
@@ -156,14 +192,14 @@ namespace Code.Net.Auth
 
             // The user id is a UUID and there is no endpoint that turns it into a
             // name yet, so it stays out of the message.
-            SetBusy(false, "Signed in.");
+            SetBusy(false, KeySignedIn);
             SetSignedInVisuals(true);
         }
 
         private void ShowSignedOut()
         {
             ClearPassword();
-            SetBusy(false, "Not signed in.");
+            SetBusy(false, KeySignedOut);
             SetSignedInVisuals(false);
         }
 
@@ -184,11 +220,40 @@ namespace Code.Net.Auth
         /// server hashes the password with argon2 and takes a few hundred
         /// milliseconds by design, which is long enough for a second click.
         /// </summary>
-        private void SetBusy(bool busy, string message)
+        private void SetBusy(bool busy, string messageKey)
         {
             if (signInButton != null) signInButton.interactable = !busy;
             if (signOutButton != null) signOutButton.interactable = !busy;
-            if (statusText != null) statusText.text = message;
+
+            _messageKey = messageKey;
+            ApplyMessage();
+        }
+
+        private void ApplyMessage()
+        {
+            if (statusText == null || _messageKey == null) return;
+
+            statusText.text = Localise(_messageKey);
+        }
+
+        /// <summary>
+        /// Look a key up in the current locale.
+        /// </summary>
+        /// <remarks>
+        /// Not <see cref="StringLocalizer"/>, which writes a line to the console on
+        /// every successful lookup — that would narrate every status change. A
+        /// missing key is worth one warning and then the key itself, which is more
+        /// useful on screen than an empty line.
+        /// </remarks>
+        private static string Localise(string key)
+        {
+            var table = LocalizationSettings.StringDatabase?.GetTable(TableName);
+            var entry = table?.GetEntry(key);
+
+            if (entry != null) return entry.GetLocalizedString();
+
+            Debug.LogWarning($"[{nameof(TwinLoginPanel)}] No entry '{key}' in {TableName}.");
+            return key;
         }
     }
 }
