@@ -162,6 +162,18 @@ public class ConfigManager : MonoBehaviour
     /*
     Export current twin selection 
     */
+    /*
+    * Opens the screen that compares this twin's versions with what is on the server.
+    *
+    * It lives here rather than on the button pointing straight at InteractionController, so the
+    * click stays inside this prefab: a button wired to the controller in the scene would only work
+    * in the one scene it was wired in, and shows up as a prefab override forever after.
+    */
+    public void OpenVersionSync()
+    {
+        InteractionController.EnableMode("TwinVersionSync");
+    }
+
     public void ExportTwin()
     {
         dataPersistenceManager.ExportConfig();

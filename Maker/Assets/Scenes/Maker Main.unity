@@ -5572,6 +5572,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3968665004654767954}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1391739876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1391739878}
+  - component: {fileID: 1391739877}
+  m_Layer: 0
+  m_Name: TwinVersionSyncMode
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1391739877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391739876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38671b246ce35414baed785deea4f484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Maker.Runtime::TwinVersionSyncMode
+  Touch: {fileID: 1616260168}
+--- !u!4 &1391739878
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391739876}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3968665004654767954}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1396534630
 GameObject:
   m_ObjectHideFlags: 0
@@ -5676,6 +5721,113 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1660812246}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1450358946
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 8038675664049359812}
+    m_Modifications:
+    - target: {fileID: 1361288924539016850, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_Name
+      value: TwinVersionSyncUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+--- !u!224 &1450358947 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4119325703545410235, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+  m_PrefabInstance: {fileID: 1450358946}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &1450358948 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 5262953488048094501, guid: d75a0fa041a334c0f8898fdf10873d78, type: 3}
+  m_PrefabInstance: {fileID: 1450358946}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1473171098
 GameObject:
   m_ObjectHideFlags: 0
@@ -15479,6 +15631,7 @@ Transform:
   - {fileID: 333260220}
   - {fileID: 43755530}
   - {fileID: 618462911}
+  - {fileID: 1391739878}
   - {fileID: 668647116}
   - {fileID: 128623095}
   - {fileID: 1998019458}
@@ -17186,7 +17339,7 @@ PrefabInstance:
       objectReference: {fileID: 609004393}
     - target: {fileID: 5037554182192162691, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 95.23425
+      value: 95.234375
       objectReference: {fileID: 0}
     - target: {fileID: 5249643866990954766, guid: 1856de562a7fc4f6cb35a0074e3ed04a, type: 3}
       propertyPath: dateFormat.m_TableEntryReference.m_KeyId
@@ -17812,6 +17965,7 @@ MonoBehaviour:
     - Part
     - StartingProcessing
     - EditRegion
+    - TwinVersionSync
     _keys:
     - Main
     - Edit
@@ -17836,6 +17990,7 @@ MonoBehaviour:
     - Part
     - StartingProcessing
     - EditRegion
+    - TwinVersionSync
     _values:
     - {fileID: 1216887053}
     - {fileID: 1292681598}
@@ -17860,6 +18015,7 @@ MonoBehaviour:
     - {fileID: 1922544337}
     - {fileID: 1473171098}
     - {fileID: 1331628289}
+    - {fileID: 1391739876}
   partManager: {fileID: 0}
   currentMode: {fileID: 1473171098}
 --- !u!114 &5513377015833497344
@@ -20011,6 +20167,7 @@ RectTransform:
   - {fileID: 7973533869477775525}
   - {fileID: 5156696697381013779}
   - {fileID: 468758769}
+  - {fileID: 1450358947}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -20077,6 +20234,7 @@ MonoBehaviour:
     - ViewList
     - Part
     - EditRegion
+    - TwinVersionSync
     _keys:
     - Main
     - Edit
@@ -20100,6 +20258,7 @@ MonoBehaviour:
     - ViewList
     - Part
     - EditRegion
+    - TwinVersionSync
     _values:
     - {fileID: 1076383613}
     - {fileID: 452000896}
@@ -20123,6 +20282,7 @@ MonoBehaviour:
     - {fileID: 1475930011844006343}
     - {fileID: 4974995707950816676}
     - {fileID: 1992035759}
+    - {fileID: 1450358948}
 --- !u!114 &8038675664049359814
 MonoBehaviour:
   m_ObjectHideFlags: 0

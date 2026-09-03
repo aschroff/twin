@@ -346,6 +346,30 @@ public class DataPersistenceManager : MonoBehaviour
     }
 
     /*
+    * Packs one version of a twin into a zip and returns its path, for any version rather than
+    * only the open one.
+    *
+    * The twin that is currently open goes through ExportConfigZip, because its painted texture
+    * and its config live in memory and have to be written down before they can travel. Every
+    * other version is already complete on disk and is packed untouched - see CompressExisting
+    * for why saving it again would be harmful rather than merely redundant.
+    */
+    public string ExportZipForVersion(string profileId)
+    {
+        if (string.IsNullOrEmpty(profileId))
+        {
+            return null;
+        }
+
+        if (profileId == selectedProfileId)
+        {
+            return ExportConfigZip();
+        }
+
+        return dataHandler.CompressExisting(profileId);
+    }
+
+    /*
     * Coordinates Twin Configuration import and reloading the app to use the newly imported twin.
     * Picking the file is asynchronous, so the profile id of the imported twin is handed to
     * onImported once the import is through - that is the point at which the twin exists.
