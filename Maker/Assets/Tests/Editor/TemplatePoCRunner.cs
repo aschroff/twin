@@ -1,0 +1,254 @@
+using System.IO;
+using System.Text;
+using UnityEditor;
+using UnityEditor.TestTools.TestRunner.Api;
+using UnityEngine;
+
+/// <summary>
+/// Editor tooling to run PlayMode tests from automation (e.g. MCP) and write the
+/// results to a file, surviving the domain reload that entering play mode causes.
+/// The [InitializeOnLoad] static constructor re-registers the result callback after
+/// every domain reload, so RunFinished always fires and the result file gets written.
+/// </summary>
+[InitializeOnLoad]
+public static class TemplatePoCRunner
+{
+    private static string ResultsPath => Path.Combine(Application.dataPath, "..", "Temp", "TemplatePoCResults.json");
+
+    static TemplatePoCRunner()
+    {
+        var api = ScriptableObject.CreateInstance<TestRunnerApi>();
+        api.RegisterCallbacks(new ResultWriter());
+    }
+
+    [MenuItem("Tools/Template PoC/Run PlayMode Test")]
+    public static void StartRun()
+    {
+        Run("NoAPICalls.ProgrammaticPaintingTests.PaintTemplateParts_ThreeRegions");
+    }
+
+    /// <summary>Runs the whole PlayMode suite (the [Explicit] template generation batches are
+    /// skipped automatically).</summary>
+    [MenuItem("Tools/Template PoC/Run All PlayMode Tests")]
+    public static void RunAllPlayModeTests()
+    {
+        Run();
+    }
+
+    [MenuItem("Tools/Template PoC/Run Group Tests")]
+    public static void StartGroupRun()
+    {
+        Run("NoAPICalls.GroupDetailPlayModeTests.PaintingPerGroup_ShowsOnePartPerSelectedGroup",
+            "NoAPICalls.GroupPlayModeTests.HideAndShowGroup_KeepsItsParts",
+            "NoAPICalls.GroupPlayModeTests.GroupList_ShowsPartCounts_AddsAndDeletesGroups",
+            "NoAPICalls.GroupPlayModeTests.SaveAndReload_KeepsGroupsPartsAndTheirLinks");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Info Display Tests")]
+    public static void RunInfoDisplayTests()
+    {
+        Run("NoAPICalls.InfoDisplayPlayModeTests.Reset_ShowsTheTwinLoadedAfterTheReset",
+            "NoAPICalls.InfoDisplayPlayModeTests.SelectTwin_UpdatesNameAndVersion",
+            "NoAPICalls.InfoDisplayPlayModeTests.CreateTwin_UpdatesNameAndVersion",
+            "NoAPICalls.InfoDisplayPlayModeTests.SelectTool_ShowsTheCurrentTool",
+            "NoAPICalls.InfoDisplayPlayModeTests.SelectGroup_ShowsTheCurrentGroup");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Import Tests")]
+    public static void RunImportTests()
+    {
+        Run("NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_ShowsItsPaintWhenOpened",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_KeepsItsGroupsAndParts",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_KeepsTheTwinThatIsAlreadyThere",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_IgnoresTheNameOfTheZipFile",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_TakesTheIdFromItsConfigWhenItIsFree",
+            "NoAPICalls.ImportTwinPlayModeTests.ImportedTwin_AddsTheSuffixToTheVersionItBringsAlong",
+            "NoAPICalls.ImportTwinPlayModeTests.Import_WhileTheSameTwinIsOpen_KeepsBothApart",
+            "NoAPICalls.ImportTwinPlayModeTests.Import_LeavesTheOpenTwinMarkedInTheList",
+            "NoAPICalls.ImportTwinPlayModeTests.TwinDirectoryTheAppDidNotWrite_DoesNotBreakTheVersionList",
+            "NoAPICalls.ImportTwinPlayModeTests.Import_OfABrokenZip_KeepsTheTwinsOnTheDevice");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Schema Tests")]
+    public static void RunSchemaTests()
+    {
+        RunEditMode("EditModeTests.JsonSchemaBuilderTests", "EditModeTests.ApiKeysTests");
+    }
+
+    /// <summary>Calls the OpenAI API - needs a key in Assets/Tests/Helper/testsecrets.json.</summary>
+    [MenuItem("Tools/Template PoC/Run Document Mapping API Test")]
+    public static void RunDocumentMappingApiTest()
+    {
+        Run("DocumentMappingApiTests.DocumentMapping_ComesBackWithNamesTheAppKnows",
+            "DocumentMappingApiTests.UploadFlow_PutsTheProposalOnTheReviewScreen");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Document Prompt Tests")]
+    public static void RunDocumentPromptTests()
+    {
+        Run("NoAPICalls.DocumentPromptPlayModeTests.DocumentPrompt_DescribesTheTwinTheToolsAndTheRegions",
+            "NoAPICalls.DocumentPromptPlayModeTests.ToolInventory_ListsEveryMarkerAndFiller",
+            "NoAPICalls.DocumentPromptPlayModeTests.ReviewScreen_ShowsThePickedFileAndTheWholePrompt");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Document Apply Tests")]
+    public static void RunDocumentApplyTests()
+    {
+        Run("NoAPICalls.DocumentApplyPlayModeTests.Apply_NothingConfirmed_LeavesTheTwinAlone",
+            "NoAPICalls.DocumentApplyPlayModeTests.Apply_WhatWasConfirmed_ReachesTheTwin",
+            "NoAPICalls.DocumentApplyPlayModeTests.Apply_RefusesWhatTheTwinDoesNotAllow",
+            "NoAPICalls.DocumentApplyPlayModeTests.ReviewList_OffersEveryProposalUntickedAndAppliesOnlyWhatIsTicked",
+            "NoAPICalls.DocumentApplyPlayModeTests.Review_ComesBackWithoutAnotherUpload_AndOnlyForItsOwnTwin",
+            "NoAPICalls.DocumentApplyPlayModeTests.GroupPicker_ChangesWhereAFindingGoes",
+            "NoAPICalls.DocumentApplyPlayModeTests.TickingAFinding_AlsoTicksTheGroupAndToolItNeeds");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Upload Tests")]
+    public static void RunUploadTests()
+    {
+        Run("NoAPICalls.UploadPlayModeTests.UploadButton_OffersPhotoAndDocument",
+            "NoAPICalls.UploadPlayModeTests.ContinueReview_IsOfferedOnlyWhenThereIsSomethingToGoBackTo");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Sticker Tests")]
+    public static void RunStickerTests()
+    {
+        Run("NoAPICalls.StickerPlayModeTests.StickerImage_FollowsTheTwinThatIsOpen",
+            "NoAPICalls.StickerPlayModeTests.ImportedTwin_BringsAllItsStickerImages");
+    }
+
+    [MenuItem("Tools/Template PoC/Run SaveTwin Baseline Test")]
+    public static void StartBaselineRun()
+    {
+        Run("NoAPICalls.SaveTwinPlayModeTests.SaveButton_OpensSaveMode");
+    }
+
+    private const string Gen = "TemplateLibraryTools.TemplateLibraryGenerator.";
+
+    [MenuItem("Tools/Template Library/Batch 01 Torso Front")]
+    public static void GenBatch01() { Run(Gen + "Batch01_TorsoFront"); }
+
+    [MenuItem("Tools/Template Library/Batch 02 Torso Back")]
+    public static void GenBatch02() { Run(Gen + "Batch02_TorsoBack"); }
+
+    [MenuItem("Tools/Template Library/Batch 03 Arms Front")]
+    public static void GenBatch03() { Run(Gen + "Batch03_ArmsFront"); }
+
+    [MenuItem("Tools/Template Library/Batch 04 Arms Back")]
+    public static void GenBatch04() { Run(Gen + "Batch04_ArmsBack"); }
+
+    [MenuItem("Tools/Template Library/Batch 05 Legs Front")]
+    public static void GenBatch05() { Run(Gen + "Batch05_LegsFront"); }
+
+    [MenuItem("Tools/Template Library/Batch 06 Legs Back")]
+    public static void GenBatch06() { Run(Gen + "Batch06_LegsBack"); }
+
+    [MenuItem("Tools/Template Library/Batch 07 Head Neck")]
+    public static void GenBatch07() { Run(Gen + "Batch07_HeadNeck"); }
+
+    [MenuItem("Tools/Template Library/Batch 08 Hands")]
+    public static void GenBatch08() { Run(Gen + "Batch08_Hands"); }
+
+    [MenuItem("Tools/Template Library/Batch 09 Extended Misc")]
+    public static void GenBatch09() { Run(Gen + "Batch09_ExtendedMisc"); }
+
+    [MenuItem("Tools/Template Library/Run Batches 01+02")]
+    public static void GenBatch0102() { Run(Gen + "Batch01_TorsoFront", Gen + "Batch02_TorsoBack"); }
+
+    [MenuItem("Tools/Template Library/Run Diagnose")]
+    public static void GenDiagnose() { Run(Gen + "Batch00_Diagnose"); }
+
+    [MenuItem("Tools/Template Library/Run PartTemplateService Tests")]
+    public static void RunServiceTests()
+    {
+        Run("NoAPICalls.PartTemplateServiceTests.PaintRegion_AddsPartToActiveGroup",
+            "NoAPICalls.PartTemplateServiceTests.PaintRegion_UnknownRegion_ThrowsWithAvailableNames",
+            "NoAPICalls.PartTemplateServiceTests.PaintRegion_WithTool_AppliesToolColorAndMetadata",
+            "NoAPICalls.PartTemplateServiceTests.GetTemplateGroupNames_ListsAllArmRegions",
+            "NoAPICalls.PartTemplateServiceTests.GetTemplateCatalog_ListsAllTwinsAndRegions",
+            "NoAPICalls.PartTemplateServiceTests.PaintWithCurrentTool_UsesActiveTool_AndFallsBackToMarker",
+            "NoAPICalls.PartTemplateServiceTests.LoadTwin_BindsCommandsToPaintableTexture",
+            "NoAPICalls.PartTemplateServiceTests.SaveFileSize_GrowsLinearly_WithPartsInOneGroup",
+            "NoAPICalls.PartTemplateServiceTests.LoadTwin_RelinksPartsToTheirGroups",
+            "NoAPICalls.PartTemplateServiceTests.SavedTwin_ContainsNoPaintableTextureReferences",
+            "NoAPICalls.PartTemplateServiceTests.RegionNames_FollowTheSelectedLanguage");
+    }
+
+    /// <summary>Runs EditMode tests - unit tests that need no scene and never start the app.</summary>
+    private static void RunEditMode(params string[] testNames)
+    {
+        Run(TestMode.EditMode, testNames);
+    }
+
+    private static void Run(params string[] testNames)
+    {
+        Run(TestMode.PlayMode, testNames);
+    }
+
+    private static void Run(TestMode testMode, params string[] testNames)
+    {
+        if (File.Exists(ResultsPath))
+            File.Delete(ResultsPath);
+
+        var api = ScriptableObject.CreateInstance<TestRunnerApi>();
+        var filter = new Filter
+        {
+            testMode = testMode,
+            // no names = run everything (an empty array would match nothing)
+            testNames = testNames != null && testNames.Length > 0 ? testNames : null
+        };
+        api.Execute(new ExecutionSettings(filter));
+        Debug.Log("[TemplatePoCRunner] " + testMode + " test run started: "
+            + (testNames != null && testNames.Length > 0 ? string.Join(", ", testNames) : "all tests"));
+    }
+
+    private class ResultWriter : ICallbacks
+    {
+        public void RunStarted(ITestAdaptor testsToRun) { }
+        public void TestStarted(ITestAdaptor test) { }
+        public void TestFinished(ITestResultAdaptor result) { }
+
+        public void RunFinished(ITestResultAdaptor result)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("{");
+            sb.AppendLine($"  \"status\": \"{result.TestStatus}\",");
+            sb.AppendLine($"  \"passed\": {result.PassCount},");
+            sb.AppendLine($"  \"failed\": {result.FailCount},");
+            sb.AppendLine($"  \"skipped\": {result.SkipCount},");
+            sb.AppendLine($"  \"duration\": {result.Duration.ToString(System.Globalization.CultureInfo.InvariantCulture)},");
+            sb.AppendLine("  \"failures\": [");
+            var first = true;
+            AppendFailures(result, sb, ref first);
+            sb.AppendLine();
+            sb.AppendLine("  ]");
+            sb.AppendLine("}");
+            File.WriteAllText(ResultsPath, sb.ToString());
+            Debug.Log($"[TemplatePoCRunner] Results written to {ResultsPath}");
+        }
+
+        private static void AppendFailures(ITestResultAdaptor result, StringBuilder sb, ref bool first)
+        {
+            if (result.HasChildren)
+            {
+                foreach (var child in result.Children)
+                    AppendFailures(child, sb, ref first);
+                return;
+            }
+            if (result.TestStatus != TestStatus.Failed)
+                return;
+            if (!first)
+                sb.AppendLine(",");
+            first = false;
+            var message = Escape(result.Message) + "\\n" + Escape(result.StackTrace);
+            sb.Append($"    {{ \"test\": \"{Escape(result.FullName)}\", \"message\": \"{message}\" }}");
+        }
+
+        private static string Escape(string value)
+        {
+            return string.IsNullOrEmpty(value)
+                ? ""
+                : value.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "");
+        }
+    }
+}

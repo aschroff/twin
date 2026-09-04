@@ -217,7 +217,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f68f3bebc5884c52be11c5fe5921a3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  persistent: 1
+  level: 0
+  label: 
+  defaultKey: 
+  promptResult: 
 --- !u!1 &6207805458729720306
 GameObject:
   m_ObjectHideFlags: 0
@@ -346,7 +349,7 @@ MonoBehaviour:
   m_LineType: 2
   m_HideMobileInput: 0
   m_CharacterValidation: 0
-  m_CharacterLimit: 400
+  m_CharacterLimit: 2000
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []

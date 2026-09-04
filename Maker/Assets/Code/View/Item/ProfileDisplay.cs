@@ -8,12 +8,11 @@ public class ProfileDisplay : MonoBehaviour, ItemFile, IDataPersistence
 
     public  void handleChange(string profile)
     {
-        Text text = this.gameObject.transform.GetComponent<Text>();
         if (profile.Contains("."))
         {
             String[] splitProfile = profile.Split(".");
             if(index > 1) { index = 0; }
-            text.text = splitProfile[index];
+            display(splitProfile[index]);
         }
 
     }
@@ -34,7 +33,27 @@ public class ProfileDisplay : MonoBehaviour, ItemFile, IDataPersistence
 
     public void LoadData(ConfigData data)
     {
+        // Reset does not trigger handleChange, so take the name/version straight from the loaded config
+        if (data == null)
+        {
+            return;
+        }
+        if(index > 1) { index = 0; }
+        display(index == 0 ? data.name : data.version);
+    }
 
+    private void display(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return;
+        }
+        Text text = this.gameObject.transform.GetComponent<Text>();
+        if (text == null)
+        {
+            return;
+        }
+        text.text = value;
     }
 
     public void SaveData(ConfigData data)

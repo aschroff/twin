@@ -125,10 +125,11 @@ namespace Code.AI
             string model = "gpt-4o-mini",
             string fileId = null,
             string imagePath = null,
-            Type structuredOutputType = null)
+            Type structuredOutputType = null,
+            IDictionary<string, IEnumerable<string>> allowedValues = null)
         {
             // Build request payload (handles both fileId and imagePath)
-            var payload = BuildRequestPayload(prompt, model, fileId, imagePath, structuredOutputType);
+            var payload = BuildRequestPayload(prompt, model, fileId, imagePath, structuredOutputType, allowedValues);
             var jsonPayload = JsonConvert.SerializeObject(payload);
 
             Debug.Log($"Request JSON: {jsonPayload}");
@@ -192,11 +193,12 @@ namespace Code.AI
         /// </summary>
         public async Task<T> RequestStructuredAsync<T>(
             string prompt,
-            string model = "gpt-4.5",
+            string model = "gpt-4o-mini",
             string fileId = null,
-            string imagePath = null) where T : class
+            string imagePath = null,
+            IDictionary<string, IEnumerable<string>> allowedValues = null) where T : class
         {
-            var rawResponse = await RequestAsync(prompt, model, fileId, imagePath, typeof(T));
+            var rawResponse = await RequestAsync(prompt, model, fileId, imagePath, typeof(T), allowedValues);
 
             if (string.IsNullOrEmpty(rawResponse))
             {
@@ -209,34 +211,64 @@ namespace Code.AI
 
             // Parse the response using JObject
             var apiResponse = JObject.Parse(rawResponse);
+            var contentJson = ExtractOutputText(apiResponse, rawResponse);
+            Debug.Log($"Extracted JSON content: {contentJson}");
 
-            // Extract the JSON content from the Responses API structure
-            // Based on actual API response, the structure is: output[0].content[0].text
+            // Now deserialize the actual content
+            return JsonConvert.DeserializeObject<T>(contentJson);
+        }
+
+        /// <summary>
+        /// The answer text out of a Responses API reply. The output array is a list of items and
+        /// only some of them carry text - a reasoning model puts its reasoning first - so the
+        /// first text item is looked for instead of assuming output[0].content[0].
+        /// </summary>
+        private static string ExtractOutputText(JObject apiResponse, string rawResponse)
+        {
+            // the API offers this shortcut when it is available
+            var direct = apiResponse["output_text"];
+            if (direct != null && direct.Type == JTokenType.String && !string.IsNullOrEmpty(direct.ToString()))
+            {
+                return direct.ToString();
+            }
+
             var outputArray = apiResponse["output"] as JArray;
             if (outputArray == null || outputArray.Count == 0)
             {
                 throw new OpenAIException(0, $"No output array in API response. Response: {rawResponse}");
             }
 
-            var firstOutput = outputArray[0] as JObject;
-            var contentArray = firstOutput["content"] as JArray;
-            if (contentArray == null || contentArray.Count == 0)
+            foreach (var output in outputArray)
             {
-                throw new OpenAIException(0, $"No content array in output. Response: {rawResponse}");
+                var contentArray = output["content"] as JArray;
+                if (contentArray == null) continue;
+
+                foreach (var content in contentArray)
+                {
+                    var textToken = content["text"];
+                    if (textToken != null && !string.IsNullOrEmpty(textToken.ToString()))
+                    {
+                        return textToken.ToString();
+                    }
+                }
             }
 
-            var firstContent = contentArray[0] as JObject;
-            var textToken = firstContent["text"];
-            if (textToken == null)
+            // a refusal is the other thing the model can put where the answer should be
+            foreach (var output in outputArray)
             {
-                throw new OpenAIException(0, $"No text field in content. Response: {rawResponse}");
+                var contentArray = output["content"] as JArray;
+                if (contentArray == null) continue;
+                foreach (var content in contentArray)
+                {
+                    var refusal = content["refusal"];
+                    if (refusal != null && !string.IsNullOrEmpty(refusal.ToString()))
+                    {
+                        throw new OpenAIException(0, $"The model refused the request: {refusal}");
+                    }
+                }
             }
 
-            var contentJson = textToken.ToString();
-            Debug.Log($"Extracted JSON content: {contentJson}");
-
-            // Now deserialize the actual content
-            return JsonConvert.DeserializeObject<T>(contentJson);
+            throw new OpenAIException(0, $"No text in any output item. Response: {rawResponse}");
         }
 
         /// <summary>
@@ -300,7 +332,8 @@ namespace Code.AI
             return await tcs.Task;
         }
 
-        private object BuildRequestPayload(string prompt, string model, string fileId, string imagePath, Type structuredOutputType)
+        private object BuildRequestPayload(string prompt, string model, string fileId, string imagePath,
+            Type structuredOutputType, IDictionary<string, IEnumerable<string>> allowedValues = null)
         {
             // Build content array for Responses API
             var content = new List<object>();
@@ -367,71 +400,9 @@ namespace Code.AI
                 text = new
                 {
                     format = structuredOutputType != null
-                        ? GetSchemaForType(structuredOutputType)
+                        ? JsonSchemaBuilder.Format(structuredOutputType, allowedValues)
                         : new { type = "text" } // Default to text output if no structured type specified
                 }
-            };
-        }
-
-        private object GetSchemaForType(Type type)
-        {
-            // Generate basic JSON schema for the type
-            var properties = new Dictionary<string, object>();
-            var required = new List<string>();
-
-            foreach (var prop in type.GetProperties())
-            {
-                var jsonProp = prop.GetCustomAttributes(typeof(JsonPropertyAttribute), false);
-                var propName = jsonProp.Length > 0
-                    ? ((JsonPropertyAttribute)jsonProp[0]).PropertyName
-                    : prop.Name;
-
-                // Determine type
-                var propType = prop.PropertyType;
-                string schemaType;
-
-                if (propType == typeof(string))
-                {
-                    schemaType = "string";
-                }
-                else if (propType == typeof(int) || propType == typeof(long))
-                {
-                    schemaType = "integer";
-                }
-                else if (propType == typeof(float) || propType == typeof(double))
-                {
-                    schemaType = "number";
-                }
-                else if (propType == typeof(bool))
-                {
-                    schemaType = "boolean";
-                }
-                else if (propType.IsGenericType && propType.GetGenericTypeDefinition() == typeof(List<>))
-                {
-                    schemaType = "array";
-                }
-                else
-                {
-                    schemaType = "object";
-                }
-
-                properties[propName] = new { type = schemaType };
-                required.Add(propName);
-            }
-
-            // Return in the format expected by Responses API: text.format
-            return new
-            {
-                type = "json_schema",
-                name = type.Name,
-                schema = new
-                {
-                    type = "object",
-                    properties,
-                    required = required.ToArray(),
-                    additionalProperties = false
-                },
-                strict = true
             };
         }
 

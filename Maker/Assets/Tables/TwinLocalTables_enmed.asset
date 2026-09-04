@@ -93,7 +93,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 245873492615168
-    m_Localized: ' Marker '
+    m_Localized: Marker
     m_Metadata:
       m_Items: []
   - m_Id: 245888470474752
@@ -235,6 +235,588 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 129652683139178496
     m_Localized: Export patient
+    m_Metadata:
+      m_Items: []
+  - m_Id: 227175816582127616
+    m_Localized: Import patient
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229391279508676608
+    m_Localized: Body Region
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026503368704
+    m_Localized: Top of head
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894656
+    m_Localized: Forehead
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894657
+    m_Localized: Left temple
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894658
+    m_Localized: Right temple
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894659
+    m_Localized: Left eye region
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894660
+    m_Localized: Right eye region
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894661
+    m_Localized: Nose
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894662
+    m_Localized: Left cheek
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894663
+    m_Localized: Right cheek
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894664
+    m_Localized: Mouth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894665
+    m_Localized: Left jaw joint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894666
+    m_Localized: Right jaw joint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894667
+    m_Localized: Left ear
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894668
+    m_Localized: Right ear
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894669
+    m_Localized: Back of head
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894670
+    m_Localized: Front of neck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894671
+    m_Localized: Nape of neck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894672
+    m_Localized: Left chest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894673
+    m_Localized: Right chest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894674
+    m_Localized: Breastbone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894675
+    m_Localized: Upper left abdomen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894676
+    m_Localized: Upper central abdomen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894677
+    m_Localized: Upper right abdomen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894678
+    m_Localized: Central abdomen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894679
+    m_Localized: Lower left abdomen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894680
+    m_Localized: Lower central abdomen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894681
+    m_Localized: Lower right abdomen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894682
+    m_Localized: Left groin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894683
+    m_Localized: Right groin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894684
+    m_Localized: Genital region
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894685
+    m_Localized: Upper back left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894686
+    m_Localized: Upper back right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894687
+    m_Localized: Mid back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894688
+    m_Localized: Lower back left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894689
+    m_Localized: Lower back right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894690
+    m_Localized: Sacrum
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894691
+    m_Localized: Left buttock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894692
+    m_Localized: Right buttock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894693
+    m_Localized: Shoulder, front left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894694
+    m_Localized: Shoulder, front right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894695
+    m_Localized: Shoulder, back left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894696
+    m_Localized: Shoulder, back right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894697
+    m_Localized: Armpit left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894698
+    m_Localized: Armpit right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894699
+    m_Localized: Upper arm, front left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894700
+    m_Localized: Upper arm, front right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894701
+    m_Localized: Upper arm, back left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894702
+    m_Localized: Upper arm, back right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894703
+    m_Localized: Crook of elbow left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894704
+    m_Localized: Crook of elbow right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894705
+    m_Localized: Elbow left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894706
+    m_Localized: Elbow right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894707
+    m_Localized: Forearm, front left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894708
+    m_Localized: Forearm, front right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894709
+    m_Localized: Forearm, back left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894710
+    m_Localized: Forearm, back right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894711
+    m_Localized: Wrist left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894712
+    m_Localized: Wrist right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894713
+    m_Localized: Palm of hand left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894714
+    m_Localized: Palm of hand right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894715
+    m_Localized: Back of hand left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894716
+    m_Localized: Back of hand right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894717
+    m_Localized: Thumb left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026557894718
+    m_Localized: Thumb right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088960
+    m_Localized: Index finger left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088961
+    m_Localized: Index finger right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088962
+    m_Localized: Middle finger left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088963
+    m_Localized: Middle finger right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088964
+    m_Localized: Ring finger left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088965
+    m_Localized: Ring finger right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088966
+    m_Localized: Little finger left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088967
+    m_Localized: Little finger right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088968
+    m_Localized: Hip left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088969
+    m_Localized: Hip right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088970
+    m_Localized: Thigh, front left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088971
+    m_Localized: Thigh, front right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088972
+    m_Localized: Thigh, back left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088973
+    m_Localized: Thigh, back right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088974
+    m_Localized: Knee left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088975
+    m_Localized: Knee right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088976
+    m_Localized: Back of knee left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088977
+    m_Localized: Back of knee right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088978
+    m_Localized: Shin left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088979
+    m_Localized: Shin right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088980
+    m_Localized: Calf left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088981
+    m_Localized: Calf right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088982
+    m_Localized: Ankle left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088983
+    m_Localized: Ankle right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088984
+    m_Localized: Top of foot left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088985
+    m_Localized: Top of foot right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088986
+    m_Localized: Heel left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088987
+    m_Localized: Heel right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088988
+    m_Localized: Big toe left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088989
+    m_Localized: Big toe right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088990
+    m_Localized: Toes left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088991
+    m_Localized: Toes right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088992
+    m_Localized: Sole of foot left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 229785026562088993
+    m_Localized: Sole of foot right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102718140416
+    m_Localized: Upload
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102726529024
+    m_Localized: Upload photo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102726529025
+    m_Localized: Upload document
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568878596096
+    m_Localized: 'You are given one document about one patient: a photo, a drawing,
+      a body chart or a report. Find every medical finding in it and map each finding
+      onto the digital twin of the patient''s body, using the groups, tools and body
+      regions listed below.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984704
+    m_Localized: Use an existing group whenever a finding fits it; propose a new
+      group only when none fits. Use a tool whose meaning already fits; only when
+      no tool fits, take one from the list of free tools and give it a meaning. List
+      a tool as taken into use only when you took it from that free list - a tool
+      that already has a meaning keeps it and does not belong in that list, so leave
+      the list empty when no tool was free. Choose a surface tool for an area and
+      a line tool for a line or a small spot. When a finding covers both sides of
+      the body or several body parts, name every region it covers. Anything that
+      cannot be placed on a body region, and anything that concerns the patient as
+      a whole, goes into one summarising text instead of a marking.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984705
+    m_Localized: Describe the medical finding shown on the body in the style of a
+      medical report. Include the size and shape of the finding, its location on
+      the body including the relative position on the body part and its orientation,
+      and any other relevant detail.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984706
+    m_Localized: 'Create a medical report of about 250 words: describe each medical
+      finding in two to three sentences, then summarise the overall situation and
+      the recommended treatments. The medical findings shown on the body are listed
+      below:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234843751060594688
+    m_Localized: Apply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235442572576677888
+    m_Localized: Continue review
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235581215735799808
+    m_Localized: Select all
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235581215765159936
+    m_Localized: Deselect all
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295083978752
+    m_Localized: Account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950272
+    m_Localized: Email
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950273
+    m_Localized: you@example.com
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950274
+    m_Localized: Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950275
+    m_Localized: Sign in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950276
+    m_Localized: Sign out
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950277
+    m_Localized: Enter your email address and password.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950278
+    m_Localized: "Signing in\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950279
+    m_Localized: "Signing out\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950280
+    m_Localized: Signed in.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950281
+    m_Localized: Not signed in.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950282
+    m_Localized: Email address or password is incorrect.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950283
+    m_Localized: Could not reach the server. Check your connection and try again.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950284
+    m_Localized: Something went wrong. Please try again.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950285
+    m_Localized: The app is not configured to reach the server.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942101897216
+    m_Localized: Versions of {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840256
+    m_Localized: Upload
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840257
+    m_Localized: Only on this device
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840258
+    m_Localized: On the server only
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840259
+    m_Localized: Uploaded by {0} on {1:dd MMM yyyy HH:mm}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840260
+    m_Localized: "Uploading\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840261
+    m_Localized: Upload failed.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840262
+    m_Localized: Sign in on the settings page to upload versions.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840263
+    m_Localized: "Loading\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840264
+    m_Localized: Select the versions to upload.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840265
+    m_Localized: Could not reach the server. Showing what is on this device.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840266
+    m_Localized: '{0} uploaded.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840267
+    m_Localized: '{0} of {1} uploaded.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840268
+    m_Localized: This version is too large for the server.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239582523400642560
+    m_Localized: Server versions
     m_Metadata:
       m_Items: []
   references:

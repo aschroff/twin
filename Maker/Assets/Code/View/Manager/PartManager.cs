@@ -8,7 +8,7 @@ using System;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
+public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 {
 	[SerializeField] public ViewManager viewManager;
 	[SerializeField] public List<GroupData> groups;
@@ -98,7 +98,16 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		public string meaning;
 		public string textTool;
 		public string description = "";
-		public GroupData group;
+
+		/// <summary>Body region this part was painted from (see RegionNames), empty for
+		/// hand-painted parts. Language independent — the localized name goes to description.</summary>
+		public string regionKey = "";
+
+		/// <summary>The group this part belongs to. Not serialized: it forms a cycle with
+		/// GroupData.groupParts that JsonUtility would inline, bloating the save file.
+		/// RelinkPartsToGroups() restores the link after loading.</summary>
+		[System.NonSerialized] public GroupData group;
+
 		public string pathScreenshot;
 	}
 
@@ -165,18 +174,7 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 	}
 
 
-	protected virtual void OnEnable()
-	{
-		CwPaintableTexture.OnAddCommandGlobal += HandleAddCommandGlobal;
-	}
-
-	protected virtual void OnDisable()
-	{
-		CwPaintableTexture.OnAddCommandGlobal -= HandleAddCommandGlobal;
-	}
-	
-
-	private void HandleAddCommandGlobal(CwPaintableTexture paintableTexture, CwCommand command)
+	protected override void HandleAddCommandGlobal(CwPaintableTexture paintableTexture, CwCommand command)
 	{
 		base.HandleAddCommandGlobal(paintableTexture, command);
 		if (base.Listening == true)
@@ -295,7 +293,59 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 				currentGroup = group;
 			}
 		}
+
+		RelinkPartsToGroups();
+		BindLoadedCommandsToTexture();
 	}
+
+	/// <summary>Restores the PartData.group link, which is not part of the saved data.</summary>
+	private void RelinkPartsToGroups()
+	{
+		foreach (GroupData group in groups)
+		{
+			foreach (PartData part in group.groupParts)
+			{
+				part.group = group;
+			}
+		}
+	}
+
+	/// <summary>
+	/// Binds the loaded commands to the scene's paintable texture. The target texture is not
+	/// part of the saved data (see PaintCommandSerialization.CommandData.PaintableTexture),
+	/// so without this the commands would be skipped on replay.
+	/// </summary>
+	private void BindLoadedCommandsToTexture()
+	{
+		if (CwPaintableTexture.Instances.Count == 0)
+		{
+			return;
+		}
+		CwPaintableTexture liveTexture = CwPaintableTexture.Instances.First.Value;
+		if (CwPaintableTexture.Instances.Count > 1)
+		{
+			Debug.LogWarning("Multiple paintable textures in scene — binding loaded commands to the first one.");
+		}
+
+		foreach (GroupData group in groups)
+		{
+			foreach (PartData part in group.groupParts)
+			{
+				foreach (CommandDataTwin commandData in part.partCommands)
+				{
+					commandData.data.PaintableTexture = liveTexture;
+				}
+			}
+		}
+		// keep the internal command list consistent as well (structs: write back required)
+		for (int i = 0; i < commandDatas.Count; i++)
+		{
+			CommandData commandData = commandDatas[i];
+			commandData.PaintableTexture = liveTexture;
+			commandDatas[i] = commandData;
+		}
+	}
+
 	private CwCommand Apply(CommandDataTwin commandData)
 	{
 
@@ -577,7 +627,9 @@ public class PartManager : CwCommandSerialization, IDataPersistence, ItemFile
 		}
 	}
 
-	private Tool DeriveType(GameObject tool)
+	/// <summary>Which kind of tool a tool GameObject is, read off its paint components.
+	/// Static and public because the prompt generation classifies the tool rows with it too.</summary>
+	public static Tool DeriveType(GameObject tool)
 	{	
 		CwPaintSphere sphere = tool.GetComponent<CwPaintSphere>();
 		bool hasSphere = (sphere != null);

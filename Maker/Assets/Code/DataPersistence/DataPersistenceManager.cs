@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using RotaryHeart.Lib.SerializableDictionary;
+using PaintCore;
 using Application = UnityEngine.Application;
 
 [Serializable]
@@ -313,14 +314,107 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void ExportConfig()
     {
-        bool flowControl = PrepareConfigStorage();
-        if (!flowControl)
+        string zipFilePath = ExportConfigZip();
+        if (zipFilePath == null)
         {
             return;
         }
+        dataHandler.ExportFile(zipFilePath);
+    }
+
+    /*
+    * Saves the current twin and packs it into a zip file. Returns the path of that zip file,
+    * without handing it to the user - that is what ExportConfig adds on top.
+    */
+    public string ExportConfigZip()
+    {
+        bool flowControl = PrepareConfigStorage();
+        if (!flowControl)
+        {
+            return null;
+        }
+
+        // the painted texture is only cached on this device, so it has to be written into the
+        // twin directory to travel with the export
+        foreach (Body body in FindObjectsOfType<Body>(true))
+        {
+            body.StoreTextureFile(selectedProfileId);
+        }
 
         // save that data to a file using the data handler
-        dataHandler.ExportData(configData, selectedProfileId);
+        return dataHandler.ExportZip(configData, selectedProfileId);
+    }
+
+    /*
+    * Packs one version of a twin into a zip and returns its path, for any version rather than
+    * only the open one.
+    *
+    * The twin that is currently open goes through ExportConfigZip, because its painted texture
+    * and its config live in memory and have to be written down before they can travel. Every
+    * other version is already complete on disk and is packed untouched - see CompressExisting
+    * for why saving it again would be harmful rather than merely redundant.
+    */
+    public string ExportZipForVersion(string profileId)
+    {
+        if (string.IsNullOrEmpty(profileId))
+        {
+            return null;
+        }
+
+        if (profileId == selectedProfileId)
+        {
+            return ExportConfigZip();
+        }
+
+        return dataHandler.CompressExisting(profileId);
+    }
+
+    /*
+    * Coordinates Twin Configuration import and reloading the app to use the newly imported twin.
+    * Picking the file is asynchronous, so the profile id of the imported twin is handed to
+    * onImported once the import is through - that is the point at which the twin exists.
+    */
+    public async void ImportConfig( Action<string> onImported = null )
+    {
+        // delegating data import to responsible (File)DataHandler
+        string pathToExtractedDirectory =  await dataHandler.ImportZipConfigAsync();
+        string profileId = FinishImport( pathToExtractedDirectory );
+        if ( onImported != null )
+        {
+            onImported( profileId );
+        }
+    }
+
+    /*
+    * Imports an already chosen zip file (no file picker involved).
+    * Returns the profile id of the imported twin, or null if the import failed.
+    */
+    public string ImportConfig( string zipFilePath )
+    {
+        return FinishImport( dataHandler.ImportZipConfig( zipFilePath ) );
+    }
+
+    private string FinishImport( string pathToExtractedDirectory )
+    {
+        if ( string.IsNullOrEmpty( pathToExtractedDirectory ) )
+        {
+            Debug.Log( " Error: Config importation did not work. " );
+            return null;
+        }
+        string profileId = Path.GetFileName( pathToExtractedDirectory );
+        //even though we want to get the directory name we have to call GetFileName here to get the correct attribute back
+
+        if ( !dataHandler.Exists( profileId ) )
+        {
+            Debug.Log( " Error: Config importation did not work. " );
+            return null;
+        }
+
+        // The painted texture is cached per twin and that cache is local to this device, so
+        // anything stored under the id of the imported twin belongs to a different twin.
+        // Dropping it makes the app pick up the texture that came with the import.
+        CwPaintableTexture.ClearSave( profileId );
+        return profileId;
     }
 
     /*
@@ -369,28 +463,45 @@ public class DataPersistenceManager : MonoBehaviour
     {
         return dataHandler.LoadAllProfiles();
     }
-    public Dictionary<string, ConfigData> GetAllProfileNamesGameData() 
+    /*
+    * One entry per twin name, for the twin list. A twin with several versions is represented by
+    * the version that is currently open, and by its most recently updated version otherwise -
+    * the open twin has to be the one the list marks as open.
+    */
+    public Dictionary<string, ConfigData> GetAllProfileNamesGameData()
     {
         Dictionary<string, ConfigData> profiles =  dataHandler.LoadAllProfiles();
         Dictionary<string, ConfigData> profileDictionary = new Dictionary<string, ConfigData>();
+        Dictionary<string, string> representingProfileId = new Dictionary<string, string>();
         foreach (KeyValuePair<string, ConfigData> profile in profiles)
         {
-            if (profileDictionary.ContainsKey(profile.Value.name))
+            string name = profile.Value.name;
+            if (!profileDictionary.ContainsKey(name))
             {
-                if (profileDictionary[profile.Value.name].lastUpdated < profile.Value.lastUpdated)
-                {
-                    profileDictionary[profile.Value.name] = profile.Value;
-                }
+                profileDictionary.Add(name, profile.Value);
+                representingProfileId.Add(name, profile.Key);
                 continue;
-            } 
-            profileDictionary.Add(profile.Value.name, profile.Value);
+            }
+            bool representedByOpenVersion = representingProfileId[name] == selectedProfileId;
+            bool isOpenVersion = profile.Key == selectedProfileId;
+            bool isNewer = profileDictionary[name].lastUpdated < profile.Value.lastUpdated;
+            if (isOpenVersion || (!representedByOpenVersion && isNewer))
+            {
+                profileDictionary[name] = profile.Value;
+                representingProfileId[name] = profile.Key;
+            }
         }
 
 
         return profileDictionary;
     }
     
-    public Dictionary<string, ConfigData> GetAllVersionsGameData(string name) 
+    /*
+    * The versions of one twin, keyed by version. Two twin directories cannot hold the same
+    * version - but reading the versions of a twin must not be what takes the app down if they
+    * ever do, so a repeated version is reported and skipped instead of added twice.
+    */
+    public Dictionary<string, ConfigData> GetAllVersionsGameData(string name)
     {
         Dictionary<string, ConfigData> profiles =  dataHandler.LoadAllProfiles();
         Dictionary<string, ConfigData> profileDictionary = new Dictionary<string, ConfigData>();
@@ -398,6 +509,12 @@ public class DataPersistenceManager : MonoBehaviour
         {
             if (profile.Value.name == name)
             {
+                if (profileDictionary.ContainsKey(profile.Value.version))
+                {
+                    Debug.LogError("Twin " + name + " has more than one version " + profile.Value.version
+                        + ", skipping the one in " + profile.Key + ".");
+                    continue;
+                }
                 profileDictionary.Add(profile.Value.version, profile.Value);
             }
         }
