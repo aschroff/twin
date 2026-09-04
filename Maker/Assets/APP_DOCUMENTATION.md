@@ -277,6 +277,19 @@ Spec, target structure and the remaining steps:
 - A **new part** is started by a tool change, a paintable-texture change, leaving an Edit mode to Main/Shape/Move, or selecting a view — **not** by switching the current group (known bug, ticket pending: `PartManager.SetCurrentGroup` never sets `startNewPart`, and the `startNewPart = true` in `StartNewGroup` is unreachable dead code). Consequence: after switching groups without changing the tool, the next stroke is appended to the previous part and stays in the old group.
 - For programmatic painting in tests, read `Assets/Tests/PlayMode/NoAPICalls/CwPaintingTestGuide.md` first — especially the single-frame stroke gotcha.
 - Paint commands are recorded by `PaintCommandSerialization` (`Assets/Code/DataPersistence/`), the app-owned base class of `PartManager`. It is adopted from the PaintIn3D example script `CwCommandSerialization`, which is therefore unused and can be overwritten freely on CW updates. The target texture is a runtime binding (bound in `PartManager.LoadData`), not saved data; `PartData.group` is likewise re-linked on load instead of serialized (it would inline a cycle and bloat the file). The app saves on quit (`OnApplicationQuit → SaveConfig`) — never edit config files while the app runs. App Reset deletes all profiles.
+- **Undo/Redo works on parts, not on texture states.** `PartManager.Undo()` takes the last part
+  painted in this session out of its group and replays the visible groups (`ClearRefreshAll`);
+  `Redo()` puts it back at its old index. Parts that arrive with the twin are not undoable — they
+  go through the part list — while parts painted from a region template are (`RecordPaintedPart`).
+  New paint ends what could be redone; loading a twin drops the history. The header buttons
+  (`Undo All Button` / `Redo All Button` in `GUI top.prefab`, and the copy in `Upload UI.prefab`)
+  carry `PartHistoryButton`, which dims through the CanvasGroup while there is nothing to do.
+  PaintIn3D's own undo is **switched off everywhere and has to stay off**: `undoRedo: None` on the
+  body's `CwPaintableTexture`, `storeStates: false` on every `CwHitScreen` (tool prefabs and the
+  scene's `Delete` tool), no `CwButtonUndoAll`/`CwButtonRedoAll`. In `FullTextureCopy` mode every
+  stroke copied the 8192² body texture (256 MiB), so an iPad Air was killed by iOS on the seventh
+  stroke; it also left the texture and the saved parts disagreeing, so undone strokes came back on
+  the next load. Pinned by `UndoRedoPlayModeTests.Painting_StoresNoTextureCopies`.
 - **Sticker images and their hashes**: a sticker *slot* (`Sticker` + `Item` in the EditSticker UI,
   10 of them) has a fixed `Item.id`, its image is `<Item.id>.png` in the twin directory, and its
   hash is `sum of the id characters % 100` (`Item.getHash`). Paint commands store that hash, so the
@@ -330,6 +343,14 @@ with fileID/GUID cross-references, and Unity re-serializes anyway.
   writes driven `RectTransform` values into `Maker Main.unity` as new prefab overrides — around
   200 lines of noise on top of the intended change. If it happened, `git checkout --` the scene and
   redo the edit without activating.
+- **Saving the scene from the editor writes ~200 lines of noise** — driven `RectTransform` values
+  of the UI prefab instances land in `Maker Main.unity` as new overrides on every
+  `EditorSceneManager.SaveScene`, whether or not anything was activated. For a *scalar* change
+  (`undoRedo: 1` → `0`, a bool on a scene component) flip the value in the YAML by hand instead,
+  then let the editor pick it up (`AssetDatabase.Refresh()` + `OpenScene`; the scene reloads with
+  `isDirty == false`). Prefabs saved via `SaveAsPrefabAsset` do not have this problem. The
+  hand-edit warning above is about wiring — fileIDs, GUIDs, nested-prefab overrides — not about a
+  number on a line that already exists.
 - **A copied prefab brings its scale.** The list in `GroupDetailUI` has `localScale (2,2,1)`, so a
   rect sized for scale 1 renders twice as large. Render the result and look before believing a
   layout is right.

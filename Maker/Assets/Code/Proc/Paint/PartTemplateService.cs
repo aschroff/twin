@@ -98,6 +98,10 @@ public static class PartTemplateService
             partManager.RefreshPart(part);
         partManager.Listening = oldListening;
 
+        // a region painted from a template can be undone like a stroke
+        foreach (var part in newParts)
+            partManager.RecordPaintedPart(part);
+
         return newParts;
     }
 

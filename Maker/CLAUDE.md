@@ -41,6 +41,11 @@ with "another Unity instance is running with this project open". With the editor
   on the main thread runs to completion. Only retry idempotent scripts.
 - The code is compiled as a method body: top-level `return` works, `using X = Y;` aliases do not,
   and types need their namespace (`UnityEngine.UI.Image`). Reflection is available.
+- **No editor connected?** `unity open .` (from `Maker/`) launches the project's editor; it shows
+  up in `unity status` after about a minute.
+- **PlayMode `run_tests` returns at once** with `"result":"running"` and an empty summary, async
+  flag or not. Poll `unity cmd test_status` until `status` is `completed`; parse its JSON with
+  `strict=False`, failure messages carry raw newlines. EditMode runs return their results inline.
 - **Check `editor_status` before `run_tests`** — a run started in play mode dies badly (§9).
 - After writing a `.cs` file, `recompile` and poll `recompile_status` before using the new type.
 - `capture_game_view --save_path` must point inside the project; `Temp/` is gitignored, so write

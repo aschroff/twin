@@ -48,23 +48,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e79b29143865f7c43ac098b70c6cffec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  guiLayers:
+    serializedVersion: 2
+    m_Bits: 32
   _camera: {fileID: 0}
   layers:
     serializedVersion: 2
     m_Bits: 4294967291
-  guiLayers:
-    serializedVersion: 2
-    m_Bits: 32
   emit: 0
   rotateTo: 0
   normalDirection: 2
   normalRelativeTo: 1
   customTransform: {fileID: 0}
-  storeStates: 1
+  storeStates: 0
   priority: 0
+  normalOffset: 0
   requiredButtons: 0
   requiredKey: 0
-  normalOffset: 0
   mouseOffset: 0
   touchOffset: 0
   showPreview: 1
@@ -117,6 +117,8 @@ MonoBehaviour:
   tileTransform: {fileID: 0}
   tileOpacity: 1
   tileTransition: 4
+  findMask: 1
+  findDepthMask: 1
   modifiers:
     modifiers: []
   references:
@@ -149,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: 0
+  maxFingers: -1
 --- !u!114 &6116504990048608802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,3 +164,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e31aa2c7386c438c83ad94be53b720e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myButton: {fileID: 0}

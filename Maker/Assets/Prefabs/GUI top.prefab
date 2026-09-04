@@ -727,7 +727,7 @@ GameObject:
   - component: {fileID: 3563408562450973729}
   - component: {fileID: 3563408562450973728}
   - component: {fileID: 3563408562450973743}
-  - component: {fileID: 3563408562450973742}
+  - component: {fileID: 3275382045958404634}
   m_Layer: 5
   m_Name: Redo All Button
   m_TagString: Untagged
@@ -836,7 +836,7 @@ MonoBehaviour:
   urlTarget: 
   isolateTarget: {fileID: 0}
   isolateToggle: 0
---- !u!114 &3563408562450973742
+--- !u!114 &3275382045958404634
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -845,9 +845,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3563408562450973740}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63c8ec0284249304a8dbb451c3e5d9b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 921244794933447aea9f0bddca6646e7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Maker.Runtime::PartHistoryButton
+  action: 1
 --- !u!1 &3563408562847392276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1449,7 +1450,7 @@ GameObject:
   - component: {fileID: 3563408563394133681}
   - component: {fileID: 3563408563394133680}
   - component: {fileID: 3563408563394133695}
-  - component: {fileID: 3563408563394133694}
+  - component: {fileID: 9111856730254221989}
   m_Layer: 5
   m_Name: Undo All Button
   m_TagString: Untagged
@@ -1558,7 +1559,7 @@ MonoBehaviour:
   urlTarget: 
   isolateTarget: {fileID: 0}
   isolateToggle: 0
---- !u!114 &3563408563394133694
+--- !u!114 &9111856730254221989
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1567,9 +1568,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3563408563394133692}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b129deba32ff67c41ba03d5fe6890e32, type: 3}
+  m_Script: {fileID: 11500000, guid: 921244794933447aea9f0bddca6646e7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Maker.Runtime::PartHistoryButton
+  action: 0
 --- !u!1 &3563408563581558724
 GameObject:
   m_ObjectHideFlags: 0
@@ -2113,6 +2115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ced0a255bb9141f993190a2351e885b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  index: 0
 --- !u!1 &7421137158873375199
 GameObject:
   m_ObjectHideFlags: 0
