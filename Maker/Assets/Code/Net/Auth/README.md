@@ -312,6 +312,10 @@ Do not go looking for these — they are not hidden, they are unbuilt.
 Everything above is a server-side decision. Ask before designing UI that assumes
 one of them.
 
+**Data routes, on the other hand, do exist.** Uploading and listing twin versions is built and
+runs through `TwinAuth.AuthorizeAsync` like any other authenticated call — see
+`Assets/Code/Net/Twins/README.md`. Downloading a version back onto the device is not built yet.
+
 ---
 
 ## 11. Troubleshooting
