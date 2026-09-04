@@ -29,6 +29,22 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 	private GameObject lastActiveTool;
 	private CwPaintableTexture lastTexture;
 	private CwCommandSphere lastSphereCommand;
+
+	/// <summary>A part taken back by Undo, with the place it has to return to on Redo.</summary>
+	private struct UndonePart
+	{
+		public PartData part;
+		public GroupData group;
+		public int index;
+	}
+
+	/// <summary>Parts painted since the twin was loaded, oldest first. Undo takes the last one.
+	/// Parts that arrive with the twin are not here: they were saved on purpose and go through
+	/// the part list. Runtime only - a saved twin has no history.</summary>
+	private readonly List<PartData> undoableParts = new List<PartData>();
+
+	/// <summary>Parts taken back by Undo, the most recently undone one last. New paint clears it.</summary>
+	private readonly List<UndonePart> redoableParts = new List<UndonePart>();
 	//[SerializeField] public bool temp_skiploading = false;
 	public enum Tool
 	{
@@ -129,6 +145,10 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 	
 	private GameObject getActiveTool()
 	{
+		if (listTools == null)
+		{
+			return null;
+		}
 		foreach (Transform child in listTools.transform)
 		{
 			if (child.gameObject.activeSelf == true)
@@ -199,7 +219,130 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 			newPart.group = CurrentGroup;
 		}
 		startNewPart = false;
-		
+		RecordPaintedPart(newPart);
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Undo / redo
+	//
+	// Undo works on parts, not on texture states: the last part painted in this session is taken
+	// out of its group and the visible groups are replayed from their recorded commands. That
+	// costs no memory - the PaintIn3D FullTextureCopy mode kept a full copy of the 8192x8192 body
+	// texture (256 MiB) per stroke and got the app killed by iOS on the seventh stroke - and it
+	// keeps the saved twin consistent: what was undone is gone from the data, so it does not come
+	// back on the next load.
+	// ------------------------------------------------------------------------------------------
+
+	/// <summary>Is there a part painted in this session that Undo can take back?</summary>
+	public bool CanUndo
+	{
+		get { return undoableParts.Count > 0; }
+	}
+
+	/// <summary>Is there an undone part that Redo can bring back?</summary>
+	public bool CanRedo
+	{
+		get { return redoableParts.Count > 0; }
+	}
+
+	/// <summary>Makes a part that was just added to a group undoable, as the last one. Painting
+	/// records its parts itself; this is for parts created another way, like a region template.
+	/// Any new part ends what could be redone.</summary>
+	public void RecordPaintedPart(PartData part)
+	{
+		if (part == null)
+		{
+			return;
+		}
+		undoableParts.Remove(part);
+		undoableParts.Add(part);
+		redoableParts.Clear();
+	}
+
+	/// <summary>Takes back the last part painted in this session and repaints the body without
+	/// it. Returns false when there is nothing to undo.</summary>
+	public bool Undo()
+	{
+		while (undoableParts.Count > 0)
+		{
+			PartData part = undoableParts[undoableParts.Count - 1];
+			undoableParts.RemoveAt(undoableParts.Count - 1);
+
+			GroupData group = part.group ?? FindGroupContainingPart(part);
+			if (group == null || group.groupParts.Contains(part) == false)
+			{
+				// deleted through the part list in the meantime - nothing left to undo here
+				continue;
+			}
+
+			if (part == currentPart)
+			{
+				// so that Redo brings the part back with its tool and view
+				StoreCurrentPartInformation();
+				currentPart = null;
+			}
+
+			int index = group.groupParts.IndexOf(part);
+			group.groupParts.RemoveAt(index);
+			foreach (CommandDataTwin commandData in part.partCommands)
+			{
+				commandDatas.Remove(commandData.data);
+			}
+			redoableParts.Add(new UndonePart { part = part, group = group, index = index });
+
+			// the next stroke must not be appended to a part that is gone
+			startNewPart = true;
+			ClearRefreshAll();
+			return true;
+		}
+		return false;
+	}
+
+	/// <summary>Brings back the part Undo took last, at its old place in its group, and repaints
+	/// the body. Returns false when there is nothing to redo.</summary>
+	public bool Redo()
+	{
+		while (redoableParts.Count > 0)
+		{
+			UndonePart undone = redoableParts[redoableParts.Count - 1];
+			redoableParts.RemoveAt(redoableParts.Count - 1);
+
+			if (groups == null || groups.Contains(undone.group) == false)
+			{
+				// its group was deleted in the meantime - the part has no place to return to
+				continue;
+			}
+
+			int index = Mathf.Clamp(undone.index, 0, undone.group.groupParts.Count);
+			undone.group.groupParts.Insert(index, undone.part);
+			undone.part.group = undone.group;
+			foreach (CommandDataTwin commandData in undone.part.partCommands)
+			{
+				commandDatas.Add(commandData.data);
+			}
+			undoableParts.Add(undone.part);
+
+			// the next stroke starts its own part rather than growing the restored one
+			startNewPart = true;
+			ClearRefreshAll();
+			return true;
+		}
+		return false;
+	}
+
+	/// <summary>Drops the undo and redo history - when another twin is loaded, or the twin is reset.</summary>
+	private void ClearHistory()
+	{
+		undoableParts.Clear();
+		redoableParts.Clear();
+	}
+
+	/// <summary>Takes a part out of the history when it is deleted another way, so that Undo
+	/// does not stumble over it and Redo cannot resurrect it.</summary>
+	private void ForgetPart(PartData part)
+	{
+		undoableParts.Remove(part);
+		redoableParts.RemoveAll(undone => undone.part == part);
 	}
 
 	public GroupData StartNewGroup(Group group)
@@ -262,6 +405,7 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 	}
 	public void LoadData(ConfigData data)
 	{
+		ClearHistory();
 		try
 		{
 			//if (temp_skiploading == false)
@@ -473,6 +617,7 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 	public void clearPart(PartData partData)
 	{
 		Debug.Log("Removing part: " + partData.id);
+		ForgetPart(partData);
 		if (currentPart == partData)
 		{
 			currentPart = null;
@@ -535,6 +680,7 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 	[ContextMenu("Reset")]
 	public void ClearAll()
 	{
+		ClearHistory();
 		base.Clear();
 		groups.Clear();
 		CurrentGroup = null;

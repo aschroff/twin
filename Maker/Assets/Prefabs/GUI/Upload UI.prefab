@@ -1496,7 +1496,7 @@ GameObject:
   - component: {fileID: 1697858973152136148}
   - component: {fileID: 5013635633242879248}
   - component: {fileID: 2280176358079076250}
-  - component: {fileID: 9071872369775013698}
+  - component: {fileID: 3099240636821062829}
   m_Layer: 5
   m_Name: Redo All Button
   m_TagString: Untagged
@@ -1605,7 +1605,7 @@ MonoBehaviour:
   urlTarget: 
   isolateTarget: {fileID: 0}
   isolateToggle: 0
---- !u!114 &9071872369775013698
+--- !u!114 &3099240636821062829
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1614,9 +1614,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5621185417409886605}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63c8ec0284249304a8dbb451c3e5d9b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 921244794933447aea9f0bddca6646e7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Maker.Runtime::PartHistoryButton
+  action: 1
 --- !u!1 &6106073109344429245
 GameObject:
   m_ObjectHideFlags: 0
@@ -1882,7 +1883,7 @@ GameObject:
   - component: {fileID: 6920443694170121220}
   - component: {fileID: 4758130515431032904}
   - component: {fileID: 5573479226509418104}
-  - component: {fileID: 3722020393747808039}
+  - component: {fileID: 5907965448358512981}
   m_Layer: 5
   m_Name: Undo All Button
   m_TagString: Untagged
@@ -1991,7 +1992,7 @@ MonoBehaviour:
   urlTarget: 
   isolateTarget: {fileID: 0}
   isolateToggle: 0
---- !u!114 &3722020393747808039
+--- !u!114 &5907965448358512981
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2000,9 +2001,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6618751962089921943}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b129deba32ff67c41ba03d5fe6890e32, type: 3}
+  m_Script: {fileID: 11500000, guid: 921244794933447aea9f0bddca6646e7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Maker.Runtime::PartHistoryButton
+  action: 0
 --- !u!1 &6709165628691357388
 GameObject:
   m_ObjectHideFlags: 0

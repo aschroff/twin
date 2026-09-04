@@ -75,6 +75,21 @@ public static class TemplatePoCRunner
         RunEditMode("EditModeTests.JsonSchemaBuilderTests", "EditModeTests.ApiKeysTests");
     }
 
+    /// <summary>Undo/redo of parts: the bookkeeping (EditMode, no scene) - the buttons and the
+    /// repaint are in Run Undo Redo Tests.</summary>
+    [MenuItem("Tools/Template PoC/Run Part History Tests")]
+    public static void RunPartHistoryTests()
+    {
+        RunEditMode("EditModeTests.PartHistoryTests");
+    }
+
+    [MenuItem("Tools/Template PoC/Run Undo Redo Tests")]
+    public static void RunUndoRedoTests()
+    {
+        Run("NoAPICalls.UndoRedoPlayModeTests.UndoAndRedo_TakeBackAndRestoreTheLastPart",
+            "NoAPICalls.UndoRedoPlayModeTests.Painting_StoresNoTextureCopies");
+    }
+
     /// <summary>Calls the OpenAI API - needs a key in Assets/Tests/Helper/testsecrets.json.</summary>
     [MenuItem("Tools/Template PoC/Run Document Mapping API Test")]
     public static void RunDocumentMappingApiTest()
