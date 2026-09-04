@@ -237,6 +237,10 @@ MonoBehaviour:
     m_Localized: Export patient
     m_Metadata:
       m_Items: []
+  - m_Id: 227175816582127616
+    m_Localized: Import patient
+    m_Metadata:
+      m_Items: []
   - m_Id: 229391279508676608
     m_Localized: Body Region
     m_Metadata:
@@ -631,6 +635,188 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 229785026562088993
     m_Localized: Sole of foot right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102718140416
+    m_Localized: Upload
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102726529024
+    m_Localized: Upload photo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102726529025
+    m_Localized: Upload document
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568878596096
+    m_Localized: 'You are given one document about one patient: a photo, a drawing,
+      a body chart or a report. Find every medical finding in it and map each finding
+      onto the digital twin of the patient''s body, using the groups, tools and body
+      regions listed below.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984704
+    m_Localized: Use an existing group whenever a finding fits it; propose a new
+      group only when none fits. Use a tool whose meaning already fits; only when
+      no tool fits, take one from the list of free tools and give it a meaning. List
+      a tool as taken into use only when you took it from that free list - a tool
+      that already has a meaning keeps it and does not belong in that list, so leave
+      the list empty when no tool was free. Choose a surface tool for an area and
+      a line tool for a line or a small spot. When a finding covers both sides of
+      the body or several body parts, name every region it covers. Anything that
+      cannot be placed on a body region, and anything that concerns the patient as
+      a whole, goes into one summarising text instead of a marking.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984705
+    m_Localized: Describe the medical finding shown on the body in the style of a
+      medical report. Include the size and shape of the finding, its location on
+      the body including the relative position on the body part and its orientation,
+      and any other relevant detail.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984706
+    m_Localized: 'Create a medical report of about 250 words: describe each medical
+      finding in two to three sentences, then summarise the overall situation and
+      the recommended treatments. The medical findings shown on the body are listed
+      below:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234843751060594688
+    m_Localized: Apply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235442572576677888
+    m_Localized: Continue review
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235581215735799808
+    m_Localized: Select all
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235581215765159936
+    m_Localized: Deselect all
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295083978752
+    m_Localized: Account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950272
+    m_Localized: Email
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950273
+    m_Localized: you@example.com
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950274
+    m_Localized: Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950275
+    m_Localized: Sign in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950276
+    m_Localized: Sign out
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950277
+    m_Localized: Enter your email address and password.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950278
+    m_Localized: "Signing in\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950279
+    m_Localized: "Signing out\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950280
+    m_Localized: Signed in.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950281
+    m_Localized: Not signed in.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950282
+    m_Localized: Email address or password is incorrect.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950283
+    m_Localized: Could not reach the server. Check your connection and try again.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950284
+    m_Localized: Something went wrong. Please try again.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950285
+    m_Localized: The app is not configured to reach the server.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942101897216
+    m_Localized: Versions of {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840256
+    m_Localized: Upload
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840257
+    m_Localized: Only on this device
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840258
+    m_Localized: On the server only
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840259
+    m_Localized: Uploaded by {0} on {1:dd MMM yyyy HH:mm}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840260
+    m_Localized: "Uploading\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840261
+    m_Localized: Upload failed.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840262
+    m_Localized: Sign in on the settings page to upload versions.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840263
+    m_Localized: "Loading\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840264
+    m_Localized: Select the versions to upload.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840265
+    m_Localized: Could not reach the server. Showing what is on this device.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840266
+    m_Localized: '{0} uploaded.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840267
+    m_Localized: '{0} of {1} uploaded.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840268
+    m_Localized: This version is too large for the server.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239582523400642560
+    m_Localized: Server versions
     m_Metadata:
       m_Items: []
   references:

@@ -64,6 +64,29 @@ public class SettingsManager : MonoBehaviour
         return null;
     }
 
+    /// <summary>The prompt row whose <b>visible Label</b> reads <paramref name="labelText"/>.
+    /// Unlike <see cref="getPromptObject"/> this tells rows apart that share label and level:
+    /// three rows carry label "Medical Report" on level Version, two of them leftovers on the
+    /// Meshcapade settings objects whose own Labels read differently. No fallback either - a
+    /// caller that means one specific row must get that row or nothing.</summary>
+    public ItemPrompt getPromptObjectByLabelText(string labelText,
+        ItemPrompt.PromptLevel level = ItemPrompt.PromptLevel.Unknown)
+    {
+        Transform top = gameObject.transform.parent;
+        foreach (GameObject child in getChildrenWithItemPrompt(top))
+        {
+            ItemPrompt itemPrompt = child.GetComponent<ItemPrompt>();
+            if (itemPrompt.LabelText() != labelText) continue;
+            if (level == ItemPrompt.PromptLevel.Unknown || itemPrompt.level == level)
+            {
+                return itemPrompt;
+            }
+        }
+
+        Debug.Log("Prompt row not found by its label: " + labelText + ", " + level);
+        return null;
+    }
+
     private List<GameObject> getChildrenWithItemPrompt(Transform parent)
     {
         List<GameObject> childrenWithItemPrompt = new List<GameObject>();

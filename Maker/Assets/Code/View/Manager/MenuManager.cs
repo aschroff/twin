@@ -32,6 +32,13 @@ public class MenuManager : MonoBehaviour
 {
     [SerializeField] public GameObject prefab;
     [SerializeField] public MenuDictionary  menu;
+
+    /// <summary>Asked for each entry's text key before the entry is built; an entry it says no to
+    /// is left out. The configured menu is the full set of what a panel *can* offer - this is how an
+    /// entry that would do nothing right now stays off the screen instead of being offered and then
+    /// refusing. Entries are rebuilt on every OnEnable, so the answer may change between openings.
+    /// Null means every entry is offered.</summary>
+    public Func<string, bool> entryAvailable;
     
 
     void OnEnable()
@@ -57,6 +64,10 @@ public class MenuManager : MonoBehaviour
         Delete();
         foreach (MenuAction action in menu.Values)
         {
+            if (entryAvailable != null && !entryAvailable(action.text))
+            {
+                continue;
+            }
             createMenuEntry(action);
         }
         {

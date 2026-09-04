@@ -237,6 +237,10 @@ MonoBehaviour:
     m_Localized: Twin exportieren
     m_Metadata:
       m_Items: []
+  - m_Id: 227175816582127616
+    m_Localized: Twin importieren
+    m_Metadata:
+      m_Items: []
   - m_Id: 229391279508676608
     m_Localized: Bereich
     m_Metadata:
@@ -631,6 +635,193 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 229785026562088993
     m_Localized: "Fu\xDFsohle rechts"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102718140416
+    m_Localized: Hochladen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102726529024
+    m_Localized: Foto hochladen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234791102726529025
+    m_Localized: Dokument hochladen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568878596096
+    m_Localized: "Du erh\xE4ltst ein Dokument zu einer Patientin oder einem Patienten:
+      ein Foto, eine Zeichnung, ein K\xF6rperschema oder einen Bericht. Finde jeden
+      medizinischen Befund darin und ordne jeden Befund dem digitalen Zwilling des
+      K\xF6rpers zu - mit den unten aufgef\xFChrten Gruppen, Werkzeugen und K\xF6rperregionen."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984704
+    m_Localized: "Verwende eine bestehende Gruppe, wenn ein Befund dazu passt; schlage
+      eine neue Gruppe nur vor, wenn keine passt. Verwende ein Werkzeug, dessen Bedeutung
+      bereits passt; nimm nur dann ein Werkzeug aus der Liste der freien Werkzeuge
+      und gib ihm eine Bedeutung, wenn kein Werkzeug passt. F\xFChre ein Werkzeug
+      nur dann als neu belegt auf, wenn du es aus dieser Liste der freien Werkzeuge
+      genommen hast - ein Werkzeug, das bereits eine Bedeutung hat, beh\xE4lt sie
+      und geh\xF6rt nicht in diese Liste; lass die Liste leer, wenn kein Werkzeug
+      frei war. W\xE4hle ein Fl\xE4chenwerkzeug f\xFCr eine Fl\xE4che und ein Linienwerkzeug
+      f\xFCr eine Linie oder eine kleine Stelle. Wenn ein Befund beide K\xF6rperseiten
+      oder mehrere K\xF6rperteile betrifft, nenne jede betroffene Region. Alles,
+      was keiner K\xF6rperregion zugeordnet werden kann, und alles, was die Patientin
+      oder den Patienten als Ganzes betrifft, kommt in einen zusammenfassenden Text
+      statt in eine Markierung."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984705
+    m_Localized: "Beschreibe den am K\xF6rper dargestellten medizinischen Befund
+      im Stil eines Arztberichts. Nenne Gr\xF6\xDFe und Form des Befundes, seine
+      Lage am K\xF6rper einschlie\xDFlich der relativen Position am K\xF6rperteil
+      und seiner Orientierung sowie weitere relevante Details."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234806568886984706
+    m_Localized: "Erstelle einen Arztbericht von etwa 250 W\xF6rtern: beschreibe
+      jeden medizinischen Befund in zwei bis drei S\xE4tzen und fasse anschlie\xDFend
+      die Gesamtsituation und die empfohlenen Behandlungen zusammen. Die am K\xF6rper
+      dargestellten Befunde sind unten aufgef\xFChrt:"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 234843751060594688
+    m_Localized: "\xDCbernehmen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235442572576677888
+    m_Localized: "Pr\xFCfung fortsetzen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235581215735799808
+    m_Localized: "Alle w\xE4hlen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235581215765159936
+    m_Localized: "Keine w\xE4hlen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295083978752
+    m_Localized: Konto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950272
+    m_Localized: E-Mail
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950273
+    m_Localized: name@beispiel.de
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950274
+    m_Localized: Passwort
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950275
+    m_Localized: Anmelden
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950276
+    m_Localized: Abmelden
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950277
+    m_Localized: Bitte E-Mail-Adresse und Passwort eingeben.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950278
+    m_Localized: "Anmeldung l\xE4uft\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950279
+    m_Localized: "Abmeldung l\xE4uft\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950280
+    m_Localized: Angemeldet.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950281
+    m_Localized: Nicht angemeldet.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950282
+    m_Localized: E-Mail-Adresse oder Passwort ist falsch.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950283
+    m_Localized: "Server nicht erreichbar. Bitte Verbindung pr\xFCfen und erneut
+      versuchen."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950284
+    m_Localized: Etwas ist schiefgelaufen. Bitte erneut versuchen.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 238475295104950285
+    m_Localized: "Die App ist nicht f\xFCr den Serverzugriff konfiguriert."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942101897216
+    m_Localized: Versionen von {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840256
+    m_Localized: Hochladen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840257
+    m_Localized: "Nur auf diesem Ger\xE4t"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840258
+    m_Localized: Nur auf dem Server
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840259
+    m_Localized: Hochgeladen von {0} am {1:dd.MM.yyyy HH:mm}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840260
+    m_Localized: "Wird hochgeladen\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840261
+    m_Localized: Upload fehlgeschlagen.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840262
+    m_Localized: Zum Hochladen bitte in den Einstellungen anmelden.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840263
+    m_Localized: "Wird geladen\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840264
+    m_Localized: "Versionen zum Hochladen ausw\xE4hlen."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840265
+    m_Localized: "Server nicht erreichbar. Angezeigt wird, was auf diesem Ger\xE4t
+      liegt."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840266
+    m_Localized: '{0} hochgeladen.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840267
+    m_Localized: '{0} von {1} hochgeladen.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239580942143840268
+    m_Localized: "Diese Version ist zu gro\xDF f\xFCr den Server."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 239582523400642560
+    m_Localized: Server-Versionen
     m_Metadata:
       m_Items: []
   references:
