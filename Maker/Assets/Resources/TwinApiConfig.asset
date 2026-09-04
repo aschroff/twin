@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72826244689824918b8ce7227362e0ff, type: 3}
   m_Name: TwinApiConfig
   m_EditorClassIdentifier: Maker.Runtime::Code.Net.Auth.TwinApiConfig
-  baseUrl: http://localhost
+  baseUrl: http://localhost:8000
   timeoutSeconds: 30
   verboseLogging: 1

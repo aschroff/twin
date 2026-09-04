@@ -440,6 +440,26 @@ public class FileDataHandler
         return CompressFolder(profileId);
     }
 
+    /*
+    * Packs a twin directory as it stands on disk, without saving anything into it first.
+    *
+    * ExportZip saves before packing, which is right for the twin currently open - its painted
+    * texture and its config only exist in memory until then. It is wrong for any other version:
+    * writing its file again moves its modification time, and GetMostRecentlyUpdatedProfileId
+    * uses exactly that to decide which twin the app opens next. Uploading an old version would
+    * silently make it the one that comes back on the next start.
+    */
+    public string CompressExisting(string profileId)
+    {
+        if (!Exists(profileId))
+        {
+            Debug.LogError("Cannot pack " + profileId + ": no such twin directory.");
+            return null;
+        }
+
+        return CompressFolder(profileId);
+    }
+
     private string CompressFolder(string profileId)
     {   
         string profileDirectoryPath = Path.Combine( dataDirPath, profileId );

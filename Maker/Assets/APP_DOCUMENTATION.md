@@ -67,6 +67,36 @@ cache when there is one and otherwise reads the file and fills the cache from it
 - Import/export is the groundwork for exchanging twin versions between users over a server, so
   everything a twin needs has to live in its directory.
 
+**Known limits, none of them decided yet:**
+
+- Export zips are written **into the twin data directory**. Unzipping one by hand there creates a
+  directory that looks like a twin (`LipEdema.twin 2`) and the versions screen then throws. Moving
+  exports to their own folder — `Exports/` inside the data dir, or `Application.temporaryCachePath`
+  — is an open call.
+- Version labels grow on repeated exchange: a twin imported, exported and imported again becomes
+  `000V01V01`. To be revisited once versions become timestamps.
+- The app cannot delete the twin that is currently selected, so the twin list can never be emptied.
+- The `V99` ceiling fails an import with a log line and nothing on screen.
+
+### Twin versions on the server
+
+Since TWIN-437 a twin version can be uploaded to the backend and listed back. The screen is
+reached from the versions screen (the cloud button, `ConfigManager.OpenVersionSync`) and shows one
+row per version of the current twin: which are on the server, which exist only on this device.
+
+- The archive that is uploaded is **the same zip the export produces** — that is why a twin
+  directory has to be self-contained.
+- A version already on the server cannot be ticked. The server refuses a second upload of the same
+  twin name and version permanently (`TWIN_VERSION_ALREADY_EXISTS`), so offering the tick would be
+  offering a guaranteed failure.
+- Uploading a version that is *not* the one currently open packs its directory untouched. Going
+  through the normal export would call `Save` first, which moves the directory's modification time
+  — and `GetMostRecentlyUpdatedProfileId` picks the twin to open at the next start from exactly
+  that. See `DataPersistenceManager.ExportZipForVersion`.
+- Reading a version back down from the server does not exist yet.
+
+Details: `Assets/Code/Net/Twins/README.md`.
+
 ---
 
 ## 3. Architecture & Code Structure
@@ -99,6 +129,10 @@ Assets/
 │   │   ├── Model.cs / Lib.cs
 │   │   ├── ToolTracker.cs
 │   │   └── TwinNavigation.cs
+│   │
+│   ├── Net/                       # The Twin Maker backend
+│   │   ├── Auth/                  # Sign-in, tokens, session — README.md in the folder
+│   │   └── Twins/                 # Twin versions on the server — README.md in the folder
 │   │
 │   ├── Proc/                      # External processing & async jobs
 │   │   ├── PROCESSES.md           # reference for the process layer
@@ -222,6 +256,10 @@ Spec, target structure and the remaining steps:
   `Temp/TemplatePoCResults.json` (`Assets/Tests/Editor/TemplatePoCRunner.cs`) — useful for
   running tests from outside the editor UI.
 - Writing painting tests: read `Assets/Tests/PlayMode/NoAPICalls/CwPaintingTestGuide.md` first.
+- The backend clients are covered by **EditMode** tests that run against a real HTTP server on
+  loopback (`Assets/Tests/EditMode/FakeTwinApiServer.cs`), not against a mock: the ways an HTTP
+  client can be wrong — a form-encoded body, a doubled `/v1`, a renamed JSON key — are all
+  invisible from inside Unity and only show up as a 422 against a live server.
 
 ---
 
@@ -261,3 +299,46 @@ Spec, target structure and the remaining steps:
   `Maker` object (`InteractionController`) that button clicks target. `Canvas` itself is not a
   prefab, so panels are children of it in the scene.
 - **Text → Part feature** (`Assets/Code/Proc/Paint/`): `PartTemplateService.PaintRegion(twin, region)` paints a pre-painted body-region template (bundled twins under `Resources/templates/`, 98 regions — catalog in `Assets/Resources/BODY_REGIONS.md`) into the twin's active group, optionally as a chosen marker/filler tool. The part carries `regionKey` plus the localized region name as its description. Region names live in `TwinLocalTables` under `region.<key>` for `enmed`/`demed`/`demedlatin` and are imported from `Assets/Resources/region_names.tsv` via **Tools → Localization → Import Region Names**. Manual selection UI: `RegionManager`. Spec and findings: `Assets/Code/Proc/Paint/FEATURE_TEXT_TO_PART.md`. Generation tooling: `Assets/Tests/PlayMode/TemplateLibraryTools/` (marked `[Explicit]` — not part of the app test suite).
+
+---
+
+## 9. Driving the editor from outside
+
+The project carries `com.unity.pipeline` in its committed `manifest.json`, so a **running** Unity
+editor can be driven from a terminal by any tool that can shell out — not only by one assistant.
+`unity status` shows whether an editor is connected; it takes ~15 s after an editor start. The
+package offers, among others: run and list tests, execute C# in the editor, read the console,
+capture the game or scene view, and the typed asset commands (`set_serialized_field`,
+`save_prefab_contents`, `find_gameobjects`, …).
+
+Asset edits from a script go through the normal editor API — `PrefabUtility.LoadPrefabContents` →
+change → `SaveAsPrefabAsset` for prefabs, `SerializedObject` for private `[SerializeField]`
+fields. Do not hand-edit `.unity` or `.prefab` YAML: the wiring lives in nested-prefab overrides
+with fileID/GUID cross-references, and Unity re-serializes anyway.
+
+**Traps, each of which has cost time here:**
+
+- **`SerializableDictionary` (Rotary Heart) cannot be filled field by field.** Each write of
+  `_keys`/`_values` is its own apply, and entries that momentarily share an empty key collapse into
+  one on the next deserialize. Resize the arrays *and* set the distinct keys in a **single** apply,
+  then verify by reopening the scene and counting. `UIController.uiPanels` and
+  `InteractionController.interactionModes` are both of this kind.
+- **Running EditMode tests requires play mode to be stopped.** Started during play mode, the run
+  does not fail cleanly: it dies in the test framework's `SaveModifiedSceneTask` with
+  `This cannot be used during play mode` and leaves the status stuck on "running".
+- **Do not activate a UI prefab instance in the scene just to look at it.** The layout rebuild
+  writes driven `RectTransform` values into `Maker Main.unity` as new prefab overrides — around
+  200 lines of noise on top of the intended change. If it happened, `git checkout --` the scene and
+  redo the edit without activating.
+- **A copied prefab brings its scale.** The list in `GroupDetailUI` has `localScale (2,2,1)`, so a
+  rect sized for scale 1 renders twice as large. Render the result and look before believing a
+  layout is right.
+- **Screenshotting a Screen Space - Overlay canvas outside play mode** needs a detour: overlay
+  canvases bypass every camera, so a camera capture shows nothing and a scene-view capture shows
+  the world. Build a throwaway additive scene with a **WorldSpace** canvas sized to the runtime
+  canvas, instantiate the panel into it, add an orthographic camera and capture that. In play mode,
+  capturing the composited screen works directly.
+- **Adding localization keys makes Unity re-register the string tables with Addressables.** Check
+  `git diff Assets/AddressableAssetsData/` afterwards: a `Preload` label went missing that way once,
+  which would have left that locale's strings unloaded in a build.
+

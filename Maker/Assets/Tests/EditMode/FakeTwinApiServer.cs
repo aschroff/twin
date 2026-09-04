@@ -30,6 +30,9 @@ namespace EditModeTests
         {
             public string Method;
             public string Path;
+
+            /// <summary>The query string including its leading '?', or empty.</summary>
+            public string Query;
             public string ContentType;
             public string Accept;
             public string Authorization;
@@ -131,6 +134,7 @@ namespace EditModeTests
                         {
                             Method = request.HttpMethod,
                             Path = request.Url?.AbsolutePath,
+                            Query = request.Url?.Query,
                             ContentType = request.ContentType,
                             Accept = request.Headers["Accept"],
                             Authorization = request.Headers["Authorization"],
