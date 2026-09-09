@@ -35,6 +35,22 @@ screen names the file and carries the whole prompt. |
 | **UndoRedoPlayModeTests** (2 tests) | Undo/redo in the editing header, through the real buttons of the prefab: a click takes the last painted part out of its group, off the body (pixel comparison) and out of the save data, the next click brings it back at its place and repaints it, new paint afterwards ends the redo history. The second test pins the configuration that keeps the body texture from being copied per stroke — `undoRedo: None` on the body, `storeStates` off on every tool, no PaintIn3D undo button left — and that painting leaves no texture states behind (that copying got the app killed on the seventh stroke on an iPad Air). |
 | **PartTemplateServiceTests** (11 tests) | The Text→Part service (`Assets/Code/Proc/Paint/`): painting a body region into the active group, tool override (colour, metadata, sticker rejection), current-tool resolution with marker fallback, the region catalog, region names per language (enmed/demed/demedlatin), and the save format (linear file growth, no texture references, part↔group and texture links restored on load). |
 | **ProgrammaticPaintingTests**<br>`PaintTemplateParts_ThreeRegions` | Regression test for driving the CW paint pipeline from code (marker stroke, filler area): parts get the right tool metadata, a stored view, and survive the save round trip. Foundation of the template library generator. |
+| **PartsScreenshotProcessPlayModeTests**<br>`ExecuteSync_WritesScreenshotForLinkedPart` | Paints a part on LipEdema, links it into the "Swell" group, runs `PartsScreenshotProcess.ExecuteSync` the way `VersionSequenceProcess` does (awaiting `ExecuteCompleted`), and asserts the `screenshot_<profile> - <group> - part <id>.png` file lands in the profile's data folder. |
+| **SkinProcessPlayModeTests**<br>`ExportSkin_WritesSkinPngForSelectedProfile` | Opens a twin's Menu screen, clicks "Export skin", and asserts `skin_<profile>.png` is written to the profile's data folder. |
+| **TourProcessPlayModeTests**<br>`ExportStandardViews_WritesScreenshotPerView` | Opens a twin's Menu screen, clicks "Export standard views" (which only starts a coroutine, so the test ticks a few frames), and asserts one `screenshot_<profile> - <view>.png` per configured `StandardViewManager` view. |
+| **PartsDescriptionProcessTests**<br>`DescribeParts_SetsDescriptionFromRealScreenshot` | Lives here despite calling the real OpenAI API (skips itself via `Assert.Ignore` without a key in `testsecrets.json`). Paints a part, produces a real screenshot via `PartsScreenshotProcess` — `PartDescriptionProcess` only calls the AI once a screenshot exists on disk — then calls `PartsDescriptionProcess.Handle`, which fans out over every part, and waits for the description to move past the `"Part Number N :\n..."` placeholder `Execute()` stamps in before the per-part AI call overwrites it. |
+
+## `APICalls/` — tests that call the real OpenAI API
+
+All need a valid key in `Assets/Tests/Helper/testsecrets.json`; the Process tests skip themselves
+(`Assert.Ignore`) without one, and `401`s otherwise.
+
+| Test | What it checks |
+|------|----------------|
+| **PartDescriptionProcessTests**<br>`DescribePart_SetsDescriptionFromRealScreenshot` | Paints one part on LipEdema, produces a real screenshot via `PartsScreenshotProcess` (the same order `VersionSequenceProcess` uses — `PartDescriptionProcess` only calls the AI once a screenshot exists on disk), then calls `PartDescriptionProcess.Handle` for that single part and waits for a real, non-error description. |
+| **VersionProcessTests**<br>`DescribeVersion_SetsPromptResultFromRealPart` | Sets a part's description directly — skipping a second real AI call — so `partManager.AllPartsDescribed()` is true, clears the Version-level `ItemPrompt.promptResult`, calls `VersionProcess.Handle`, and waits for a real, non-error prompt result. |
+| **VersionSequenceProcessTests**<br>`RunSequence_DescribesPartAndVersionFromRealScreenshot` | Covers the "VersionSequenceProcess" GameObject's `SequenceProcess`, which chains `PartsScreenshotProcess` → `PartsDescriptionProcess` → `VersionProcess`. Paints a part with no screenshot and no description yet, calls `sequenceProcess.Handle`, and waits (60s, for two real AI calls in a row) for a non-error part description and version prompt result. |
+| **OpenAIClientTests** (8 tests) | The `OpenAIClient` class directly — no scene, derives from `TestBase` rather than `PlayModeTestBase`: simple and structured requests, invalid-key handling, an empty-key constructor throw, parallel requests, model listing, file upload, and the AI component's image/PDF input path. |
 
 ## `Assets/Tests/EditMode/` — unit tests, no scene, no app
 
@@ -62,22 +78,18 @@ They are `[UnityTest]` only because painting needs play mode; all methods are ma
 `[Explicit]`, so **"Run All" skips them**. Start them from **Tools → Template Library → Batch …**.
 See `TemplateLibrary/README.md` for the workflow.
 
-## Outside `NoAPICalls/`
+## Outside `NoAPICalls/` and `APICalls/`
 
-**DocumentMappingApiTests** (2 tests) send an invented document to the LLM. The first checks the
-answer can be applied: every body region is one of the 98 keys, every tool is a tool of this app,
-every group is existing or proposed, a tool taken into use was free, and what concerns the patient
-as a whole comes back as the patient text. The second drives the same thing **through the app**, with the real
-two-page PDF `Assets/Tests/Helper/lipoedema-report-sample.pdf` (a fictional lipoedema report):
-Upload, pick, upload, call, proposal on the review screen. It also proves the app finds a key, that
-the PDF upload path works — a text file takes a different one — and that a report full of
-symmetrical findings yields at least one multi-region painting.
+**DocumentMappingApiTests** (2 tests, still directly under `PlayMode/`) send an invented document
+to the LLM. The first checks the answer can be applied: every body region is one of the 98 keys,
+every tool is a tool of this app, every group is existing or proposed, a tool taken into use was
+free, and what concerns the patient as a whole comes back as the patient text. The second drives
+the same thing **through the app**, with the real two-page PDF
+`Assets/Tests/Helper/lipoedema-report-sample.pdf` (a fictional lipoedema report): Upload, pick,
+upload, call, proposal on the review screen. It also proves the app finds a key, that the PDF
+upload path works — a text file takes a different one — and that a report full of symmetrical
+findings yields at least one multi-region painting.
 **Tools → Template PoC → Run Document Mapping API Test**.
-
-**OpenAIClientTests** (9 tests) call the OpenAI API: simple and structured requests, invalid
-key handling, parallel requests, model listing, file upload, and the AI component with image
-and PDF input. They need a valid key in `Assets/Tests/Helper/testsecrets.json` and fail with
-401 otherwise.
 
 ## Notes for writing new tests
 
