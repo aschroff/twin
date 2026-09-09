@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Code.AI;
 using Code.AI.StructuredOutputs;
@@ -539,5 +540,67 @@ public class OpenAIClientTests : TestBase
         Debug.Log($"✅ PDF test passed (Files API upload)");
 
         Debug.Log($"\n✅ Both file handling approaches work correctly!");
+    }
+
+    [UnityTest]
+    public IEnumerator AI_Component_PartDescriptionProcess_WithTestPartScreenshot()
+    {
+        // Validates the full AI call made by PartDescriptionProcess:
+        // structured output with MedicalAI.InjuryDescriptionResponse, image input, and a part-description prompt.
+        // PartDescriptionProcess requires a screenshot to already exist on disk before it runs —
+        // it does not take the screenshot itself. This test provides a fixture image.
+
+        if (!HasOpenAIApiKey)
+        {
+            Assert.Ignore("API key not configured. Create Assets/Tests/Helper/testsecrets.json from testsecrets.example.json");
+            yield break;
+        }
+
+        var client = new OpenAIClient(OpenAIApiKey, timeout: 60);
+
+        var texture = new Texture2D(1, 1);
+        texture.SetPixel(0, 0, Color.red);
+        texture.Apply();
+        var screenshotPath = Path.Combine(Application.temporaryCachePath, "test_part_screenshot.png");
+        File.WriteAllBytes(screenshotPath, texture.EncodeToPNG());
+
+        Debug.Log($"Testing PartDescriptionProcess flow with:");
+        Debug.Log($"  Model: {ProductionModel}");
+        Debug.Log($"  Screenshot: {screenshotPath}");
+
+        // Mirrors the prompt PartDescriptionProcess builds:
+        // GetPromptOfLabel(variant) + Part.Description(part) + GroupDescription
+        var prompt =
+            "Describe the medical findings visible on the body in this image. " +
+            "The medical findings are marked with a marker line with the color red (RGB 255, 0, 0). " +
+            "The medical finding marked with this marker line is: test finding. ";
+
+        MedicalAI.InjuryDescriptionResponse response = null;
+        System.Exception error = null;
+
+        var task = client.RequestStructuredAsync<MedicalAI.InjuryDescriptionResponse>(
+            prompt,
+            ProductionModel,
+            imagePath: screenshotPath
+        );
+
+        while (!task.IsCompleted)
+            yield return null;
+
+        if (task.Exception != null)
+            error = task.Exception.InnerException ?? task.Exception;
+        else
+            response = task.Result;
+
+        if (File.Exists(screenshotPath))
+            File.Delete(screenshotPath);
+
+        Assert.IsNull(error, $"PartDescriptionProcess AI call failed: {error?.Message}");
+        Assert.IsNotNull(response, "Response should not be null");
+        Assert.IsNotNull(response.Description, "Description should not be null");
+        Assert.IsNotEmpty(response.Description, "Description should not be empty");
+
+        Debug.Log($"Description: {response.Description}");
+        Debug.Log("✅ PartDescriptionProcess integration test passed!");
     }
 }
