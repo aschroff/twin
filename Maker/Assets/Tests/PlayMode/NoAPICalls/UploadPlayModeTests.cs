@@ -17,6 +17,8 @@ namespace NoAPICalls
     ///
     /// Screenshots for visual QA are written to:
     ///   Application.temporaryCachePath/UploadShots/
+    /// The directory is created on demand and no longer cleared, so shots from the previous run
+    /// are simply overwritten - clearing it was what made one test depend on the other's order.
     /// </summary>
     public class UploadPlayModeTests : PlayModeTestBase
     {
@@ -29,10 +31,6 @@ namespace NoAPICalls
         [UnityTest]
         public IEnumerator UploadButton_OffersPhotoAndDocument()
         {
-            if (Directory.Exists(ShotsDir))
-                Directory.Delete(ShotsDir, recursive: true);
-            Directory.CreateDirectory(ShotsDir);
-
             yield return CaptureShot("main-with-upload-button");
 
             yield return ClickButtonByPath(UploadButton);
@@ -158,9 +156,18 @@ namespace NoAPICalls
             Assert.IsNotNull(row, $"No row in the upload panel shows '{localized}'.");
         }
 
+        /// <summary>
+        /// Creates the directory itself rather than trusting a previous test to have done it.
+        /// It used to be created - and deleted - inside <see cref="UploadButton_OffersPhotoAndDocument"/>,
+        /// which NUnit runs *after* the other test in this class because it sorts alphabetically.
+        /// The other test therefore wrote into a directory nobody had made, and only got away with
+        /// it when an earlier run had left one behind: green on a machine that had run these tests
+        /// before, red on a fresh one and in CI (TWIN-447).
+        /// </summary>
         private IEnumerator CaptureShot(string shotName)
         {
             yield return new WaitForEndOfFrame();
+            Directory.CreateDirectory(ShotsDir);
             var texture = ScreenCapture.CaptureScreenshotAsTexture();
             File.WriteAllBytes(Path.Combine(ShotsDir, shotName + ".png"), texture.EncodeToPNG());
             Object.Destroy(texture);
