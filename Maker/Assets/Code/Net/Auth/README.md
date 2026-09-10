@@ -120,10 +120,20 @@ else
     GoToLoginScreen();
 ```
 
-Returns `false` when there was no stored session or the server refused it — both
-ordinary outcomes, so neither throws. A **network failure does throw**, because
-the session may be perfectly valid and the connection merely absent. Signing
+Returns `false` when there was no stored session, or when the server answered
+with anything that is not a session — a refusal, a 404, a 500, an ingress page
+that is not even JSON. All of those are ordinary outcomes at launch, so none of
+them throws, and the stored token is dropped because it could not be exchanged.
+
+A **network failure does throw**, because the session may be perfectly valid and
+the connection merely absent; the token is kept for the next attempt. Signing
 someone out because they opened the app on a train would be the wrong call.
+
+That split matters more than it looks (TWIN-446). Until then only a refused token
+and a network failure were handled, so a base URL where *something* answers but
+the API is not there took the app's startup down with an unhandled exception —
+`TwinAuth.Start` is `async void`. Only two features need the server; launching
+must not depend on it.
 
 ### Authorise a request
 
