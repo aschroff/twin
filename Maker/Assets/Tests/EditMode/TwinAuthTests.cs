@@ -297,6 +297,98 @@ namespace EditModeTests
             Assert.IsNull(store.Load(), "The dead token should not be left on disk.");
         }
 
+        /// <summary>
+        /// A restore at startup is a best-effort attempt: the app has to come up
+        /// signed out rather than throwing, whatever the server said. Only two
+        /// failures were ever handled - <c>StatusCode == 0</c> (nothing answered)
+        /// and the server's own <c>INVALID_TOKEN</c>/<c>TOKEN_EXPIRED</c> envelope.
+        /// Anything else escaped <c>TwinAuth.Start</c>, which is <c>async void</c>,
+        /// and surfaced as an unhandled exception on scene load - which broke the
+        /// app for anyone offline and failed every PlayMode test with it.
+        /// </summary>
+        /// <remarks>
+        /// 404 is the case seen in practice: a base URL where something answers
+        /// but the API is not there - a stale port, a moved route, a proxy or a
+        /// captive portal. Note that "no server at all" was never the problem;
+        /// a refused connection is status 0 and was handled.
+        /// </remarks>
+        [UnityTest]
+        public IEnumerator A_restore_that_gets_a_404_starts_signed_out_instead_of_throwing()
+        {
+            _server.Respond(404, "{\"detail\":\"Not Found\"}");
+
+            var store = new InMemoryTokenStore();
+            store.Save("token-for-a-server-that-moved");
+            UseTestSession(store);
+
+            var restored = TwinAuth.RestoreAsync();
+            yield return WaitFor(restored);
+            AssertSucceeded(restored, "A 404 at startup must be an ordinary outcome, not an exception");
+
+            Assert.IsFalse(restored.Result);
+            Assert.IsFalse(TwinAuth.IsSignedIn);
+        }
+
+        /// <summary>The same for a server that is there but broken.</summary>
+        [UnityTest]
+        public IEnumerator A_restore_that_gets_a_500_starts_signed_out_instead_of_throwing()
+        {
+            _server.Respond(500, "{\"detail\":\"Internal Server Error\"}");
+
+            var store = new InMemoryTokenStore();
+            store.Save("token-the-server-could-not-check");
+            UseTestSession(store);
+
+            var restored = TwinAuth.RestoreAsync();
+            yield return WaitFor(restored);
+            AssertSucceeded(restored, "A 500 at startup must not take the app down with it");
+
+            Assert.IsFalse(restored.Result);
+            Assert.IsFalse(TwinAuth.IsSignedIn);
+        }
+
+        /// <summary>
+        /// And for an answer that is not our envelope at all - the ingress page or
+        /// a captive portal's login form, which is HTML, not JSON.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator A_restore_answered_with_something_that_is_not_json_starts_signed_out()
+        {
+            _server.Respond(200, "<html><body>Sign in to the guest network</body></html>");
+
+            var store = new InMemoryTokenStore();
+            store.Save("token-behind-a-captive-portal");
+            UseTestSession(store);
+
+            var restored = TwinAuth.RestoreAsync();
+            yield return WaitFor(restored);
+            AssertSucceeded(restored, "An unreadable answer at startup must not throw");
+
+            Assert.IsFalse(restored.Result);
+            Assert.IsFalse(TwinAuth.IsSignedIn);
+        }
+
+        /// <summary>
+        /// A token that cannot be exchanged is worthless, so it must not be left
+        /// behind to fail again on every launch - the same rule the recognised
+        /// rejection already follows.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator A_restore_that_fails_does_not_leave_the_token_on_disk()
+        {
+            _server.Respond(404, "{\"detail\":\"Not Found\"}");
+
+            var store = new InMemoryTokenStore();
+            store.Save("token-for-a-server-that-moved");
+            UseTestSession(store);
+
+            var restored = TwinAuth.RestoreAsync();
+            yield return WaitFor(restored);
+            AssertSucceeded(restored);
+
+            Assert.IsNull(store.Load(), "A token that cannot be exchanged should not be kept.");
+        }
+
         // --- helpers -----------------------------------------------------------
 
         /// <summary>
