@@ -70,6 +70,11 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+# Unity's test framework writes a scene of its own into Assets/ on every PlayMode run and does
+# not always remove it again. It is never part of the project.
+/[Aa]ssets/InitTestScene*.unity
+/[Aa]ssets/InitTestScene*.unity.meta
+
 # Test secrets (contains API keys and credentials)
 Assets/Tests/Helper/testsecrets.json
 Assets/Tests/Helper/testsecrets.json.meta
