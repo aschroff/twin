@@ -26,6 +26,7 @@ namespace EditModeTests
     /// (<c>contexts/twins/exceptions.py</c>), which the backend states are
     /// contract.</para>
     /// </remarks>
+    [Category(Processes.ExchangeTwins)]
     public class TwinVersionsClientTests
     {
         private FakeTwinApiServer _server;

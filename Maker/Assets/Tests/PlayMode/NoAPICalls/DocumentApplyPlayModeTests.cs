@@ -19,6 +19,7 @@ namespace NoAPICalls
     /// Driven against the LipEdema twin, which ships four groups and a meaning for every marker
     /// and filler; the tests free one tool so a claim can be tested.
     /// </summary>
+    [Category(Processes.DescribeAndReport)]
     public class DocumentApplyPlayModeTests : TwinPaintTestBase
     {
         /// <summary>A tool that carries a meaning in this twin — it may be painted with, but its

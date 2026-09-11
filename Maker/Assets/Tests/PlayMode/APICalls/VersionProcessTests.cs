@@ -8,6 +8,7 @@ using UnityEngine.TestTools;
 
 
 namespace APICalls {
+[Category(Processes.DescribeAndReport)]
 public class VersionProcessTests : PlayModeTestBase
 {
     private const string Variant = "Medical Report"; 

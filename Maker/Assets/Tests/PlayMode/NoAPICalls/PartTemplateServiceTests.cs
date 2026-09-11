@@ -12,6 +12,7 @@ namespace NoAPICalls
     /// Tests for the Text→Part core service (Assets/Code/Proc/Paint/PartTemplateService.cs):
     /// stamping a bundled region template onto the currently loaded twin.
     /// </summary>
+    [Category(Processes.MarkUpTheBody)]
     public class PartTemplateServiceTests : PlayModeTestBase
     {
         /// <summary>A twin needs a user group (Injuries/Pain/…) before regions can be painted

@@ -7,11 +7,12 @@ using UnityEngine;
 using UnityEngine.TestTools;
 
 
-namespace NoAPICalls {
+namespace APICalls {
 
 /* paints one part, generates a real screenshot via PartsScreenshotProcess, calls PartsDescriptionProcess.Handle, 
 and waits for the part's description to move past the "Part Number N :\n..." placeholder that Execute() stamps in 
 before the real per-part AI call overwrites it. */
+[Category(Processes.DescribeAndReport)]
 public class PartsDescriptionProcessTests : PlayModeTestBase
 {
     private const string Variant = "Medical Report"; // matches the "Medical Report (Part Description)" ItemPrompt in Settings UI

@@ -13,6 +13,7 @@ namespace EditModeTests
     /// <c>LoadData</c> works here too - it binds loaded commands to the scene's paintable texture
     /// only when there is one.
     /// </remarks>
+    [Category(Processes.OrganiseIntoGroups)]
     public class PartManagerTests
     {
         private GameObject host;

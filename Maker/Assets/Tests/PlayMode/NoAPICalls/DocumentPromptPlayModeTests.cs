@@ -19,6 +19,7 @@ namespace NoAPICalls
     /// The assembled prompt is written to Application.temporaryCachePath/DocumentPrompt/ for
     /// reading - the wording is meant to be reviewed by a human, not asserted word by word.
     /// </summary>
+    [Category(Processes.DescribeAndReport)]
     public class DocumentPromptPlayModeTests : TwinPaintTestBase
     {
         /// <summary>Tool whose meaning the test clears, so the "still free" section has content.</summary>

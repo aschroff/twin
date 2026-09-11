@@ -38,6 +38,7 @@ namespace NoAPICalls
 
         /// <summary>A reset drops the current twin and loads a fresh "default.000", so every
         /// display of the twin name and version has to follow.</summary>
+        [Category(Processes.AppFrame)]
         [UnityTest]
         public IEnumerator Reset_ShowsTheTwinLoadedAfterTheReset()
         {
@@ -57,6 +58,7 @@ namespace NoAPICalls
 
         /// <summary>Loading another twin updates the name in the header and the name and version
         /// in the overview.</summary>
+        [Category(Processes.ManageTwins)]
         [UnityTest]
         public IEnumerator SelectTwin_UpdatesNameAndVersion()
         {
@@ -73,6 +75,7 @@ namespace NoAPICalls
 
         /// <summary>A newly created twin is loaded right away, so the displays have to show it
         /// with its initial version.</summary>
+        [Category(Processes.ManageTwins)]
         [UnityTest]
         public IEnumerator CreateTwin_UpdatesNameAndVersion()
         {
@@ -92,6 +95,7 @@ namespace NoAPICalls
 
         /// <summary>Selecting a tool shows its name in the overview, switching to another one
         /// replaces it.</summary>
+        [Category(Processes.MarkUpTheBody)]
         [UnityTest]
         public IEnumerator SelectTool_ShowsTheCurrentTool()
         {
@@ -109,6 +113,7 @@ namespace NoAPICalls
 
         /// <summary>Selecting a group shows its name in the overview, and it keeps up when
         /// another group becomes the current one.</summary>
+        [Category(Processes.OrganiseIntoGroups)]
         [UnityTest]
         public IEnumerator SelectGroup_ShowsTheCurrentGroup()
         {

@@ -15,6 +15,7 @@ namespace NoAPICalls
     /// its config - never from the name of the zip file, which anything on the way here may
     /// have renamed.
     /// </summary>
+    [Category(Processes.ExchangeTwins)]
     public class ImportTwinPlayModeTests : TwinPaintTestBase
     {
         /// <summary>Name for the twins created by the naming tests, short enough for

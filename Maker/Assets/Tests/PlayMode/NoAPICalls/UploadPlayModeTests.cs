@@ -20,6 +20,7 @@ namespace NoAPICalls
     /// The directory is created on demand and no longer cleared, so shots from the previous run
     /// are simply overwritten - clearing it was what made one test depend on the other's order.
     /// </summary>
+    [Category(Processes.DescribeAndReport)]
     public class UploadPlayModeTests : PlayModeTestBase
     {
         private const string UploadButton = "Canvas/Main UI/Bottom/Upload/Icon";
