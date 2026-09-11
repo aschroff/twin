@@ -12,6 +12,7 @@ namespace EditModeTests
     /// Only the file reading is covered here: the search order also consults the environment and
     /// the persistent data path, neither of which a test should change under the running editor.
     /// </summary>
+    [Category(Processes.Technical)]
     public class ApiKeysTests
     {
         private string directory;

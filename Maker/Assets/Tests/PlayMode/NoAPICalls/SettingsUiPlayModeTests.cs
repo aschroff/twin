@@ -1,8 +1,10 @@
 using System.Collections;
 using UnityEngine.TestTools;
+using NUnit.Framework;
 
 namespace NoAPICalls
 {
+    [Category(Processes.AppFrame)]
     public class SettingsUiPlayModeTests : PlayModeTestBase
     {
         [UnityTest]

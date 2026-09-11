@@ -27,6 +27,7 @@ namespace EditModeTests
     /// check the exact set of keys and not just that the expected ones are
     /// present.</para>
     /// </remarks>
+    [Category(Processes.ExchangeTwins)]
     public class TwinAuthTests
     {
         private FakeTwinApiServer _server;

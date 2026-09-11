@@ -15,6 +15,7 @@ namespace NoAPICalls
     /// Also pins the configuration that keeps the body texture from being copied per stroke, which
     /// is what got the app killed on an iPad with little memory.
     /// </summary>
+    [Category(Processes.MarkUpTheBody)]
     public class UndoRedoPlayModeTests : TwinPaintTestBase
     {
         /// <summary>Time for Erase + Refresh to reach the texture (the replay is flushed in

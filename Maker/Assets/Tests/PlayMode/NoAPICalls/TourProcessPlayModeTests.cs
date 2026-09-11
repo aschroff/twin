@@ -6,6 +6,7 @@ using UnityEngine.TestTools;
 
 namespace NoAPICalls
 {
+    [Category(Processes.LookAtTheTwin)]
     public class TourProcessPlayModeTests : PlayModeTestBase
     {
         [UnityTest]

@@ -4,6 +4,7 @@ using UnityEngine.TestTools;
 
 namespace NoAPICalls
 {
+    [Category(Processes.ManageTwins)]
     public class SaveTwinPlayModeTests : PlayModeTestBase
     {
         const string TwinName = "TestTwin";

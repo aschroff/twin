@@ -10,6 +10,7 @@ using UnityEngine.TestTools;
 namespace APICalls {
 // Covers the "VersionSequenceProcess" GameObject in the scene, which chains
 // PartsScreenshotProcess -> PartsDescriptionProcess -> VersionProcess via SequenceProcess.
+[Category(Chains.ReportOnAVersion)]
 public class VersionSequenceProcessTests : PlayModeTestBase
 {
     private const string Variant = "Medical Report"; // matches the "Medical Report" ItemPrompts (Part + Version) in Settings UI

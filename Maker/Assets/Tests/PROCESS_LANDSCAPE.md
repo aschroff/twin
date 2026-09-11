@@ -9,9 +9,9 @@ that a step in the map can be found on a screen.
 
 **How to read it.** There are two views of the same thing:
 
-- **Capabilities (P1–P7)** are what the app can do, cut into steps. They run vertically: every
+- **Capabilities (P01–P07)** are what the app can do, cut into steps. They run vertically: every
   automated test has exactly one address here.
-- **Chains (K1–K5)** are what a person does in one sitting. They run horizontally, across several
+- **Chains (K01–K05)** are what a person does in one sitting. They run horizontally, across several
   capabilities, and they find what breaks *between* steps rather than inside one.
 
 Every test belongs to exactly one of the two. What a chain already checks, a capability test does
@@ -23,13 +23,13 @@ not claim again, and the other way round.
 
 | | Process | Steps |
 |---|---|---|
-| **P1** | **Manage twins** | create · name · save as copy · open · list · delete · reset the app |
-| **P2** | **Mark up the body** | pick a tool (Marker, Filler, Sticker, Text, Delete) · paint freehand · pick a body region and paint it · place · undo / redo |
-| **P3** | **Organise into groups** | create · name · select · hide and show · delete · which part sits in which group |
-| **P4** | **Look at the twin** | turn · move · zoom · store a view · activate a stored view · Shape |
-| **P5** | **Describe and report** | describe a part · report on a version · turn a document into a twin · screenshots · skin export |
-| **P6** | **Exchange twins** | export a zip · import a zip · versions · server sync |
-| **P7** | **App frame** | settings · language · start and quit |
+| **P01** | **Manage twins** | create · name · save as copy · open · list · delete · reset the app |
+| **P02** | **Mark up the body** | pick a tool (Marker, Filler, Sticker, Text, Delete) · paint freehand · pick a body region and paint it · place · undo / redo |
+| **P03** | **Organise into groups** | create · name · select · hide and show · delete · which part sits in which group |
+| **P04** | **Look at the twin** | turn · move · zoom · store a view · activate a stored view · Shape |
+| **P05** | **Describe and report** | describe a part · report on a version · turn a document into a twin · screenshots · skin export |
+| **P06** | **Exchange twins** | export a zip · import a zip · versions · server sync |
+| **P07** | **App frame** | settings · language · start and quit |
 
 **Persistence is not a process.** It is the same question asked at the end of every one of them:
 leave the twin, open it again, is everything still there. Each process carries that check itself
@@ -41,11 +41,11 @@ rather than having a test of its own.
 
 | | Chain | Crosses |
 |---|---|---|
-| **K1** | A new twin, with its first parts painted into groups | P1 · P2 · P3 |
-| **K2** | Open a twin, see where it stands, add to it | P1 · P6 · P4 · P3 |
-| **K3** | Receive a twin from someone else and open it | P6 · P2 · P1 |
-| **K4** | A document becomes a twin | P5 · P3 · P2 |
-| **K5** | Report on a version | P5 · P3 |
+| **K01** | A new twin, with its first parts painted into groups | P01 · P02 · P03 |
+| **K02** | Open a twin, see where it stands, add to it | P01 · P06 · P04 · P03 |
+| **K03** | Receive a twin from someone else and open it | P06 · P02 · P01 |
+| **K04** | A document becomes a twin | P05 · P03 · P02 |
+| **K05** | Report on a version | P05 · P03 |
 
 K5 needs a key for the language model and therefore lives with the tests that cost money. The
 other four run offline.
@@ -57,7 +57,7 @@ other four run offline.
 Manual test numbers refer to the business department's catalogue (`01 navigation tests`,
 `05/03 Twin names Test`, and so on).
 
-### P1 — Manage twins
+### P01 — Manage twins
 
 | | |
 |---|---|
@@ -65,15 +65,15 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 | Manual | 02 Twin management · 03 App reset · 05/01 Twins save functionality · 05/02 Duplicated twin name · 05/03 Twin names · Name tests |
 | **Gap** | **A** — name validation (valid and invalid characters, length, duplicates and their error messages) is checked by hand only. `TwinNameValidator` has no test at all. |
 
-### P2 — Mark up the body
+### P02 — Mark up the body
 
 | | |
 |---|---|
-| Automated | `EditUiPlayModeTests`, `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests`, `PartTemplateServiceTests` (11), `PartManagerTests` (11), `PartHistoryTests` (13) |
+| Automated | `EditUiPlayModeTests`, `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests`, `PartTemplateServiceTests` (11), `PartHistoryTests` (13) |
 | Manual | 06/01 Edit navigation · 06/02 Marker · 06/03 Sticker · 06/04 Delete · 06/05 Filler · 06/06 Text · 06/08 placement |
 | **Gap** | **A** — Text, Filler and Delete are checked by hand only.<br>**C** — the **Region screen** is checked by nobody: the service behind it has 11 tests, the screen has none, and the manual catalogue does not mention it. 06/01 lists five tools; the app has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). |
 
-### P3 — Organise into groups
+### P03 — Organise into groups
 
 | | |
 |---|---|
@@ -81,7 +81,7 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 | Manual | 07/02 Store group · 01/03 overview |
 | **Gap** | none worth naming. |
 
-### P4 — Look at the twin
+### P04 — Look at the twin
 
 | | |
 |---|---|
@@ -89,7 +89,7 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 | Manual | 01/01 Top navigation · 01/02 view and group window · 07/01 Store view · 07/01a Stored view after turning · 06/07 Shape |
 | **Gap** | **A** — storing a view, activating it, and activating it *after the twin has been turned* are checked by hand only. This is the weakest capability in the landscape. |
 
-### P5 — Describe and report
+### P05 — Describe and report
 
 | | |
 |---|---|
@@ -97,7 +97,7 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 | Manual | — |
 | **Gap** | **B** — the business catalogue does not cover this at all, although it is the newer half of the app. Nothing is unchecked; the two sides simply do not know about each other. |
 
-### P6 — Exchange twins
+### P06 — Exchange twins
 
 | | |
 |---|---|
@@ -105,7 +105,7 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 | Manual | — |
 | **Gap** | **B**, as above. |
 
-### P7 — App frame
+### P07 — App frame
 
 | | |
 |---|---|
@@ -116,7 +116,7 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 ### Chains
 
 None of the five exists as a named test yet. `EditUiPlayModeTests` is already chain-shaped — open a
-twin, edit, pick a view, paint, return, check the group detail page — and would become **K1**
+twin, edit, pick a view, paint, return, check the group detail page — and would become **K01**
 rather than being written again.
 
 ---
@@ -129,8 +129,8 @@ rather than being written again.
 | **B** | automated, not in the manual catalogue | no risk to the product; the business department cannot see what is already safe |
 | **C** | checked by neither | a real hole |
 
-**The only C today is the Region screen.** In order of value, the A gaps are: stored views (P4),
-twin names (P1), the remaining tools (P2), the reset checklist (P7).
+**The only C today is the Region screen.** In order of value, the A gaps are: stored views (P04),
+twin names (P01), the remaining tools (P02), the reset checklist (P07).
 
 ---
 
@@ -146,17 +146,45 @@ key; they must stay apart so that everyone else can run everything else.
 - `Assets/Tests/PlayMode/APICalls/` — needs a key in `testsecrets.json`, costs tokens.
 
 **Which process a test belongs to** decides its category, not its folder — a folder tree can only
-carry one of the two, and cost is the one that must never be guessed. Each test carries
-`[Category("P4")]` or `[Category("K2")]`, so one process can be run across all three folders:
+carry one of the two, and cost is the one that must never be guessed. Each test carries exactly one
+category, so a process can be run across all three folders:
 
 ```
-unity cmd run_tests --mode PlayMode --filter_type category --filter P4
+unity cmd run_tests --mode PlayMode --filter_type category --filter P04_look_at_the_twin
 ```
 
-> **Open, and worth fixing before this is relied on:** the cost boundary currently leaks in both
-> directions. `OpenAIClientTests` and `DocumentMappingApiTests` sit next to the folders rather than
-> in `APICalls/`, and both need a key; `PartsDescriptionProcessTests` sits in `NoAPICalls/` and
-> calls the real API. Categories do not exist yet either.
+The filter matches the **whole** category name — no prefixes, no patterns — so the names to copy are:
+
+| Category | Category |
+|---|---|
+| `P01_manage_twins` | `K01_new_twin_first_parts` |
+| `P02_mark_up_the_body` | `K02_open_and_add_to_a_twin` |
+| `P03_organise_into_groups` | `K03_receive_a_twin` |
+| `P04_look_at_the_twin` | `K04_document_becomes_a_twin` |
+| `P05_describe_and_report` | `K05_report_on_a_version` |
+| `P06_exchange_twins` | |
+| `P07_app_frame` | |
+
+They are written once as constants and used from there, so a typo is a compile error rather than a
+test that quietly drops out of the map:
+
+```csharp
+[Category(Processes.MarkUpTheBody)]
+public class UndoRedoPlayModeTests : PlayModeTestBase
+```
+
+A guard test walks both test assemblies and fails when a test carries no category, or more than
+one — that is what keeps this document honest when someone adds a test in six months.
+
+`NoAPICalls/` is a promise about **cost**, not about failing: every test that spends tokens guards
+itself with `Assert.Ignore` when there is no key, so a run without a key was green wherever the
+test sat. With a key it was not free — one test in `NoAPICalls/` really called the model and took
+26 seconds of every offline run. Three files were moved into `APICalls/` for that reason
+(`OpenAIClientTests` and `DocumentMappingApiTests`, which sat beside the folders, and
+`PartsDescriptionProcessTests`, which sat in `NoAPICalls/`).
+
+Tools that are driven through the test runner rather than run with the suite — the template
+library generator — mark themselves `[Explicit]` and are outside the landscape.
 
 ---
 
@@ -183,5 +211,27 @@ Purely technical tests without a business-visible flow: the schema builder for s
 answers, the key lookup, and the token and session handling of the twin server. They are listed in
 `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 
-**Numbers in this document:** 86 tests in EditMode, 54 in PlayMode without external services, and
-those that need a key on top. Counted on 11 September 2026.
+## Where the tests sit today
+
+| Address | Tests |
+|---|---|
+| `P01_manage_twins` | 25 |
+| `P02_mark_up_the_body` | 30 |
+| `P03_organise_into_groups` | 16 |
+| `P04_look_at_the_twin` | **1** |
+| `P05_describe_and_report` | 19 |
+| `P06_exchange_twins` | 36 |
+| `P07_app_frame` | 2 |
+| `T00_technical` | 25 |
+| `K01_new_twin_first_parts` | 1 |
+| `K05_report_on_a_version` | 1 |
+| **total** | **156** |
+
+By cost: 88 in `EditMode/`, 53 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`.
+
+The single test behind `P04_look_at_the_twin` is the number to look at: turning the twin, storing a
+view and activating one again are what the app is for, and one test stands behind all of it. K02,
+K03 and K04 have no test at all yet.
+
+**Counted on 11 September 2026**, by reflection over both test assemblies — the same walk the guard
+test makes.

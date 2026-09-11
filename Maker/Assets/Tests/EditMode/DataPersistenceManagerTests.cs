@@ -21,6 +21,7 @@ namespace EditModeTests
     /// import, export, and the fan-out to every IDataPersistence) is covered against the real app
     /// by SaveTwinPlayModeTests, ImportTwinPlayModeTests and GroupPlayModeTests.</para>
     /// </remarks>
+    [Category(Processes.ManageTwins)]
     public class DataPersistenceManagerTests
     {
         private const string FileName = "ConfigTwin.txt";

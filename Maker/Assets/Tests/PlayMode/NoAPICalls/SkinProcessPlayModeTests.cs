@@ -6,6 +6,7 @@ using UnityEngine.TestTools;
 
 namespace NoAPICalls
 {
+    [Category(Processes.DescribeAndReport)]
     public class SkinProcessPlayModeTests : PlayModeTestBase
     {
         [UnityTest]

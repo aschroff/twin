@@ -8,6 +8,7 @@ using UnityEngine.TestTools;
 
 
 namespace APICalls {
+[Category(Processes.DescribeAndReport)]
 public class PartDescriptionProcessTests : PlayModeTestBase
 {
     private const string Variant = "Medical Report"; // matches the "Medical Report (Part Description)" ItemPrompt in Settings UI

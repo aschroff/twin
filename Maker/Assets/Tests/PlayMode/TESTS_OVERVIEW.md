@@ -47,6 +47,11 @@ screen names the file and carries the whole prompt. |
 
 ## `APICalls/` — tests that call the real OpenAI API
 
+> Since TWIN-455 this folder also holds `OpenAIClientTests` and `DocumentMappingApiTests` (which
+> used to sit at the root of `PlayMode/`) and `PartsDescriptionProcessTests` (which used to sit in
+> `NoAPICalls/` and really called the model whenever a key was configured). Every test here guards
+> itself with `Assert.Ignore` when there is no key, so the folder is about **cost**, not failure.
+
 All need a valid key in `Assets/Tests/Helper/testsecrets.json`; the Process tests skip themselves
 (`Assert.Ignore`) without one, and `401`s otherwise.
 

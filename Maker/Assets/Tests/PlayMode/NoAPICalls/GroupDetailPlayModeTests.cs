@@ -13,6 +13,7 @@ namespace NoAPICalls
     /// plus one into a newly created group, then checks on the group detail page that selecting
     /// a single group lists exactly that group's one part.
     /// </summary>
+    [Category(Processes.OrganiseIntoGroups)]
     public class GroupDetailPlayModeTests : TwinPaintTestBase
     {
         private const string DetailGroupPanel = "Canvas/GroupDetailUI/Scroll/Panel";

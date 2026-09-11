@@ -22,6 +22,7 @@ namespace EditModeTests
     /// <para>Import and export are deliberately absent: <c>ImportTwinPlayModeTests</c> covers them
     /// against the real app, including a broken zip.</para>
     /// </remarks>
+    [Category(Processes.ManageTwins)]
     public class FileDataHandlerTests
     {
         private const string FileName = "ConfigTwin.txt";

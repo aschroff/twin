@@ -17,6 +17,7 @@ namespace EditModeTests
     /// EditMode on purpose: these need no scene, and a PlayMode test that does not derive from
     /// PlayModeTestBase would start the real app against the real data path.
     /// </summary>
+    [Category(Processes.Technical)]
     public class JsonSchemaBuilderTests
     {
         private class Leaf

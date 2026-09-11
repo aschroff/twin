@@ -15,6 +15,7 @@ namespace NoAPICalls
     /// belongs to the slot, so all twins share it and every twin has an image of its own behind
     /// it - which is what makes loading a twin, and importing one, interesting.
     /// </summary>
+    [Category(Processes.MarkUpTheBody)]
     public class StickerPlayModeTests : TwinPaintTestBase
     {
         // both short enough for TwinNameValidator, which allows 11 characters
