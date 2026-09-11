@@ -66,6 +66,15 @@ public class FileDataHandler
 
                 // deserialize the data from Json back into the C# object
                 loadedData = JsonUtility.FromJson<ConfigData>(dataToLoad);
+
+                // An empty or truncated file - what a crash or a full disk leaves behind - parses
+                // to null instead of throwing, and used to slip past the rollback below: the twin
+                // was reported as simply absent while an intact backup sat next to it. A file that
+                // is there but holds no twin is damaged, so treat it like any other bad file.
+                if (loadedData == null)
+                {
+                    throw new Exception("The file at " + fullPath + " holds no twin.");
+                }
             }
             catch (Exception e) 
             {
@@ -126,6 +135,15 @@ public class FileDataHandler
 
                 // deserialize the data from Json back into the C# object
                 loadedData = JsonUtility.FromJson<ConfigData>(dataToLoad);
+
+                // An empty or truncated file - what a crash or a full disk leaves behind - parses
+                // to null instead of throwing, and used to slip past the rollback below: the twin
+                // was reported as simply absent while an intact backup sat next to it. A file that
+                // is there but holds no twin is damaged, so treat it like any other bad file.
+                if (loadedData == null)
+                {
+                    throw new Exception("The file at " + fullPath + " holds no twin.");
+                }
             }
             catch (Exception e) 
             {
@@ -138,8 +156,11 @@ public class FileDataHandler
                     bool rollbackSuccess = AttemptRollback(fullPath);
                     if (rollbackSuccess)
                     {
-                        // try to load again recursively
-                        loadedData = Load(profileId, false);
+                        // try to load again recursively - from the template directory, which is the
+                        // one that was just rolled back. This used to call Load, so a damaged
+                        // template came back as whatever sat under the same id in the data
+                        // directory: a new twin holding another twin's findings.
+                        loadedData = LoadFromTemplate(profileId, false);
                     }
                 }
                 // if we hit this else block, one possibility is that the backup file is also corrupt
