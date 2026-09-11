@@ -1,5 +1,10 @@
 # PlayMode Tests — Overview
 
+> The **technical** inventory: every test, what it checks, and where it lives. The map that says
+> which part of the app each test belongs to — and what is not covered at all — is
+> `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
+> It replaced `TESTUEBERSICHT_FACHABTEILUNG.md`.
+
 All tests load the *Maker Main* scene and drive the app through its real UI. `PlayModeTestBase`
 redirects the data path to a temp directory per test, so runs never touch your own twins.
 
