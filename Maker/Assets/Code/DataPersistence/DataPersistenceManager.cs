@@ -105,20 +105,6 @@ public class DataPersistenceManager : MonoBehaviour
         }
     }
     
-    public void DeleteAllVersions(string profileId) 
-    {
-       
-        // delete the data for this profile id
-        dataHandler.Delete(profileId);
-        
-        
-        // push the loaded data to all other scripts that need it
-        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects) 
-        {
-            handleDelete(dataPersistenceObj, profileId);
-        }
-    }
-
     private void InitializeSelectedProfileId() 
     {
         this.selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId() ?? "default.000";
