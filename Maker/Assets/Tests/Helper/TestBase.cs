@@ -25,12 +25,6 @@ public abstract class TestBase
     {
         [JsonProperty("openAIApiKey")]
         public string OpenAIApiKey { get; set; }
-
-        [JsonProperty("meshcapadeUser")]
-        public string MeshcapadeUser { get; set; }
-
-        [JsonProperty("meshcapadePassword")]
-        public string MeshcapadePassword { get; set; }
     }
 
     /// <summary>
@@ -85,39 +79,7 @@ public abstract class TestBase
     }
 
     /// <summary>
-    /// Meshcapade username for testing Meshcapade integration.
-    /// Returns null if not configured.
-    /// </summary>
-    protected static string MeshcapadeUser
-    {
-        get
-        {
-            LoadSecrets();
-            return _secrets?.MeshcapadeUser;
-        }
-    }
-
-    /// <summary>
-    /// Meshcapade password for testing Meshcapade integration.
-    /// Returns null if not configured.
-    /// </summary>
-    protected static string MeshcapadePassword
-    {
-        get
-        {
-            LoadSecrets();
-            return _secrets?.MeshcapadePassword;
-        }
-    }
-
-    /// <summary>
     /// Check if OpenAI API key is configured.
     /// </summary>
     protected static bool HasOpenAIApiKey => !string.IsNullOrEmpty(OpenAIApiKey);
-
-    /// <summary>
-    /// Check if Meshcapade credentials are configured.
-    /// </summary>
-    protected static bool HasMeshcapadeCredentials =>
-        !string.IsNullOrEmpty(MeshcapadeUser) && !string.IsNullOrEmpty(MeshcapadePassword);
 }

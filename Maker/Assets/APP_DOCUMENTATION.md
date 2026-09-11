@@ -138,7 +138,6 @@ Assets/
 │   │   ├── PROCESSES.md           # reference for the process layer
 │   │   ├── Process.cs / ProcessManager.cs / ProcessSync.cs
 │   │   ├── AI/                    # AI-specific processes
-│   │   ├── Meshcapade/            # Meshcapade avatar API client
 │   │   ├── Paint/                 # Text→Part: PartTemplateService + feature spec
 │   │   └── Document/              # Document→Twin: upload process + feature spec
 │   │
@@ -197,7 +196,6 @@ Assets/
 | **LeanTransition** | Tweening / transitions |
 | **LeanCommon / LeanCommonPlus** | Shared Lean utilities |
 | **SMPL-X** | Parametric human body model – shape/pose from parameters, images, or prompts |
-| **Meshcapade API** | Cloud service to generate SMPL-X avatars from images/video |
 | **Rotary Heart – SerializableDictionary** | Inspector-friendly dictionaries |
 | **NativeFilePicker** | Platform-native file picker |
 | **NativeGallery** | Platform-native gallery/photo access |
