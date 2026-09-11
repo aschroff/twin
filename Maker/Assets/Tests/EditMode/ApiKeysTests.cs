@@ -40,7 +40,7 @@ namespace EditModeTests
         public void ReadFromFile_TakesTheKeyTheTestSecretsFileUses()
         {
             string path = Write("testsecrets.json",
-                "{\"openAIApiKey\": \"sk-the-key\", \"meshcapadeUser\": \"someone\"}");
+                "{\"openAIApiKey\": \"sk-the-key\", \"someOtherMember\": \"ignored\"}");
             Assert.AreEqual("sk-the-key", ApiKeys.ReadFromFile(path));
         }
 
@@ -64,7 +64,7 @@ namespace EditModeTests
         [Test]
         public void ReadFromFile_WithoutAKey_ComesBackEmpty()
         {
-            Assert.IsEmpty(ApiKeys.ReadFromFile(Write("none.json", "{\"meshcapadeUser\": \"someone\"}")));
+            Assert.IsEmpty(ApiKeys.ReadFromFile(Write("none.json", "{\"someOtherMember\": \"ignored\"}")));
             Assert.IsEmpty(ApiKeys.ReadFromFile(Write("blank.json", "{\"openAIApiKey\": \"\"}")));
         }
 
