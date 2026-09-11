@@ -596,8 +596,14 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 			clearPart(part);
         }
 		groupData.groupParts.Clear();
-		groupData.group.groupdata = null;
-		groupData.group = null;
+		// A group does not always have a Group object behind it: anything that builds the data
+		// without the scene - an import, a document applied to the twin - leaves that link empty
+		// until the overlay wires it. Deleting such a group used to throw (TWIN-453).
+		if (groupData.group != null)
+		{
+			groupData.group.groupdata = null;
+			groupData.group = null;
+		}
 		groups.Remove(groupData);
 		Debug.Log("Removed group: " + id);
 	}
