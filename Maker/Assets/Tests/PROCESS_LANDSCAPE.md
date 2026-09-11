@@ -85,9 +85,9 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 
 | | |
 |---|---|
-| Automated | `TourProcessPlayModeTests` (standard views only) |
+| Automated | `ViewPlayModeTests` (3), `TourProcessPlayModeTests` (standard views only) |
 | Manual | 01/01 Top navigation · 01/02 view and group window · 07/01 Store view · 07/01a Stored view after turning · 06/07 Shape |
-| **Gap** | **A** — storing a view, activating it, and activating it *after the twin has been turned* are checked by hand only. This is the weakest capability in the landscape. |
+| **Gap** | Storing a view, activating it, and activating it *after the twin has been turned* are covered since TWIN-456. What is still by hand only: turning, moving and zooming as such, and Shape. |
 
 ### P05 — Describe and report
 
@@ -218,20 +218,20 @@ answers, the key lookup, and the token and session handling of the twin server. 
 | `P01_manage_twins` | 25 |
 | `P02_mark_up_the_body` | 30 |
 | `P03_organise_into_groups` | 16 |
-| `P04_look_at_the_twin` | **1** |
+| `P04_look_at_the_twin` | 4 |
 | `P05_describe_and_report` | 19 |
 | `P06_exchange_twins` | 36 |
 | `P07_app_frame` | 2 |
 | `T00_technical` | 25 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **156** |
+| **total** | **159** |
 
 By cost: 88 in `EditMode/`, 53 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`.
 
-The single test behind `P04_look_at_the_twin` is the number to look at: turning the twin, storing a
-view and activating one again are what the app is for, and one test stands behind all of it. K02,
-K03 and K04 have no test at all yet.
+`P04_look_at_the_twin` stood at one test until TWIN-456 and is now at four — storing a view,
+getting it back, getting it back after the twin was turned, and surviving a reload. What has no
+test at all is K02, K03 and K04.
 
-**Counted on 11 September 2026**, by reflection over both test assemblies — the same walk the guard
+**Counted on 11 September 2026** (P04 updated with TWIN-456), by reflection over both test assemblies — the same walk the guard
 test makes.
