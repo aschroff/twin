@@ -34,6 +34,16 @@ namespace NoAPICalls
     /// sees between loads and what iOS decides to kill you over, and after one, which is what is
     /// really being retained. The assertion is on the retained figure — the other is reported,
     /// because a large gap between them is itself worth knowing.</para>
+    ///
+    /// <para><b>Why the textures are weighed and not only counted.</b> Seven jetsam reports from
+    /// the iPad Air on 2026-09-09 show the app killed with <c>per-process-limit</c> at a footprint
+    /// of 3.0-3.2 GB, and only about 600 MB of that was ordinary heap. The body paint texture is
+    /// 8192x8192 ARGB32 — 256 MB each — and <see cref="Texture.currentTextureMemory"/> does not
+    /// report it, so a test watching that counter would have called the run clean. What is
+    /// asserted on here is therefore the summed
+    /// <see cref="Profiler.GetRuntimeMemorySizeLong(Object)"/> of every live texture, and the
+    /// number of textures large enough to be one of the paint targets. One more of those per twin
+    /// opened is four twins from a dead iPad.</para>
     /// </remarks>
     [Category(Processes.ManageTwins)]
     public class TwinLoadingMemoryTests : TwinPaintTestBase
@@ -48,6 +58,11 @@ namespace NoAPICalls
         private const long AllowedExtraTextureBytes = 4L * 1024 * 1024;
         private const double AllowedTextureGrowthShare = 0.05;
 
+        /// <summary>A texture this big is a paint target or a twin's own image, not scenery: the
+        /// 8192-square body paint weighs 256 MB, and 2048-square is the smallest that still costs
+        /// 16 MB. Anything at or above this is listed by name, so a leak can be pointed at.</summary>
+        private const long BigTextureThreshold = 16L * 1024 * 1024;
+
         private struct Snapshot
         {
             public int Textures;
@@ -57,28 +72,85 @@ namespace NoAPICalls
             public int RenderTextures;
 
             public int PaintableTextures;
+
+            /// <summary>Every live texture weighed individually. This is the figure that matters:
+            /// unlike <see cref="TextureMemory"/> it includes the 8192-square paint targets.</summary>
+            public long TextureBytes;
+
+            /// <summary>How many textures are at or above <see cref="BigTextureThreshold"/>.</summary>
+            public int BigTextures;
+
+            public long BigTextureBytes;
+
+            /// <summary>Those big ones by name and size, largest first, for the report.</summary>
+            public List<string> Biggest;
+
+            /// <summary>Unity's own counter. Reported but never asserted on — it leaves the paint
+            /// texture out, which is the one object this app can die of.</summary>
             public long TextureMemory;
+
             public long Allocated;
 
             public override string ToString()
             {
                 return string.Format(
-                    "{0} textures, {1} render textures, {2} paintable, {3:0.0} MB texture memory, {4:0.0} MB allocated",
+                    "{0} textures, {1} render textures, {2} paintable, {3:0.0} MB in textures "
+                    + "({4} of them big, {5:0.0} MB), {6:0.0} MB allocated, Unity counter {7:0.0} MB",
                     Textures, RenderTextures, PaintableTextures,
-                    TextureMemory / 1024f / 1024f, Allocated / 1024f / 1024f);
+                    TextureBytes / 1024f / 1024f, BigTextures, BigTextureBytes / 1024f / 1024f,
+                    Allocated / 1024f / 1024f, TextureMemory / 1024f / 1024f);
             }
         }
 
+        /// <summary>
+        /// Walks every live texture once, weighing each one. One pass rather than three, because
+        /// the counts and the bytes have to describe the same moment to be comparable.
+        /// </summary>
         private static Snapshot Take()
         {
-            return new Snapshot
+            var snapshot = new Snapshot
             {
-                Textures = Resources.FindObjectsOfTypeAll<Texture2D>().Length,
-                RenderTextures = Resources.FindObjectsOfTypeAll<RenderTexture>().Length,
                 PaintableTextures = PaintCore.CwPaintableTexture.Instances.Count,
                 TextureMemory = (long)Texture.currentTextureMemory,
                 Allocated = Profiler.GetTotalAllocatedMemoryLong(),
+                Biggest = new List<string>(),
             };
+
+            var big = new List<KeyValuePair<long, string>>();
+
+            foreach (Texture texture in Resources.FindObjectsOfTypeAll<Texture>())
+            {
+                if (texture is Texture2D)
+                {
+                    snapshot.Textures++;
+                }
+                else if (texture is RenderTexture)
+                {
+                    snapshot.RenderTextures++;
+                }
+
+                long bytes = Profiler.GetRuntimeMemorySizeLong(texture);
+                snapshot.TextureBytes += bytes;
+
+                if (bytes >= BigTextureThreshold)
+                {
+                    snapshot.BigTextures++;
+                    snapshot.BigTextureBytes += bytes;
+                    big.Add(new KeyValuePair<long, string>(bytes, string.Format(
+                        "{0:0} MB  {1}x{2}  {3}  [{4}]",
+                        bytes / 1024f / 1024f, texture.width, texture.height,
+                        string.IsNullOrEmpty(texture.name) ? "(unnamed)" : texture.name,
+                        texture.GetType().Name)));
+                }
+            }
+
+            big.Sort((left, right) => right.Key.CompareTo(left.Key));
+            foreach (KeyValuePair<long, string> entry in big)
+            {
+                snapshot.Biggest.Add(entry.Value);
+            }
+
+            return snapshot;
         }
 
         /// <summary>
@@ -162,7 +234,7 @@ namespace NoAPICalls
             Report(others, firstRaw, first, secondRaw, second);
 
             long allowedBytes = (long)System.Math.Max(AllowedExtraTextureBytes,
-                first.TextureMemory * AllowedTextureGrowthShare);
+                first.TextureBytes * AllowedTextureGrowthShare);
 
             Assert.LessOrEqual(second.RenderTextures, first.RenderTextures + AllowedExtraTextures,
                 string.Format("Opening {0} twins and coming back to {1} left {2} more render textures behind "
@@ -179,11 +251,24 @@ namespace NoAPICalls
                               + "({3} then, {4} now). That is what fills a device up until it is killed.",
                     others.Count, HomeTwin, second.Textures - first.Textures, first.Textures, second.Textures));
 
-            Assert.LessOrEqual(second.TextureMemory, first.TextureMemory + allowedBytes,
+            // The one that would have caught the iPad Air: a paint target is 256 MB, so a single
+            // extra one is the difference between an app that runs and an app the kernel shoots.
+            Assert.LessOrEqual(second.BigTextures, first.BigTextures,
+                string.Format("Opening {0} twins and coming back to {1} left {2} more large texture(s) "
+                              + "alive ({3} then, {4} now, {5:0.0} MB then, {6:0.0} MB now).\n"
+                              + "Alive now:\n  {7}",
+                    others.Count, HomeTwin, second.BigTextures - first.BigTextures,
+                    first.BigTextures, second.BigTextures,
+                    first.BigTextureBytes / 1024f / 1024f, second.BigTextureBytes / 1024f / 1024f,
+                    string.Join("\n  ", second.Biggest.ToArray())));
+
+            Assert.LessOrEqual(second.TextureBytes, first.TextureBytes + allowedBytes,
                 string.Format("Texture memory grew by {0:0.0} MB over one round of the same twins "
-                              + "({1:0.0} MB then, {2:0.0} MB now).",
-                    (second.TextureMemory - first.TextureMemory) / 1024f / 1024f,
-                    first.TextureMemory / 1024f / 1024f, second.TextureMemory / 1024f / 1024f));
+                              + "({1:0.0} MB then, {2:0.0} MB now). On the iPad Air the app is killed "
+                              + "at about 3 GB.\nAlive now:\n  {3}",
+                    (second.TextureBytes - first.TextureBytes) / 1024f / 1024f,
+                    first.TextureBytes / 1024f / 1024f, second.TextureBytes / 1024f / 1024f,
+                    string.Join("\n  ", second.Biggest.ToArray())));
         }
 
         /// <summary>
@@ -199,11 +284,17 @@ namespace NoAPICalls
                 "  twins in between : " + string.Join(", ", others),
                 "  after round 1    : " + first + "   (before cleanup: " + firstRaw + ")",
                 "  after round 2    : " + second + "   (before cleanup: " + secondRaw + ")",
-                string.Format("  difference       : {0} textures, {2} render textures, {3} paintable, {1:+0.0;-0.0} MB texture memory",
+                string.Format("  difference       : {0:+#;-#;0} textures, {1:+#;-#;0} render textures, "
+                              + "{2:+#;-#;0} paintable, {3:+#;-#;0} large, {4:+0.0;-0.0;0.0} MB in textures",
                     second.Textures - first.Textures,
-                    (second.TextureMemory - first.TextureMemory) / 1024f / 1024f,
                     second.RenderTextures - first.RenderTextures,
-                    second.PaintableTextures - first.PaintableTextures),
+                    second.PaintableTextures - first.PaintableTextures,
+                    second.BigTextures - first.BigTextures,
+                    (second.TextureBytes - first.TextureBytes) / 1024f / 1024f),
+                "  large textures after round 2 (>= 16 MB each):",
+                second.Biggest.Count == 0
+                    ? "    none"
+                    : "    " + string.Join("\n    ", second.Biggest.ToArray()),
             });
 
             Debug.Log("[memory] " + report);
