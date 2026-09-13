@@ -15,11 +15,17 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
       // is re-opened, and would make the cache look present even when it is not
       bool hasSavedTexture = CwCommon.SaveExists(profile);
       texture.Save();
+      // Diagnostics only - see Diagnostics/MemoryProbe. Save() makes a readable copy of the
+      // 8192-square texture, encodes it to PNG, base64-encodes that and hands it to PlayerPrefs;
+      // it is the single most expensive thing a switch does, so it gets its own reading.
+      Diagnostics.MemoryProbe.Step("texture saved");
       texture.SaveName = profile;
       texture.Clear();
+      Diagnostics.MemoryProbe.Step("texture cleared");
       if (hasSavedTexture)
       {
          texture.Load();
+         Diagnostics.MemoryProbe.Step("texture loaded from cache");
          return;
       }
       // No cached texture for this twin on this device - it came from an import or a template.
@@ -34,6 +40,7 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
       Debug.Log("Loading the stored texture of twin " + profile + ".");
       texture.LoadFromData(paintedTexture);
       texture.Save();
+      Diagnostics.MemoryProbe.Step("texture loaded from file");
    }
 
    /// <summary>Writes the painted texture into the twin directory, so it can be handed to

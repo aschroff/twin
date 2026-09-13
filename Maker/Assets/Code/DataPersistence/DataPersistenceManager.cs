@@ -79,12 +79,25 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void ChangeSelectedProfileId(string newProfileId) 
     {
-        SaveConfig();
-        // update the profile to use for saving and loading
-        this.selectedProfileId = newProfileId;
-        // load the game, which will use that profile, updating our game data accordingly
-        LoadConfig();
-        initPersistentObjects();
+        // Diagnostics only - see Diagnostics/MemoryProbe. A switch is where the app grows, and
+        // this is the only place that sees the whole of one. The finally matters: a step that
+        // throws must not leave the recording open, or the next switch loses its start value.
+        Diagnostics.MemoryProbe.BeginSwitch(newProfileId);
+        try
+        {
+            SaveConfig();
+            Diagnostics.MemoryProbe.Step("config saved");
+            // update the profile to use for saving and loading
+            this.selectedProfileId = newProfileId;
+            // load the game, which will use that profile, updating our game data accordingly
+            LoadConfig();
+            Diagnostics.MemoryProbe.Step("config loaded");
+            initPersistentObjects();
+        }
+        finally
+        {
+            Diagnostics.MemoryProbe.EndSwitch();
+        }
     }
 
     public void DeleteProfileData(string profileId) 

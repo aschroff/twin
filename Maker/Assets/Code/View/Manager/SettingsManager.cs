@@ -20,6 +20,8 @@ public class SettingsManager : MonoBehaviour
         int languageID = languageSelector.GetLanguageID();
         dropdown.value = languageID;
         Debug.Log("Current languageID: " + languageID);
+        // Diagnostics only - builds itself at runtime, so the scene stays untouched.
+        Diagnostics.MemoryDisplay.Refresh(transform.parent);
     }
 
     public void ResetApp()
