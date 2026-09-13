@@ -53,7 +53,7 @@ namespace NoAPICalls
 
             string importedProfileId = DataPersistenceManager.instance.ImportConfig(zipFilePath);
             Assert.IsNotNull(importedProfileId, "The import did not produce a twin.");
-            Assert.IsFalse(CwCommon.SaveExists(importedProfileId),
+            Assert.IsFalse(CwCommon.SaveExists(PaintableSaveNameOverride.Resolve(importedProfileId)),
                 "Setup: an imported twin must not bring a cached texture with it.");
 
             yield return SelectTwin("LipEdema");
@@ -415,12 +415,12 @@ namespace NoAPICalls
         static IEnumerator WaitForCachedTexture(string profileId, float timeout = 5f)
         {
             float elapsed = 0f;
-            while (!CwCommon.SaveExists(profileId) && elapsed < timeout)
+            while (!CwCommon.SaveExists(PaintableSaveNameOverride.Resolve(profileId)) && elapsed < timeout)
             {
                 elapsed += Time.deltaTime;
                 yield return null;
             }
-            Assert.IsTrue(CwCommon.SaveExists(profileId),
+            Assert.IsTrue(CwCommon.SaveExists(PaintableSaveNameOverride.Resolve(profileId)),
                 $"The texture of '{profileId}' was not rebuilt and cached within {timeout}s.");
         }
 
