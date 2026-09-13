@@ -14,7 +14,7 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
       // ask before saving: saving the twin we are leaving writes to the same key when the twin
       // is re-opened, and would make the cache look present even when it is not
       bool hasSavedTexture = CwCommon.SaveExists(profile);
-      texture.Save();
+      PaintTextureSaver.Save(texture);
       texture.SaveName = profile;
       texture.Clear();
       if (hasSavedTexture)
@@ -33,7 +33,7 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
       }
       Debug.Log("Loading the stored texture of twin " + profile + ".");
       texture.LoadFromData(paintedTexture);
-      texture.Save();
+      PaintTextureSaver.Save(texture);
    }
 
    /// <summary>Writes the painted texture into the twin directory, so it can be handed to
@@ -52,9 +52,9 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
    {
       Debug.Log("Copy profile: " + profile);
       CwPaintableTexture texture = this.gameObject.transform.GetComponent<CwPaintableTexture>();
-      texture.Save();
+      PaintTextureSaver.Save(texture);
       texture.SaveName = profile;
-      texture.Save();
+      PaintTextureSaver.Save(texture);
       Debug.Log("end copy profile");
    }
    public  void handleDelete(string profile)
