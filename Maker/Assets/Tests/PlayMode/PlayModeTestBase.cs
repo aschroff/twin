@@ -228,6 +228,25 @@ public abstract class PlayModeTestBase : TestBase
         yield return null;
     }
 
+    /// <summary>
+    /// Waits for an operation that shows the busy panel to finish.
+    /// </summary>
+    /// <remarks>Loading a twin used to be over by the time the click returned. It now starts two
+    /// frames later, so <see cref="BusyOverlay"/> can be drawn before the main thread is blocked —
+    /// which means a test that carries straight on looks at the state it just left. Anything that
+    /// clicks something slow needs this.</remarks>
+    protected static IEnumerator WaitWhileLoading(float timeout = 30f)
+    {
+        float elapsed = 0f;
+        while (BusyOverlay.Working == true && elapsed < timeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        Assert.IsFalse(BusyOverlay.Working, $"Still loading after {timeout}s.");
+        yield return null;
+    }
+
     protected static Button FindButtonByName(string name)
     {
         var button = TryFindButtonByName(name);

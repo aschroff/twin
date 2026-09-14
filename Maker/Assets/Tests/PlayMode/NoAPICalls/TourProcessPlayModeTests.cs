@@ -20,6 +20,8 @@ namespace NoAPICalls
             Assert.IsNotNull(twinEntry, "Fixture twin 'LipEdema' not found in save list.");
 
             yield return ClickButtonByPath(path: "DetailsMode", root: twinEntry);
+            // the twin is loaded before the menu opens on it, and loading now takes its own frames
+            yield return WaitWhileLoading();
 
             AssertModeActive("Menu");
 
