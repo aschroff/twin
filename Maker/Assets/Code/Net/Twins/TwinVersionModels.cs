@@ -96,6 +96,36 @@ namespace Code.Net.Twins
         public const string ArchiveInvalid = "TWIN_ARCHIVE_INVALID";
 
         public const string InvalidCursor = "INVALID_CURSOR";
+
+        /// <summary>
+        /// The entry exists, but its archive is not in the server's object
+        /// storage.
+        /// </summary>
+        /// <remarks>
+        /// What a deleted version looks like to a download: the row survives as
+        /// a record of who uploaded what, the bytes do not. Permanent — the only
+        /// way back is someone uploading that version again.
+        /// </remarks>
+        public const string ArchiveNotStored = "TWIN_ARCHIVE_NOT_STORED";
+
+        /// <summary>
+        /// The server could not reach its own object storage. The one 503 in this
+        /// context, and the only server-side failure here worth retrying.
+        /// </summary>
+        public const string ServiceUnavailable = "SERVICE_UNAVAILABLE";
+
+        /// <summary>
+        /// **Not a server code.** Raised on this side when a downloaded archive
+        /// does not match the <c>X-Checksum-SHA256</c> the server sent with it.
+        /// </summary>
+        /// <remarks>
+        /// It is in this list rather than in a second one because a caller
+        /// branches on it the same way it branches on the rest, and a separate
+        /// list would only make the first question be "which of the two is it in".
+        /// A proxy that rewrote the body, or a truncated transfer, is what this
+        /// catches — and either way the ZIP must not reach the import.
+        /// </remarks>
+        public const string ChecksumMismatch = "TWIN_ARCHIVE_CHECKSUM_MISMATCH";
     }
 
     /// <summary>
@@ -137,5 +167,34 @@ namespace Code.Net.Twins
         /// the scope. The person has to sign in again.
         /// </summary>
         public bool IsNotAuthorised => StatusCode == 401 || StatusCode == 403;
+
+        /// <summary>No such twin version. Nothing to retry.</summary>
+        public bool IsNotFound => ErrorCode == TwinApiErrorCodes.NotFound;
+
+        /// <summary>
+        /// The entry is listed but its archive is gone. Also nothing to retry —
+        /// but a different sentence to the person, because the version they
+        /// picked did exist a moment ago.
+        /// </summary>
+        public bool IsArchiveNotStored => ErrorCode == TwinApiErrorCodes.ArchiveNotStored;
+
+        /// <summary>
+        /// The server is up but its storage is not. Retrying is the right
+        /// response.
+        /// </summary>
+        /// <remarks>
+        /// The status is checked as well as the code, because a 503 from the
+        /// ingress rather than from the application carries no envelope at all —
+        /// and to a caller deciding whether to offer "try again" the two are the
+        /// same answer.
+        /// </remarks>
+        public bool IsServiceUnavailable =>
+            ErrorCode == TwinApiErrorCodes.ServiceUnavailable || StatusCode == 503;
+
+        /// <summary>
+        /// What arrived is not what the server says it sent. See
+        /// <see cref="TwinApiErrorCodes.ChecksumMismatch"/>.
+        /// </summary>
+        public bool IsChecksumMismatch => ErrorCode == TwinApiErrorCodes.ChecksumMismatch;
     }
 }

@@ -28,7 +28,7 @@ not claim again, and the other way round.
 | **P03** | **Organise into groups** | create · name · select · hide and show · delete · which part sits in which group |
 | **P04** | **Look at the twin** | turn · move · zoom · store a view · activate a stored view · Shape |
 | **P05** | **Describe and report** | describe a part · report on a version · turn a document into a twin · screenshots · skin export |
-| **P06** | **Exchange twins** | export a zip · import a zip · versions · server sync |
+| **P06** | **Exchange twins** | export a zip · import a zip · versions · upload to the server · download from the server |
 | **P07** | **App frame** | settings · language · start and quit |
 
 **Persistence is not a process.** It is the same question asked at the end of every one of them:
@@ -101,7 +101,7 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 
 | | |
 |---|---|
-| Automated | `ImportTwinPlayModeTests` (10), `TwinVersionsClientTests` (9), `TwinAuthTests` (17) |
+| Automated | `ImportTwinPlayModeTests` (10), `TwinVersionsClientTests` (17), `TwinVersionRowTests` (9), `TwinAuthTests` (17) |
 | Manual | — |
 | **Gap** | **B**, as above. |
 

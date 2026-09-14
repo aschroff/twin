@@ -80,9 +80,26 @@ cache when there is one and otherwise reads the file and fills the cache from it
 
 ### Twin versions on the server
 
-Since TWIN-437 a twin version can be uploaded to the backend and listed back. The screen is
-reached from the versions screen (the cloud button, `ConfigManager.OpenVersionSync`) and shows one
-row per version of the current twin: which are on the server, which exist only on this device.
+Since TWIN-437 a twin version can be uploaded to the backend and listed back; since TWIN-463 one
+can be fetched again. There are **two** screens, both reached from the versions screen by a cloud
+button and both showing one row per version of the current twin, merged on the version name:
+
+| Button | Opens | Ticks | What the ticked rows do |
+|---|---|---|---|
+| **Upload** | `ConfigManager.OpenVersionSync` → mode `TwinVersionSync` | versions only on this device | go up to the server |
+| **Download** | `ConfigManager.OpenVersionDownload` → mode `TwinVersionDownload` | versions only on the server | come down and are imported |
+
+Both are reached from the versions screen, which the main UI's bottom row now jumps to directly
+(the **Versions** button, calendar icon — the same icon and the same `Versions` key the menu's own
+entry uses, and like it wired to the static `InteractionController.EnableMode("Version")`, so the
+click stays inside the prefab). Going through the twin list first is no longer necessary; that is
+also why `VersionManager.GetProfile` takes the twin from the loaded profile rather than from the
+name the twin list remembered.
+
+Two screens rather than one with a direction switch: the two lists answer different questions and
+a person arrives wanting one of them. They share `TwinVersionRow`, whose `Role` decides the only
+thing that differs — which single state is an offer and which ones mean *the other side already
+has this*, shown as a ticked, dead, dimmed box.
 
 - The archive that is uploaded is **the same zip the export produces** — that is why a twin
   directory has to be self-contained.
@@ -93,7 +110,12 @@ row per version of the current twin: which are on the server, which exist only o
   through the normal export would call `Save` first, which moves the directory's modification time
   — and `GetMostRecentlyUpdatedProfileId` picks the twin to open at the next start from exactly
   that. See `DataPersistenceManager.ExportZipForVersion`.
-- Reading a version back down from the server does not exist yet.
+- A download is verified against the `X-Checksum-SHA256` the server sends with the archive, and a
+  mismatch fails the download rather than reaching the twin store.
+- A downloaded archive goes through `DataPersistenceManager.ImportConfig(path)` — the same import
+  the file picker uses, including the `V01`/`V02` suffix rule. Only server-only versions can be
+  ticked, so that suffix should not appear in practice; if it does, two versions share a name.
+- Deleting a version from the server exists on the backend and is deliberately not in the client.
 
 Details: `Assets/Code/Net/Twins/README.md`.
 

@@ -1,8 +1,8 @@
 # Twin versions on the server
 
-Uploading a twin version to the backend, and listing what is already up there. Sits on top of
-`Code.Net.Auth` — every call here is signed by `TwinAuth.AuthorizeAsync`, which is also what
-renews the access token when it is close to expiring.
+Uploading a twin version to the backend, listing what is already up there, and fetching one back
+down. Sits on top of `Code.Net.Auth` — every call here is signed by `TwinAuth.AuthorizeAsync`,
+which is also what renews the access token when it is close to expiring.
 
 The backend lives in the separate `twin-server` repository; its OpenAPI document is the source of
 truth for the wire format. This file covers the client.
@@ -13,11 +13,13 @@ truth for the wire format. This file covers the client.
 
 | File | What it is |
 |---|---|
-| `TwinVersionsClient.cs` | The two calls: list, upload. Stateless. |
+| `TwinVersionsClient.cs` | The three calls: list, upload, download. Stateless. |
 | `TwinVersionModels.cs` | The wire types, the error codes, `TwinApiException`. |
-| `../../View/Manager/TwinVersionSyncManager.cs` | The screen: merges local and server versions, drives the upload. |
-| `../../View/Item/TwinVersionRow.cs` | One row of that screen. |
-| `Assets/Tests/EditMode/TwinVersionsClientTests.cs` | Nine tests against a real HTTP server on loopback. |
+| `../../View/Manager/TwinVersionSyncManager.cs` | The upload screen: merges local and server versions, drives the upload. |
+| `../../View/Manager/TwinVersionDownloadManager.cs` | The download screen. Same merge, opposite direction. |
+| `../../View/Item/TwinVersionRow.cs` | One row of either screen. Its `Role` says which way round to read a state. |
+| `Assets/Tests/EditMode/TwinVersionsClientTests.cs` | Seventeen tests against a real HTTP server on loopback. |
+| `Assets/Tests/EditMode/TwinVersionRowTests.cs` | Nine tests for which row can be ticked on which screen. |
 
 ---
 
@@ -32,6 +34,12 @@ List<TwinVersionInfo> versions = await client.ListAllAsync("LipEdema");
 // One version up. The archive is the zip the app's export produces.
 string zip = DataPersistenceManager.instance.ExportZipForVersion("LipEdema.001");
 TwinVersionInfo uploaded = await client.UploadAsync("LipEdema", "001", File.ReadAllBytes(zip));
+
+// One version down. Addressed by id - the name and version pair is a filter that can match
+// nothing, the id is the entry. The bytes are already checked against the server's digest.
+byte[] archive = await client.DownloadArchiveAsync(versions[0].Id);
+File.WriteAllBytes(path, archive);
+DataPersistenceManager.instance.ImportConfig(path);
 ```
 
 A twin's identity on the server is the same pair the app uses on disk: a profile id is
@@ -39,7 +47,7 @@ A twin's identity on the server is the same pair the app uses on disk: a profile
 
 ---
 
-## 3. The one error that is not a retry
+## 3. Which errors are worth retrying, and which are not
 
 | `TwinApiException` | Means | What to do |
 |---|---|---|
@@ -48,6 +56,10 @@ A twin's identity on the server is the same pair the app uses on disk: a profile
 | `IsArchiveInvalid` | The upload was not a ZIP | A bug on this side. |
 | `IsNotAuthorised` | 401/403 — expired, revoked, or missing scope | Send them to sign in again. |
 | `IsNetworkFailure` | Never reached the server (`StatusCode == 0`) | Retrying may work. |
+| `IsNotFound` | No such version | **Not transient.** The listing is stale; refresh it. |
+| `IsArchiveNotStored` | The entry is listed, its bytes are not there | **Not transient.** A deleted version looks like this. Only a fresh upload brings it back. |
+| `IsServiceUnavailable` | 503 — the server cannot reach its own object storage | Retrying is the right response. Also true for a 503 with no envelope. |
+| `IsChecksumMismatch` | **Raised here, not by the server.** What arrived does not match `X-Checksum-SHA256` | A truncated transfer or a proxy that rewrote the body. The archive must not be imported. |
 
 Branch on these flags and never on the message: the backend documents the `code` values as
 contract and the messages as free text.
@@ -71,9 +83,14 @@ back on the next start. `ExportZipForVersion` routes around it via `CompressExis
 
 ## 5. What does not exist yet
 
-`GET /{id}/archive` (download) and `DELETE` exist on the server and are deliberately absent from
-this client: an unused method is a contract nobody tested. Add them with tests when the reading
-side is built.
+`DELETE` exists on the server and is deliberately absent from this client: nothing in the app
+offers it, and an unused method is a contract nobody tested.
 
-The upload sends the whole archive as one multipart body held in memory. That is fine for the
-twins seen so far; a resumable or streamed upload is the thing to reach for when it is not.
+Both directions hold the whole archive in memory — the upload as one multipart body, the download
+as one `DownloadHandlerBuffer`. That is fine for the twins seen so far; a resumable or streamed
+transfer is the thing to reach for when it is not.
+
+**Deletion on the server is not restricted to the uploader, or to their organisation.** Any
+signed-in user can delete any uploaded version — the backend pins this in
+`test_a_user_in_another_organisation_can_delete_the_upload`. Nothing in this app can trigger it,
+but it is the reason the client has no delete rather than an accident.
