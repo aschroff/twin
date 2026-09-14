@@ -44,6 +44,13 @@ namespace EditModeTests
         {
             public int Status;
             public string Body;
+
+            /// <summary>Set instead of <see cref="Body"/> for a non-JSON answer.</summary>
+            public byte[] Bytes;
+            public string ContentType;
+
+            /// <summary>Extra response headers, or null.</summary>
+            public Dictionary<string, string> Headers;
         }
 
         private readonly HttpListener _listener = new();
@@ -95,6 +102,54 @@ namespace EditModeTests
                 "\"token_type\":\"bearer\"," +
                 "\"expires_in\":" + expiresIn + "," +
                 "\"scope\":\"twin:read twin:write\"}");
+        }
+
+        /// <summary>
+        /// Queue the archive route's answer: the ZIP itself, with the digest
+        /// header the real server sends alongside it.
+        /// </summary>
+        /// <remarks>
+        /// A string body cannot stand in here. The client hashes what arrived and
+        /// compares it, so a test that sent text would be testing the hash of
+        /// text — and <c>Content-Type</c> and <c>X-Checksum-SHA256</c> are
+        /// precisely the two things this route can get wrong.
+        /// </remarks>
+        public FakeTwinApiServer RespondWithArchive(byte[] archive)
+        {
+            return RespondWithArchive(archive, Sha256Hex(archive));
+        }
+
+        /// <summary>
+        /// The same, with the digest stated rather than computed — for the test
+        /// that has to see a wrong one refused. An empty <paramref name="checksum"/>
+        /// sends no header at all.
+        /// </summary>
+        public FakeTwinApiServer RespondWithArchive(byte[] archive, string checksum)
+        {
+            var headers = new Dictionary<string, string>();
+            if (!string.IsNullOrEmpty(checksum)) headers["X-Checksum-SHA256"] = checksum;
+
+            lock (_gate)
+            {
+                _responses.Enqueue(new Canned
+                {
+                    Status = 200,
+                    Bytes = archive,
+                    ContentType = "application/zip",
+                    Headers = headers,
+                });
+            }
+
+            return this;
+        }
+
+        /// <summary>Hex SHA-256, the shape the server's header uses.</summary>
+        public static string Sha256Hex(byte[] bytes)
+        {
+            using var sha = System.Security.Cryptography.SHA256.Create();
+            var text = new StringBuilder();
+            foreach (var b in sha.ComputeHash(bytes)) text.Append(b.ToString("x2"));
+            return text.ToString();
         }
 
         /// <summary>Queue an error in the backend's envelope: <c>{"error":{"code","message","details"}}</c>.</summary>
@@ -154,7 +209,22 @@ namespace EditModeTests
                     }
 
                     context.Response.StatusCode = canned.Status;
-                    if (string.IsNullOrEmpty(canned.Body))
+
+                    if (canned.Headers != null)
+                    {
+                        foreach (var header in canned.Headers)
+                        {
+                            context.Response.Headers[header.Key] = header.Value;
+                        }
+                    }
+
+                    if (canned.Bytes != null)
+                    {
+                        context.Response.ContentType = canned.ContentType;
+                        context.Response.ContentLength64 = canned.Bytes.Length;
+                        context.Response.OutputStream.Write(canned.Bytes, 0, canned.Bytes.Length);
+                    }
+                    else if (string.IsNullOrEmpty(canned.Body))
                     {
                         context.Response.ContentLength64 = 0;
                     }

@@ -174,6 +174,19 @@ public class ConfigManager : MonoBehaviour
         InteractionController.EnableMode("TwinVersionSync");
     }
 
+    /*
+    * Opens the other half of the same comparison: the versions this twin has on the server that
+    * are not on this device, and a button that fetches them.
+    *
+    * Two screens rather than one with a direction switch, because the two lists answer different
+    * questions and a person arrives wanting one of them. Here for the same reason as the method
+    * above - the click stays inside this prefab.
+    */
+    public void OpenVersionDownload()
+    {
+        InteractionController.EnableMode("TwinVersionDownload");
+    }
+
     public void ExportTwin()
     {
         dataPersistenceManager.ExportConfig();

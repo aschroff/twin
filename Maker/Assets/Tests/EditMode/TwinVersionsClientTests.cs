@@ -206,6 +206,127 @@ namespace EditModeTests
             Assert.AreEqual(0, error.StatusCode, "There is no HTTP status when nothing answered.");
         }
 
+        // --- downloading ------------------------------------------------------
+
+        [UnityTest]
+        public IEnumerator Downloading_asks_for_the_archive_of_one_id_and_signs_the_request()
+        {
+            yield return SignIn();
+            _server.RespondWithArchive(Archive);
+
+            var task = new TwinVersionsClient().DownloadArchiveAsync(VersionId);
+            yield return WaitFor(task);
+            AssertSucceeded(task);
+
+            var request = _server.LastRequest;
+            Assert.AreEqual("GET", request.Method);
+            Assert.AreEqual($"/v1/twin-versions/{VersionId}/archive", request.Path,
+                "The archive is addressed by the entry's id, not by the name and version pair.");
+            StringAssert.StartsWith("Bearer ", request.Authorization);
+            Assert.AreEqual("application/zip", request.Accept,
+                "This route answers with the ZIP, not with the JSON every other route sends.");
+        }
+
+        [UnityTest]
+        public IEnumerator Downloading_returns_the_archive_byte_for_byte()
+        {
+            yield return SignIn();
+            _server.RespondWithArchive(Archive);
+
+            var task = new TwinVersionsClient().DownloadArchiveAsync(VersionId);
+            yield return WaitFor(task);
+            AssertSucceeded(task);
+
+            CollectionAssert.AreEqual(Archive, task.Result,
+                "What the import unpacks has to be exactly what was uploaded.");
+        }
+
+        [UnityTest]
+        public IEnumerator An_archive_that_does_not_match_its_digest_is_refused()
+        {
+            yield return SignIn();
+            // The bytes are fine; the server says they should be something else.
+            // A truncated transfer or a proxy that rewrote the body looks like
+            // this, and either way it must not reach the twin store.
+            _server.RespondWithArchive(Archive, checksum: new string('a', 64));
+
+            var task = new TwinVersionsClient().DownloadArchiveAsync(VersionId);
+            yield return WaitFor(task);
+
+            Assert.IsTrue(AssertFailed(task).IsChecksumMismatch,
+                "A corrupt archive has to fail the download rather than be imported.");
+        }
+
+        [UnityTest]
+        public IEnumerator A_server_that_sends_no_digest_is_not_treated_as_a_failure()
+        {
+            yield return SignIn();
+            _server.RespondWithArchive(Archive, checksum: null);
+
+            var task = new TwinVersionsClient().DownloadArchiveAsync(VersionId);
+            yield return WaitFor(task);
+            AssertSucceeded(task, "The header is a check, not a second authentication");
+
+            CollectionAssert.AreEqual(Archive, task.Result);
+        }
+
+        [UnityTest]
+        public IEnumerator An_unknown_version_is_reported_as_not_found()
+        {
+            yield return SignIn();
+            _server.RespondWithError(404, "TWIN_VERSION_NOT_FOUND", "no such version");
+
+            var task = new TwinVersionsClient().DownloadArchiveAsync(VersionId);
+            yield return WaitFor(task);
+
+            var error = AssertFailed(task);
+            Assert.IsTrue(error.IsNotFound);
+            Assert.IsFalse(error.IsArchiveNotStored, "The two 404s are different answers to the person.");
+        }
+
+        [UnityTest]
+        public IEnumerator A_version_whose_archive_is_gone_is_told_apart_from_an_unknown_one()
+        {
+            yield return SignIn();
+            _server.RespondWithError(404, "TWIN_ARCHIVE_NOT_STORED", "deleted");
+
+            var task = new TwinVersionsClient().DownloadArchiveAsync(VersionId);
+            yield return WaitFor(task);
+
+            var error = AssertFailed(task);
+            Assert.IsTrue(error.IsArchiveNotStored,
+                "The row is still listed, so the screen has to explain why it cannot be fetched.");
+            Assert.IsFalse(error.IsNotFound);
+        }
+
+        [UnityTest]
+        public IEnumerator Storage_being_unreachable_is_reported_as_worth_retrying()
+        {
+            yield return SignIn();
+            _server.RespondWithError(503, "SERVICE_UNAVAILABLE", "object storage is down");
+
+            var task = new TwinVersionsClient().DownloadArchiveAsync(VersionId);
+            yield return WaitFor(task);
+
+            var error = AssertFailed(task);
+            Assert.IsTrue(error.IsServiceUnavailable);
+            Assert.IsFalse(error.IsNotFound, "Nothing is missing - the server could not reach its own storage.");
+        }
+
+        [UnityTest]
+        public IEnumerator A_503_without_the_envelope_still_reads_as_unavailable()
+        {
+            yield return SignIn();
+            // What an ingress returns when the application never sees the request.
+            _server.Respond(503, "<html>Service Unavailable</html>");
+
+            var task = new TwinVersionsClient().DownloadArchiveAsync(VersionId);
+            yield return WaitFor(task);
+
+            Assert.IsTrue(AssertFailed(task).IsServiceUnavailable,
+                "A caller deciding whether to offer 'try again' gets the same answer either way.");
+        }
+
         // --- helpers ----------------------------------------------------------
 
         /// <summary>
@@ -221,6 +342,16 @@ namespace EditModeTests
             yield return WaitFor(task);
             AssertSucceeded(task, "The test's own sign-in should succeed");
         }
+
+        /// <summary>The id the fake server's listing hands out.</summary>
+        private const string VersionId = "11111111-1111-1111-1111-111111111111";
+
+        /// <summary>
+        /// Stands in for an exported twin. Not a real ZIP: nothing in the client
+        /// unpacks it, and what is being checked is that the bytes arrive
+        /// unchanged and hash to what the server said.
+        /// </summary>
+        private static byte[] Archive => Encoding.UTF8.GetBytes("PK\u0003\u0004 pretend this is a twin");
 
         private static string ItemJson(string version, string uploadedAt) =>
             "{\"id\":\"11111111-1111-1111-1111-111111111111\"," +
