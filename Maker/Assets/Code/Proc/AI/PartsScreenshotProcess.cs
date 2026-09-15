@@ -117,6 +117,48 @@ namespace Code
         }
 
 
+        /// <summary>
+        /// How many parts have no screenshot on disk yet.
+        /// </summary>
+        /// <remarks>
+        /// Asks the same question, through the same <see cref="Recorder"/>, that
+        /// <see cref="execute"/> asks before it shoots a part - so this number and the parts a
+        /// run actually works on cannot drift apart. The recorder's name and folder are borrowed
+        /// for the lookup and put back, because a run in progress is using them.
+        /// </remarks>
+        public int CountMissingScreenshots()
+        {
+            Recorder rec = getRecorder();
+            DataPersistenceManager data = getDataManager();
+            PartManager parts = getPartManager();
+
+            if (rec == null || data == null || parts == null)
+            {
+                return 0;
+            }
+
+            string keepName = rec.name;
+            string keepFolder = rec.folder;
+            int count = 0;
+
+            foreach (PartManager.GroupData group in parts.groups)
+            {
+                foreach (PartManager.PartData part in group.groupParts)
+                {
+                    rec.name = data.selectedProfileId + " - " + group.name + " - part " + part.id;
+                    rec.folder = data.selectedProfileId;
+                    if (!rec.FileExists())
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            rec.name = keepName;
+            rec.folder = keepFolder;
+            return count;
+        }
+
         private void Update()
         {
             if (nextPart != null && !isProcessingPart)
