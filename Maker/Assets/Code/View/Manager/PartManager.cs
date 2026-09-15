@@ -45,6 +45,11 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 
 	/// <summary>Parts taken back by Undo, the most recently undone one last. New paint clears it.</summary>
 	private readonly List<UndonePart> redoableParts = new List<UndonePart>();
+
+	/// <summary>Unscaled time of the last paint. The autosave waits for a pause in it, because
+	/// saving sets startNewPart and would otherwise cut a running annotation into two parts -
+	/// see DataPersistenceManager.AutoSave.</summary>
+	public float LastPaintTime { get; private set; }
 	//[SerializeField] public bool temp_skiploading = false;
 	public enum Tool
 	{
@@ -163,6 +168,7 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 
 	public void addCommand(CommandDataTwin commandData)
 	{
+		LastPaintTime = Time.unscaledTime;
 		if (startNewPart)
 		{
 			StoreCurrentPartInformation();
@@ -254,6 +260,7 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 		{
 			return;
 		}
+		LastPaintTime = Time.unscaledTime;
 		undoableParts.Remove(part);
 		undoableParts.Add(part);
 		redoableParts.Clear();

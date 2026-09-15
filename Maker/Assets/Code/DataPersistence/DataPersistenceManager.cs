@@ -32,7 +32,13 @@ public class DataPersistenceManager : MonoBehaviour
     [SerializeField] public string selectedProfileId = "default";
 
     [Header("Auto Saving Configuration")]
-    [SerializeField] private float autoSaveTimeSeconds = 60f;
+    /// <summary>Seconds between two automatic saves. Long on purpose: one save of a mid-sized
+    /// twin measures ~60 ms in the editor and several hundred on a tablet, on the main thread.</summary>
+    [SerializeField] private float autoSaveTimeSeconds = 120f;
+
+    /// <summary>How long the user has to have stopped painting before an automatic save may
+    /// happen. See <see cref="AutoSave"/> for why a save may not land mid-annotation.</summary>
+    [SerializeField] private float paintIdleSeconds = 5f;
     
     [Header("Templates")]
     [SerializeField] private Templates  templates;
@@ -40,6 +46,11 @@ public class DataPersistenceManager : MonoBehaviour
     private ConfigData configData;
     private List<IDataPersistence> dataPersistenceObjects;
     private FileDataHandler dataHandler;
+
+    /// <summary>The scene's PartManager, for the autosave's idle check. Looked up rather than
+    /// serialized: a field would have to be wired in Maker Main.unity, and every save of that
+    /// scene writes ~200 lines of driven RectTransform noise (APP_DOCUMENTATION §9).</summary>
+    private PartManager paintingParts;
 
     private Coroutine autoSaveCoroutine;
 
@@ -73,6 +84,10 @@ public class DataPersistenceManager : MonoBehaviour
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadConfig();
         initPersistentObjects();
+
+        // the coroutine has existed unused since the field was added; nothing ever started it,
+        // so until now the only saves were the explicit ones and OnApplicationQuit
+        autoSaveCoroutine = StartCoroutine(AutoSave());
     }
 
     
@@ -415,6 +430,13 @@ public class DataPersistenceManager : MonoBehaviour
             return false;
         }
 
+        // a save can be asked for before Start has collected them - backgrounding the app during
+        // the first frames does exactly that
+        if (this.dataPersistenceObjects == null)
+        {
+            return false;
+        }
+
         // pass the data to other scripts so they can update it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
         {
@@ -429,6 +451,28 @@ public class DataPersistenceManager : MonoBehaviour
     private void OnApplicationQuit() 
     {
         Debug.Log("Quit -> Saved Config");
+        SaveConfig();
+    }
+
+    /// <summary>
+    /// The app is going to the background - the last moment at which it can still write anything.
+    /// </summary>
+    /// <remarks>
+    /// This, rather than the timer, is what keeps work from being lost. iOS reclaims a
+    /// backgrounded app under memory pressure without <see cref="OnApplicationQuit"/> ever
+    /// running, and this app has been killed that way before (TWIN-459); swiping it out of the
+    /// app switcher takes the same route. The user is not mid-stroke when the app is
+    /// backgrounded, so the part-splitting <see cref="AutoSave"/> has to avoid is not a concern
+    /// here and the save is unconditional.
+    /// </remarks>
+    private void OnApplicationPause(bool paused) 
+    {
+        if (!paused)
+        {
+            return;
+        }
+
+        Debug.Log("Paused -> Saved Config");
         SaveConfig();
     }
 
@@ -510,14 +554,58 @@ public class DataPersistenceManager : MonoBehaviour
 
           
     
+    /// <summary>
+    /// Saves the open twin now and then, so a crash in the foreground does not cost everything
+    /// since the last explicit save.
+    /// </summary>
+    /// <remarks>
+    /// <para><b>Not a plain timer, for one specific reason.</b> Saving runs
+    /// <see cref="PartManager.SaveData"/>, which sets <c>startNewPart</c>. A save that lands in
+    /// the middle of an annotation drawn as several strokes therefore cuts it into two parts -
+    /// two rows in the part list, two screenshots, two AI descriptions. So a save waits until
+    /// the user has stopped painting for <see cref="paintIdleSeconds"/>; after a pause that
+    /// long, starting a new part is what the app does anyway (tool change, leaving Edit mode).</para>
+    ///
+    /// <para>It also stays out of the way while the app is already blocking on something, where
+    /// it would only lengthen a freeze the user is looking at.</para>
+    ///
+    /// <para>This is the second line of defence. The first is <see cref="OnApplicationPause"/>:
+    /// work is lost when iOS reclaims a backgrounded app, and that is where it is caught.</para>
+    /// </remarks>
     private IEnumerator AutoSave() 
     {
         while (true) 
         {
             yield return new WaitForSeconds(autoSaveTimeSeconds);
+            if (!ReadyToAutoSave())
+            {
+                continue;
+            }
             SaveConfig();
             Debug.Log("Auto Saved Config");
         }
+    }
+
+    /// <summary>Whether a save can happen right now without being felt - see <see cref="AutoSave"/>.</summary>
+    private bool ReadyToAutoSave()
+    {
+        if (configData == null || disableDataPersistence)
+        {
+            return false;
+        }
+
+        if (BusyOverlay.Working)
+        {
+            return false;
+        }
+
+        if (paintingParts == null && dataPersistenceObjects != null)
+        {
+            paintingParts = dataPersistenceObjects.OfType<PartManager>().FirstOrDefault();
+        }
+
+        return paintingParts == null
+            || Time.unscaledTime - paintingParts.LastPaintTime >= paintIdleSeconds;
     }
     
     private void handlePostLoad(IDataPersistence persistentObject){
