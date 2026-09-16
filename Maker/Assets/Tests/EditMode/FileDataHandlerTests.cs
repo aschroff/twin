@@ -25,6 +25,35 @@ namespace EditModeTests
     [Category(Processes.ManageTwins)]
     public class FileDataHandlerTests
     {
+        /// <summary>
+        /// The import dialog has to be told one file type per entry.
+        /// </summary>
+        /// <remarks>
+        /// <c>NativeFilePicker.PickFile</c> takes a <c>params string[]</c>. A single string holding
+        /// several types separated by commas therefore arrives as one type whose name is that whole
+        /// line, and it matches nothing: on an iPad the picker greyed out every file, so a twin that
+        /// had just been exported could not be imported again. The editor never showed it, which is
+        /// why this is asserted rather than tried out.
+        /// </remarks>
+        [Test]
+        public void AllowedExtractionFormats_NameOneFileTypePerEntry()
+        {
+            string[] types = FileDataHandler.AllowedExtractionFormats();
+
+            Assert.IsNotNull(types, "The import dialog was given no file types at all.");
+            Assert.Greater(types.Length, 0, "The import dialog was given no file types at all.");
+
+            foreach (string type in types)
+            {
+                Assert.IsFalse(string.IsNullOrWhiteSpace(type), "An empty file type filters nothing.");
+                Assert.IsFalse(type.Contains(","),
+                    "'" + type + "' is several types in one entry - the picker reads it as a single "
+                    + "type of that name and then matches no file at all.");
+                Assert.IsFalse(type.Trim().Contains(" "),
+                    "'" + type + "' has a space in it; a UTI or a MIME type has none.");
+            }
+        }
+
         private const string FileName = "ConfigTwin.txt";
 
         /// <summary>Twin directories are "&lt;name&gt;.&lt;version&gt;", which is what the app writes.</summary>
