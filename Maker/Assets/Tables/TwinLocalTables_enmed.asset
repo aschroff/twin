@@ -879,6 +879,15 @@ MonoBehaviour:
     m_Localized: All descriptions again
     m_Metadata:
       m_Items: []
+  - m_Id: 244222860131819520
+    m_Localized: 'Patient name can only contain following characters: a-z, A-Z, 0-9
+      and "_", "(", ")","-". With length between 1 and 11.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244224215076560896
+    m_Localized: This Patient Name already exists.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
