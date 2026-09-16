@@ -91,7 +91,9 @@ namespace NoAPICalls
         }
 
         /// <summary>A button can be visible and do nothing: the five calls into Model are wired in
-        /// the prefab's inspector, where a rename or a re-parent silently drops them.</summary>
+        /// the prefab's inspector, where a rename or a re-parent can drop it without a word — the 
+        /// button would still look right and do nothing, which is what this test is here to catch.
+        /// </summary>
         [UnityTest]
         public IEnumerator ShapeButtons_AreStillWiredToTheModel()
         {
