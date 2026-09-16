@@ -37,6 +37,35 @@ namespace EditModeTests
             return path;
         }
 
+        /*
+         * The key that ships inside a build (Assets/Resources/secrets.json) goes through the same
+         * parsing as the files - so what is covered here is that rule, once, rather than twice.
+         * Whether the asset itself is present is deliberately not asserted: it is git-ignored, so
+         * a machine that has no key must not fail the suite for it.
+         */
+        [Test]
+        public void KeyFromJson_TakesTheKeyOutOfWhatABuildWouldCarry()
+        {
+            Assert.AreEqual("sk-in-the-build",
+                ApiKeys.KeyFromJson("{\"" + ApiKeys.JsonMember + "\": \"sk-in-the-build\"}"));
+        }
+
+        [Test]
+        public void KeyFromJson_WithoutAKey_ComesBackEmpty()
+        {
+            Assert.AreEqual("", ApiKeys.KeyFromJson("{\"something\": \"else\"}"));
+            Assert.AreEqual("", ApiKeys.KeyFromJson(""));
+            Assert.AreEqual("", ApiKeys.KeyFromJson("   "));
+        }
+
+        /// <summary>A machine without the file has to come back empty, not throw - that is the
+        /// case for everyone who has their key somewhere else.</summary>
+        [Test]
+        public void FromResources_WithoutTheFile_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => ApiKeys.FromResources());
+        }
+
         [Test]
         public void ReadFromFile_TakesTheKeyTheTestSecretsFileUses()
         {

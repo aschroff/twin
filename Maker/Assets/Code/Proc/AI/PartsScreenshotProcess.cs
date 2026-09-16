@@ -198,7 +198,21 @@ namespace Code
             Debug.Log("---Start WaitForEndOfFrame");
             yield return new WaitForEndOfFrame();
             Debug.Log("---End WaitForEndOfFrame");
-            recorder.Do();
+            /*
+             * The shot itself can throw, and it used to take the app with it. The file name carries
+             * the group name, which is unchecked free text: a '/' in it makes File.WriteAllBytes
+             * fail, the coroutine dies, isProcessingPart stays true, WaitForIdle spins forever and
+             * recorder.Reset is never reached - so the canvas stays hidden and the app is unusable
+             * until it is restarted. One bad name may cost its own screenshot and nothing more.
+             */
+            try
+            {
+                recorder.Do();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Screenshot for part " + part.id + " failed: " + e.Message);
+            }
             Debug.Log("---Start yield return null");
             yield return null;
         }

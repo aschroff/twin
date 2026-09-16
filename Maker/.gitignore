@@ -78,6 +78,11 @@ crashlytics-build.properties
 # Test secrets (contains API keys and credentials)
 Assets/Tests/Helper/testsecrets.json
 Assets/Tests/Helper/testsecrets.json.meta
+
+# The key that travels inside a build (Code.AI.ApiKeys.ResourceName). Ignored rather than
+# committed and removed again - forgetting that is exactly how the key used to reach the repo.
+Assets/Resources/secrets.json
+Assets/Resources/secrets.json.meta
 # Template library generation workspace: everything is transient staging except the README.
 # Finished areas are promoted to Assets/Resources/templates/<Area>.twin (the real deliverable).
 TemplateLibrary/*
