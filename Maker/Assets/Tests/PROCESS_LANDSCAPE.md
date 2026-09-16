@@ -63,7 +63,7 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 |---|---|
 | Automated | `SaveTwinPlayModeTests`, `TwinNameValidationPlayModeTests` (5), `InfoDisplayPlayModeTests` (5), `FileDataHandlerTests` (13), `DataPersistenceManagerTests` (9) |
 | Manual | 02 Twin management · 03 App reset · 05/01 Twins save functionality · 05/02 Duplicated twin name · 05/03 Twin names · Name tests |
-| **Gap** | none worth naming — `TwinNameValidator` (valid and invalid characters, length, duplicates and their error messages, through both "New" and "Save as") is covered since TWIN-469. |
+| **Gap** | none worth naming |
 
 ### P02 — Mark up the body
 
