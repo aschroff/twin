@@ -61,9 +61,9 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 
 | | |
 |---|---|
-| Automated | `SaveTwinPlayModeTests`, `InfoDisplayPlayModeTests` (5), `FileDataHandlerTests` (13), `DataPersistenceManagerTests` (9) |
+| Automated | `SaveTwinPlayModeTests`, `TwinNameValidationPlayModeTests` (5), `InfoDisplayPlayModeTests` (5), `FileDataHandlerTests` (13), `DataPersistenceManagerTests` (9) |
 | Manual | 02 Twin management · 03 App reset · 05/01 Twins save functionality · 05/02 Duplicated twin name · 05/03 Twin names · Name tests |
-| **Gap** | **A** — name validation (valid and invalid characters, length, duplicates and their error messages) is checked by hand only. `TwinNameValidator` has no test at all. |
+| **Gap** | none worth naming — `TwinNameValidator` (valid and invalid characters, length, duplicates and their error messages, through both "New" and "Save as") is covered since TWIN-469. |
 
 ### P02 — Mark up the body
 
@@ -130,7 +130,7 @@ rather than being written again.
 | **C** | checked by neither | a real hole |
 
 **The only C today is the Region screen.** In order of value, the A gaps are: stored views (P04),
-twin names (P01), the remaining tools (P02), the reset checklist (P07).
+the remaining tools (P02), the reset checklist (P07).
 
 ---
 
@@ -197,7 +197,6 @@ Known, and deliberately not covered by tests, because they are business decision
 - **Imported versions are hard to find.** The twin list shows one row per twin name; further
   versions sit in the version overview. Once twins arrive unannounced over a server, it has to be
   decided how the user learns about them.
-- **Twin names are limited to 11 characters**, but the error message says 14.
 - **The twin that is currently open cannot be deleted**, so the twin list can never be emptied
   completely from inside the app.
 - **Export size.** Every export carries the body paint as an image (about 1.2 MB). Exports from
@@ -215,7 +214,7 @@ answers, the key lookup, and the token and session handling of the twin server. 
 
 | Address | Tests |
 |---|---|
-| `P01_manage_twins` | 25 |
+| `P01_manage_twins` | 30 |
 | `P02_mark_up_the_body` | 30 |
 | `P03_organise_into_groups` | 16 |
 | `P04_look_at_the_twin` | 4 |
@@ -225,13 +224,14 @@ answers, the key lookup, and the token and session handling of the twin server. 
 | `T00_technical` | 25 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **159** |
+| **total** | **164** |
 
-By cost: 88 in `EditMode/`, 53 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`.
+By cost: 88 in `EditMode/`, 58 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456 and is now at four — storing a view,
-getting it back, getting it back after the twin was turned, and surviving a reload. What has no
-test at all is K02, K03 and K04.
+getting it back, getting it back after the twin was turned, and surviving a reload. `P01_manage_twins`
+gained `TwinNameValidationPlayModeTests` (5) with TWIN-469, closing the last A gap it had. What has
+no test at all is K02, K03 and K04.
 
-**Counted on 11 September 2026** (P04 updated with TWIN-456), by reflection over both test assemblies — the same walk the guard
+**Counted on 16 September 2026** (P01 updated with TWIN-469), by reflection over both test assemblies — the same walk the guard
 test makes.
