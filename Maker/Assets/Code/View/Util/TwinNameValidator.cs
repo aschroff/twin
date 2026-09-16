@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
@@ -19,25 +18,13 @@ public class TwinNameValidator : MonoBehaviour
     //with the minimum length of 1 and the maximum length of 11
     // regex is white page regex so it accepts exactly when the name meets the naming conditions
 
-    private const string TableName = "TwinLocalTables";
     private const string KeyInvalidName = "TWIN_NAME_INVALID_MESSAGE";
     private const string KeyAlreadyExists = "TWIN_NAME_ALREADY_EXISTS_MESSAGE";
 
     // en/enmed follow the usual Twin/Patient split, but de, demed and demedlatin all say
     // "Patient" here - unlike the TWIN label key, plain de does not keep "Twin" for this message.
-    public static string InvalidNameMessage => Localise(KeyInvalidName);
-    public static string AlreadyExistingNameMessage => Localise(KeyAlreadyExists);
-
-    private static string Localise(string key)
-    {
-        var table = LocalizationSettings.StringDatabase?.GetTable(TableName);
-        var entry = table?.GetEntry(key);
-
-        if (entry != null) return entry.GetLocalizedString();
-
-        Debug.LogWarning($"[{nameof(TwinNameValidator)}] No entry '{key}' in {TableName}.");
-        return key;
-    }
+    public static string InvalidNameMessage => StringLocalizer.localizeString(KeyInvalidName);
+    public static string AlreadyExistingNameMessage => StringLocalizer.localizeString(KeyAlreadyExists);
 
     private void Start()
     {
