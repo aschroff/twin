@@ -95,8 +95,9 @@ public class PartsDescriptionProcessTests : PlayModeTestBase
 
         partsDescriptionProcess.Handle(Variant);
 
-        // Execute() immediately stamps a "Part Number N :\n..." placeholder onto every part before
-        // the real per-part AI call (fired concurrently) overwrites it with the actual description.
+        // The run works through the parts one at a time and writes nothing into part.description
+        // except the model's own answer - so the description staying empty means the call failed
+        // or never happened, and this waits it out rather than seeing a placeholder appear.
         yield return WaitUntilOrTimeout(
             () => !string.IsNullOrEmpty(part.description) && !part.description.StartsWith("Part Number"),
             30f,

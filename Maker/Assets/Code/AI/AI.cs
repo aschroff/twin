@@ -63,7 +63,15 @@ namespace Code.AI
         }
         
         
-        private IEnumerator DescribePartCoroutine(PartManager.PartData part, string variant)
+        /// <summary>
+        /// Asks the model about one part. Runs to the end of the request, so a caller that has a
+        /// list of parts can wait for one before starting the next.
+        /// </summary>
+        /// <param name="onError">Told what went wrong, if anything. The error does <b>not</b> go
+        /// into <c>part.description</c>: that field holds the doctor's own text, and a failed
+        /// request may not overwrite it.</param>
+        public IEnumerator DescribePartCoroutine(PartManager.PartData part, string variant,
+            Action<string> onError = null)
         {
             string prompt = GetPromptOfLabel(variant, ItemPrompt.PromptLevel.Part);
             prompt += Part.Description(part);
@@ -75,7 +83,11 @@ namespace Code.AI
                 prompt,
                 imagePath,
                 response => OnInjuryAnalyzed(part, response),
-                error => OnInjuryAnalysisError(part, error)
+                error =>
+                {
+                    OnInjuryAnalysisError(part, error);
+                    if (onError != null) onError(error);
+                }
             ));
         }
 
@@ -96,9 +108,15 @@ namespace Code.AI
             }
         }
 
+        /// <summary>
+        /// A request that failed leaves the part as it was.
+        /// </summary>
+        /// <remarks>This used to put "Error: ..." into <c>part.description</c>. That field is the
+        /// free text of the part detail page - what a doctor typed, or what a document brought in -
+        /// and there is no undo, so a request that fails because the network was down silently
+        /// destroyed it. The failure belongs in the log and in what the caller reports.</remarks>
         private void OnInjuryAnalysisError(PartManager.PartData part, string errorMessage)
         {
-            part.description = $"Error: {errorMessage}";
             Debug.LogError($"AI request failed for {part.meaning}: {errorMessage}");
         }
 
