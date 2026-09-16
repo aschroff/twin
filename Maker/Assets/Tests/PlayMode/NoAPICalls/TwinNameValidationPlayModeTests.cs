@@ -10,6 +10,7 @@ namespace NoAPICalls
     /// name must all leave the screen in Save mode and show a toast - "New" and "Save as" both go
     /// through the same check.
     /// </summary>
+    [Category(Processes.ManageTwins)]
     public class TwinNameValidationPlayModeTests : PlayModeTestBase
     {
         const string NotificationText = "Canvas/Overlays/Notification Overlay/Panel/Text";
