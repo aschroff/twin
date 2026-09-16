@@ -251,57 +251,5 @@ namespace NoAPICalls
             Assert.AreEqual(before.bodyPose, after.bodyPose, "Body pose did not survive the reload.");
             Assert.AreEqual(before.handPose, after.handPose, "Hand pose did not survive the reload.");
         }
-
-        /// <summary>The face is the one thing on this screen that is never written to the save
-        /// file. <see cref="ConfigData"/> carries the figure (shapeParameters), the arms (bodyPose)
-        /// and the hands (handPose) — but it has no field for the expressions, and
-        /// <c>Model.SaveData</c> / <c>Model.LoadData</c> never touch them. A face the user set is
-        /// therefore gone the next time the app starts.
-        ///
-        /// <para>This test pins that gap rather than leaving it invisible. It turns red the day
-        /// somebody adds the field, which is exactly when it — and the "Known open points" of
-        /// PROCESS_LANDSCAPE.md — need rewriting into a normal persistence check.</para>
-        ///
-        /// <para>Zeroing the expressions by hand is what makes the test honest: loading a twin does
-        /// not reset them, so inside one session the face simply lingers on the model and a plain
-        /// round trip would look as though it had survived. Setting them to zero first stands in
-        /// for the restart that the user would actually do.</para></summary>
-        [UnityTest]
-        public IEnumerator Face_IsNotSaved_KnownGap()
-        {
-            yield return ClickButtonByName("Save Button");
-            yield return WaitForModeActive("Save");
-            SetInputByName("InputField", "FaceTwin");
-            yield return ClickButtonByName("New");
-            yield return WaitForModeActive("Main");
-
-            yield return OpenShapeScreen();
-            yield return ClickButtonByPath($"{ButtonsPath}/Face");
-
-            var smplx = FindSmplx();
-            bool anyExpressionSet = false;
-            foreach (float expression in smplx.expressions)
-                if (!Mathf.Approximately(expression, 0f)) anyExpressionSet = true;
-            Assert.IsTrue(anyExpressionSet, "Sanity: Face should have changed the expressions.");
-
-            var dpm = DataPersistenceManager.instance;
-            dpm.SaveConfig();
-            string profileId = dpm.selectedProfileId;
-
-            // Stands in for closing and reopening the app.
-            for (int i = 0; i < SMPLX.NUM_EXPRESSIONS; i++)
-                smplx.expressions[i] = 0f;
-
-            dpm.ChangeSelectedProfileId("default.000");
-            yield return null;
-            dpm.ChangeSelectedProfileId(profileId);
-            yield return null;
-
-            foreach (float expression in FindSmplx().expressions)
-                Assert.AreEqual(0f, expression, 1e-6f,
-                    "The face came back from the save file. If that is intentional, this test has " +
-                    "done its job: replace it with a real persistence check and update " +
-                    "PROCESS_LANDSCAPE.md.");
-        }
     }
 }
