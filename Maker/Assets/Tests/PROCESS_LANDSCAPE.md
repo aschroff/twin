@@ -71,7 +71,7 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 |---|---|
 | Automated | `EditUiPlayModeTests`, `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests`, `PartTemplateServiceTests` (11), `PartHistoryTests` (13) |
 | Manual | 06/01 Edit navigation · 06/02 Marker · 06/03 Sticker · 06/04 Delete · 06/05 Filler · 06/06 Text · 06/08 placement |
-| **Gap** | **A** — Text, Filler and Delete are checked by hand only.<br>**C** — the **Region screen** is checked by nobody: the service behind it has 11 tests, the screen has none, and the manual catalogue does not mention it. 06/01 lists five tools; the app has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). |
+| **Gap** | **A** — Text, Filler and Delete are checked by hand only.<br>**C** — the **Region screen** is checked by nobody: the service behind it has 11 tests, the screen has none, and the manual catalogue does not mention it. 06/01 lists five tools; the Edit screen's bottom bar has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). Shape is the seventh but belongs to **P04**, where it is covered. |
 
 ### P03 — Organise into groups
 
@@ -85,9 +85,9 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 
 | | |
 |---|---|
-| Automated | `ViewPlayModeTests` (3), `TourProcessPlayModeTests` (standard views only) |
+| Automated | `ViewPlayModeTests` (3), `TourProcessPlayModeTests` (standard views only), `ShapePlayModeTests` (8) |
 | Manual | 01/01 Top navigation · 01/02 view and group window · 07/01 Store view · 07/01a Stored view after turning · 06/07 Shape |
-| **Gap** | Storing a view, activating it, and activating it *after the twin has been turned* are covered since TWIN-456. What is still by hand only: turning, moving and zooming as such, and Shape. |
+| **Gap** | Storing a view, activating it, and activating it *after the twin has been turned* are covered since TWIN-456. Shape is covered since TWIN-473 — screen, button wiring, all five functions, and that a changed figure survives save and reload; what a test cannot say is whether the figure then *looks* plausible, so 06/07 stays a manual check. What is still by hand only: turning, moving and zooming as such. |
 
 ### P05 — Describe and report
 
@@ -202,6 +202,9 @@ Known, and deliberately not covered by tests, because they are business decision
   completely from inside the app.
 - **Export size.** Every export carries the body paint as an image (about 1.2 MB). Exports from
   older versions of the app do not, and arrive unpainted.
+- **The face is never saved.** The figure, the arms and the hands are in the save file; the
+  expressions are not — `ConfigData` has no field for them. A face the user set is gone at the next
+  app start. No test claims it either way.
 
 ---
 
@@ -218,20 +221,20 @@ answers, the key lookup, and the token and session handling of the twin server. 
 | `P01_manage_twins` | 25 |
 | `P02_mark_up_the_body` | 30 |
 | `P03_organise_into_groups` | 16 |
-| `P04_look_at_the_twin` | 4 |
+| `P04_look_at_the_twin` | 12 |
 | `P05_describe_and_report` | 19 |
 | `P06_exchange_twins` | 36 |
 | `P07_app_frame` | 2 |
 | `T00_technical` | 25 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **159** |
+| **total** | **167** |
 
-By cost: 88 in `EditMode/`, 53 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`.
+By cost: 88 in `EditMode/`, 61 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`.
 
-`P04_look_at_the_twin` stood at one test until TWIN-456 and is now at four — storing a view,
-getting it back, getting it back after the twin was turned, and surviving a reload. What has no
-test at all is K02, K03 and K04.
+`P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now
+at twelve — the Shape screen brought eight with TWIN-473. What has no test at all is K02, K03 and
+K04.
 
-**Counted on 11 September 2026** (P04 updated with TWIN-456), by reflection over both test assemblies — the same walk the guard
+**Counted on 11 September 2026** (P04 updated with TWIN-473), by reflection over both test assemblies — the same walk the guard
 test makes.
