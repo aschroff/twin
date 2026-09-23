@@ -157,16 +157,25 @@ namespace Code.AI
         /// <summary>Uploads a document so it can be sent as a file - see MapDocument.</summary>
         public IEnumerator UploadDocumentCoroutine(string path, Action<string> onSuccess, Action<string> onError)
         {
-            var task = UploadFileAsync(path);
-            yield return new WaitUntil(() => task.IsCompleted);
+            // the upload is part of asking about a document, so the logo belongs over it too
+            BusyOverlay.BeginThinking();
+            try
+            {
+                var task = UploadFileAsync(path);
+                yield return new WaitUntil(() => task.IsCompleted);
 
-            if (task.Exception != null)
-            {
-                onError?.Invoke(task.Exception.InnerException?.Message ?? task.Exception.Message);
+                if (task.Exception != null)
+                {
+                    onError?.Invoke(task.Exception.InnerException?.Message ?? task.Exception.Message);
+                }
+                else
+                {
+                    onSuccess?.Invoke(task.Result);
+                }
             }
-            else
+            finally
             {
-                onSuccess?.Invoke(task.Result);
+                BusyOverlay.EndThinking();
             }
         }
 
