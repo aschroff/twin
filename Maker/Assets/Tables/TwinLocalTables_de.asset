@@ -884,6 +884,16 @@ MonoBehaviour:
     m_Localized: Alle Beschreibungen neu
     m_Metadata:
       m_Items: []
+  - m_Id: 244222860131819520
+    m_Localized: "Der Patientenname darf nur folgende Zeichen enthalten: a-z, A-Z,
+      0-9 sowie \"_\", \"(\", \")\", \"-\". Die L\xE4nge muss zwischen 1 und 11 Zeichen
+      liegen."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244224215076560896
+    m_Localized: Dieser Patientenname existiert bereits.
+    m_Metadata:
+      m_Items: []
   - m_Id: 244262800379076608
     m_Localized: Bild erzeugen
     m_Metadata:
@@ -894,6 +904,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 244262800429408257
     m_Localized: "L\xF6schen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 247811396617625600
+    m_Localized: "Zur\xFCck"
     m_Metadata:
       m_Items: []
   references:

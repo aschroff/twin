@@ -22,8 +22,6 @@ public class StringLocalizer
             {
                 // Access the localized value
                 string localizedValue = entry.GetLocalizedString();
-                //text.text = localizedValue;
-                Debug.Log("Localized value: " + localizedValue);
                 return localizedValue;
             }
             else

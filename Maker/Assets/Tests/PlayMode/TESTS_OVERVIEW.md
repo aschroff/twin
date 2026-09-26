@@ -23,6 +23,7 @@ Run them from the Unity Test Runner, or from the automation menu **Tools → Tem
 | Test | What it checks |
 |------|----------------|
 | **SaveTwinPlayModeTests**<br>`SaveButton_OpensSaveMode` | Save screen opens, its buttons are present, a new twin can be created and appears in the twin list. |
+| **TwinNameValidationPlayModeTests** (5 tests) | `TwinNameValidator` on the save screen, through both "New" and "Save as": a duplicate name, an invalid character (non-ASCII, symbols, reserved punctuation), an empty or whitespace-only name, a name that already contains a dot (rejected by the dot-count check before the character regex ever runs, since the UI appends its own `.000`), and the 11/12-character length boundary — each leaves the screen in Save mode with the matching toast, except the 11-character name, which succeeds and appears in the twin list. |
 | **SettingsUiPlayModeTests**<br>`SettingsButton_EnablesSettingsMode` | Settings screen opens. |
 | **EditUiPlaymodeTests**<br>`EditButton_EnablesEditMode` | Core editing round trip: open a twin, enter Edit mode, all tool buttons present, select a view, paint with a marker, return to Main, open the group detail page and find the painted part in its group. |
 | **GroupDetailPlayModeTests**<br>`PaintingPerGroup_ShowsOnePartPerSelectedGroup` | Paints one part into every group of the LipEdema twin (a different marker each) plus one into a newly created group; then on the group detail page selects one group at a time and verifies exactly that group's single part is listed. |
