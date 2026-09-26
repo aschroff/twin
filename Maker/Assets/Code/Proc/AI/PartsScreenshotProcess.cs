@@ -159,6 +159,54 @@ namespace Code
             return count;
         }
 
+        /// <summary>
+        /// Shoots the screenshot of one part, and only that one.
+        /// </summary>
+        /// <remarks>
+        /// <para>For one part the run is a blink - the canvas goes away, the camera moves to the
+        /// part's stored view, the part is isolated on the body, and it is back. That is what the
+        /// part detail page offers when a part has no picture yet: without one the "describe" entry
+        /// there can do nothing at all, because the model is asked about the picture.</para>
+        ///
+        /// <para>Always re-shoots. The batch run skips a part whose file is already on disk, which
+        /// is right when it is filling gaps - but asked for one part by hand, doing nothing would
+        /// look broken.</para>
+        /// </remarks>
+        public IEnumerator ShootPart(PartManager.PartData part, PartManager.GroupData group)
+        {
+            if (part == null || group == null)
+            {
+                Debug.LogWarning("PartsScreenshotProcess: no part or no group to shoot.");
+                yield break;
+            }
+
+            viewManager = getViewmanager();
+            recorder = getRecorder();
+            dataManager = getDataManager();
+            partManager = getPartManager();
+
+            SceneManagement.View currentView = viewManager.shootView();
+            List<GameObject> listActive = recorder.Prepare();
+
+            recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + part.id;
+            recorder.folder = dataManager.selectedProfileId;
+            try
+            {
+                if (recorder.FileExists()) System.IO.File.Delete(recorder.get_path());
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("Could not replace the old screenshot of part " + part.id + ": " + e.Message);
+            }
+
+            yield return StartCoroutine(execute(part, group));
+
+            partManager.ClearRefreshAll();
+            recorder.Reset(listActive);
+            recorder.Post(getNotification());
+            viewManager.select(currentView);
+        }
+
         private void Update()
         {
             if (nextPart != null && !isProcessingPart)
