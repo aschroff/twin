@@ -35,9 +35,36 @@ public class BusyOverlay : MonoBehaviour
     [SerializeField] private Text label;
     [SerializeField] private CanvasGroup canvasGroup;
 
+    /// <summary>The box the message sits in. Hidden while the logo is up - the two occupy the
+    /// same place on screen.</summary>
+    [SerializeField] private GameObject box;
+
+    /// <summary>The app's logo, shown instead of a message while the model is being asked.</summary>
+    [SerializeField] private RawImage logo;
+
+    /// <summary>
+    /// Drawings of the logo that are played while the model is being asked - the dog wagging its
+    /// tail.
+    /// </summary>
+    /// <remarks>
+    /// <para>Played there and back again (1, 2, 3, 4, 3, 2, ...), so four drawings from one
+    /// extreme of the wag to the other give a six step cycle with no jump back to the start.
+    /// Everything but the tail has to be identical between them or the dog twitches.</para>
+    ///
+    /// <para>Empty is fine: the logo then simply stands still, which is what it did before there
+    /// were any frames.</para>
+    /// </remarks>
+    [SerializeField] private Texture2D[] logoFrames;
+
+    /// <summary>How long one drawing is shown. A tenth of a second reads as a happy wag.</summary>
+    [SerializeField] private float logoFrameSeconds = 0.1f;
+
+    private Coroutine wag;
+
     private static BusyOverlay instance;
     private Coroutine fade;
     private static bool working;
+    private static int thinking;
 
     /// <summary>True from the moment blocking work is asked for until it has finished - not
     /// including the fade that follows. Anything that has to wait for the work itself, a test
@@ -97,7 +124,7 @@ public class BusyOverlay : MonoBehaviour
         BusyOverlay overlay = Instance();
         if (overlay != null)
         {
-            overlay.Appear(message);
+            overlay.Appear(message, withLogo: false, blockInput: true);
         }
     }
 
@@ -109,9 +136,51 @@ public class BusyOverlay : MonoBehaviour
         }
     }
 
+    /// <summary>True while at least one question to the model is outstanding.</summary>
+    public static bool Thinking { get { return thinking > 0; } }
+
+    /// <summary>
+    /// The logo goes up: a question is on its way to the model.
+    /// </summary>
+    /// <remarks>
+    /// <para><b>Counted, not toggled.</b> Describing a list of parts asks one question after
+    /// another, and the logo has to stay up across the whole run rather than blink once per part.
+    /// Every <see cref="BeginThinking"/> is matched by an <see cref="EndThinking"/> in a
+    /// <c>finally</c>, so a failed request takes its own count with it.</para>
+    ///
+    /// <para><b>Taps are not swallowed.</b> Unlike the loading panel this does not block input:
+    /// an answer can take half a minute, and the twin is worth looking at meanwhile - the document
+    /// flow says so in as many words. The logo says the app is working, it does not hold it
+    /// hostage.</para>
+    /// </remarks>
+    public static void BeginThinking()
+    {
+        thinking++;
+
+        BusyOverlay overlay = Instance();
+        if (overlay != null)
+        {
+            overlay.Appear(message: null, withLogo: true, blockInput: false);
+        }
+    }
+
+    /// <summary>One question has been answered, or has failed. The logo goes when none is left.</summary>
+    public static void EndThinking()
+    {
+        if (thinking > 0)
+        {
+            thinking--;
+        }
+
+        if (thinking == 0 && instance != null)
+        {
+            instance.Disappear();
+        }
+    }
+
     private IEnumerator BlockingRoutine(string message, Action work, Action onDone)
     {
-        Appear(message);
+        Appear(message, withLogo: false, blockInput: true);
 
         // two frames: one to lay the panel out, one to draw it. One is usually enough, but a
         // layout rebuild can push the draw into the next frame, and then the user sees nothing.
@@ -134,7 +203,11 @@ public class BusyOverlay : MonoBehaviour
         }
     }
 
-    private void Appear(string message)
+    /// <param name="withLogo">Show the logo instead of the message box - the two share the place
+    /// in the middle of the screen, so only one of them is ever up.</param>
+    /// <param name="blockInput">Swallow taps while this is showing. Right for work that freezes
+    /// the main thread, wrong for a request the user can sit out.</param>
+    private void Appear(string message, bool withLogo, bool blockInput)
     {
         if (fade != null)
         {
@@ -142,15 +215,34 @@ public class BusyOverlay : MonoBehaviour
             fade = null;
         }
 
-        if (label != null)
+        if (label != null && message != null)
         {
             label.text = message;
+        }
+
+        if (box != null)
+        {
+            box.SetActive(!withLogo);
+        }
+
+        if (logo != null)
+        {
+            logo.gameObject.SetActive(withLogo);
+        }
+
+        if (withLogo)
+        {
+            StartWagging();
+        }
+        else
+        {
+            StopWagging();
         }
 
         if (canvasGroup != null)
         {
             canvasGroup.alpha = 1f;
-            canvasGroup.blocksRaycasts = true;
+            canvasGroup.blocksRaycasts = blockInput;
         }
 
         transform.SetAsLastSibling();
@@ -187,6 +279,67 @@ public class BusyOverlay : MonoBehaviour
 
         if (canvasGroup != null) canvasGroup.alpha = 0f;
         fade = null;
+
+        // back to the shape the loading panel expects to find
+        StopWagging();
+        if (logo != null) logo.gameObject.SetActive(false);
+        if (box != null) box.SetActive(true);
+    }
+
+    private void StartWagging()
+    {
+        if (wag != null || logo == null || logoFrames == null || logoFrames.Length < 2)
+        {
+            return;
+        }
+
+        if (isActiveAndEnabled)
+        {
+            wag = StartCoroutine(Wag());
+        }
+    }
+
+    private void StopWagging()
+    {
+        if (wag != null)
+        {
+            StopCoroutine(wag);
+            wag = null;
+        }
+
+        // back to the first drawing, so the next question starts the wag from the same place
+        if (logo != null && logoFrames != null && logoFrames.Length > 0 && logoFrames[0] != null)
+        {
+            logo.texture = logoFrames[0];
+        }
+    }
+
+    /// <summary>
+    /// Plays the drawings there and back again for as long as the app is asking.
+    /// </summary>
+    /// <remarks>Unscaled time, like the fade: a report is being fetched, and nothing here should
+    /// depend on whether the game clock happens to be running.</remarks>
+    private IEnumerator Wag()
+    {
+        int frame = 0;
+        int step = 1;
+
+        while (true)
+        {
+            if (logoFrames[frame] != null)
+            {
+                logo.texture = logoFrames[frame];
+            }
+
+            yield return new WaitForSecondsRealtime(Mathf.Max(0.02f, logoFrameSeconds));
+
+            // turn around at either end rather than jumping back to the first drawing
+            if (frame + step < 0 || frame + step >= logoFrames.Length)
+            {
+                step = -step;
+            }
+            frame += step;
+        }
     }
 
     private static BusyOverlay Instance()
@@ -248,6 +401,7 @@ public class BusyOverlay : MonoBehaviour
             instance = null;
             // a scene change while work was running must not leave the app thinking it is busy
             working = false;
+            thinking = 0;
         }
     }
 }
