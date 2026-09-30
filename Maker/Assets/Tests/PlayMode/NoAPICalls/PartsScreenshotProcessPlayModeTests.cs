@@ -7,6 +7,7 @@ using UnityEngine.TestTools;
 
 namespace NoAPICalls
 {
+    [Category(Processes.DescribeAndReport)]
     public class PartsScreenshotProcessPlayModeTests : PlayModeTestBase
     {
         [UnityTest]

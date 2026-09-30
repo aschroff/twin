@@ -22,6 +22,7 @@ namespace NoAPICalls
     /// Screenshots for visual QA are written to:
     ///   Application.temporaryCachePath/TemplatePoCShots/
     /// </summary>
+    [Category(Processes.MarkUpTheBody)]
     public class ProgrammaticPaintingTests : PlayModeTestBase
     {
         // NOTE: TwinNameValidator limits twin names to 11 chars ("^[a-zA-Z0-9_()-]{1,11}$").

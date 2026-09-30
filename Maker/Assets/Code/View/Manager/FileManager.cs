@@ -112,19 +112,33 @@ public class FileManager : MonoBehaviour
         return dataManager.GetAllProfileNamesGameData();
     }
     
-    private void Select(string profile, string version = "")
+    /// <summary>
+    /// Loads a twin, with the busy panel up while it happens.
+    /// </summary>
+    /// <remarks>Switching a twin blocks the main thread for about two seconds, measured. Without
+    /// the panel nothing on screen changes in that time, so there is no telling a slow app from a
+    /// hung one - and an impatient second tap is delivered on the next frame and starts the whole
+    /// thing again.</remarks>
+    /// <param name="onDone">Runs once the twin is actually loaded. Callers that continue straight
+    /// after selecting need it, because the work no longer happens inside this call.</param>
+    private void Select(string profile, string version = "", System.Action onDone = null)
     {
         Debug.Log("Select: " + profile + "." + version);
-        foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
+        string profileId = profile + "." + version;
+
+        BusyOverlay.RunBlocking(StringLocalizer.localizeString("LOADING_TWIN"), () =>
         {
-            if (entry.Key == profile+"."+version)
+            foreach (KeyValuePair<string, ConfigData> entry in dataManager.GetAllProfilesGameData())
             {
-                dataManager.ChangeSelectedProfileId(profile+"."+version);
-                break;
-             }
-        }
-         Refresh();
-       }
+                if (entry.Key == profileId)
+                {
+                    dataManager.ChangeSelectedProfileId(profileId);
+                    break;
+                }
+            }
+            Refresh();
+        }, onDone);
+    }
 
     private void Remove(string profile)
     {
@@ -136,8 +150,16 @@ public class FileManager : MonoBehaviour
     {
         if (dataManager.selectedProfileId != profile_raw + "." + version)
         {
-            Select(profile_raw, version);
+            // the twin has to be loaded before the menu opens on it, and loading is no longer
+            // finished by the time Select returns
+            Select(profile_raw, version, () => OpenDetail(profile));
+            return;
         }
+        OpenDetail(profile);
+    }
+
+    private void OpenDetail(string profile)
+    {
         versionProfile = profile;
         InteractionController.EnableMode("Menu");
     }

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace NoAPICalls
 {
+    [Category(Chains.NewTwinFirstParts)]
     public class EditUiPlayModeTests : PlayModeTestBase
     {
         [UnityTest]

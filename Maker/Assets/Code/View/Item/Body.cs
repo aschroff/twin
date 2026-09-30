@@ -11,11 +11,15 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
    public  void handleChange(string profile)
    {
       CwPaintableTexture texture = PaintableTexture();
+      // The painted texture is kept in PlayerPrefs, which a test cannot redirect the way it
+      // redirects the data directory - so the name has to be resolved, or a test run would read
+      // and overwrite the real user's paintings.
+      string saveName = PaintableSaveNameOverride.Resolve(profile);
       // ask before saving: saving the twin we are leaving writes to the same key when the twin
       // is re-opened, and would make the cache look present even when it is not
-      bool hasSavedTexture = CwCommon.SaveExists(profile);
-      texture.Save();
-      texture.SaveName = profile;
+      bool hasSavedTexture = CwCommon.SaveExists(saveName);
+      PaintTextureSaver.Save(texture);
+      texture.SaveName = saveName;
       texture.Clear();
       if (hasSavedTexture)
       {
@@ -33,7 +37,7 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
       }
       Debug.Log("Loading the stored texture of twin " + profile + ".");
       texture.LoadFromData(paintedTexture);
-      texture.Save();
+      PaintTextureSaver.Save(texture);
    }
 
    /// <summary>Writes the painted texture into the twin directory, so it can be handed to
@@ -52,16 +56,17 @@ public class Body : MonoBehaviour,ItemFile, IDataPersistence
    {
       Debug.Log("Copy profile: " + profile);
       CwPaintableTexture texture = this.gameObject.transform.GetComponent<CwPaintableTexture>();
-      texture.Save();
-      texture.SaveName = profile;
-      texture.Save();
+      PaintTextureSaver.Save(texture);
+      texture.SaveName = PaintableSaveNameOverride.Resolve(profile);
+      PaintTextureSaver.Save(texture);
       Debug.Log("end copy profile");
    }
    public  void handleDelete(string profile)
    {
-      CwPaintableTexture.ClearSave(profile);
+      string saveName = PaintableSaveNameOverride.Resolve(profile);
+      CwPaintableTexture.ClearSave(saveName);
       CwPaintableTexture texture = this.gameObject.transform.GetComponent<CwPaintableTexture>();
-      if (texture.SaveName == profile)
+      if (texture.SaveName == saveName)
       {
          texture.Clear();
       }

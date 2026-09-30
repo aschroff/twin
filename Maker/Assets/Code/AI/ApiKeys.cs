@@ -19,7 +19,9 @@ namespace Code.AI
     ///   2. secrets.json next to the twins, in the persistent data path - works on a device
     ///   3. in the editor only: Assets/Tests/Helper/testsecrets.json, the file the tests already
     ///      use (git-ignored), so a developer keeps exactly one copy of the key
-    ///   4. whatever the component itself carries - only so nothing breaks for a scene that still
+    ///   4. Assets/Resources/secrets.json - git-ignored as well, but part of the build, so a
+    ///      tester's device needs nothing put on it by hand. This is how a build gets its key.
+    ///   5. whatever the component itself carries - only so nothing breaks for a scene that still
     ///      has one
     ///
     /// The json files are read as { "openAIApiKey": "sk-..." } - the member testsecrets.json uses.
@@ -44,6 +46,20 @@ namespace Code.AI
         public const string EditorFile = "Tests/Helper/testsecrets.json";
 
         /// <summary>
+        /// Resources name of the key file that travels inside the build.
+        /// </summary>
+        /// <remarks>
+        /// <para><c>Assets/Resources/secrets.json</c>, git-ignored like the other two - so it
+        /// cannot reach the repository by someone forgetting to take it out again, which is what
+        /// kept happening while the key lived on the AI component in the scene.</para>
+        ///
+        /// <para>Unlike the other two it is <b>part of the build</b>, so a tester's device gets a
+        /// key without anybody putting a file on it. The trade is that the key then sits inside
+        /// the app and can be read out of it: use a key of its own with a spending limit.</para>
+        /// </remarks>
+        public const string ResourceName = "secrets";
+
+        /// <summary>
         /// The key to use, or <paramref name="fromComponent"/> when none of the places outside
         /// version control has one. Empty when there is no key anywhere.
         /// </summary>
@@ -64,6 +80,12 @@ namespace Code.AI
                 }
             }
 
+            string fromBuild = FromResources();
+            if (!string.IsNullOrEmpty(fromBuild))
+            {
+                return fromBuild;
+            }
+
             return fromComponent != null ? fromComponent.Trim() : "";
         }
 
@@ -72,6 +94,7 @@ namespace Code.AI
         {
             var places = new List<string> { "the environment variable " + EnvironmentVariable };
             places.AddRange(FilePaths());
+            places.Add("Assets/Resources/" + ResourceName + ".json");
             return string.Join(", ", places.ToArray());
         }
 
@@ -85,19 +108,46 @@ namespace Code.AI
 
             try
             {
-                foreach (var member in JObject.Parse(File.ReadAllText(path)))
-                {
-                    if (System.Array.IndexOf(KeyMembers, member.Key.ToLowerInvariant()) < 0) continue;
-                    if (member.Value == null) continue;
-
-                    string key = member.Value.ToString().Trim();
-                    if (!string.IsNullOrEmpty(key)) return key;
-                }
-                return "";
+                return KeyFromJson(File.ReadAllText(path));
             }
             catch (Exception e)
             {
                 Debug.LogWarning($"[ApiKeys] '{path}' could not be read: {e.Message}");
+                return "";
+            }
+        }
+
+        /// <summary>The key inside a json text, or empty when it holds none. Every json source
+        /// goes through this, so they all accept exactly the same spellings.</summary>
+        public static string KeyFromJson(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return "";
+            }
+
+            foreach (var member in JObject.Parse(json))
+            {
+                if (System.Array.IndexOf(KeyMembers, member.Key.ToLowerInvariant()) < 0) continue;
+                if (member.Value == null) continue;
+
+                string key = member.Value.ToString().Trim();
+                if (!string.IsNullOrEmpty(key)) return key;
+            }
+            return "";
+        }
+
+        /// <summary>The key that travels inside the build - see <see cref="ResourceName"/>.</summary>
+        public static string FromResources()
+        {
+            try
+            {
+                TextAsset asset = Resources.Load<TextAsset>(ResourceName);
+                return asset != null ? KeyFromJson(asset.text) : "";
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[ApiKeys] Resources/{ResourceName} could not be read: {e.Message}");
                 return "";
             }
         }

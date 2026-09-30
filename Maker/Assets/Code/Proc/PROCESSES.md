@@ -23,7 +23,6 @@ Process (GameObject)            ← ProcessManager + AI
 ├── PartsScreenshotProcess
 ├── VersionSequenceProcess      (SequenceProcess)
 ├── PartsDescriptionProcessHardRedo
-├── PhotoProcess                (AvatarProcess)
 └── DocumentUploadProcess
 ```
 

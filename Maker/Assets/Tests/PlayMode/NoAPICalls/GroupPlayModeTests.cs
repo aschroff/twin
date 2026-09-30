@@ -12,6 +12,7 @@ namespace NoAPICalls
     /// adding and deleting groups) and that groups, their parts and the links between them
     /// survive a save/load round trip.
     /// </summary>
+    [Category(Processes.OrganiseIntoGroups)]
     public class GroupPlayModeTests : TwinPaintTestBase
     {
         /// <summary>Hiding and showing a group replays the visible groups onto the body. The parts

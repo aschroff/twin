@@ -9,6 +9,7 @@ namespace EditModeTests
     /// PartManager lives on a bare GameObject and the "strokes" are empty commands, which is all
     /// the history looks at. The repaint itself is covered by UndoRedoPlayModeTests.
     /// </summary>
+    [Category(Processes.MarkUpTheBody)]
     public class PartHistoryTests
     {
         private GameObject host;

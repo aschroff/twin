@@ -34,6 +34,27 @@ There are two mutually exclusive modes, and picking the wrong one wastes a full 
 with "another Unity instance is running with this project open". With the editor open, use
 `unity cmd run_tests`. Everything below assumes a connected editor (`unity status`).
 
+**Check that the editor is there before you plan around it.** `unity status` with no row means no
+editor, and `unity cmd …` then fails with "No Unity Editor instances found with reachable Pipeline
+servers". Run `unity status` *and* `unity cmd editor_status` as the first step of any sequence that
+needs the editor — not after writing the files, and never for the first time three minutes into a
+test run. `editor_status` also tells you whether it is compiling, mid domain reload, or in play
+mode, all of which make a run fail in ways that look like something else. A changed `PID` in
+`unity status` means the editor restarted and anything you had started is gone.
+
+**Say how long it will take, then report while it runs.** A PlayMode test costs roughly 5-15 s
+including its scene load, so the `NoAPICalls` suite is about seven minutes; `unity cmd list_tests`
+gives the count to base an estimate on. State the estimate *before* starting, then report at least
+once a minute. Two things make silence expensive: `test_status` answers only `running` with an
+empty summary until the very end (so it is no progress signal, and neither is
+`Temp/pipeline_test_status.json`, which has the same shape), and a backgrounded poller may never
+report at all. What does grow during a run is the console — `unity cmd get_console_logs` — because
+every test reloads the scene and logs, though its `total` **saturates at 1000** and is useless as
+a progress signal past that point (about 100 s into a suite). The reliable liveness signal is
+`unity cmd editor_status`: `"playMode":"playing"` for as long as PlayMode tests are actually
+running, back to `"stopped"` when the run ends. A person watching an idle-looking editor cannot tell a
+seven-minute run from a crashed one; that is on the person driving, not on them.
+
 - **Run C#:** `unity cmd eval_file --file x.cs -- --timeout 60000`. The `--` matters: `unity cmd
   --timeout` is the CLI's own HTTP wait in *seconds* and never reaches the command, whose own
   budget defaults to 5000 ms. Without it anything slow fails with `Main thread operation timed

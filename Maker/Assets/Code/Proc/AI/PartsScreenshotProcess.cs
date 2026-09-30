@@ -117,6 +117,96 @@ namespace Code
         }
 
 
+        /// <summary>
+        /// How many parts have no screenshot on disk yet.
+        /// </summary>
+        /// <remarks>
+        /// Asks the same question, through the same <see cref="Recorder"/>, that
+        /// <see cref="execute"/> asks before it shoots a part - so this number and the parts a
+        /// run actually works on cannot drift apart. The recorder's name and folder are borrowed
+        /// for the lookup and put back, because a run in progress is using them.
+        /// </remarks>
+        public int CountMissingScreenshots()
+        {
+            Recorder rec = getRecorder();
+            DataPersistenceManager data = getDataManager();
+            PartManager parts = getPartManager();
+
+            if (rec == null || data == null || parts == null)
+            {
+                return 0;
+            }
+
+            string keepName = rec.name;
+            string keepFolder = rec.folder;
+            int count = 0;
+
+            foreach (PartManager.GroupData group in parts.groups)
+            {
+                foreach (PartManager.PartData part in group.groupParts)
+                {
+                    rec.name = data.selectedProfileId + " - " + group.name + " - part " + part.id;
+                    rec.folder = data.selectedProfileId;
+                    if (!rec.FileExists())
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            rec.name = keepName;
+            rec.folder = keepFolder;
+            return count;
+        }
+
+        /// <summary>
+        /// Shoots the screenshot of one part, and only that one.
+        /// </summary>
+        /// <remarks>
+        /// <para>For one part the run is a blink - the canvas goes away, the camera moves to the
+        /// part's stored view, the part is isolated on the body, and it is back. That is what the
+        /// part detail page offers when a part has no picture yet: without one the "describe" entry
+        /// there can do nothing at all, because the model is asked about the picture.</para>
+        ///
+        /// <para>Always re-shoots. The batch run skips a part whose file is already on disk, which
+        /// is right when it is filling gaps - but asked for one part by hand, doing nothing would
+        /// look broken.</para>
+        /// </remarks>
+        public IEnumerator ShootPart(PartManager.PartData part, PartManager.GroupData group)
+        {
+            if (part == null || group == null)
+            {
+                Debug.LogWarning("PartsScreenshotProcess: no part or no group to shoot.");
+                yield break;
+            }
+
+            viewManager = getViewmanager();
+            recorder = getRecorder();
+            dataManager = getDataManager();
+            partManager = getPartManager();
+
+            SceneManagement.View currentView = viewManager.shootView();
+            List<GameObject> listActive = recorder.Prepare();
+
+            recorder.name = dataManager.selectedProfileId + " - " + group.name + " - part " + part.id;
+            recorder.folder = dataManager.selectedProfileId;
+            try
+            {
+                if (recorder.FileExists()) System.IO.File.Delete(recorder.get_path());
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("Could not replace the old screenshot of part " + part.id + ": " + e.Message);
+            }
+
+            yield return StartCoroutine(execute(part, group));
+
+            partManager.ClearRefreshAll();
+            recorder.Reset(listActive);
+            recorder.Post(getNotification());
+            viewManager.select(currentView);
+        }
+
         private void Update()
         {
             if (nextPart != null && !isProcessingPart)
@@ -156,7 +246,21 @@ namespace Code
             Debug.Log("---Start WaitForEndOfFrame");
             yield return new WaitForEndOfFrame();
             Debug.Log("---End WaitForEndOfFrame");
-            recorder.Do();
+            /*
+             * The shot itself can throw, and it used to take the app with it. The file name carries
+             * the group name, which is unchecked free text: a '/' in it makes File.WriteAllBytes
+             * fail, the coroutine dies, isProcessingPart stays true, WaitForIdle spins forever and
+             * recorder.Reset is never reached - so the canvas stays hidden and the app is unusable
+             * until it is restarted. One bad name may cost its own screenshot and nothing more.
+             */
+            try
+            {
+                recorder.Do();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Screenshot for part " + part.id + " failed: " + e.Message);
+            }
             Debug.Log("---Start yield return null");
             yield return null;
         }

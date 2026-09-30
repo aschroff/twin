@@ -112,9 +112,20 @@ namespace Code.Net.Auth
         /// "no session" is an ordinary outcome at startup rather than an error.
         /// </returns>
         /// <remarks>
-        /// A network failure at startup is different and *does* throw: the session
-        /// may well be fine, and silently returning false would sign the person
-        /// out over a lost Wi-Fi connection.
+        /// <para>A network failure at startup is different and *does* throw: the
+        /// session may well be fine, and silently returning false would sign the
+        /// person out over a lost Wi-Fi connection. The stored token is kept for
+        /// the next attempt.</para>
+        ///
+        /// <para>Every other failure ends the session quietly, not just the
+        /// server's own <c>INVALID_TOKEN</c>/<c>TOKEN_EXPIRED</c> envelope. It used
+        /// to be only those two, which left every other answer to escape - and
+        /// <see cref="TwinAuth.Start"/> is <c>async void</c>, so an escaping
+        /// exception surfaced as an unhandled exception on scene load. A base URL
+        /// where something answers but the API is not there (a stale port, a moved
+        /// route, an ingress page, a captive portal) took the app's startup down
+        /// with it, and every PlayMode test with it. The app has to come up signed
+        /// out instead: only two features need the server at all.</para>
         /// </remarks>
         public async Task<bool> TryRestoreAsync()
         {
@@ -132,8 +143,18 @@ namespace Code.Net.Auth
                 SignedIn?.Invoke();
                 return true;
             }
-            catch (TwinAuthException ex) when (ex.IsSessionEnded)
+            catch (TwinAuthException ex) when (!ex.IsNetworkFailure)
             {
+                // The server answered, and the answer was not a session. Whether it
+                // said INVALID_TOKEN, 404, 500, or something that is not even our
+                // envelope, the outcome for the app is the same: start signed out.
+                // The token goes with it - it could not be exchanged, so keeping it
+                // would only repeat this on every launch.
+                if (!ex.IsSessionEnded)
+                {
+                    Debug.Log($"[TwinAuth] Could not restore the session, starting signed out: {ex.Message}");
+                }
+
                 ClearLocalSession();
                 return false;
             }

@@ -1,5 +1,10 @@
 # PlayMode Tests — Overview
 
+> The **technical** inventory: every test, what it checks, and where it lives. The map that says
+> which part of the app each test belongs to — and what is not covered at all — is
+> `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
+> It replaced `TESTUEBERSICHT_FACHABTEILUNG.md`.
+
 All tests load the *Maker Main* scene and drive the app through its real UI. `PlayModeTestBase`
 redirects the data path to a temp directory per test, so runs never touch your own twins.
 
@@ -41,6 +46,11 @@ screen names the file and carries the whole prompt. |
 | **PartsDescriptionProcessTests**<br>`DescribeParts_SetsDescriptionFromRealScreenshot` | Lives here despite calling the real OpenAI API (skips itself via `Assert.Ignore` without a key in `testsecrets.json`). Paints a part, produces a real screenshot via `PartsScreenshotProcess` — `PartDescriptionProcess` only calls the AI once a screenshot exists on disk — then calls `PartsDescriptionProcess.Handle`, which fans out over every part, and waits for the description to move past the `"Part Number N :\n..."` placeholder `Execute()` stamps in before the per-part AI call overwrites it. |
 
 ## `APICalls/` — tests that call the real OpenAI API
+
+> Since TWIN-455 this folder also holds `OpenAIClientTests` and `DocumentMappingApiTests` (which
+> used to sit at the root of `PlayMode/`) and `PartsDescriptionProcessTests` (which used to sit in
+> `NoAPICalls/` and really called the model whenever a key was configured). Every test here guards
+> itself with `Assert.Ignore` when there is no key, so the folder is about **cost**, not failure.
 
 All need a valid key in `Assets/Tests/Helper/testsecrets.json`; the Process tests skip themselves
 (`Assert.Ignore`) without one, and `401`s otherwise.
@@ -92,6 +102,13 @@ findings yields at least one multi-region painting.
 **Tools → Template PoC → Run Document Mapping API Test**.
 
 ## Notes for writing new tests
+
+**Directories a test writes into are created by the helper that writes**, on demand, and are never
+deleted by a test. Creating one inside a single test makes every other test in the class depend on
+the order they happen to run in — `UploadPlayModeTests` did that, passed on any machine that had
+run it before, and failed on a fresh one until TWIN-447. Per-test scratch data belongs in `SetUp`,
+which already wipes and recreates its own directory.
+
 
 - **Painting needs a framed body.** The paint position is the screen centre; a twin's saved
   camera may point somewhere else (LipEdema's shows the lower body, where the centre falls

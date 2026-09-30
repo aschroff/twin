@@ -44,6 +44,7 @@ namespace NoAPICalls
             var twinEntry = FindChildWithTextValue(SaveTwinPanel, twinName);
             Assert.IsNotNull(twinEntry, $"Twin '{twinName}' not found in the twin list.");
             yield return ClickButtonByPath(path: "Unselect", root: twinEntry);
+            yield return WaitWhileLoading();
         }
 
         /// <summary>Selects a stored view, which frames the body for painting.</summary>

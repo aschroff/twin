@@ -17,7 +17,6 @@ public class FileDataHandler
     private readonly string encryptionCodeWord = "word";
     private readonly string backupExtension = ".bak";
     private readonly string compressExtension = ".zip";
-    private readonly string allowedExtractionFormats = "com.pkware.zip-archive, application/epub+zip";
     /// <summary>Where an import is unpacked before it is moved to its own directory.</summary>
     private readonly string importDirectory = "__import";
     /// <summary>Marks an imported twin whose name and version are taken already: V01, V02, ...</summary>
@@ -66,6 +65,15 @@ public class FileDataHandler
 
                 // deserialize the data from Json back into the C# object
                 loadedData = JsonUtility.FromJson<ConfigData>(dataToLoad);
+
+                // An empty or truncated file - what a crash or a full disk leaves behind - parses
+                // to null instead of throwing, and used to slip past the rollback below: the twin
+                // was reported as simply absent while an intact backup sat next to it. A file that
+                // is there but holds no twin is damaged, so treat it like any other bad file.
+                if (loadedData == null)
+                {
+                    throw new Exception("The file at " + fullPath + " holds no twin.");
+                }
             }
             catch (Exception e) 
             {
@@ -126,6 +134,15 @@ public class FileDataHandler
 
                 // deserialize the data from Json back into the C# object
                 loadedData = JsonUtility.FromJson<ConfigData>(dataToLoad);
+
+                // An empty or truncated file - what a crash or a full disk leaves behind - parses
+                // to null instead of throwing, and used to slip past the rollback below: the twin
+                // was reported as simply absent while an intact backup sat next to it. A file that
+                // is there but holds no twin is damaged, so treat it like any other bad file.
+                if (loadedData == null)
+                {
+                    throw new Exception("The file at " + fullPath + " holds no twin.");
+                }
             }
             catch (Exception e) 
             {
@@ -138,8 +155,11 @@ public class FileDataHandler
                     bool rollbackSuccess = AttemptRollback(fullPath);
                     if (rollbackSuccess)
                     {
-                        // try to load again recursively
-                        loadedData = Load(profileId, false);
+                        // try to load again recursively - from the template directory, which is the
+                        // one that was just rolled back. This used to call Load, so a damaged
+                        // template came back as whatever sat under the same id in the data
+                        // directory: a new twin holding another twin's findings.
+                        loadedData = LoadFromTemplate(profileId, false);
                     }
                 }
                 // if we hit this else block, one possibility is that the backup file is also corrupt
@@ -516,6 +536,37 @@ public class FileDataHandler
         return ExtractDirectory( zipFilePath );
     }
 
+    /// <summary>
+    /// The file types the import dialog offers, asked of the platform rather than spelled out.
+    /// </summary>
+    /// <remarks>
+    /// <para>This used to be a single string, <c>"com.pkware.zip-archive, application/epub+zip"</c>,
+    /// handed to a <c>params string[]</c>. So the picker was told about exactly one file type whose
+    /// name was that entire line - which matches nothing. On iOS every file was greyed out and an
+    /// exported twin could not be picked back in; in the editor it went unnoticed, because the
+    /// editor branch of the picker turns the filter into an extension filter and lets one browse
+    /// regardless.</para>
+    ///
+    /// <para><see cref="NativeFilePicker.ConvertExtensionToFileType"/> asks the platform itself:
+    /// the UTI on iOS, the MIME type on Android. Writing either down by hand is how this broke -
+    /// <c>com.pkware.zip-archive</c> is what Apple used before UTType, and a current iOS types a
+    /// .zip as <c>public.zip-archive</c>.</para>
+    ///
+    /// <para>One entry per type. A comma in one of them means the whole thing is one bogus type
+    /// again, which is what <c>FileDataHandlerTests</c> pins.</para>
+    /// </remarks>
+    public static string[] AllowedExtractionFormats()
+    {
+        string fromPlatform = NativeFilePicker.ConvertExtensionToFileType( "zip" );
+        if ( !string.IsNullOrEmpty( fromPlatform ) )
+        {
+            return new string[] { fromPlatform };
+        }
+
+        // the platform had no answer: name both spellings rather than offer nothing at all
+        return new string[] { "public.zip-archive", "application/zip" };
+    }
+
     private async Task<string> PickFileAsync()
     {
         TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
@@ -526,7 +577,7 @@ public class FileDataHandler
         }
         NativeFilePicker.PickFile(
             filePath => tcs.TrySetResult( filePath ),
-            allowedExtractionFormats );
+            AllowedExtractionFormats() );
         return await tcs.Task;
     }
 

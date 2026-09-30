@@ -20,9 +20,8 @@ namespace Code.Net.Twins
     /// <see cref="TwinAuth.AuthorizeAsync"/>, which is also what renews the
     /// access token when it is close to expiring.</para>
     ///
-    /// <para>Download and delete exist on the server but are not here yet: this
-    /// ticket displays server-only versions and uploads local ones, and an unused
-    /// method is a contract nobody tested.</para>
+    /// <para>Delete exists on the server and is deliberately not here: nothing in
+    /// the app offers it, and an unused method is a contract nobody tested.</para>
     /// </remarks>
     public class TwinVersionsClient
     {
@@ -38,6 +37,18 @@ namespace Code.Net.Twins
         /// round trip.
         /// </summary>
         private const int UploadTimeoutSeconds = 600;
+
+        /// <summary>
+        /// A download is the same archive coming the other way, so it gets the
+        /// same budget as an upload rather than the list's.
+        /// </summary>
+        private const int DownloadTimeoutSeconds = 600;
+
+        /// <summary>
+        /// The header the server repeats the archive's digest in, so verifying
+        /// what arrived does not need a second request.
+        /// </summary>
+        private const string ChecksumHeader = "X-Checksum-SHA256";
 
         /// <summary>
         /// One page of the versions of one twin, newest first.
@@ -128,6 +139,93 @@ namespace Code.Net.Twins
                 "upload twin version");
         }
 
+        /// <summary>
+        /// Fetch one version's archive, verified against the digest the server
+        /// sent with it.
+        /// </summary>
+        /// <param name="twinVersionId">
+        /// <see cref="TwinVersionInfo.Id"/> from a listing. The server addresses
+        /// an archive by id and not by name and version: the pair is a filter
+        /// that can match nothing, the id is the entry.
+        /// </param>
+        /// <returns>The ZIP, ready to hand to the app's import.</returns>
+        /// <exception cref="TwinApiException">
+        /// <c>IsNotFound</c> when there is no such version and
+        /// <c>IsArchiveNotStored</c> when the entry is listed but its bytes are
+        /// gone — both permanent. <c>IsServiceUnavailable</c> when the server
+        /// could not reach its storage, which is worth retrying.
+        /// <c>IsChecksumMismatch</c> when what arrived is not what the server
+        /// says it sent. Plus <c>IsNotAuthorised</c> and <c>IsNetworkFailure</c>
+        /// as everywhere else.
+        /// </exception>
+        public Task<byte[]> DownloadArchiveAsync(string twinVersionId)
+        {
+            if (string.IsNullOrWhiteSpace(twinVersionId))
+            {
+                throw new ArgumentException("Twin version id must not be empty.", nameof(twinVersionId));
+            }
+
+            var path = BasePath + "/" + UnityWebRequest.EscapeURL(twinVersionId) + "/archive";
+
+            return SendAsync(
+                () => UnityWebRequest.Get(Url(path)),
+                DownloadTimeoutSeconds,
+                "download twin version archive",
+                // Not JSON: this route answers with the ZIP itself. The default
+                // DownloadHandlerBuffer is what holds it, which is the same
+                // whole-archive-in-memory trade the upload makes.
+                ArchiveOnly,
+                accept: ArchiveContentType);
+        }
+
+        /// <summary>The media type the archive route answers with.</summary>
+        private const string ArchiveContentType = "application/zip";
+
+        /// <summary>
+        /// Take the bytes out of a finished download, refusing them when they do
+        /// not match the digest that came with them.
+        /// </summary>
+        /// <remarks>
+        /// Verified here rather than by the caller, because a caller that forgot
+        /// would write a corrupt ZIP into the twin store and find out later. A
+        /// server that sends no digest is not treated as a failure — the check is
+        /// what the header is for, not a second authentication.
+        /// </remarks>
+        private static byte[] ArchiveOnly(UnityWebRequest request)
+        {
+            byte[] bytes = request.downloadHandler?.data;
+            if (bytes == null || bytes.Length == 0)
+            {
+                throw new TwinApiException(
+                    request.responseCode, null, "The server answered the download with an empty body.");
+            }
+
+            string expected = request.GetResponseHeader(ChecksumHeader);
+            if (string.IsNullOrWhiteSpace(expected)) return bytes;
+
+            string actual = Sha256Hex(bytes);
+            if (!string.Equals(actual, expected.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                throw new TwinApiException(
+                    request.responseCode,
+                    TwinApiErrorCodes.ChecksumMismatch,
+                    $"The downloaded archive does not match the server's digest " +
+                    $"(expected {expected}, got {actual}).");
+            }
+
+            return bytes;
+        }
+
+        private static string Sha256Hex(byte[] bytes)
+        {
+            using var sha = System.Security.Cryptography.SHA256.Create();
+            byte[] hash = sha.ComputeHash(bytes);
+
+            var text = new StringBuilder(hash.Length * 2);
+            foreach (byte b in hash) text.Append(b.ToString("x2"));
+            return text.ToString();
+        }
+
         private static string Url(string pathAndQuery) => TwinAuth.BaseUrl + pathAndQuery;
 
         /// <summary>
@@ -139,12 +237,41 @@ namespace Code.Net.Twins
         /// created after the token has been fetched and cannot sit around while
         /// that await runs.
         /// </remarks>
-        private static async Task<T> SendAsync<T>(Func<UnityWebRequest> build, int timeoutSeconds, string operation)
+        private static Task<T> SendAsync<T>(Func<UnityWebRequest> build, int timeoutSeconds, string operation)
             where T : class
+        {
+            return SendAsync(
+                build,
+                timeoutSeconds,
+                operation,
+                request => ReadJson<T>(request, operation),
+                accept: "application/json");
+        }
+
+        /// <summary>
+        /// The same request, for a route that does not answer with JSON.
+        /// </summary>
+        /// <param name="read">
+        /// Turns the finished, successful request into the result. Runs inside
+        /// the completion handler, so a <see cref="TwinApiException"/> it throws
+        /// reaches the caller unchanged — which is how the checksum check reports
+        /// itself.
+        /// </param>
+        /// <param name="accept">
+        /// What this route answers with. Sent rather than assumed, because the
+        /// error path answers with the JSON envelope either way and a server is
+        /// entitled to hold us to what we asked for.
+        /// </param>
+        private static async Task<T> SendAsync<T>(
+            Func<UnityWebRequest> build,
+            int timeoutSeconds,
+            string operation,
+            Func<UnityWebRequest, T> read,
+            string accept)
         {
             using var request = build();
             request.timeout = timeoutSeconds;
-            request.SetRequestHeader("Accept", "application/json");
+            request.SetRequestHeader("Accept", accept);
 
             // Throws when nobody is signed in, which is a programming error here:
             // the UI is expected to have checked before offering the action.
@@ -157,7 +284,6 @@ namespace Code.Net.Twins
                 try
                 {
                     var status = request.responseCode;
-                    var responseText = request.downloadHandler?.text;
 
                     if (request.result == UnityWebRequest.Result.ConnectionError)
                     {
@@ -169,19 +295,21 @@ namespace Code.Net.Twins
 
                     if (status >= 400)
                     {
-                        tcs.SetException(BuildApiException(status, responseText, operation));
+                        // The envelope is JSON on every route, including the one
+                        // whose success body is a ZIP.
+                        tcs.SetException(BuildApiException(status, request.downloadHandler?.text, operation));
                         return;
                     }
 
-                    var parsed = JsonConvert.DeserializeObject<T>(responseText);
-                    if (parsed == null)
-                    {
-                        tcs.SetException(new TwinApiException(
-                            status, null, $"Could not read the {operation} response as {typeof(T).Name}."));
-                        return;
-                    }
-
-                    tcs.SetResult(parsed);
+                    tcs.SetResult(read(request));
+                }
+                catch (TwinApiException ex)
+                {
+                    // Raised by `read` itself - a body that did not parse, or an
+                    // archive that did not match its digest. It already says what
+                    // went wrong and carries the code a caller branches on, so
+                    // wrapping it would only bury both.
+                    tcs.SetException(ex);
                 }
                 catch (Exception ex)
                 {
@@ -191,6 +319,21 @@ namespace Code.Net.Twins
             };
 
             return await tcs.Task;
+        }
+
+        /// <summary>
+        /// Read a successful response as <typeparamref name="T"/>.
+        /// </summary>
+        private static T ReadJson<T>(UnityWebRequest request, string operation) where T : class
+        {
+            var parsed = JsonConvert.DeserializeObject<T>(request.downloadHandler?.text);
+            if (parsed == null)
+            {
+                throw new TwinApiException(
+                    request.responseCode, null, $"Could not read the {operation} response as {typeof(T).Name}.");
+            }
+
+            return parsed;
         }
 
         /// <summary>

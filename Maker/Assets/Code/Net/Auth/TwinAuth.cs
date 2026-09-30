@@ -125,6 +125,15 @@ namespace Code.Net.Auth
                 // rather than as an opaque failure at the first request.
                 Debug.LogError($"[{nameof(TwinAuth)}] {ex.Message}", this);
             }
+            catch (Exception ex)
+            {
+                // A backstop, because this is async void: anything not caught here
+                // is rethrown on the synchronization context and Unity reports it as
+                // an unhandled exception at scene load. Restoring a session is a
+                // best-effort attempt at launch - it must never be able to break
+                // starting the app.
+                Debug.LogWarning($"[{nameof(TwinAuth)}] Restoring the session failed, starting signed out: {ex}", this);
+            }
         }
 
         private void OnDestroy()

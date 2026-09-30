@@ -11,6 +11,11 @@ namespace Code.AI
     /// Generic AI service providing Unity/Coroutine bridge for OpenAI client.
     /// Handles async/await to coroutine conversion, file waiting, and error handling.
     /// This class is reusable for any AI use case, not specific to medical domain.
+    ///
+    /// Every question to the model goes through the two coroutines below, which is why the logo
+    /// that says "the app is asking" is raised and lowered here rather than at each of the half
+    /// dozen places that ask - part descriptions from the part page, from the group detail page
+    /// and from the Help menu, the version report, and the document mapping.
     /// </summary>
     public class AIService : MonoBehaviour
     {
@@ -87,18 +92,29 @@ namespace Code.AI
             Action<string> onError,
             string imagePath = null)
         {
-            var task = RequestTextAsync(prompt, imagePath);
-            yield return new WaitUntil(() => task.IsCompleted);
+            BusyOverlay.BeginThinking();
+            try
+            {
+                var task = RequestTextAsync(prompt, imagePath);
+                yield return new WaitUntil(() => task.IsCompleted);
 
-            if (task.Exception != null)
-            {
-                var errorMessage = task.Exception.InnerException?.Message ?? task.Exception.Message;
-                Debug.LogError($"AI request failed: {errorMessage}");
-                onError?.Invoke(errorMessage);
+                if (task.Exception != null)
+                {
+                    var errorMessage = task.Exception.InnerException?.Message ?? task.Exception.Message;
+                    Debug.LogError($"AI request failed: {errorMessage}");
+                    onError?.Invoke(errorMessage);
+                }
+                else
+                {
+                    onSuccess?.Invoke(task.Result);
+                }
             }
-            else
+            finally
             {
-                onSuccess?.Invoke(task.Result);
+                // in a finally, so a request that throws takes its own count with
+                // it - otherwise the logo would stay on screen for the rest of the
+                // session
+                BusyOverlay.EndThinking();
             }
         }
 
@@ -117,18 +133,29 @@ namespace Code.AI
             string fileId = null,
             IDictionary<string, IEnumerable<string>> allowedValues = null) where T : class
         {
-            var task = RequestStructuredAsync<T>(prompt, imagePath, fileId, allowedValues);
-            yield return new WaitUntil(() => task.IsCompleted);
+            BusyOverlay.BeginThinking();
+            try
+            {
+                var task = RequestStructuredAsync<T>(prompt, imagePath, fileId, allowedValues);
+                yield return new WaitUntil(() => task.IsCompleted);
 
-            if (task.Exception != null)
-            {
-                var errorMessage = task.Exception.InnerException?.Message ?? task.Exception.Message;
-                Debug.LogError($"AI request failed: {errorMessage}");
-                onError?.Invoke(errorMessage);
+                if (task.Exception != null)
+                {
+                    var errorMessage = task.Exception.InnerException?.Message ?? task.Exception.Message;
+                    Debug.LogError($"AI request failed: {errorMessage}");
+                    onError?.Invoke(errorMessage);
+                }
+                else
+                {
+                    onSuccess?.Invoke(task.Result);
+                }
             }
-            else
+            finally
             {
-                onSuccess?.Invoke(task.Result);
+                // in a finally, so a request that throws takes its own count with
+                // it - otherwise the logo would stay on screen for the rest of the
+                // session
+                BusyOverlay.EndThinking();
             }
         }
 

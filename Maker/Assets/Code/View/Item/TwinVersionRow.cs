@@ -3,34 +3,67 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// One version of the current twin on the sync screen: its name, where it lives, and a checkbox
-/// for the ones that could still be uploaded.
+/// One version of the current twin on the upload or the download screen: its name, where it
+/// lives, and a checkbox for the ones that could still be moved.
 ///
 /// The row is dumb on purpose. It is handed finished strings rather than keys, because what a row
 /// says depends on which of five locales is active and on values only the manager has — the
 /// uploader's address and the time. Composing that here would put localisation in two places.
 ///
-/// A version that is already on the server cannot be selected. That is not tidiness: the server
-/// refuses a second upload of the same twin name and version with TWIN_VERSION_ALREADY_EXISTS,
-/// and it is a permanent answer, so offering the tick would be offering a guaranteed failure.
+/// A version the other side already has cannot be selected. On the upload screen that is not
+/// tidiness: the server refuses a second upload of the same twin name and version with
+/// TWIN_VERSION_ALREADY_EXISTS, and it is a permanent answer, so offering the tick would be
+/// offering a guaranteed failure. On the download screen it is the same promise kept for the same
+/// reason — fetching a version this device already has would either duplicate it under a V01
+/// suffix or overwrite work, and neither is what a tick appears to offer.
 ///
 /// Modelled on <see cref="DocumentReviewRow"/> — same shape, same reason for the Toggle sitting on
 /// the row itself rather than on the little box: a 38-unit box is nothing to aim at on a tablet.
 /// </summary>
 public class TwinVersionRow : MonoBehaviour
 {
+    /// <summary>
+    /// Which direction the screen this row sits on moves versions in.
+    /// </summary>
+    /// <remarks>
+    /// The row cannot work this out for itself, and it decides the only two
+    /// things that differ between the two screens: which state can be ticked, and
+    /// which one reads as "nothing left to do". Upload is the default so that the
+    /// screen that existed first needs to say nothing.
+    /// </remarks>
+    public enum Role
+    {
+        /// <summary>From this device to the server.</summary>
+        Upload,
+
+        /// <summary>From the server to this device.</summary>
+        Download
+    }
+
     public enum State
     {
-        /// <summary>Exists in this app only. The one state that can be uploaded.</summary>
+        /// <summary>
+        /// Exists in this app only. The one state that can be uploaded — and on
+        /// the download screen, one of the two that are there for reference.
+        /// </summary>
         LocalOnly,
+
+        /// <summary>On the server and not on this device. The one state that can be downloaded.</summary>
+        ServerOnly,
 
         /// <summary>An upload is in flight for this row.</summary>
         Uploading,
 
+        /// <summary>A download is in flight for this row.</summary>
+        Downloading,
+
         /// <summary>On the server — either found there, or just put there.</summary>
         Uploaded,
 
-        /// <summary>The upload failed. Selectable again, unless the failure was permanent.</summary>
+        /// <summary>On this device as well as on the server — either found so, or just fetched.</summary>
+        Downloaded,
+
+        /// <summary>The transfer failed. Selectable again, unless the failure was permanent.</summary>
         Failed
     }
 
@@ -62,8 +95,17 @@ public class TwinVersionRow : MonoBehaviour
 
     public State CurrentState { get; private set; } = State.LocalOnly;
 
+    /// <summary>Which screen this row is on. See <see cref="Role"/>.</summary>
+    public Role CurrentRole { get; private set; } = Role.Upload;
+
     /// <summary>
-    /// Whether this row is ticked. False for anything that cannot be uploaded, whatever the
+    /// Say which screen the row is on. Before <see cref="Fill"/>, so the first
+    /// state it lands in is already read the right way round.
+    /// </summary>
+    public void SetRole(Role role) => CurrentRole = role;
+
+    /// <summary>
+    /// Whether this row is ticked. False for anything that cannot be acted on, whatever the
     /// Toggle happens to hold — a disabled box is not a selection.
     /// </summary>
     public bool Selected
@@ -72,8 +114,30 @@ public class TwinVersionRow : MonoBehaviour
         set { if (Toggle() != null && CanBeSelected) Toggle().isOn = value; }
     }
 
-    /// <summary>Only a version that is not already up there can go up.</summary>
-    public bool CanBeSelected => CurrentState == State.LocalOnly || CurrentState == State.Failed;
+    /// <summary>
+    /// Only a version the other side does not have can be moved: one that is not
+    /// already up there can go up, one that is not already here can come down.
+    /// </summary>
+    public bool CanBeSelected => CurrentState == State.Failed || CurrentState == (CurrentRole == Role.Upload
+        ? State.LocalOnly
+        : State.ServerOnly);
+
+    /// <summary>
+    /// Whether the side this screen moves versions to already has this one, so
+    /// there is nothing left to do with the row.
+    /// </summary>
+    /// <remarks>
+    /// The tick and the dimming both come from here, which is what makes the two
+    /// screens read the same way: a ticked, dead, dimmed box means "that side has
+    /// it", and an empty live box means "this is what the button would move".
+    ///
+    /// On the download screen that covers both reference states — a version that
+    /// is on the server as well as here, and one that has never been uploaded —
+    /// because from the device's point of view it already has both.
+    /// </remarks>
+    public bool IsSettled => CurrentRole == Role.Upload
+        ? CurrentState == State.Uploaded
+        : CurrentState == State.Downloaded || CurrentState == State.LocalOnly;
 
     /// <summary>
     /// Put a version on the row. It starts unticked: nothing leaves the device that the user did
@@ -105,9 +169,9 @@ public class TwinVersionRow : MonoBehaviour
         Toggle box = Toggle();
         if (box != null)
         {
-            // Uploaded rows show a ticked, dead box: it reads as "done" rather than as an
-            // offer. An upload in flight is locked for the same reason a login button is.
-            box.isOn = state == State.Uploaded;
+            // A settled row shows a ticked, dead box: it reads as "done" rather than as an
+            // offer. A transfer in flight is locked for the same reason a login button is.
+            box.isOn = IsSettled;
             box.interactable = CanBeSelected;
         }
 
@@ -116,7 +180,7 @@ public class TwinVersionRow : MonoBehaviour
         var group = GetComponent<CanvasGroup>();
         if (group != null)
         {
-            group.alpha = state == State.Uploaded ? DimmedAlpha : 1f;
+            group.alpha = IsSettled ? DimmedAlpha : 1f;
         }
     }
 
