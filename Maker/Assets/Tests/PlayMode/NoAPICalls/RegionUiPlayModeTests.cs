@@ -142,6 +142,39 @@ namespace NoAPICalls
         /// <summary>A sticker cannot carry a region template (those are sphere strokes), so with a
         /// sticker selected the region is still painted - with the first marker instead.</summary>
         [UnityTest]
+        public IEnumerator SelectRegion_WithStickerSelected_FallsBackToFirstMarker()
+        {
+            yield return LoadLipEdemaTwin();
+            var partManager = FindPartManager();
+            var swell = partManager.groups.First(g => g.name == "Swell");
+            yield return SelectGroupForPainting(swell);
+            int partsBefore = swell.groupParts.Count;
+
+            yield return ClickButtonByName("Edit Button");
+            yield return WaitForModeActive("Edit");
+            yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Sticker/Text Background/Text");
+            yield return WaitForModeActive("EditSticker");
+            yield return ClickButtonByPath("Canvas/EditSticker UI/Bottom/Scroll/Panel/Scroll tool button and link and text 1");
+            AssertGameObjectActive("Tools/Sticker 1");
+            yield return ClickButtonByPath("Canvas/EditSticker UI/Bottom/Buttons/Edit");
+            yield return WaitForModeActive("Edit");
+
+            yield return OpenRegionScreen();
+            yield return new WaitForSeconds(SettleSeconds);
+            Color32[] blank = BodyPixels();
+            yield return ClickRegion(ShoulderRegion);
+            yield return new WaitForSeconds(SettleSeconds);
+
+            // painting with the sticker itself would throw inside the click handler and add nothing
+            Assert.AreEqual(partsBefore + 1, swell.groupParts.Count, "With a sticker selected, the region should still be painted.");
+            var newPart = swell.groupParts.Last();
+            // "Blue" is the first marker (sphere tool, no fill) in the scene's Tools container
+            Assert.AreEqual("Blue", newPart.nameTool, "With a sticker selected, the region should be painted with the first marker.");
+            Assert.AreEqual(PartManager.Tool.MarkerLine, newPart.typeTool, "The fallback tool should be a line marker.");
+            Assert.AreEqual(ToolColor("Blue"), newPart.colorTool, "The part should carry the fallback marker's colour.");
+            Assert.Greater(DifferingPixels(blank, BodyPixels()), 0, "The fallback paint should show on the body.");
+        }
+
 
         /// <summary>From Edit mode into the Region screen.</summary>
         private IEnumerator OpenRegionScreen()
