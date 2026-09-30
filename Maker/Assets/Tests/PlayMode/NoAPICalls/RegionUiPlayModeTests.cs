@@ -19,6 +19,10 @@ namespace NoAPICalls
     {
         private const string RegionListPanel = "Canvas/EditRegion UI/Bottom/Scroll/Panel";
 
+        /// <summary>Time for the replayed region commands to reach the body texture (i.e. time to paint the color onto the body) (flushed in
+        /// LateUpdate, and a replay right after a change can render late - see the painting guide).</summary>
+        private const float SettleSeconds = 0.5f;
+
         /// <summary>Opening Edit → Region shows a non-empty region list, and Link returns to Edit.</summary>
         [UnityTest]
         public IEnumerator RegionButton_OpensRegionModeWithPopulatedList()
@@ -63,15 +67,20 @@ namespace NoAPICalls
 
             var regionEntry = FindChildWithTextValue(RegionListPanel, shoulderRegion.displayName, "Action/Region");
             Assert.IsNotNull(regionEntry, $"Region row for '{shoulderRegion.displayName}' not found in the region list.");
+            yield return new WaitForSeconds(SettleSeconds);
+            Color32[] blank = BodyPixels();
 
             yield return ClickButtonByPath(path: "Icon", root: regionEntry);
             yield return null;
             yield return null; // let CwPaintableManager flush the replayed commands
+            yield return new WaitForSeconds(SettleSeconds);
 
             Assert.AreEqual(partsBefore + 1, swell.groupParts.Count, "Region paint should add one part to the active group.");
             var newPart = swell.groupParts[swell.groupParts.Count - 1];
             Assert.AreEqual("shoulder_front_left", newPart.regionKey, "Painted part should carry the region key.");
             Assert.AreEqual(shoulderRegion.displayName, newPart.description, "Painted part should carry the region's localized name.");
+            AssertPartsAreUsable(partManager);
+            Assert.Greater(DifferingPixels(blank, BodyPixels()), 0, "Region paint should show on the body.");
 
             yield return ClickButtonByPath("Canvas/EditRegion UI/Bottom/Buttons/Link");
             yield return WaitForModeActive("Edit");
