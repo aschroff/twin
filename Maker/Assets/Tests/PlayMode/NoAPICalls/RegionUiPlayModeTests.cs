@@ -23,6 +23,8 @@ namespace NoAPICalls
         /// LateUpdate, and a replay right after a change can render late - see the painting guide).</summary>
         private const float SettleSeconds = 0.5f;
 
+        private const string ShoulderRegion = "shoulder_front_left";
+
         /// <summary>Opening Edit → Region shows a non-empty region list, and Link returns to Edit.</summary>
         [UnityTest]
         public IEnumerator RegionButton_OpensRegionModeWithPopulatedList()
@@ -32,18 +34,12 @@ namespace NoAPICalls
             yield return ClickButtonByName("Edit Button");
             yield return WaitForModeActive("Edit");
             AssertGameObjectActive("Canvas/Edit UI/Bottom/Region");
-
-            // unlike its siblings (Marker, Filler, …), only the Region button's Icon child is
-            // wired to InteractionController.EnableMode — Icon Background/Text/Text Background
-            // carry no listener, so clicking there does nothing in the real app either.
-            yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Region/Icon");
-            yield return WaitForModeActive("EditRegion");
+            yield return OpenRegionScreen();
 
             var panel = FindGameObjectByPath(RegionListPanel);
             Assert.Greater(panel.transform.childCount, 0, "Region list should be populated from the template catalog.");
 
-            yield return ClickButtonByPath("Canvas/EditRegion UI/Bottom/Buttons/Link");
-            yield return WaitForModeActive("Edit");
+            yield return LeaveRegionScreen();
         }
 
         /// <summary>Tapping a region row paints it into the currently active group, with the
@@ -57,33 +53,23 @@ namespace NoAPICalls
             yield return SelectGroupForPainting(swell);
             int partsBefore = swell.groupParts.Count;
 
-            var armsTwin = PartTemplateService.GetTemplateCatalog().twins.First(t => t.twinName == "Arms.twin");
-            var shoulderRegion = armsTwin.regions.First(r => r.key == "shoulder_front_left");
-
             yield return ClickButtonByName("Edit Button");
             yield return WaitForModeActive("Edit");
-            yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Region/Icon");
-            yield return WaitForModeActive("EditRegion");
-
-            var regionEntry = FindChildWithTextValue(RegionListPanel, shoulderRegion.displayName, "Action/Region");
-            Assert.IsNotNull(regionEntry, $"Region row for '{shoulderRegion.displayName}' not found in the region list.");
+            yield return OpenRegionScreen();
             yield return new WaitForSeconds(SettleSeconds);
             Color32[] blank = BodyPixels();
 
-            yield return ClickButtonByPath(path: "Icon", root: regionEntry);
-            yield return null;
-            yield return null; // let CwPaintableManager flush the replayed commands
+            yield return ClickRegion(ShoulderRegion);
             yield return new WaitForSeconds(SettleSeconds);
 
             Assert.AreEqual(partsBefore + 1, swell.groupParts.Count, "Region paint should add one part to the active group.");
-            var newPart = swell.groupParts[swell.groupParts.Count - 1];
-            Assert.AreEqual("shoulder_front_left", newPart.regionKey, "Painted part should carry the region key.");
-            Assert.AreEqual(shoulderRegion.displayName, newPart.description, "Painted part should carry the region's localized name.");
+            var newPart = swell.groupParts.Last();
+            Assert.AreEqual(ShoulderRegion, newPart.regionKey, "Painted part should carry the region key.");
+            Assert.AreEqual(ArmsRegion(ShoulderRegion).displayName, newPart.description, "Painted part should carry the region's localized name.");
             AssertPartsAreUsable(partManager);
             Assert.Greater(DifferingPixels(blank, BodyPixels()), 0, "Region paint should show on the body.");
 
-            yield return ClickButtonByPath("Canvas/EditRegion UI/Bottom/Buttons/Link");
-            yield return WaitForModeActive("Edit");
+            yield return LeaveRegionScreen();
         }
 
         /// <summary>A region-painted part survives leaving and reloading the twin, keeping its
@@ -97,26 +83,16 @@ namespace NoAPICalls
             yield return SelectGroupForPainting(swell);
             int partsBefore = swell.groupParts.Count;
 
-            var armsTwin = PartTemplateService.GetTemplateCatalog().twins.First(t => t.twinName == "Arms.twin");
-            var shoulderRegion = armsTwin.regions.First(r => r.key == "shoulder_front_left");
-
             yield return ClickButtonByName("Edit Button");
             yield return WaitForModeActive("Edit");
-            yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Region/Icon");
-            yield return WaitForModeActive("EditRegion");
-
-            var regionEntry = FindChildWithTextValue(RegionListPanel, shoulderRegion.displayName, "Action/Region");
-            Assert.IsNotNull(regionEntry, $"Region row for '{shoulderRegion.displayName}' not found in the region list.");
-            yield return ClickButtonByPath(path: "Icon", root: regionEntry);
-            yield return null;
-            yield return null;
+            yield return OpenRegionScreen();
+            yield return ClickRegion(ShoulderRegion);
 
             // without this, a failed paint would make Last() pick a part that was already there
             Assert.AreEqual(partsBefore + 1, swell.groupParts.Count, "Setup: region paint should add one part to the active group.");
             string partId = swell.groupParts.Last().id;
 
-            yield return ClickButtonByPath("Canvas/EditRegion UI/Bottom/Buttons/Link");
-            yield return WaitForModeActive("Edit");
+            yield return LeaveRegionScreen();
 
             // leave the twin and come back (switching twins saves the current one)
             yield return ClickButtonByPath("Canvas/Edit UI/Top/GameObject/Back Button");
@@ -129,9 +105,60 @@ namespace NoAPICalls
             var reloadedPart = reloadedSwell.groupParts.FirstOrDefault(p => p.id == partId);
 
             Assert.IsNotNull(reloadedPart, "Region-painted part did not survive save/reload.");
-            Assert.AreEqual("shoulder_front_left", reloadedPart.regionKey, "Region key should survive save/reload.");
-            Assert.AreEqual(shoulderRegion.displayName, reloadedPart.description, "Region name should survive save/reload.");
+            Assert.AreEqual(ShoulderRegion, reloadedPart.regionKey, "Region key should survive save/reload.");
+            Assert.AreEqual(ArmsRegion(ShoulderRegion).displayName, reloadedPart.description, "Region name should survive save/reload.");
             Assert.AreSame(reloadedSwell, reloadedPart.group, "Part must still be linked to its group after reload.");
+        }
+
+
+        /// <summary>From Edit mode into the Region screen.</summary>
+        private IEnumerator OpenRegionScreen()
+        {
+            // unlike its siblings (Marker, Filler, …), only the Region button's Icon child is
+            // wired to InteractionController.EnableMode — Icon Background/Text/Text Background
+            // carry no listener, so clicking there does nothing in the real app either.
+            yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Region/Icon");
+            yield return WaitForModeActive("EditRegion");
+        }
+
+        /// <summary>From the Region screen back to Edit mode.</summary>
+        private IEnumerator LeaveRegionScreen()
+        {
+            yield return ClickButtonByPath("Canvas/EditRegion UI/Bottom/Buttons/Link");
+            yield return WaitForModeActive("Edit");
+        }
+
+        /// <summary>Taps the row of an Arms.twin region and waits until its paint is flushed.</summary>
+        private IEnumerator ClickRegion(string regionKey)
+        {
+            var region = ArmsRegion(regionKey);
+            var regionEntry = FindChildWithTextValue(RegionListPanel, region.displayName, "Action/Region");
+            Assert.IsNotNull(regionEntry, $"Region row for '{region.displayName}' not found in the region list.");
+            yield return ClickButtonByPath(path: "Icon", root: regionEntry);
+            yield return null;
+            yield return null; // let CwPaintableManager flush the replayed commands
+        }
+
+        private static PartTemplateService.TemplateRegionInfo ArmsRegion(string regionKey)
+        {
+            return PartTemplateService.GetTemplateCatalog().twins
+                .First(t => t.twinName == "Arms.twin").regions.First(r => r.key == regionKey);
+        }
+
+        private Color ToolColor(string toolName)
+        {
+            return FindGameObjectByPath($"Tools/{toolName}").GetComponent<PaintIn3D.CwPaintSphere>().Color;
+        }
+
+        /// <summary>The LeanTouch object the Region screen is wired to (a private serialized field).</summary>
+        private static GameObject FindTouchOfRegionMode()
+        {
+            var mode = Resources.FindObjectsOfTypeAll<EditRegionMode>().First(m => m.gameObject.scene.IsValid());
+            var field = typeof(EditRegionMode).GetField("Touch",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var touch = (GameObject)field.GetValue(mode);
+            Assert.IsNotNull(touch, "EditRegionMode has no Touch object wired.");
+            return touch;
         }
 
         private static Color32[] BodyPixels()
