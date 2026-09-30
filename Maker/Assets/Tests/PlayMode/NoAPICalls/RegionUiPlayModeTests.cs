@@ -175,6 +175,25 @@ namespace NoAPICalls
             Assert.Greater(DifferingPixels(blank, BodyPixels()), 0, "The fallback paint should show on the body.");
         }
 
+/// <summary>The Region screen switches off the camera gestures (LeanTouch), like every
+        /// other edit screen - otherwise a swipe over the list would turn the body.</summary>
+        [UnityTest]
+        public IEnumerator RegionScreen_DisablesCameraGestures()
+        {
+            yield return LoadLipEdemaTwin();
+            yield return ClickButtonByName("Edit Button");
+            yield return WaitForModeActive("Edit");
+
+            // Edit mode already switches them off - switch them on again, so that only the
+            // Region screen can be the one that turns them off
+            GameObject touch = FindTouchOfRegionMode();
+            touch.SetActive(true);
+
+            yield return OpenRegionScreen();
+
+            Assert.IsFalse(touch.activeSelf, "Camera gestures must be off on the Region screen.");
+        }
+        
 
         /// <summary>From Edit mode into the Region screen.</summary>
         private IEnumerator OpenRegionScreen()
