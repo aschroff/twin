@@ -194,6 +194,27 @@ namespace NoAPICalls
             Assert.IsFalse(touch.activeSelf, "Camera gestures must be off on the Region screen.");
         }
         
+        /// <summary>Opening the Region screen a second time rebuilds the list instead of adding
+        /// a second copy of every row.</summary>
+        [UnityTest]
+        public IEnumerator RegionScreen_ReopenedListHasNoDuplicates()
+        {
+            yield return LoadLipEdemaTwin();
+            int regionCount = PartTemplateService.GetTemplateCatalog().twins.Sum(t => t.regions.Count);
+
+            yield return ClickButtonByName("Edit Button");
+            yield return WaitForModeActive("Edit");
+            yield return OpenRegionScreen();
+            var panel = FindGameObjectByPath(RegionListPanel);
+            Assert.AreEqual(regionCount, panel.transform.childCount, "One row per region of the template catalog.");
+
+            yield return LeaveRegionScreen();
+            yield return OpenRegionScreen();
+            yield return null; // the old rows are destroyed at the end of the frame
+
+            Assert.AreEqual(regionCount, panel.transform.childCount, "Reopening must not duplicate the region rows.");
+        }
+
 
         /// <summary>From Edit mode into the Region screen.</summary>
         private IEnumerator OpenRegionScreen()
