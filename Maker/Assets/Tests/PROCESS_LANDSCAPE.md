@@ -69,9 +69,9 @@ Manual test numbers refer to the business department's catalogue (`01 navigation
 
 | | |
 |---|---|
-| Automated | `EditUiPlayModeTests`, `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests`, `PartTemplateServiceTests` (11), `PartHistoryTests` (13) |
+| Automated | `EditUiPlayModeTests`, `RegionUiPlayModeTests` (3), `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests`, `PartTemplateServiceTests` (11), `PartHistoryTests` (13) |
 | Manual | 06/01 Edit navigation · 06/02 Marker · 06/03 Sticker · 06/04 Delete · 06/05 Filler · 06/06 Text · 06/08 placement |
-| **Gap** | **A** — Text, Filler and Delete are checked by hand only.<br>**C** — the **Region screen** is checked by nobody: the service behind it has 11 tests, the screen has none, and the manual catalogue does not mention it. 06/01 lists five tools; the app has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). |
+| **Gap** | **A** — Text, Filler and Delete are checked by hand only.<br>**B** — the **Region screen** is now covered by `RegionUiPlayModeTests` (since TWIN-477: opening it with a populated list, painting a region into the current group, surviving save/reload), but the manual catalogue still does not mention it. 06/01 lists five tools; the app has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). |
 
 ### P03 — Organise into groups
 
@@ -129,8 +129,10 @@ rather than being written again.
 | **B** | automated, not in the manual catalogue | no risk to the product; the business department cannot see what is already safe |
 | **C** | checked by neither | a real hole |
 
-**The only C today is the Region screen.** In order of value, the A gaps are: stored views (P04),
-twin names (P01), the remaining tools (P02), the reset checklist (P07).
+**No C remains today** — the Region screen was the only one, and `RegionUiPlayModeTests` closed it
+(TWIN-477); it is now a B, since the manual catalogue still does not mention the Region screen. In
+order of value, the A gaps are: stored views (P04), twin names (P01), the remaining tools (P02),
+the reset checklist (P07).
 
 ---
 
@@ -216,7 +218,7 @@ answers, the key lookup, and the token and session handling of the twin server. 
 | Address | Tests |
 |---|---|
 | `P01_manage_twins` | 25 |
-| `P02_mark_up_the_body` | 30 |
+| `P02_mark_up_the_body` | 33 |
 | `P03_organise_into_groups` | 16 |
 | `P04_look_at_the_twin` | 4 |
 | `P05_describe_and_report` | 19 |
@@ -225,13 +227,14 @@ answers, the key lookup, and the token and session handling of the twin server. 
 | `T00_technical` | 25 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **159** |
+| **total** | **162** |
 
-By cost: 88 in `EditMode/`, 53 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`.
+By cost: 88 in `EditMode/`, 56 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456 and is now at four — storing a view,
 getting it back, getting it back after the twin was turned, and surviving a reload. What has no
 test at all is K02, K03 and K04.
 
-**Counted on 11 September 2026** (P04 updated with TWIN-456), by reflection over both test assemblies — the same walk the guard
+**Counted on 11 September 2026** (P04 updated with TWIN-456; P02 updated with TWIN-477's
+`RegionUiPlayModeTests`), by reflection over both test assemblies — the same walk the guard
 test makes.
