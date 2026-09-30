@@ -110,6 +110,38 @@ namespace NoAPICalls
             Assert.AreSame(reloadedSwell, reloadedPart.group, "Part must still be linked to its group after reload.");
         }
 
+/// <summary>A region is painted with the marker the user picked before opening the
+        /// Region screen - its name and colour go onto the new part.</summary>
+        [UnityTest]
+        public IEnumerator SelectRegion_UsesTheMarkerSelectedBefore()
+        {
+            yield return LoadLipEdemaTwin();
+            var partManager = FindPartManager();
+            var swell = partManager.groups.First(g => g.name == "Swell");
+            yield return SelectGroupForPainting(swell);
+            int partsBefore = swell.groupParts.Count;
+
+            yield return ClickButtonByName("Edit Button");
+            yield return WaitForModeActive("Edit");
+            yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Marker/Text Background/Text");
+            yield return WaitForModeActive("EditMarker");
+            yield return ClickButtonByPath("Canvas/EditMarker UI/Bottom/Scroll/Panel/Red");
+            AssertGameObjectActive("Tools/Red");
+            yield return ClickButtonByPath("Canvas/EditMarker UI/Bottom/Buttons/Link");
+            yield return WaitForModeActive("Edit");
+
+            yield return OpenRegionScreen();
+            yield return ClickRegion(ShoulderRegion);
+
+            Assert.AreEqual(partsBefore + 1, swell.groupParts.Count, "Setup: region paint should add one part to the active group.");
+            var newPart = swell.groupParts.Last();
+            Assert.AreEqual("Red", newPart.nameTool, "Region paint should use the marker selected before.");
+            Assert.AreEqual(ToolColor("Red"), newPart.colorTool, "Region paint should carry the selected marker's colour.");
+        }
+
+        /// <summary>A sticker cannot carry a region template (those are sphere strokes), so with a
+        /// sticker selected the region is still painted - with the first marker instead.</summary>
+        [UnityTest]
 
         /// <summary>From Edit mode into the Region screen.</summary>
         private IEnumerator OpenRegionScreen()
