@@ -42,7 +42,7 @@ namespace NoAPICalls
         }
 
         /// <summary>Tapping a region row paints it into the currently active group, with the
-        /// new part carrying the region's key and localized name.</summary>
+        /// new part carrying the region's key and localized name, and the paint showing on the body.</summary>
         [UnityTest]
         public IEnumerator SelectRegion_PaintsItIntoCurrentGroup()
         {
@@ -85,6 +85,7 @@ namespace NoAPICalls
             var partManager = FindPartManager();
             var swell = partManager.groups.First(g => g.name == "Swell");
             yield return SelectGroupForPainting(swell);
+            int partsBefore = swell.groupParts.Count;
 
             var armsTwin = PartTemplateService.GetTemplateCatalog().twins.First(t => t.twinName == "Arms.twin");
             var shoulderRegion = armsTwin.regions.First(r => r.key == "shoulder_front_left");
@@ -100,6 +101,8 @@ namespace NoAPICalls
             yield return null;
             yield return null;
 
+            // without this, a failed paint would make Last() pick a part that was already there
+            Assert.AreEqual(partsBefore + 1, swell.groupParts.Count, "Setup: region paint should add one part to the active group.");
             string partId = swell.groupParts.Last().id;
 
             yield return ClickButtonByPath("Canvas/EditRegion UI/Bottom/Buttons/Link");
@@ -117,6 +120,7 @@ namespace NoAPICalls
 
             Assert.IsNotNull(reloadedPart, "Region-painted part did not survive save/reload.");
             Assert.AreEqual("shoulder_front_left", reloadedPart.regionKey, "Region key should survive save/reload.");
+            Assert.AreEqual(shoulderRegion.displayName, reloadedPart.description, "Region name should survive save/reload.");
             Assert.AreSame(reloadedSwell, reloadedPart.group, "Part must still be linked to its group after reload.");
         }
     }
