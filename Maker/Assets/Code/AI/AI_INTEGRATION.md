@@ -264,7 +264,13 @@ image  = part.pathScreenshot                // screenshot of the part on the mes
 prompt = ItemPrompt(variant, Version) + every part.description, numbered
       → GeneratePatientSummaryCoroutine → PatientSummaryResponse
       → ItemPrompt.promptResult (→ ConfigData.resultsVersion)
+      → AI.characterDescription             // the Help UI overview, display only
 ```
+
+The overview is not restored from `resultsVersion`: `AI` is an `IDataPersistence` whose
+`LoadData` empties it (or shows the missing-key notice), so opening a twin or Reset App never
+leaves another twin's report on screen. Putting the stored report back needs the "which row is
+the report" question of §4.1 answered first.
 
 **Whole body** (`CompleteReportProcess` → `AI.CompleteReport`) is the only caller of
 `PromptContributor.GeneratePrompt`: a hard-coded instruction plus the marker/filler legend,

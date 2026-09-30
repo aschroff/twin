@@ -11,7 +11,7 @@ namespace Code.AI
     /// Medical AI component for Unity integration.
     /// Bridges Unity UI and game objects with MedicalAI service.
     /// </summary>
-    public class AI : MedicalAI
+    public class AI : MedicalAI, IDataPersistence
     {
         public enum Help
         {
@@ -31,21 +31,62 @@ namespace Code.AI
         public string path;
         public SettingsManager settingsManager;
 
+        /// <summary>The colour the overview has before any request touches it.</summary>
+        private Color idleColor;
+
+        private void Awake()
+        {
+            if (characterDescription != null)
+            {
+                idleColor = characterDescription.color;
+            }
+        }
+
         protected override void Start()
         {
             base.Start();
+            ShowIdleOverview();
+        }
+
+        /// <summary>
+        /// The overview shows the answer of the last request, which belongs to the twin that was
+        /// open then - so a twin that is loaded, or the fresh one of Reset App, starts with an
+        /// empty overview. The stored report is not put back here (see TWIN-478).
+        /// </summary>
+        public void LoadData(ConfigData data)
+        {
+            ShowIdleOverview();
+        }
+
+        public void SaveData(ConfigData data)
+        {
+            // the overview is only a display; ItemPrompt persists the report
+        }
+
+        public GameObject relatedGameObject()
+        {
+            return gameObject;
+        }
+
+        private void ShowIdleOverview()
+        {
+            Debug.Log("TWIN478-TRACE ShowIdleOverview\n" + System.Environment.StackTrace);
+            if (characterDescription == null)
+            {
+                return;
+            }
 
             // UI feedback for missing API key - the key may come from outside the scene, so it is
             // the resolved one that matters, not the field
             if (!hasApiKey)
             {
-                const string errorMessage = "No <b>API Key</b> found. See ApiKeys for where to put it.";
-                if (characterDescription != null)
-                {
-                    characterDescription.text = errorMessage;
-                    characterDescription.color = Color.magenta;
-                }
+                characterDescription.text = "No <b>API Key</b> found. See ApiKeys for where to put it.";
+                characterDescription.color = Color.magenta;
+                return;
             }
+
+            characterDescription.text = "";
+            characterDescription.color = idleColor;
         }
         
 
@@ -214,6 +255,7 @@ namespace Code.AI
             if (characterDescription != null)
             {
                 characterDescription.text = "<in progress> ";
+                characterDescription.color = idleColor;
             }
 
             // Use MedicalAI's patient summary generation
