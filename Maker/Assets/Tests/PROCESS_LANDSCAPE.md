@@ -65,57 +65,63 @@ the twin looks, not what is painted on it.
 
 | | |
 |---|---|
-| Automated | `SaveTwinPlayModeTests`, `InfoDisplayPlayModeTests` (5), `FileDataHandlerTests` (13), `DataPersistenceManagerTests` (9) |
-| Manual | 02 Twin management · 03 App reset · 05/01 Twins save functionality · 05/02 Duplicated twin name · 05/03 Twin names · Name tests |
-| **Gap** | **A** — name validation (valid and invalid characters, length, duplicates and their error messages) is checked by hand only. `TwinNameValidator` has no test at all. |
+| Automated | `SaveTwinPlayModeTests` (1), `InfoDisplayPlayModeTests` (2 of its 5), `FileDataHandlerTests` (14), `DataPersistenceManagerTests` (9), `LoadEveryTwinTests` (1), `TwinLoadingMemoryTests` (1), `TwinActivityMemoryTests` (1), `TextureSaveCostTests` (2), `TextureSaveReadbackTests` (1) |
+| Manual | 02 Twin management (WIP) · 02/01 Create, name twins · 02/02 Delete twin · 03 App reset · 05/01 Twins save functionality · 05/02 Duplicated twin name · 05/03 Twin names |
+| **Gap** | **A** — name validation (valid and invalid characters, length, duplicates and their error messages) is checked by hand only. `TwinNameValidator` has no test at all.<br>**A** — a reset is checked by hand against seven separate expectations (blank twin, all twins gone, camera, groups, views, stickers, text boxes); automatically only the twin that is loaded afterwards (`InfoDisplayPlayModeTests`, filed under P07).<br>**B** — loading every twin in the list, and the memory a twin switch costs (TWIN-457, TWIN-459), are automated and have no manual counterpart. `TextureSaveCostTests` asserts nothing; it reports what each step of saving the paint costs. |
+
+Deleting a twin (02/02) is covered on the data side — `DataPersistenceManagerTests` keeps the open
+twin alive, `FileDataHandlerTests` removes the whole directory — but not through the twin list.
 
 ### P02 — Mark up the body
 
 | | |
 |---|---|
-| Automated | `EditUiPlayModeTests`, `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests`, `PartTemplateServiceTests` (11), `PartHistoryTests` (13) |
-| Manual | 06/01 Edit navigation · 06/02 Marker · 06/03 Sticker · 06/04 Delete · 06/05 Filler · 06/06 Text · 06/08 placement |
-| **Gap** | **A** — Text, Filler and Delete are checked by hand only.<br>**C** — the **Region screen** is checked by nobody: the service behind it has 11 tests, the screen has none, and the manual catalogue does not mention it. 06/01 lists five tools; the Edit screen's bottom bar has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). Shape is the seventh but belongs to **P04**, where it is covered. |
+| Automated | `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests` (1), `PartTemplateServiceTests` (11), `PartHistoryTests` (13), `InfoDisplayPlayModeTests` (1 of its 5) |
+| Manual | 06/01 Edit navigation · 06/02 a Marker painting · 06/02 b Marker name · 06/03 a Sticker edit with default sticker · 06/03 b Importing a photo as sticker · 06/04 Delete · 06/05 Filler · 06/06 a Text colour and size · 06/08 Placement |
+| **Gap** | **A** — Text, Filler and Delete are checked by hand only, and so are naming a marker (06/02 b) and turning, flipping and resizing a sticker (06/03 a).<br>**C** — the **Region screen** is checked by nobody: the service behind it has 11 tests, the screen has none, and the manual catalogue does not mention it. 06/01 lists five tools; the Edit screen's bottom bar has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). Shape is the seventh but belongs to **P04**, where it is covered. |
+
+`EditUiPlayModeTests`, which paints through the Edit screen, is the chain **K01** and is therefore
+not counted here.
 
 ### P03 — Organise into groups
 
 | | |
 |---|---|
-| Automated | `GroupPlayModeTests` (3), `GroupDetailPlayModeTests`, `PartManagerTests` (11) |
-| Manual | 07/02 Store group · 01/03 overview |
+| Automated | `GroupPlayModeTests` (3), `GroupDetailPlayModeTests` (1), `PartManagerTests` (11), `InfoDisplayPlayModeTests` (1 of its 5) |
+| Manual | 07/02 a Basic group functionality · 01/03 Overview |
 | **Gap** | none worth naming. |
 
 ### P04 — Look at the twin
 
 | | |
 |---|---|
-| Automated | `ViewPlayModeTests` (3), `TourProcessPlayModeTests` (standard views only), `ShapePlayModeTests` (8) |
-| Manual | 01/01 Top navigation · 01/02 view and group window · 07/01 Store view · 07/01a Stored view after turning · 06/07 Shape |
+| Automated | `ViewPlayModeTests` (3), `TourProcessPlayModeTests` (1, standard views only), `ShapePlayModeTests` (8) |
+| Manual | 01/01 Top navigation · 01/02 View and group window · 07/01 a Stored view after turning the twin · 06/07 Shape (filed under P2 in the catalogue) |
 | **Gap** | Storing a view, activating it, and activating it *after the twin has been turned* are covered since TWIN-456. Shape is covered since TWIN-473 — screen, button wiring, all five functions, and that a changed figure survives save and reload; what a test cannot say is whether the figure then *looks* plausible, so 06/07 stays a manual check. What is still by hand only: turning, moving and zooming as such. |
 
 ### P05 — Describe and report
 
 | | |
 |---|---|
-| Automated | `DocumentPromptPlayModeTests` (3), `DocumentApplyPlayModeTests` (7), `UploadPlayModeTests` (2), `PartsScreenshotProcessPlayModeTests`, `SkinProcessPlayModeTests`, `PartsDescriptionProcessTests`, and with a key `PartDescriptionProcessTests`, `VersionProcessTests`, `VersionSequenceProcessTests` |
-| Manual | — |
-| **Gap** | **B** — the business catalogue does not cover this at all, although it is the newer half of the app. Nothing is unchecked; the two sides simply do not know about each other. |
+| Automated | offline: `DocumentPromptPlayModeTests` (3), `DocumentApplyPlayModeTests` (7), `UploadPlayModeTests` (2), `PartsScreenshotProcessPlayModeTests` (1), `SkinProcessPlayModeTests` (1), `MissingScreenshotsButtonPlayModeTests` (1), `PartsDescriptionButtonPlayModeTests` (1), `PartsDescriptionPlayModeTests` (4), `PartMenuPlayModeTests` (3)<br>with a key: `DocumentMappingApiTests` (2), `PartDescriptionProcessTests` (1), `PartsDescriptionProcessTests` (1), `VersionProcessTests` (1) |
+| Manual | 08/01 Part descriptions · 08/02 Version description (with images) · 08/03 Version description · 09 Screenshots · 12 Turn a document into a twin · 12/01 Turn a photo into a twin |
+| **Gap** | The old gap **B** is closed: the catalogue now covers this process. What remains:<br>**A** — turning a *photo* into a twin (12/01) is checked end to end by hand only. The tests prove the photo entry is offered and that a PDF goes all the way to the review screen, not that a photo does.<br>**A** — whether the screenshot also lands in the Photos app (08/02, 09) is a device question; no test can see it.<br>Describing parts and versions for real is automated only *with a key*. Offline, the tests pin what the buttons offer ("missing images", "missing descriptions") and that a run never overwrites text that is already there. |
 
 ### P06 — Exchange twins
 
 | | |
 |---|---|
 | Automated | `ImportTwinPlayModeTests` (10), `TwinVersionsClientTests` (17), `TwinVersionRowTests` (9), `TwinAuthTests` (17) |
-| Manual | — |
-| **Gap** | **B**, as above. |
+| Manual | 10/01 Export a zip · 10/02 Import a zip · 11/01 New version · 11/02 Clone version |
+| **Gap** | **A** — creating a new version and cloning one (11/01, 11/02) are checked by hand only.<br>**B** — uploading to and downloading from the server, and signing in to it, are automated at the level of the client and the version rows, and have no manual test. |
 
 ### P07 — App frame
 
 | | |
 |---|---|
-| Automated | `SettingsUiPlayModeTests`, `InfoDisplayPlayModeTests` (the reset case) |
-| Manual | 03 App reset · 04 Persistence |
-| **Gap** | **A** — a reset is checked by hand against seven separate expectations (blank twin, all twins gone, camera, groups, views, stickers, text boxes); automatically only two of them. |
+| Automated | `SettingsUiPlayModeTests` (1), `InfoDisplayPlayModeTests` (1 of its 5, the reset case), `AutoSavePlayModeTests` (2), `BusyOverlayPlayModeTests` (2), `ThinkingOverlayPlayModeTests` (4) |
+| Manual | 04 Persistence · 12 Language |
+| **Gap** | **A** — switching the language (12 Language) is checked by hand only; `SettingsUiPlayModeTests` opens the screen and goes no further.<br>**B** — saving when the app is sent to the background (TWIN-467), the loading panel during a twin switch (TWIN-461) and the logo while the language model is asked (TWIN-475) are automated and have no manual counterpart. The manual tests 12 and 12/01 (P05) do check that "the loading indicator is visible". |
 
 ### Chains
 
