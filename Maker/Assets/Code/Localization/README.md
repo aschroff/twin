@@ -63,19 +63,12 @@ name; a name reference breaks the moment someone renames the key. `APP_RESET` on
 the settings page is the example to copy.
 
 **For text the code picks** — status lines, error messages: keep the key in the
-code and resolve it when you need it.
-
-```csharp
-private const string TableName = "TwinLocalTables";
-private const string KeySignedIn = "LOGIN_SIGNED_IN";
-
-var table = LocalizationSettings.StringDatabase?.GetTable(TableName);
-var entry = table?.GetEntry(KeySignedIn);
-```
-
-Do **not** use `StringLocalizer.localizeString` for this: it writes a line to the
-console on every *successful* lookup, which turns a status line into console
-noise. `TwinLoginPanel.Localise` shows the shape without that.
+code and resolve it with `StringLocalizer.localizeString(key)`
+(`Assets/Code/Localization/StringLocalizer.cs`), the shared lookup against
+`TwinLocalTables`. It falls back to logging a warning and returning the raw key
+if the entry is missing. `TwinLoginPanel.ApplyMessage` and
+`TwinNameValidator.InvalidNameMessage`/`AlreadyExistingNameMessage` show the
+shape.
 
 If the text stays on screen, also subscribe to
 `LocalizationSettings.SelectedLocaleChanged` and re-resolve. A message set before

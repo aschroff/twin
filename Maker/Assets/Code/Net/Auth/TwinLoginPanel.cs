@@ -39,9 +39,6 @@ namespace Code.Net.Auth
         /// </summary>
         private const string LastEmailKey = "twin.auth.last_email";
 
-        /// <summary>The one string table collection this app has.</summary>
-        private const string TableName = "TwinLocalTables";
-
         // Keys rather than sentences, because the app ships in five locales — two
         // languages in three medical registers. Which of them is showing is not
         // this class's business; it only says *which* message.
@@ -233,27 +230,7 @@ namespace Code.Net.Auth
         {
             if (statusText == null || _messageKey == null) return;
 
-            statusText.text = Localise(_messageKey);
-        }
-
-        /// <summary>
-        /// Look a key up in the current locale.
-        /// </summary>
-        /// <remarks>
-        /// Not <see cref="StringLocalizer"/>, which writes a line to the console on
-        /// every successful lookup — that would narrate every status change. A
-        /// missing key is worth one warning and then the key itself, which is more
-        /// useful on screen than an empty line.
-        /// </remarks>
-        private static string Localise(string key)
-        {
-            var table = LocalizationSettings.StringDatabase?.GetTable(TableName);
-            var entry = table?.GetEntry(key);
-
-            if (entry != null) return entry.GetLocalizedString();
-
-            Debug.LogWarning($"[{nameof(TwinLoginPanel)}] No entry '{key}' in {TableName}.");
-            return key;
+            statusText.text = StringLocalizer.localizeString(_messageKey);
         }
     }
 }
