@@ -183,13 +183,16 @@ findings yields at least one multi-region painting.
 
 ## Notes for writing new tests
 
-**Directories a test writes into are created by the helper that writes**, on demand, and are never
-deleted by a test. Creating one inside a single test makes every other test in the class depend on
-the order they happen to run in — `UploadPlayModeTests` did that, passed on any machine that had
-run it before, and failed on a fresh one until TWIN-447. Per-test scratch data belongs in `SetUp`,
-which already wipes and recreates its own directory.
-
-
+- **Give it a category.** Exactly one, from `Assets/Tests/Helper/TestCategories.cs`, on the class
+  — otherwise `TestCategoriesGuardTests` fails. Pick the process from `PROCESS_LANDSCAPE.md`.
+- **Pick the folder by cost.** Anything that can call the language model goes into `APICalls/`
+  and guards itself with `Assert.Ignore` when there is no key. A test that needs no scene is a unit
+  test and belongs in `EditMode/`.
+- **Directories a test writes into are created by the helper that writes**, on demand, and are
+  never deleted by a test. Creating one inside a single test makes every other test in the class
+  depend on the order they happen to run in — `UploadPlayModeTests` did that, passed on any machine
+  that had run it before, and failed on a fresh one until TWIN-447. Per-test scratch data belongs
+  in `SetUp`, which already wipes and recreates its own directory.
 - **Painting needs a framed body.** The paint position is the screen centre; a twin's saved
   camera may point somewhere else (LipEdema's shows the lower body, where the centre falls
   between the legs and hits nothing). Select a view first — `TwinPaintTestBase.BodyView`.
