@@ -128,8 +128,10 @@ rendered yet.
 | `SequenceProcess` | Process | runs a configured list of `ProcessSync` in order |
 | `DocumentUploadProcess` | Process | picks a photo or a PDF, has it mapped onto the twin by the LLM, opens the review screen for it, and on Apply writes what the user ticked (`ApplyConfirmed` → `DocumentMappingApplier`) and saves (`Proc/Document/`, see its feature spec) |
 
-Note that `PartsDescriptionProcess` starts all part coroutines in the same frame — the requests
-run in parallel and `VersionProcess` only waits on `AllPartsDescribed()` with a 10 s timeout.
+Until TWIN-468 `PartsDescriptionProcess` started all part requests in the same frame and reported
+itself finished a frame later. It now waits for each answer before the next, so a sequence's
+`VersionProcess` is built from descriptions that have arrived. `VersionProcess` itself still only
+waits on `AllPartsDescribed()` with a 10 s timeout.
 
 ---
 
