@@ -130,6 +130,7 @@ Assets/
 │   │   ├── AI_INTEGRATION.md      # reference for the OpenAI layer + prompt building
 │   │   ├── AI.cs                  # Core AI controller
 │   │   ├── AIService.cs           # Service abstraction
+│   │   ├── ApiKeys.cs             # where the OpenAI key is read from
 │   │   ├── MedicalAI.cs           # Medical-domain AI logic
 │   │   ├── OpenAIClient.cs        # OpenAI API client
 │   │   ├── StructuredOutputs.cs   # Structured response parsing
@@ -137,18 +138,19 @@ Assets/
 │   │       ├── Part.cs / PromptPart.cs
 │   │       ├── Tools.cs / Markers.cs / Marker.cs / Fillers.cs
 │   │       ├── PromptContributor.cs
-│   │       ├── IPromptContributingGameObject.cs / IRoot.cs
+│   │       └── IPromptContributingGameObject.cs / IRoot.cs
 │   │
 │   ├── DataPersistence/           # Save / load system
 │   │   ├── Data/                  # Data classes (ConfigData, AttributesData)
 │   │   ├── DataPersistenceManager.cs
 │   │   ├── FileDataHandler.cs     # files, zip export/import
 │   │   ├── TwinTextureFile.cs     # the painted texture as a file in the twin directory
+│   │   ├── PaintTextureSaver.cs   # writes the texture cache without a Texture2D (TWIN-459)
 │   │   ├── IDataPersistence.cs
 │   │   └── SerializableTypes/
-│
+│   │
 │   ├── Interface/                 # Domain interfaces & navigation
-│   │   ├── Model.cs / Lib.cs
+│   │   ├── Model.cs
 │   │   ├── ToolTracker.cs
 │   │   └── TwinNavigation.cs
 │   │
@@ -167,6 +169,7 @@ Assets/
 │       ├── Item/                  # UI item components (Body, Group, Part, Sticker, …)
 │       ├── Manager/               # Screen/panel managers (PartManager, GroupManager, VersionManager, …)
 │       ├── Mode/                  # Interaction modes (EditMode, MainMode, ShapeMode, …)
+│       ├── BusyOverlay.cs         # loading message and "thinking" logo (TWIN-461, TWIN-475)
 │       ├── Singleton.cs
 │       ├── UIController.cs
 │       └── InteractionController.cs
