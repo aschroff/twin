@@ -165,7 +165,7 @@ unity cmd run_tests --mode PlayMode --filter_type category --filter P04_look_at_
 
 The filter matches the **whole** category name — no prefixes, no patterns — so the names to copy are:
 
-| Category | Category |
+| Process | Chain |
 |---|---|
 | `P01_manage_twins` | `K01_new_twin_first_parts` |
 | `P02_mark_up_the_body` | `K02_open_and_add_to_a_twin` |
@@ -174,17 +174,21 @@ The filter matches the **whole** category name — no prefixes, no patterns — 
 | `P05_describe_and_report` | `K05_report_on_a_version` |
 | `P06_exchange_twins` | |
 | `P07_app_frame` | |
+| `T00_technical` | |
 
-They are written once as constants and used from there, so a typo is a compile error rather than a
-test that quietly drops out of the map:
+They are written once as constants (`Assets/Tests/Helper/TestCategories.cs`) and used from there,
+so a typo is a compile error rather than a test that quietly drops out of the map:
 
 ```csharp
 [Category(Processes.MarkUpTheBody)]
 public class UndoRedoPlayModeTests : PlayModeTestBase
 ```
 
-A guard test walks both test assemblies and fails when a test carries no category, or more than
-one — that is what keeps this document honest when someone adds a test in six months.
+A guard test (`TestCategoriesGuardTests`) walks both test assemblies and fails when a test carries
+no category, or more than one — that is what keeps this document honest when someone adds a test
+in six months. The category sits on the class as a rule; `InfoDisplayPlayModeTests` is the one
+class whose five tests carry it per method, because they check the status display of four
+different processes.
 
 `NoAPICalls/` is a promise about **cost**, not about failing: every test that spends tokens guards
 itself with `Assert.Ignore` when there is no key, so a run without a key was green wherever the
@@ -193,8 +197,12 @@ test sat. With a key it was not free — one test in `NoAPICalls/` really called
 (`OpenAIClientTests` and `DocumentMappingApiTests`, which sat beside the folders, and
 `PartsDescriptionProcessTests`, which sat in `NoAPICalls/`).
 
-Tools that are driven through the test runner rather than run with the suite — the template
-library generator — mark themselves `[Explicit]` and are outside the landscape.
+Tests marked `[Explicit]` do not run with the suite and are not counted below. There are two
+kinds: the template library generator (`TemplateLibraryTools/`, ten batches), a tool that is merely
+driven through the test runner; and five tests that produce something for a person to look at
+rather than assert anything — screenshots of the loading panel, the thinking logo and the group
+detail buttons, a timing of twin switches, and a diagnosis of what an undo leaves on the body.
+The five carry a category all the same.
 
 ---
 
