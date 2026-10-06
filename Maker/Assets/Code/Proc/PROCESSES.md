@@ -88,8 +88,11 @@ foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
 notification.Pulse();
 ```
 
-Long jobs otherwise give no progress; `StartingProcessingMode` is the only "busy" screen and is
-not driven from here.
+Long jobs otherwise give no progress of their own. What the user does see is `BusyOverlay`
+(`Assets/Code/View/BusyOverlay.cs`): an animated logo for as long as a request to the language
+model is out (raised by `AIService` and `AI`, not by the processes — TWIN-475), and a loading
+message while a twin is switched (TWIN-461). `PartsDescriptionProcess` ends with one summary toast
+(`PARTS_DESCRIBED_SUMMARY`) instead of one per part.
 
 ---
 
