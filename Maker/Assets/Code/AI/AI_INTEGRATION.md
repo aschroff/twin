@@ -258,6 +258,11 @@ image  = part.pathScreenshot                // screenshot of the part on the mes
       → part.description = response.Description
 ```
 
+Only the model's answer is ever written to `part.description` — no placeholder before the call,
+no error message after a failed one, because either would overwrite text a doctor typed
+(TWIN-468). A part without a screenshot is not sent at all. `PartsDescriptionProcess` works
+through the parts **one at a time** and ends with one summary toast.
+
 **Version → report** (`VersionProcess` → `AI.DescribeVersion`)
 
 ```
@@ -266,9 +271,14 @@ prompt = ItemPrompt(variant, Version) + every part.description, numbered
       → ItemPrompt.promptResult (→ ConfigData.resultsVersion)
 ```
 
-**Whole body** (`CompleteReportProcess` → `AI.CompleteReport`) is the only caller of
-`PromptContributor.GeneratePrompt`: a hard-coded instruction plus the marker/filler legend,
-with a whole-body screenshot.
+`AI.CompleteReport` — a hard-coded instruction plus the marker/filler legend from
+`PromptContributor.GeneratePrompt`, with a whole-body screenshot — has no caller left since
+`CompleteReportProcess` was removed (TWIN-442).
+
+**While a request is out** the app shows an animated logo: `AIService.RequestTextCoroutine`,
+`RequestStructuredCoroutine` and `AI.UploadDocumentCoroutine` call `BusyOverlay.BeginThinking()`
+before the request and `EndThinking()` in a `finally`, so a failed request takes its count with
+it (TWIN-475).
 
 ---
 
