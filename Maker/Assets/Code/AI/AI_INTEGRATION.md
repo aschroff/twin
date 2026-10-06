@@ -224,6 +224,13 @@ Gotchas found while writing this:
 - `PromptPart` implements `IRoot` but is not a MonoBehaviour, so it is never found — dead code.
 - Sticker and text tools have no contributor; only markers and fillers describe themselves.
 
+### 4.3 The findings — from the data model
+
+`PromptGeneration/Part.Description(PartData)` turns one part into prose, branching on
+`PartData.typeTool` (`MarkerLine`, `MarkerDotted`, `Filler`, `Sticker`, `Text`) and appending
+`"The finding belongs to the category: <group name>."`. `AI.DescribeVersion` instead
+concatenates the already-computed `part.description` of every part of every group.
+
 ### 4.4 The inventories — the same data, without the gotchas
 
 For prompts that describe the *state* of the twin rather than one finding:
@@ -236,13 +243,6 @@ For prompts that describe the *state* of the twin rather than one finding:
 `PartManager.DeriveType` is `public static` so both this and `PartManager` classify a tool the
 same way. First user: `DocumentPromptBuilder`
 (`Assets/Code/Proc/Document/FEATURE_DOCUMENT_TO_TWIN.md`).
-
-### 4.3 The findings — from the data model
-
-`PromptGeneration/Part.Description(PartData)` turns one part into prose, branching on
-`PartData.typeTool` (`MarkerLine`, `MarkerDotted`, `Filler`, `Sticker`, `Text`) and appending
-`"The finding belongs to the category: <group name>."`. `AI.DescribeVersion` instead
-concatenates the already-computed `part.description` of every part of every group.
 
 ---
 
