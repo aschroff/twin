@@ -44,7 +44,9 @@ up outside the scene, first hit wins:
 2. `secrets.json` in the persistent data path, next to the twins — the way to give a device a key
 3. **editor only:** `Assets/Tests/Helper/testsecrets.json`, the file the tests already use and
    which `.gitignore` already covers, so a developer keeps exactly one copy
-4. whatever the component carries — last resort, so an old scene still works
+4. `Assets/Resources/secrets.json` — git-ignored as well, but part of the build, so a build made
+   on a machine that has it carries a key (TWIN-468)
+5. whatever the component carries — last resort, so an old scene still works
 
 The json member is `openAIApiKey`, matched without regard to case; `apiKey` and `openai_api_key`
 work too. `AIService.resolvedApiKey` / `.hasApiKey` say what was found; when nothing is found the
@@ -248,7 +250,7 @@ same way. First user: `DocumentPromptBuilder`
 
 ## 5. The two flows that exist today
 
-**Part → text** (`PartDescriptionProcess` → `AI.DescribePart`)
+**Part → text** (`PartDescriptionProcess.DescribeAndWait` → `AI.DescribePartCoroutine`)
 
 ```
 prompt = ItemPrompt(variant, Part)          // user's instruction
