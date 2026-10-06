@@ -15,8 +15,6 @@ object**, which itself carries `ProcessManager` (and the `AI` component).
 Process (GameObject)            ← ProcessManager + AI
 ├── TourProcess
 ├── SkinProcess
-├── CompleteReportProcess
-├── PartsProcess
 ├── PartsDescriptionProcess
 ├── PartDescriptionProcess
 ├── VersionProcess
@@ -72,11 +70,8 @@ Adds `ExecuteSync(variant)` plus an `ExecuteCompleted` event, so a process can b
 one's event (`VersionSequenceProcess` = screenshots → part descriptions → version report).
 A `ProcessSync` that never raises `OnExecuteCompleted()` stalls the sequence forever.
 
-### `QuickHelpProcess` (`Proc/AI/`)
-
-Convenience base for "screenshot the whole body, then ask": takes the shot through `Recorder`,
-puts its path on `AI.path`, then calls the abstract `CallAI(ai, variant)`.
-`CompleteReportProcess` is its only subclass.
+`QuickHelpProcess`, `CompleteReportProcess` and `PartsProcess` were removed as dead code in
+TWIN-442.
 
 ---
 
@@ -130,7 +125,6 @@ rendered yet.
 | `PartDescriptionProcess` | Process | one part → AI (`variant##partId`); needs the part's screenshot on disk, otherwise toasts "No Screenshot" |
 | `PartsDescriptionProcess` | ProcessSync | fans out `PartDescriptionProcess` over every part; `hardRedo` redoes parts that already have a description |
 | `VersionProcess` | ProcessSync | waits for `AllPartsDescribed()`, then one report over all part descriptions |
-| `CompleteReportProcess` | QuickHelpProcess | whole-body screenshot + marker/filler legend → report |
 | `SequenceProcess` | Process | runs a configured list of `ProcessSync` in order |
 | `DocumentUploadProcess` | Process | picks a photo or a PDF, has it mapped onto the twin by the LLM, opens the review screen for it, and on Apply writes what the user ticked (`ApplyConfirmed` → `DocumentMappingApplier`) and saves (`Proc/Document/`, see its feature spec) |
 
