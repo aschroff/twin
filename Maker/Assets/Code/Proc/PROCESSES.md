@@ -15,8 +15,6 @@ object**, which itself carries `ProcessManager` (and the `AI` component).
 Process (GameObject)            ← ProcessManager + AI
 ├── TourProcess
 ├── SkinProcess
-├── CompleteReportProcess
-├── PartsProcess
 ├── PartsDescriptionProcess
 ├── PartDescriptionProcess
 ├── VersionProcess
@@ -72,11 +70,8 @@ Adds `ExecuteSync(variant)` plus an `ExecuteCompleted` event, so a process can b
 one's event (`VersionSequenceProcess` = screenshots → part descriptions → version report).
 A `ProcessSync` that never raises `OnExecuteCompleted()` stalls the sequence forever.
 
-### `QuickHelpProcess` (`Proc/AI/`)
-
-Convenience base for "screenshot the whole body, then ask": takes the shot through `Recorder`,
-puts its path on `AI.path`, then calls the abstract `CallAI(ai, variant)`.
-`CompleteReportProcess` is its only subclass.
+`QuickHelpProcess`, `CompleteReportProcess` and `PartsProcess` were removed as dead code in
+TWIN-442.
 
 ---
 
@@ -93,8 +88,11 @@ foreach (Text text in notification.gameObject.GetComponentsInChildren<Text>())
 notification.Pulse();
 ```
 
-Long jobs otherwise give no progress; `StartingProcessingMode` is the only "busy" screen and is
-not driven from here.
+Long jobs otherwise give no progress of their own. What the user does see is `BusyOverlay`
+(`Assets/Code/View/BusyOverlay.cs`): an animated logo for as long as a request to the language
+model is out (raised by `AIService` and `AI`, not by the processes — TWIN-475), and a loading
+message while a twin is switched (TWIN-461). `PartsDescriptionProcess` ends with one summary toast
+(`PARTS_DESCRIBED_SUMMARY`) instead of one per part.
 
 ---
 
@@ -111,7 +109,7 @@ Lives on `Canvas` (wired as `ProcessManager.recorder`).
 | `get_path()` | the path `Do()` writes |
 
 `name` / `folder` are set by the caller before each shot — that is how one run produces many
-files (`TourProcess` per view, `PartsProcess` per part). The **crop rect is hard-coded** for a
+files (`TourProcess` per view, `PartsScreenshotProcess` per part). The **crop rect is hard-coded** for a
 tall portrait screen; on other resolutions the shot is off.
 
 `Do()` must run right after `yield return new WaitForEndOfFrame()`, otherwise the frame is not
@@ -124,18 +122,18 @@ rendered yet.
 | Process | Kind | What it does |
 |---------|------|--------------|
 | `TourProcess` | Process | one screenshot per standard view |
-| `PartsProcess` | Process | isolates every part in turn (`ClearRefreshPart` + its stored view) and shoots it |
-| `PartsScreenshotProcess` | Process | screenshots for parts, variant of the above |
+| `PartsScreenshotProcess` | ProcessSync | one screenshot per part, in turn; `CountMissingScreenshots()` and `ShootPart(part, group)` serve the "create missing images" button of the group detail panel and the part page (TWIN-466, TWIN-474) |
 | `SkinProcess` | Process | writes the painted body texture as `skin_<twin>.png` into the twin folder and the gallery |
 | `PartDescriptionProcess` | Process | one part → AI (`variant##partId`); needs the part's screenshot on disk, otherwise toasts "No Screenshot" |
-| `PartsDescriptionProcess` | ProcessSync | fans out `PartDescriptionProcess` over every part; `hardRedo` redoes parts that already have a description |
+| `PartsDescriptionProcess` | ProcessSync | works through `Candidates()` **one part at a time** (`PartDescriptionProcess.DescribeAndWait`); only parts with a screenshot are candidates, and `hardRedo` also takes those that already have a description. Two instances in the scene, the second (`PartsDescriptionProcessHardRedo`) with `hardRedo` set. `CountDescribable()` and `Running` serve the description buttons of the group detail panel (TWIN-468) |
 | `VersionProcess` | ProcessSync | waits for `AllPartsDescribed()`, then one report over all part descriptions |
-| `CompleteReportProcess` | QuickHelpProcess | whole-body screenshot + marker/filler legend → report |
 | `SequenceProcess` | Process | runs a configured list of `ProcessSync` in order |
 | `DocumentUploadProcess` | Process | picks a photo or a PDF, has it mapped onto the twin by the LLM, opens the review screen for it, and on Apply writes what the user ticked (`ApplyConfirmed` → `DocumentMappingApplier`) and saves (`Proc/Document/`, see its feature spec) |
 
-Note that `PartsDescriptionProcess` starts all part coroutines in the same frame — the requests
-run in parallel and `VersionProcess` only waits on `AllPartsDescribed()` with a 10 s timeout.
+Until TWIN-468 `PartsDescriptionProcess` started all part requests in the same frame and reported
+itself finished a frame later. It now waits for each answer before the next, so a sequence's
+`VersionProcess` is built from descriptions that have arrived. `VersionProcess` itself still only
+waits on `AllPartsDescribed()` with a 10 s timeout.
 
 ---
 
@@ -149,4 +147,6 @@ run in parallel and `VersionProcess` only waits on `AllPartsDescribed()` with a 
    `label`/`level` — there is no `Default` row to fall back to.
 4. Report the outcome through `getNotification()`.
 5. Cover it with a PlayMode test under `Assets/Tests/PlayMode/NoAPICalls/` if it can be tested
-   without the network, and register it in `Assets/Tests/Editor/TemplatePoCRunner.cs`.
+   without the network, or under `PlayMode/APICalls/` if it calls the language model. Give the
+   test exactly one category from `Assets/Tests/Helper/TestCategories.cs` (see
+   `Assets/Tests/PROCESS_LANDSCAPE.md`) and register it in `Assets/Tests/Editor/TemplatePoCRunner.cs`.

@@ -23,9 +23,9 @@ for the same concepts. This is the thing to understand before writing a key.
 | `region.forehead` | – | – | Stirn | Stirn | **Regio frontalis** |
 
 `demed` swaps the app's generic vocabulary for clinical wording; `demedlatin`
-additionally uses Latin anatomy. As of writing, 112 of 179 keys differ between
-`de` and `demed`, and 99 between `demed` and `demedlatin` — almost all of the
-latter are `region.*`.
+additionally uses Latin anatomy. As of October 2026, 15 of 212 keys differ between
+`de` and `demed` (the domain words: group, view, twin, shape, region, …), and 99 between
+`demed` and `demedlatin` — almost all of the latter are `region.*`.
 
 **What this means for a new key.** If its text names a domain concept — twin,
 group, view, edit, a body part — it needs different wording per register. If it
@@ -51,8 +51,9 @@ user sees, literally:
 No translation found for 'IMPORT_TWIN' in TwinLocalTables
 ```
 
-So: fill every new key in all five tables. It currently looks as if fallbacks
-exist, only because all keys happen to be filled.
+So: fill every new key in all five tables. It can look as if fallbacks exist,
+only because almost every key is filled — `IMPORT_TWIN` is the exception today:
+it has no entry in `demedlatin`, which is exactly the message above.
 
 ## 3. Adding a key
 

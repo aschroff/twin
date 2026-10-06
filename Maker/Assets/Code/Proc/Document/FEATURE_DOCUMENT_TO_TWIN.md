@@ -23,7 +23,7 @@ description as the input, and it reuses that feature's region library for the pa
 
 | Piece | Where |
 |-------|-------|
-| `Upload` button, 4th in the bottom row of the main screen | in **`Assets/Prefabs/GUI/Main UI.prefab`** under `Bottom`, a nested `Icon in circle with text` instance like its three neighbours. Only the click target is a scene override — `Maker`/`InteractionController` cannot be referenced from a prefab asset — as it is for `HelpMe` and `NewVersion`. |
+| `Upload` button in the bottom row of the main screen | in **`Assets/Prefabs/GUI/Main UI.prefab`** under `Bottom`, a nested `Icon in circle with text` instance like its neighbours. Only the click target is a scene override — `Maker`/`InteractionController` cannot be referenced from a prefab asset — as it is for `HelpMe` and `NewVersion`. |
 | `Upload` mode | `UploadMode` (`Assets/Code/View/Mode/UploadMode.cs`), registered in `InteractionController.interactionModes` |
 | `Upload` panel: the action list with the two ways in | `Assets/Prefabs/GUI/Upload UI.prefab` (a copy of `Menu UI`), registered in `UIController.uiPanels`; the two entries are wired on the scene instance's `MenuManager`, as on `Menu UI` |
 | The picking | `DocumentUploadProcess` (`Assets/Code/Proc/Document/`), a `Process` under the scene's `Process` object, variants `Photo` and `Document` |
@@ -37,7 +37,9 @@ loaded to `pickedPhoto`, a document only recorded as `pickedPath`; both are the 
 analysis step. After a successful pick the twin is shown again and a notification names the file.
 
 Note: the bottom row's grid spacing went from 95 to 70 (in the prefab) so a fourth button still
-fits the portrait width (4 × 80 + 3 × 70 = 530 within the ~593 the canvas has on a phone).
+fits the portrait width (4 × 80 + 3 × 70 = 530 within the ~593 the canvas has on a phone). Since
+TWIN-463 the row holds a fifth button (Versions); 5 × 80 + 4 × 70 = 680 no longer fits that
+arithmetic, so the row's width on a phone has to be checked again.
 
 The panels are prefabs, so **UI is added to the prefab, never to the scene instance** — the scene
 carries only what has to point at scene objects. `Canvas` itself is not a prefab, which is why
@@ -233,9 +235,11 @@ proposal out itself.
 transparent `Image` there to catch the gaps between the children, so a tap anywhere on the row
 (text included) toggles it; a 30-unit box beside a three-line row is nothing to aim at on a phone.
 Consequence for `DocumentReviewRow.Fill`: a heading cannot be un-toggled by hiding the Toggle's
-GameObject any more (that would hide the row), so it disables the `Toggle` and hides `Selector`. A treatment line over both
-legs is one row and fourteen parts, and this is where that becomes visible before it is paid — see
-"treatments" below. `, uncertain` is appended when the model's own confidence is below 0.6.
+GameObject any more (that would hide the row), so it disables the `Toggle` and hides `Selector`.
+
+**A row carries its region count.** A treatment line over both legs is one row and fourteen parts,
+and this is where that becomes visible before it is paid — see "treatments" below. `, uncertain` is
+appended when the model's own confidence is below 0.6.
 
 Headings carry no toggle (their `Selector` is hidden) and are English, like the rest of the text on
 this screen; the *content* is in the language of the app, because the prompt asks for it.
@@ -263,7 +267,7 @@ Two things worth keeping in mind about the panel:
 | The flow | `DocumentUploadProcess.Accept()` → prompt → upload if needed → `MapDocument` → `DocumentMappingText.Describe` on the review screen |
 | Model | `gpt-5.5-2026-04-23`, pinned on the `AI` component — **all** flows moved to it, not just this one |
 | Notifications | two toasts: "Reading <file> ..." when the request goes out and "<file>: n findings ... to review" (or the failure) when it comes back — so leaving the review screen while it works is safe |
-| Tests | `Assets/Tests/EditMode/` (14, no scene, no network) and `Assets/Tests/PlayMode/DocumentMappingApiTests.cs` (2, call the API, need `testsecrets.json`) — the second of those drives the whole flow through the app |
+| Tests | `Assets/Tests/EditMode/` (`JsonSchemaBuilderTests` and `ApiKeysTests`, no scene, no network) and `Assets/Tests/PlayMode/APICalls/DocumentMappingApiTests.cs` (2, call the API, need `testsecrets.json`) — the second of those drives the whole flow through the app |
 
 The 98 region keys go into the schema as an `enum` on `paintings.regionKeys`, so an unknown
 region cannot come back — and the API test additionally checks every tool and group name against
@@ -330,7 +334,7 @@ that changes anything**: pick, prompt, call and review all leave the twin untouc
 | The button behind it | `DocumentReviewManager.HandleApply` → `DocumentUploadProcess.ApplyConfirmed(selection)` |
 | Region key → template twin | `PartTemplateService.TwinOfRegion` / `PaintRegionByKey` — the answer only ever names a key, so the app resolves the area itself |
 | The report row | `SettingsManager.getPromptObjectByLabelText("Medical Report", Version)` + `ItemPrompt.LabelText()` |
-| Tests | `Assets/Tests/PlayMode/NoAPICalls/DocumentApplyPlayModeTests.cs` (4), **Tools → Template PoC → Run Document Apply Tests** |
+| Tests | `Assets/Tests/PlayMode/NoAPICalls/DocumentApplyPlayModeTests.cs` (7), **Tools → Template PoC → Run Document Apply Tests** |
 
 **The order is load bearing.** Groups, then tool meanings, then the paintings, then the report text.
 A part copies the tool's meaning at the moment it is painted, so a tool that is being taken into use
@@ -468,8 +472,9 @@ which area twin a key belongs to, so that pairing cannot go wrong. The keys shou
 
 Decided: the whole file goes in one call; unmappable findings go into the patient-level text; the
 document itself is not kept; review items start unchecked; a treatment stays on the body and the
-review row carries its region count (see "treatments" above). Model: `gpt-5.5-2026-04-23`, which
-needs a per-call model override — the other flows stay on the component's `gpt-4o-mini`.
+review row carries its region count (see "treatments" above). Model: `gpt-5.5-2026-04-23`, set on
+the `AI` component in the scene, so every flow uses it (the code default in `AIService` is still
+`gpt-4o-mini`).
 
 Still open:
 - How is a wrong mapping corrected — undo the whole import, or edit part by part? Still nothing:
