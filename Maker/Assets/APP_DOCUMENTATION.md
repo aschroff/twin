@@ -47,8 +47,12 @@ LipEdema.twin/
 config while selecting a twin looks up the directory, so a mismatch gives a row that cannot be
 opened.
 
-The painted body texture is also cached per twin in **PlayerPrefs** (`CwPaintableTexture.Save`
-via `CwCommon.SaveBytes`) so switching twins does not replay every paint command. That cache is
+The painted body texture is also cached per twin in **PlayerPrefs** so switching twins does not
+replay every paint command. Since TWIN-459 it is written by `PaintTextureSaver.Save`, which reads
+the pixels straight off the GPU (about 257 MB instead of the 1024 MB `CwPaintableTexture.Save`
+needs at 8192², pixel for pixel the same image) and falls back to the CW route on hardware that
+cannot read back asynchronously. The key comes from `PaintableSaveNameOverride.Resolve`, so tests
+write under their own prefix (TWIN-460). That cache is
 local to the device, which is why `Texture.png` exists: on load, `Body.handleChange` takes the
 cache when there is one and otherwise reads the file and fills the cache from it.
 
