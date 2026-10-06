@@ -114,22 +114,52 @@ All need a valid key in `Assets/Tests/Helper/testsecrets.json`; without one they
 
 ## `Assets/Tests/EditMode/` — unit tests, no scene, no app
 
-| Test | What it checks |
-|------|----------------|
-| **JsonSchemaBuilderTests** (6 tests) | The JSON schema requested for structured outputs: nested objects and lists are described to the bottom, injected value lists become `enum`s (on the items for an array member), the strict-mode invariants hold recursively over a whole schema, the two responses already in use stay flat, and a self-referencing type fails instead of hanging. |
-
-| **PartHistoryTests** (13 tests) | The bookkeeping of part undo/redo on a bare `PartManager`: the last part goes, in painting order across groups; redo returns it to its old index with its group link; new paint or a stroke after undo starts a fresh part and ends the redo history; parts that arrive with the twin are not undoable, template parts are; a part deleted through the list or a deleted group leaves the history; loading drops it; an undone part is gone from the save data. **Tools → Template PoC → Run Part History Tests**. |
-
-| **ApiKeysTests** (8 tests) | Reading the OpenAI key from a file outside version control: the member `testsecrets.json` uses plus the other spellings, whitespace trimmed, and a missing, empty or broken file yielding nothing instead of throwing at startup. |
-
 EditMode on purpose. A PlayMode test that does **not** derive from `PlayModeTestBase` starts the
 real app against the real data path — the sandboxing lives in that base class.
 
-Run them from **Tools → Template PoC → Run Schema Tests**.
+| Test | Category | What it checks |
+|------|----------|----------------|
+| **FileDataHandlerTests** (14 tests) | P01 | Saving, loading and deleting a twin on disk, each test in its own temp directory: the round trip with and without encryption, a twin that is not there, no profile id, the directory created on demand; the backup next to the file and the way back from it when the file is corrupt or empty — and `null` rather than endless recursion when both are; a damaged template stays in the template directory; delete removes the whole twin directory; a directory without a config is skipped; and that the file types handed to the picker are one per entry — a single comma-separated string greyed out every file on an iPad (TWIN-450, TWIN-472). Import and export are left to `ImportTwinPlayModeTests`. |
+| **DataPersistenceManagerTests** (9 tests) | P01 | Which twin, and which version of it, the twin list shows: one entry per twin name, represented by the open version — even when another is newer — and by the newest one when none is open; the versions of one twin keyed by version; whether a profile id exists; and that deleting leaves the twin that is open alone (TWIN-451). |
+| **PartHistoryTests** (13 tests) | P02 | The bookkeeping of part undo/redo on a bare `PartManager`: the last part goes, in painting order across groups; redo returns it to its old index with its group link; new paint or a stroke after undo starts a fresh part and ends the redo history; parts that arrive with the twin are not undoable, template parts are; a part deleted through the list or a deleted group leaves the history; loading drops it; an undone part is gone from the save data. |
+| **PartManagerTests** (11 tests) | P03 | The bookkeeping over groups and parts on a bare `PartManager`: finding a part and the group holding it (by id and by reference), whether all parts are described, the current group, deleting a part, a part in no group and a group without its object, clearing everything, and the save/load round trip (TWIN-453). |
+| **TwinAuthTests** (17 tests) | P06 | What the sign-in client puts on the wire, against a real HTTP server on loopback rather than a mock — the exact set of JSON keys, because the backend refuses extra ones. See `Assets/Code/Net/Auth/README.md`. |
+| **TwinVersionsClientTests** (17 tests) | P06 | What the twin-version client puts on the wire, against a real HTTP server on loopback: listing (one twin, signed, the cursor followed to the end), uploading (multipart, the three form fields, an existing version as permanent rather than transient, an oversized archive told apart) and downloading (one id, byte for byte, a digest mismatch refused, a missing digest tolerated, an unknown version told apart from one whose archive is gone, storage outages as worth retrying). See `Assets/Code/Net/Twins/README.md`. |
+| **TwinVersionRowTests** (9 tests) | P06 | Which rows can be ticked on the upload and on the download screen — one row component, opposite rules: only a version that is on one side only is an offer, the other states read as "the other side already has it", a failed transfer can be retried on either screen, a transfer in flight is locked, a dead box that is ticked is still not a selection (TWIN-463). |
+| **ApiKeysTests** (11 tests) | T00 | Reading the OpenAI key from a file outside version control: the member `testsecrets.json` uses plus the other spellings, whitespace trimmed, and a missing, empty or broken file yielding nothing instead of throwing at startup; the key from `Resources/secrets.json`, which a build carries; the component's own value as the last resort, not the first choice; and that the list of searched places names the environment and the files (TWIN-468). |
+| **JsonSchemaBuilderTests** (6 tests) | T00 | The JSON schema requested for structured outputs: nested objects and lists are described to the bottom, injected value lists become `enum`s (on the items for an array member), the strict-mode invariants hold recursively over a whole schema, the two responses already in use stay flat, and a self-referencing type fails instead of hanging. |
+| **TestCategoriesGuardTests** (2 tests) | T00 | Both test assemblies are loaded, and every test that is not `[Explicit]` carries exactly one category from `TestCategories.cs`. |
 
-The Document → Twin tests are **Tools → Template PoC → Run Document Apply Tests** (6, offline),
-**Run Document Prompt Tests** (3, offline), **Run Upload Tests** (1, offline) and
-**Run Document Mapping API Test** (2, needs a key).
+## Running a subset from the menu
+
+**Tools → Template PoC → …**:
+
+| Menu entry | Runs |
+|---|---|
+| Run All PlayMode Tests | the whole PlayMode suite (the `[Explicit]` ones are skipped) |
+| Run PlayMode Test | `ProgrammaticPaintingTests` |
+| Run SaveTwin Baseline Test | `SaveTwinPlayModeTests` |
+| Run Group Tests | `GroupDetailPlayModeTests`, `GroupPlayModeTests` (4) |
+| Run Info Display Tests | `InfoDisplayPlayModeTests` (5) |
+| Run Import Tests | `ImportTwinPlayModeTests` (10) |
+| Run Sticker Tests | `StickerPlayModeTests` (2) |
+| Run Undo Redo Tests | `UndoRedoPlayModeTests` (2) |
+| Run Part History Tests | `PartHistoryTests` (EditMode) |
+| Run Schema Tests | `JsonSchemaBuilderTests`, `ApiKeysTests` (EditMode) |
+| Run Document Prompt Tests | `DocumentPromptPlayModeTests` (3, offline) |
+| Run Document Apply Tests | `DocumentApplyPlayModeTests` (7, offline) |
+| Run Upload Tests | `UploadPlayModeTests` (2, offline) |
+| Run Document Mapping API Test | `DocumentMappingApiTests` (2, needs a key) — but see the note below |
+
+**Known problem:** the last entry filters on `DocumentMappingApiTests.…` without a namespace. Since
+TWIN-455 the class sits in `namespace APICalls`, so the entry is likely to match no test at all. Use
+the Test Runner, or `unity cmd run_tests` with a category filter, until the runner is fixed.
+
+Everything else — and any single process — is easier with a category filter:
+
+```
+unity cmd run_tests --mode PlayMode --filter_type category --filter P05_describe_and_report
+```
 
 ## `TemplateLibraryTools/` — not tests
 
