@@ -125,9 +125,10 @@ not counted here.
 
 ### Chains
 
-None of the five exists as a named test yet. `EditUiPlayModeTests` is already chain-shaped — open a
-twin, edit, pick a view, paint, return, check the group detail page — and would become **K01**
-rather than being written again.
+Two of the five exist. **K01** is `EditUiPlayModeTests` — open a twin, edit, pick a view, paint,
+return, check the group detail page — which carried the chain's category since TWIN-455 instead of
+being written again. **K05** is `VersionSequenceProcessTests` (screenshot → part description →
+version report, with a key). K02, K03 and K04 have no test.
 
 ---
 
