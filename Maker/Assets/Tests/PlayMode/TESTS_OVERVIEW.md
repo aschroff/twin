@@ -93,15 +93,24 @@ These carry `[Explicit]`, so "Run All" skips them; start them by name. They asse
 > `NoAPICalls/` and really called the model whenever a key was configured). Every test here guards
 > itself with `Assert.Ignore` when there is no key, so the folder is about **cost**, not failure.
 
-All need a valid key in `Assets/Tests/Helper/testsecrets.json`; the Process tests skip themselves
-(`Assert.Ignore`) without one, and `401`s otherwise.
+All need a valid key in `Assets/Tests/Helper/testsecrets.json`; without one they skip themselves
+(`Assert.Ignore`), with an invalid one they fail with a `401`.
 
-| Test | What it checks |
-|------|----------------|
-| **PartDescriptionProcessTests**<br>`DescribePart_SetsDescriptionFromRealScreenshot` | Paints one part on LipEdema, produces a real screenshot via `PartsScreenshotProcess` (the same order `VersionSequenceProcess` uses — `PartDescriptionProcess` only calls the AI once a screenshot exists on disk), then calls `PartDescriptionProcess.Handle` for that single part and waits for a real, non-error description. |
-| **VersionProcessTests**<br>`DescribeVersion_SetsPromptResultFromRealPart` | Sets a part's description directly — skipping a second real AI call — so `partManager.AllPartsDescribed()` is true, clears the Version-level `ItemPrompt.promptResult`, calls `VersionProcess.Handle`, and waits for a real, non-error prompt result. |
-| **VersionSequenceProcessTests**<br>`RunSequence_DescribesPartAndVersionFromRealScreenshot` | Covers the "VersionSequenceProcess" GameObject's `SequenceProcess`, which chains `PartsScreenshotProcess` → `PartsDescriptionProcess` → `VersionProcess`. Paints a part with no screenshot and no description yet, calls `sequenceProcess.Handle`, and waits (60s, for two real AI calls in a row) for a non-error part description and version prompt result. |
-| **OpenAIClientTests** (8 tests) | The `OpenAIClient` class directly — no scene, derives from `TestBase` rather than `PlayModeTestBase`: simple and structured requests, invalid-key handling, an empty-key constructor throw, parallel requests, model listing, file upload, and the AI component's image/PDF input path. |
+| Test | Category | What it checks |
+|------|----------|----------------|
+| **PartDescriptionProcessTests**<br>`DescribePart_SetsDescriptionFromRealScreenshot` | P05 | Paints one part on LipEdema, produces a real screenshot via `PartsScreenshotProcess` (the same order `VersionSequenceProcess` uses — `PartDescriptionProcess` only calls the AI once a screenshot exists on disk), then calls `PartDescriptionProcess.Handle` for that single part and waits for a real, non-error description. |
+| **PartsDescriptionProcessTests**<br>`DescribeParts_SetsDescriptionFromRealScreenshot` | P05 | Paints a part, produces a real screenshot via `PartsScreenshotProcess`, then calls `PartsDescriptionProcess.Handle`, which works through every part that has a screenshot, and waits for a real description. |
+| **VersionProcessTests**<br>`DescribeVersion_SetsPromptResultFromRealPart` | P05 | Sets a part's description directly — skipping a second real AI call — so `partManager.AllPartsDescribed()` is true, clears the Version-level `ItemPrompt.promptResult`, calls `VersionProcess.Handle`, and waits for a real, non-error prompt result. |
+| **DocumentMappingApiTests** (2 tests) | P05 | Send an invented document to the LLM. The first checks the answer can be applied: every body region is one of the 98 keys, every tool is a tool of this app, every group is existing or proposed, a tool taken into use was free, and what concerns the patient as a whole comes back as the patient text. The second drives the same thing **through the app**, with the real two-page PDF `Assets/Tests/Helper/lipoedema-report-sample.pdf` (a fictional lipoedema report): Upload, pick, upload, call, proposal on the review screen. It also proves the app finds a key, that the PDF upload path works — a text file takes a different one — and that a report full of symmetrical findings yields at least one multi-region painting. |
+| **OpenAIClientTests** (9 tests) | T00 | The `OpenAIClient` class directly — no scene, derives from `TestBase` rather than `PlayModeTestBase`: simple and structured requests, invalid-key handling, an empty-key constructor throw, parallel requests, model listing, file upload, the AI component's image/PDF input path, and the full call `PartDescriptionProcess` makes, with a fixture screenshot. |
+| **VersionSequenceProcessTests**<br>`RunSequence_DescribesPartAndVersionFromRealScreenshot` | K05 | Covers the "VersionSequenceProcess" GameObject's `SequenceProcess`, which chains `PartsScreenshotProcess` → `PartsDescriptionProcess` → `VersionProcess`. Paints a part with no screenshot and no description yet, calls `sequenceProcess.Handle`, and waits (60 s, for two real AI calls in a row) for a non-error part description and version prompt result. |
+
+## Chains
+
+| Test | Category | What it checks |
+|------|----------|----------------|
+| **EditUiPlayModeTests**<br>`EditButton_EnablesEditMode` | K01 | Core editing round trip: open a twin, enter Edit mode, all tool buttons present, select a view, paint with a marker, return to Main, open the group detail page and find the painted part in its group. |
+| **VersionSequenceProcessTests** | K05 | See `APICalls/` above — it needs a key. |
 
 ## `Assets/Tests/EditMode/` — unit tests, no scene, no app
 
