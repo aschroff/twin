@@ -166,20 +166,8 @@ unity cmd run_tests --mode PlayMode --filter_type category --filter P05_describe
 `TemplateLibraryGenerator` + `TemplateRegionTable` generate the body-region template library.
 They are `[UnityTest]` only because painting needs play mode; all methods are marked
 `[Explicit]`, so **"Run All" skips them**. Start them from **Tools → Template Library → Batch …**.
-See `TemplateLibrary/README.md` for the workflow.
-
-## Outside `NoAPICalls/` and `APICalls/`
-
-**DocumentMappingApiTests** (2 tests, still directly under `PlayMode/`) send an invented document
-to the LLM. The first checks the answer can be applied: every body region is one of the 98 keys,
-every tool is a tool of this app, every group is existing or proposed, a tool taken into use was
-free, and what concerns the patient as a whole comes back as the patient text. The second drives
-the same thing **through the app**, with the real two-page PDF
-`Assets/Tests/Helper/lipoedema-report-sample.pdf` (a fictional lipoedema report): Upload, pick,
-upload, call, proposal on the review screen. It also proves the app finds a key, that the PDF
-upload path works — a text file takes a different one — and that a report full of symmetrical
-findings yields at least one multi-region painting.
-**Tools → Template PoC → Run Document Mapping API Test**.
+The output goes to `<project>/TemplateLibrary/` (data and one screenshot per region); the workflow
+is described in the class comment of `TemplateLibraryGenerator.cs`.
 
 ## Notes for writing new tests
 
