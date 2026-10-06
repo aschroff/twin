@@ -241,9 +241,10 @@ Found while matching the October 2026 export against this map, for whoever maint
 
 ## Not in this document
 
-Purely technical tests without a business-visible flow: the schema builder for structured model
-answers, the key lookup, and the token and session handling of the twin server. They are listed in
-`PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
+Purely technical tests without a business-visible flow: the key lookup, the schema builder for
+structured model answers, the language-model client itself, the category guard, and the check
+that a test run never touches the user's own paintings. They carry `T00_technical` and are
+listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 
 ## Where the tests sit today
 
