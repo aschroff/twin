@@ -296,7 +296,7 @@ Spec, target structure and the remaining steps:
 
 - Most game logic is in `Assembly-CSharp` (no explicit asmdef) or `Maker.Runtime`.
 - `SerializableDictionary` comes from the **Rotary Heart** plugin, not a Unity built-in.
-- API keys / credentials **never** go onto a component in the scene — that serializes them into `Maker Main.unity` and commits them. The OpenAI key is resolved by `Code.AI.ApiKeys` from `OPENAI_API_KEY`, from `secrets.json` in the persistent data path, or (editor only) from the git-ignored `Assets/Tests/Helper/testsecrets.json`. See `Assets/Code/AI/AI_INTEGRATION.md`.
+- API keys / credentials **never** go onto a component in the scene — that serializes them into `Maker Main.unity` and commits them. The OpenAI key is resolved by `Code.AI.ApiKeys` from `OPENAI_API_KEY`, from `secrets.json` in the persistent data path, (editor only) from the git-ignored `Assets/Tests/Helper/testsecrets.json`, or from the git-ignored `Assets/Resources/secrets.json`, which a build carries. See `Assets/Code/AI/AI_INTEGRATION.md`.
 - Unity version: check `ProjectSettings/ProjectVersion.txt` for the exact editor version.
 - When editing data models (`ConfigData`, etc.), ensure backwards compatibility with existing saved files.
 - **Twin names are limited to 11 characters** (`TwinNameValidator`: `^[a-zA-Z0-9_()-]{1,11}$`; the code comment claims 14 but the regex enforces 11). Invalid names fail silently apart from a toast — the New/Save-as buttons then simply don't switch modes.
