@@ -265,7 +265,7 @@ Two things worth keeping in mind about the panel:
 | The flow | `DocumentUploadProcess.Accept()` → prompt → upload if needed → `MapDocument` → `DocumentMappingText.Describe` on the review screen |
 | Model | `gpt-5.5-2026-04-23`, pinned on the `AI` component — **all** flows moved to it, not just this one |
 | Notifications | two toasts: "Reading <file> ..." when the request goes out and "<file>: n findings ... to review" (or the failure) when it comes back — so leaving the review screen while it works is safe |
-| Tests | `Assets/Tests/EditMode/` (14, no scene, no network) and `Assets/Tests/PlayMode/DocumentMappingApiTests.cs` (2, call the API, need `testsecrets.json`) — the second of those drives the whole flow through the app |
+| Tests | `Assets/Tests/EditMode/` (`JsonSchemaBuilderTests` and `ApiKeysTests`, no scene, no network) and `Assets/Tests/PlayMode/APICalls/DocumentMappingApiTests.cs` (2, call the API, need `testsecrets.json`) — the second of those drives the whole flow through the app |
 
 The 98 region keys go into the schema as an `enum` on `paintings.regionKeys`, so an unknown
 region cannot come back — and the API test additionally checks every tool and group name against
@@ -332,7 +332,7 @@ that changes anything**: pick, prompt, call and review all leave the twin untouc
 | The button behind it | `DocumentReviewManager.HandleApply` → `DocumentUploadProcess.ApplyConfirmed(selection)` |
 | Region key → template twin | `PartTemplateService.TwinOfRegion` / `PaintRegionByKey` — the answer only ever names a key, so the app resolves the area itself |
 | The report row | `SettingsManager.getPromptObjectByLabelText("Medical Report", Version)` + `ItemPrompt.LabelText()` |
-| Tests | `Assets/Tests/PlayMode/NoAPICalls/DocumentApplyPlayModeTests.cs` (4), **Tools → Template PoC → Run Document Apply Tests** |
+| Tests | `Assets/Tests/PlayMode/NoAPICalls/DocumentApplyPlayModeTests.cs` (7), **Tools → Template PoC → Run Document Apply Tests** |
 
 **The order is load bearing.** Groups, then tool meanings, then the paintings, then the report text.
 A part copies the tool's meaning at the moment it is painted, so a tool that is being taken into use
