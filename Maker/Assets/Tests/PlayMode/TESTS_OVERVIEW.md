@@ -1,15 +1,30 @@
-# PlayMode Tests — Overview
+# Tests — Overview
 
 > The **technical** inventory: every test, what it checks, and where it lives. The map that says
 > which part of the app each test belongs to — and what is not covered at all — is
 > `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
-> It replaced `TESTUEBERSICHT_FACHABTEILUNG.md`.
+> It replaced `TESTUEBERSICHT_FACHABTEILUNG.md` (TWIN-454).
 
-All tests load the *Maker Main* scene and drive the app through its real UI. `PlayModeTestBase`
-redirects the data path to a temp directory per test, so runs never touch your own twins.
+213 tests in three folders, sorted by what they cost (counted 6 October 2026, see the landscape):
 
-Run them from the Unity Test Runner, or from the automation menu **Tools → Template PoC → …**
-(results are written to `Temp/TemplatePoCResults.json`, see `Assets/Tests/Editor/TemplatePoCRunner.cs`).
+| Folder | Tests | What it needs |
+|---|---|---|
+| `Assets/Tests/EditMode/` | 109 | nothing — no scene, no app, no network |
+| `Assets/Tests/PlayMode/NoAPICalls/` | 89 | the real app, no external service |
+| `Assets/Tests/PlayMode/APICalls/` | 15 | a key in `Assets/Tests/Helper/testsecrets.json`; costs tokens |
+
+Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs` (P01–P07,
+K01–K05, `T00_technical`); `TestCategoriesGuardTests` fails when one carries none or more than
+one. The **Category** column below gives it without its suffix.
+
+The PlayMode tests that derive from `PlayModeTestBase` load the *Maker Main* scene and drive the app
+through its real UI. `PlayModeTestBase` redirects the data path to a temp directory per test, so
+runs never touch your own twins — and since TWIN-460 the painted texture's PlayerPrefs key too
+(`PaintIsolationPlayModeTests`).
+
+Run them from the Unity Test Runner, with `unity cmd run_tests` (see `Maker/CLAUDE.md`), or from
+the automation menu **Tools → Template PoC → …** (results are written to
+`Temp/TemplatePoCResults.json`, see `Assets/Tests/Editor/TemplatePoCRunner.cs`).
 
 ## Base classes
 
