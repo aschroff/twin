@@ -269,12 +269,18 @@ Spec, target structure and the remaining steps:
 
 ## 7. Testing
 
-- Tests live in `Assets/Tests/` (assemblies: `PlayModeTests`, `Tests`, `EditModeTests`).
-- **Overview of every PlayMode test: `Assets/Tests/PlayMode/TESTS_OVERVIEW.md`** — start there.
+- Tests live in `Assets/Tests/` (assemblies: `EditModeTests`, `PlayModeTests`, plus `Helper` and
+  the editor-only `TemplatePoCRunner`).
+- **Overview of every test: `Assets/Tests/PlayMode/TESTS_OVERVIEW.md`** — start there. Which part
+  of the app each test covers, and what is checked only by hand: `Assets/Tests/PROCESS_LANDSCAPE.md`.
 - PlayMode tests drive the app through its real UI in the *Maker Main* scene; the data path is
   redirected to a temp directory per test, so runs never touch your own twins.
-- `NoAPICalls/` needs no external services. `OpenAIClientTests` call the OpenAI API and need a
-  key in `Assets/Tests/Helper/testsecrets.json`.
+- The folder says what a test costs: `EditMode/` and `PlayMode/NoAPICalls/` need no external
+  service, `PlayMode/APICalls/` calls the OpenAI API and needs a key in
+  `Assets/Tests/Helper/testsecrets.json`.
+- Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs` (its
+  process P01–P07, a chain K01–K05, or `T00_technical`); `TestCategoriesGuardTests` fails
+  otherwise.
 - Automation: **Tools → Template PoC → …** runs tests and writes results to
   `Temp/TemplatePoCResults.json` (`Assets/Tests/Editor/TemplatePoCRunner.cs`) — useful for
   running tests from outside the editor UI.
@@ -296,7 +302,7 @@ Spec, target structure and the remaining steps:
 - **Twin names are limited to 11 characters** (`TwinNameValidator`: `^[a-zA-Z0-9_()-]{1,11}$`; the code comment claims 14 but the regex enforces 11). Invalid names fail silently apart from a toast — the New/Save-as buttons then simply don't switch modes.
 - `PartData.description` is the free-text field the user edits in the Part detail UI; `meaning`/`nameTool`/`colorTool` are stamped from the active tool by `PartManager.StoreCurrentPartInformation()`.
 - `PartManager.SaveData` serialises via `JsonUtility.ToJson(this)`; the `PartData.group` ↔ `GroupData.groupParts` cycle triggers "Serialization depth limit 10 exceeded" warnings — known/pre-existing behaviour, the saved format relies on it.
-- PlayMode tests can be launched from automation via **Tools → Template PoC → Run PlayMode Test** (`Assets/Tests/Editor/TemplatePoCRunner.cs`); results are written to `Temp/TemplatePoCResults.json`. The body-region template library is generated via **Tools → Template Library → Batch …** (output in `TemplateLibrary/`, see its README).
+- PlayMode tests can be launched from automation via **Tools → Template PoC → Run PlayMode Test** (`Assets/Tests/Editor/TemplatePoCRunner.cs`); results are written to `Temp/TemplatePoCResults.json`. The body-region template library is generated via **Tools → Template Library → Batch …** (output in `TemplateLibrary/`, workflow in the class comment of `TemplateLibraryGenerator.cs`).
 - A **new part** is started by a tool change, a paintable-texture change, leaving an Edit mode to Main/Shape/Move, or selecting a view — **not** by switching the current group (known bug, ticket pending: `PartManager.SetCurrentGroup` never sets `startNewPart`, and the `startNewPart = true` in `StartNewGroup` is unreachable dead code). Consequence: after switching groups without changing the tool, the next stroke is appended to the previous part and stays in the old group.
 - For programmatic painting in tests, read `Assets/Tests/PlayMode/NoAPICalls/CwPaintingTestGuide.md` first — especially the single-frame stroke gotcha.
 - Paint commands are recorded by `PaintCommandSerialization` (`Assets/Code/DataPersistence/`), the app-owned base class of `PartManager`. It is adopted from the PaintIn3D example script `CwCommandSerialization`, which is therefore unused and can be overwritten freely on CW updates. The target texture is a runtime binding (bound in `PartManager.LoadData`), not saved data; `PartData.group` is likewise re-linked on load instead of serialized (it would inline a cycle and bloat the file). The app saves on quit (`OnApplicationQuit → SaveConfig`) — never edit config files while the app runs. App Reset deletes all profiles.
