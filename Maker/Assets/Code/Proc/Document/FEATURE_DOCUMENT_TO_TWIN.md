@@ -470,8 +470,9 @@ which area twin a key belongs to, so that pairing cannot go wrong. The keys shou
 
 Decided: the whole file goes in one call; unmappable findings go into the patient-level text; the
 document itself is not kept; review items start unchecked; a treatment stays on the body and the
-review row carries its region count (see "treatments" above). Model: `gpt-5.5-2026-04-23`, which
-needs a per-call model override — the other flows stay on the component's `gpt-4o-mini`.
+review row carries its region count (see "treatments" above). Model: `gpt-5.5-2026-04-23`, set on
+the `AI` component in the scene, so every flow uses it (the code default in `AIService` is still
+`gpt-4o-mini`).
 
 Still open:
 - How is a wrong mapping corrected — undo the whole import, or edit part by part? Still nothing:
