@@ -147,4 +147,6 @@ waits on `AllPartsDescribed()` with a 10 s timeout.
    `label`/`level` — there is no `Default` row to fall back to.
 4. Report the outcome through `getNotification()`.
 5. Cover it with a PlayMode test under `Assets/Tests/PlayMode/NoAPICalls/` if it can be tested
-   without the network, and register it in `Assets/Tests/Editor/TemplatePoCRunner.cs`.
+   without the network, or under `PlayMode/APICalls/` if it calls the language model. Give the
+   test exactly one category from `Assets/Tests/Helper/TestCategories.cs` (see
+   `Assets/Tests/PROCESS_LANDSCAPE.md`) and register it in `Assets/Tests/Editor/TemplatePoCRunner.cs`.
