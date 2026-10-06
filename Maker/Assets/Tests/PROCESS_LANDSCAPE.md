@@ -248,23 +248,24 @@ answers, the key lookup, and the token and session handling of the twin server. 
 
 | Address | Tests |
 |---|---|
-| `P01_manage_twins` | 25 |
+| `P01_manage_twins` | 32 |
 | `P02_mark_up_the_body` | 30 |
 | `P03_organise_into_groups` | 16 |
 | `P04_look_at_the_twin` | 12 |
-| `P05_describe_and_report` | 19 |
-| `P06_exchange_twins` | 36 |
-| `P07_app_frame` | 2 |
-| `T00_technical` | 25 |
+| `P05_describe_and_report` | 28 |
+| `P06_exchange_twins` | 53 |
+| `P07_app_frame` | 10 |
+| `T00_technical` | 30 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **167** |
+| **total** | **213** |
 
-By cost: 88 in `EditMode/`, 61 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`.
+By cost: 109 in `EditMode/`, 89 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
+counted: the 15 `[Explicit]` tests described above.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now
 at twelve — the Shape screen brought eight with TWIN-473. What has no test at all is K02, K03 and
 K04.
 
-**Counted on 11 September 2026** (P04 updated with TWIN-473), by reflection over both test assemblies — the same walk the guard
-test makes.
+**Counted on 6 October 2026** (at `3dfbde0`, TWIN-473), by reflection over both test assemblies —
+the same walk the guard test makes.
