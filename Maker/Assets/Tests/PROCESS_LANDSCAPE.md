@@ -139,8 +139,9 @@ rather than being written again.
 | **B** | automated, not in the manual catalogue | no risk to the product; the business department cannot see what is already safe |
 | **C** | checked by neither | a real hole |
 
-**The only C today is the Region screen.** In order of value, the A gaps are: stored views (P04),
-twin names (P01), the remaining tools (P02), the reset checklist (P07).
+**The only C today is the Region screen.** In order of value, the A gaps are: twin names (P01),
+the reset checklist (P01), the remaining tools (P02), new and cloned versions (P06), the language
+switch (P07), and a photo turned into a twin (P05).
 
 ---
 
