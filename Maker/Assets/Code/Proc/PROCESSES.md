@@ -119,11 +119,10 @@ rendered yet.
 | Process | Kind | What it does |
 |---------|------|--------------|
 | `TourProcess` | Process | one screenshot per standard view |
-| `PartsProcess` | Process | isolates every part in turn (`ClearRefreshPart` + its stored view) and shoots it |
-| `PartsScreenshotProcess` | Process | screenshots for parts, variant of the above |
+| `PartsScreenshotProcess` | ProcessSync | one screenshot per part, in turn; `CountMissingScreenshots()` and `ShootPart(part, group)` serve the "create missing images" button of the group detail panel and the part page (TWIN-466, TWIN-474) |
 | `SkinProcess` | Process | writes the painted body texture as `skin_<twin>.png` into the twin folder and the gallery |
 | `PartDescriptionProcess` | Process | one part → AI (`variant##partId`); needs the part's screenshot on disk, otherwise toasts "No Screenshot" |
-| `PartsDescriptionProcess` | ProcessSync | fans out `PartDescriptionProcess` over every part; `hardRedo` redoes parts that already have a description |
+| `PartsDescriptionProcess` | ProcessSync | works through `Candidates()` **one part at a time** (`PartDescriptionProcess.DescribeAndWait`); only parts with a screenshot are candidates, and `hardRedo` also takes those that already have a description. Two instances in the scene, the second (`PartsDescriptionProcessHardRedo`) with `hardRedo` set. `CountDescribable()` and `Running` serve the description buttons of the group detail panel (TWIN-468) |
 | `VersionProcess` | ProcessSync | waits for `AllPartsDescribed()`, then one report over all part descriptions |
 | `SequenceProcess` | Process | runs a configured list of `ProcessSync` in order |
 | `DocumentUploadProcess` | Process | picks a photo or a PDF, has it mapped onto the twin by the LLM, opens the review screen for it, and on Apply writes what the user ticked (`ApplyConfirmed` → `DocumentMappingApplier`) and saves (`Proc/Document/`, see its feature spec) |
