@@ -336,9 +336,21 @@ Spec, target structure and the remaining steps:
   ids do.
 - **Document → Twin feature** (`Assets/Code/Proc/Document/`): the Upload button of the main
   screen offers a photo or a PDF, to be analysed and mapped onto the twin. Only the way in is
-  built so far — spec: `Assets/Code/Proc/Document/FEATURE_DOCUMENT_TO_TWIN.md`. Adding the fourth
-  bottom button meant tightening the bottom row's grid spacing from 95 to 70; the row is
-  ~593 units wide on a phone in portrait, so a fourth 80-unit button does not fit otherwise.
+  built so far — spec: `Assets/Code/Proc/Document/FEATURE_DOCUMENT_TO_TWIN.md`. Adding Upload as
+  the fourth bottom button meant tightening the bottom row's grid spacing from 95 to 70; the row is
+  ~593 units wide on a phone in portrait. Since TWIN-463 the row holds a fifth button (Versions),
+  so its width on a phone has to be checked again.
+- **The app says when it is busy** (`Assets/Code/View/BusyOverlay.cs`). A twin switch blocks the
+  main thread for about two seconds; `FileManager` runs it through `BusyOverlay.RunBlocking`, which
+  shows a localized message (`LOADING_TWIN`) and swallows taps meanwhile (TWIN-461). Every request
+  to the language model raises an animated logo in the same place (`BeginThinking`/`EndThinking`
+  in `AIService` and `AI.UploadDocumentCoroutine`, in a `finally`); it is counted, so a series of
+  requests does not blink and a failed one does not leave the logo standing (TWIN-475).
+- **Group detail and part page** (TWIN-466, TWIN-468, TWIN-474): the group detail panel has
+  buttons for the missing screenshots (`MissingScreenshotsButton`) and for describing the parts
+  that are missing a description or all of them (`PartsDescriptionButton`); each label carries the
+  number of parts a press would affect, and a part without a screenshot is never offered for a
+  description. The part page offers taking its picture, describing it and deleting it.
 - **UI belongs in the prefab, not in the scene instance.** Every panel under `Canvas` is a prefab
   instance, so new buttons and panels are added to the prefab asset (`Assets/Prefabs/GUI/…`).
   The scene keeps only what cannot live in a prefab: references to scene objects, above all the
