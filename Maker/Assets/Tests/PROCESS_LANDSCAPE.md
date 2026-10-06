@@ -27,13 +27,14 @@ not claim again, and the other way round.
 | **P02** | **Mark up the body** | pick a tool (Marker, Filler, Sticker, Text, Delete) · paint freehand · pick a body region and paint it · place · undo / redo |
 | **P03** | **Organise into groups** | create · name · select · hide and show · delete · which part sits in which group |
 | **P04** | **Look at the twin** | turn · move · zoom · store a view · activate a stored view · Shape |
-| **P05** | **Describe and report** | describe a part · report on a version · turn a document into a twin · screenshots · skin export |
+| **P05** | **Describe and report** | describe a part · report on a version · turn a document or a photo into a twin · screenshots · skin export |
 | **P06** | **Exchange twins** | export a zip · import a zip · versions · upload to the server · download from the server |
-| **P07** | **App frame** | settings · language · start and quit |
+| **P07** | **App frame** | settings · language · start and quit · saving when the app is sent to the background · telling the user that it is busy |
 
 **Persistence is not a process.** It is the same question asked at the end of every one of them:
 leave the twin, open it again, is everything still there. Each process carries that check itself
-rather than having a test of its own.
+rather than having a test of its own. (The manual catalogue files its one persistence test,
+`04 Persistence`, under P07; it is listed there.)
 
 ---
 
@@ -47,15 +48,18 @@ rather than having a test of its own.
 | **K04** | A document becomes a twin | P05 · P03 · P02 |
 | **K05** | Report on a version | P05 · P03 |
 
-K5 needs a key for the language model and therefore lives with the tests that cost money. The
+K05 needs a key for the language model and therefore lives with the tests that cost money. The
 other four run offline.
 
 ---
 
 ## Part 3 — Coverage today
 
-Manual test numbers refer to the business department's catalogue (`01 navigation tests`,
-`05/03 Twin names Test`, and so on).
+Manual test numbers refer to the business department's catalogue (`01/01 Top Navigation`,
+`05/03 Twin names Test`, and so on). Since its export of October 2026 the catalogue is itself
+sorted by P1–P7, so a manual test is found under the same process in both documents. One
+exception: `06/07 Shape Test` sits under P2 there and under **P04** here, because Shape changes how
+the twin looks, not what is painted on it.
 
 ### P01 — Manage twins
 
