@@ -23,7 +23,7 @@ description as the input, and it reuses that feature's region library for the pa
 
 | Piece | Where |
 |-------|-------|
-| `Upload` button, 4th in the bottom row of the main screen | in **`Assets/Prefabs/GUI/Main UI.prefab`** under `Bottom`, a nested `Icon in circle with text` instance like its three neighbours. Only the click target is a scene override — `Maker`/`InteractionController` cannot be referenced from a prefab asset — as it is for `HelpMe` and `NewVersion`. |
+| `Upload` button in the bottom row of the main screen | in **`Assets/Prefabs/GUI/Main UI.prefab`** under `Bottom`, a nested `Icon in circle with text` instance like its neighbours. Only the click target is a scene override — `Maker`/`InteractionController` cannot be referenced from a prefab asset — as it is for `HelpMe` and `NewVersion`. |
 | `Upload` mode | `UploadMode` (`Assets/Code/View/Mode/UploadMode.cs`), registered in `InteractionController.interactionModes` |
 | `Upload` panel: the action list with the two ways in | `Assets/Prefabs/GUI/Upload UI.prefab` (a copy of `Menu UI`), registered in `UIController.uiPanels`; the two entries are wired on the scene instance's `MenuManager`, as on `Menu UI` |
 | The picking | `DocumentUploadProcess` (`Assets/Code/Proc/Document/`), a `Process` under the scene's `Process` object, variants `Photo` and `Document` |
@@ -37,7 +37,9 @@ loaded to `pickedPhoto`, a document only recorded as `pickedPath`; both are the 
 analysis step. After a successful pick the twin is shown again and a notification names the file.
 
 Note: the bottom row's grid spacing went from 95 to 70 (in the prefab) so a fourth button still
-fits the portrait width (4 × 80 + 3 × 70 = 530 within the ~593 the canvas has on a phone).
+fits the portrait width (4 × 80 + 3 × 70 = 530 within the ~593 the canvas has on a phone). Since
+TWIN-463 the row holds a fifth button (Versions); 5 × 80 + 4 × 70 = 680 no longer fits that
+arithmetic, so the row's width on a phone has to be checked again.
 
 The panels are prefabs, so **UI is added to the prefab, never to the scene instance** — the scene
 carries only what has to point at scene objects. `Canvas` itself is not a prefab, which is why
