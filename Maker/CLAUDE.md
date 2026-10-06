@@ -23,7 +23,8 @@ string table.** The traps listed there are the expensive ones.
 - UI goes into the prefab, never onto the prefab instance in the scene.
 - A PlayMode test derives from `PlayModeTestBase`, or it runs the real app against the user's real
   twins. A test that needs no scene is a unit test and belongs in `Assets/Tests/EditMode/`.
-- Never edit config files while the app is running — it overwrites them on quit.
+- Never edit config files while the app is running — it overwrites them on quit, when it is sent
+  to the background, and every two minutes.
 - Every new UI string needs an entry in all five locale tables. There is no fallback.
 - Write the test. A fix is verified by watching it fail without the change.
 - Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs`;
