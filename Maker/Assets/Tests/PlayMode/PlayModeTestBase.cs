@@ -31,6 +31,13 @@ public abstract class PlayModeTestBase : TestBase
         DataPaths.SetPersistentDataPathForTests(testDataPath);
         _saveNameScope = PaintableSaveNameOverride.Begin("PlayModeTest");
 
+        yield return LoadAppScene();
+    }
+
+    /// <summary>Loads the app's scene and finds its controller. Also what a test calls to start
+    /// the app a second time on the same data path.</summary>
+    protected IEnumerator LoadAppScene()
+    {
         yield return SceneManager.LoadSceneAsync("Maker Main", LoadSceneMode.Single);
         yield return null;
 
