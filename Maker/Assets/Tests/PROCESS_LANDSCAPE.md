@@ -215,8 +215,9 @@ Known, and deliberately not covered by tests, because they are business decision
 - **Version names grow on every exchange.** A twin passed back and forth ends up called
   `000V01V01`. To be settled once versions are kept as timestamps.
 - **Imported versions are hard to find.** The twin list shows one row per twin name; further
-  versions sit in the version overview. Once twins arrive unannounced over a server, it has to be
-  decided how the user learns about them.
+  versions sit in the version overview. Since TWIN-463 the main screen jumps to that overview
+  directly, but once twins arrive unannounced over a server it still has to be decided how the user
+  learns about them.
 - **Twin names are limited to 11 characters**, but the error message says 14.
 - **The twin that is currently open cannot be deleted**, so the twin list can never be emptied
   completely from inside the app.
