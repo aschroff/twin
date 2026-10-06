@@ -226,6 +226,16 @@ Known, and deliberately not covered by tests, because they are business decision
   expressions are not — `ConfigData` has no field for them. A face the user set is gone at the next
   app start. No test claims it either way.
 
+### Notes on the manual catalogue
+
+Found while matching the October 2026 export against this map, for whoever maintains it:
+
+- The number **12** is used twice — `12 Turn a document into a twin` (P5) and `12 Language` (P7).
+- `02 Twin management (WIP)` repeats the first four steps of `03 App reset` and stops there.
+- Several tables end in numbered steps without content (`03`, `06/04`, `06/05`, `06/07`, `01/03`),
+  and `11/02 Clone Versions` numbers steps 7 and 8 twice.
+- `06/02 b Marker name` still carries the open question which characters a marker name allows.
+
 ---
 
 ## Not in this document
