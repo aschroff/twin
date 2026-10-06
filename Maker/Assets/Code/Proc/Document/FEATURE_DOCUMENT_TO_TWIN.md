@@ -235,9 +235,11 @@ proposal out itself.
 transparent `Image` there to catch the gaps between the children, so a tap anywhere on the row
 (text included) toggles it; a 30-unit box beside a three-line row is nothing to aim at on a phone.
 Consequence for `DocumentReviewRow.Fill`: a heading cannot be un-toggled by hiding the Toggle's
-GameObject any more (that would hide the row), so it disables the `Toggle` and hides `Selector`. A treatment line over both
-legs is one row and fourteen parts, and this is where that becomes visible before it is paid — see
-"treatments" below. `, uncertain` is appended when the model's own confidence is below 0.6.
+GameObject any more (that would hide the row), so it disables the `Toggle` and hides `Selector`.
+
+**A row carries its region count.** A treatment line over both legs is one row and fourteen parts,
+and this is where that becomes visible before it is paid — see "treatments" below. `, uncertain` is
+appended when the model's own confidence is below 0.6.
 
 Headings carry no toggle (their `Selector` is hidden) and are English, like the rest of the text on
 this screen; the *content* is in the language of the app, because the prompt asks for it.
