@@ -109,7 +109,7 @@ Lives on `Canvas` (wired as `ProcessManager.recorder`).
 | `get_path()` | the path `Do()` writes |
 
 `name` / `folder` are set by the caller before each shot — that is how one run produces many
-files (`TourProcess` per view, `PartsProcess` per part). The **crop rect is hard-coded** for a
+files (`TourProcess` per view, `PartsScreenshotProcess` per part). The **crop rect is hard-coded** for a
 tall portrait screen; on other resolutions the shot is off.
 
 `Do()` must run right after `yield return new WaitForEndOfFrame()`, otherwise the frame is not
