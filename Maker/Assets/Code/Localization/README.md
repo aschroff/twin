@@ -23,9 +23,9 @@ for the same concepts. This is the thing to understand before writing a key.
 | `region.forehead` | – | – | Stirn | Stirn | **Regio frontalis** |
 
 `demed` swaps the app's generic vocabulary for clinical wording; `demedlatin`
-additionally uses Latin anatomy. As of writing, 112 of 179 keys differ between
-`de` and `demed`, and 99 between `demed` and `demedlatin` — almost all of the
-latter are `region.*`.
+additionally uses Latin anatomy. As of October 2026, 15 of 212 keys differ between
+`de` and `demed` (the domain words: group, view, twin, shape, region, …), and 99 between
+`demed` and `demedlatin` — almost all of the latter are `region.*`.
 
 **What this means for a new key.** If its text names a domain concept — twin,
 group, view, edit, a body part — it needs different wording per register. If it
@@ -51,8 +51,9 @@ user sees, literally:
 No translation found for 'IMPORT_TWIN' in TwinLocalTables
 ```
 
-So: fill every new key in all five tables. It currently looks as if fallbacks
-exist, only because all keys happen to be filled.
+So: fill every new key in all five tables. It can look as if fallbacks exist,
+only because almost every key is filled — `IMPORT_TWIN` is the exception today:
+it has no entry in `demedlatin`, which is exactly the message above.
 
 ## 3. Adding a key
 
@@ -63,19 +64,12 @@ name; a name reference breaks the moment someone renames the key. `APP_RESET` on
 the settings page is the example to copy.
 
 **For text the code picks** — status lines, error messages: keep the key in the
-code and resolve it when you need it.
-
-```csharp
-private const string TableName = "TwinLocalTables";
-private const string KeySignedIn = "LOGIN_SIGNED_IN";
-
-var table = LocalizationSettings.StringDatabase?.GetTable(TableName);
-var entry = table?.GetEntry(KeySignedIn);
-```
-
-Do **not** use `StringLocalizer.localizeString` for this: it writes a line to the
-console on every *successful* lookup, which turns a status line into console
-noise. `TwinLoginPanel.Localise` shows the shape without that.
+code and resolve it with `StringLocalizer.localizeString(key)`
+(`Assets/Code/Localization/StringLocalizer.cs`), the shared lookup against
+`TwinLocalTables`. It falls back to logging a warning and returning the raw key
+if the entry is missing. `TwinLoginPanel.ApplyMessage` and
+`TwinNameValidator.InvalidNameMessage`/`AlreadyExistingNameMessage` show the
+shape.
 
 If the text stays on screen, also subscribe to
 `LocalizationSettings.SelectedLocaleChanged` and re-resolve. A message set before
