@@ -44,7 +44,9 @@ up outside the scene, first hit wins:
 2. `secrets.json` in the persistent data path, next to the twins — the way to give a device a key
 3. **editor only:** `Assets/Tests/Helper/testsecrets.json`, the file the tests already use and
    which `.gitignore` already covers, so a developer keeps exactly one copy
-4. whatever the component carries — last resort, so an old scene still works
+4. `Assets/Resources/secrets.json` — git-ignored as well, but part of the build, so a build made
+   on a machine that has it carries a key (TWIN-468)
+5. whatever the component carries — last resort, so an old scene still works
 
 The json member is `openAIApiKey`, matched without regard to case; `apiKey` and `openai_api_key`
 work too. `AIService.resolvedApiKey` / `.hasApiKey` say what was found; when nothing is found the
@@ -224,6 +226,13 @@ Gotchas found while writing this:
 - `PromptPart` implements `IRoot` but is not a MonoBehaviour, so it is never found — dead code.
 - Sticker and text tools have no contributor; only markers and fillers describe themselves.
 
+### 4.3 The findings — from the data model
+
+`PromptGeneration/Part.Description(PartData)` turns one part into prose, branching on
+`PartData.typeTool` (`MarkerLine`, `MarkerDotted`, `Filler`, `Sticker`, `Text`) and appending
+`"The finding belongs to the category: <group name>."`. `AI.DescribeVersion` instead
+concatenates the already-computed `part.description` of every part of every group.
+
 ### 4.4 The inventories — the same data, without the gotchas
 
 For prompts that describe the *state* of the twin rather than one finding:
@@ -237,18 +246,11 @@ For prompts that describe the *state* of the twin rather than one finding:
 same way. First user: `DocumentPromptBuilder`
 (`Assets/Code/Proc/Document/FEATURE_DOCUMENT_TO_TWIN.md`).
 
-### 4.3 The findings — from the data model
-
-`PromptGeneration/Part.Description(PartData)` turns one part into prose, branching on
-`PartData.typeTool` (`MarkerLine`, `MarkerDotted`, `Filler`, `Sticker`, `Text`) and appending
-`"The finding belongs to the category: <group name>."`. `AI.DescribeVersion` instead
-concatenates the already-computed `part.description` of every part of every group.
-
 ---
 
 ## 5. The two flows that exist today
 
-**Part → text** (`PartDescriptionProcess` → `AI.DescribePart`)
+**Part → text** (`PartDescriptionProcess.DescribeAndWait` → `AI.DescribePartCoroutine`)
 
 ```
 prompt = ItemPrompt(variant, Part)          // user's instruction
@@ -258,6 +260,11 @@ image  = part.pathScreenshot                // screenshot of the part on the mes
       → part.description = response.Description
 ```
 
+Only the model's answer is ever written to `part.description` — no placeholder before the call,
+no error message after a failed one, because either would overwrite text a doctor typed
+(TWIN-468). A part without a screenshot is not sent at all. `PartsDescriptionProcess` works
+through the parts **one at a time** and ends with one summary toast.
+
 **Version → report** (`VersionProcess` → `AI.DescribeVersion`)
 
 ```
@@ -266,9 +273,14 @@ prompt = ItemPrompt(variant, Version) + every part.description, numbered
       → ItemPrompt.promptResult (→ ConfigData.resultsVersion)
 ```
 
-**Whole body** (`CompleteReportProcess` → `AI.CompleteReport`) is the only caller of
-`PromptContributor.GeneratePrompt`: a hard-coded instruction plus the marker/filler legend,
-with a whole-body screenshot.
+`AI.CompleteReport` — a hard-coded instruction plus the marker/filler legend from
+`PromptContributor.GeneratePrompt`, with a whole-body screenshot — has no caller left since
+`CompleteReportProcess` was removed (TWIN-442).
+
+**While a request is out** the app shows an animated logo: `AIService.RequestTextCoroutine`,
+`RequestStructuredCoroutine` and `AI.UploadDocumentCoroutine` call `BusyOverlay.BeginThinking()`
+before the request and `EndThinking()` in a `finally`, so a failed request takes its count with
+it (TWIN-475).
 
 ---
 
