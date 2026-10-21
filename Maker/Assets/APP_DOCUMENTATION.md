@@ -47,8 +47,12 @@ LipEdema.twin/
 config while selecting a twin looks up the directory, so a mismatch gives a row that cannot be
 opened.
 
-The painted body texture is also cached per twin in **PlayerPrefs** (`CwPaintableTexture.Save`
-via `CwCommon.SaveBytes`) so switching twins does not replay every paint command. That cache is
+The painted body texture is also cached per twin in **PlayerPrefs** so switching twins does not
+replay every paint command. Since TWIN-459 it is written by `PaintTextureSaver.Save`, which reads
+the pixels straight off the GPU (about 257 MB instead of the 1024 MB `CwPaintableTexture.Save`
+needs at 8192², pixel for pixel the same image) and falls back to the CW route on hardware that
+cannot read back asynchronously. The key comes from `PaintableSaveNameOverride.Resolve`, so tests
+write under their own prefix (TWIN-460). That cache is
 local to the device, which is why `Texture.png` exists: on load, `Body.handleChange` takes the
 cache when there is one and otherwise reads the file and fills the cache from it.
 
@@ -130,6 +134,7 @@ Assets/
 │   │   ├── AI_INTEGRATION.md      # reference for the OpenAI layer + prompt building
 │   │   ├── AI.cs                  # Core AI controller
 │   │   ├── AIService.cs           # Service abstraction
+│   │   ├── ApiKeys.cs             # where the OpenAI key is read from
 │   │   ├── MedicalAI.cs           # Medical-domain AI logic
 │   │   ├── OpenAIClient.cs        # OpenAI API client
 │   │   ├── StructuredOutputs.cs   # Structured response parsing
@@ -137,18 +142,19 @@ Assets/
 │   │       ├── Part.cs / PromptPart.cs
 │   │       ├── Tools.cs / Markers.cs / Marker.cs / Fillers.cs
 │   │       ├── PromptContributor.cs
-│   │       ├── IPromptContributingGameObject.cs / IRoot.cs
+│   │       └── IPromptContributingGameObject.cs / IRoot.cs
 │   │
 │   ├── DataPersistence/           # Save / load system
 │   │   ├── Data/                  # Data classes (ConfigData, AttributesData)
 │   │   ├── DataPersistenceManager.cs
 │   │   ├── FileDataHandler.cs     # files, zip export/import
 │   │   ├── TwinTextureFile.cs     # the painted texture as a file in the twin directory
+│   │   ├── PaintTextureSaver.cs   # writes the texture cache without a Texture2D (TWIN-459)
 │   │   ├── IDataPersistence.cs
 │   │   └── SerializableTypes/
-│
+│   │
 │   ├── Interface/                 # Domain interfaces & navigation
-│   │   ├── Model.cs / Lib.cs
+│   │   ├── Model.cs
 │   │   ├── ToolTracker.cs
 │   │   └── TwinNavigation.cs
 │   │
@@ -167,6 +173,7 @@ Assets/
 │       ├── Item/                  # UI item components (Body, Group, Part, Sticker, …)
 │       ├── Manager/               # Screen/panel managers (PartManager, GroupManager, VersionManager, …)
 │       ├── Mode/                  # Interaction modes (EditMode, MainMode, ShapeMode, …)
+│       ├── BusyOverlay.cs         # loading message and "thinking" logo (TWIN-461, TWIN-475)
 │       ├── Singleton.cs
 │       ├── UIController.cs
 │       └── InteractionController.cs
@@ -266,12 +273,18 @@ Spec, target structure and the remaining steps:
 
 ## 7. Testing
 
-- Tests live in `Assets/Tests/` (assemblies: `PlayModeTests`, `Tests`, `EditModeTests`).
-- **Overview of every PlayMode test: `Assets/Tests/PlayMode/TESTS_OVERVIEW.md`** — start there.
+- Tests live in `Assets/Tests/` (assemblies: `EditModeTests`, `PlayModeTests`, plus `Helper` and
+  the editor-only `TemplatePoCRunner`).
+- **Overview of every test: `Assets/Tests/PlayMode/TESTS_OVERVIEW.md`** — start there. Which part
+  of the app each test covers, and what is checked only by hand: `Assets/Tests/PROCESS_LANDSCAPE.md`.
 - PlayMode tests drive the app through its real UI in the *Maker Main* scene; the data path is
   redirected to a temp directory per test, so runs never touch your own twins.
-- `NoAPICalls/` needs no external services. `OpenAIClientTests` call the OpenAI API and need a
-  key in `Assets/Tests/Helper/testsecrets.json`.
+- The folder says what a test costs: `EditMode/` and `PlayMode/NoAPICalls/` need no external
+  service, `PlayMode/APICalls/` calls the OpenAI API and needs a key in
+  `Assets/Tests/Helper/testsecrets.json`.
+- Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs` (its
+  process P01–P07, a chain K01–K05, or `T00_technical`); `TestCategoriesGuardTests` fails
+  otherwise.
 - Automation: **Tools → Template PoC → …** runs tests and writes results to
   `Temp/TemplatePoCResults.json` (`Assets/Tests/Editor/TemplatePoCRunner.cs`) — useful for
   running tests from outside the editor UI.
@@ -287,16 +300,16 @@ Spec, target structure and the remaining steps:
 
 - Most game logic is in `Assembly-CSharp` (no explicit asmdef) or `Maker.Runtime`.
 - `SerializableDictionary` comes from the **Rotary Heart** plugin, not a Unity built-in.
-- API keys / credentials **never** go onto a component in the scene — that serializes them into `Maker Main.unity` and commits them. The OpenAI key is resolved by `Code.AI.ApiKeys` from `OPENAI_API_KEY`, from `secrets.json` in the persistent data path, or (editor only) from the git-ignored `Assets/Tests/Helper/testsecrets.json`. See `Assets/Code/AI/AI_INTEGRATION.md`.
+- API keys / credentials **never** go onto a component in the scene — that serializes them into `Maker Main.unity` and commits them. The OpenAI key is resolved by `Code.AI.ApiKeys` from `OPENAI_API_KEY`, from `secrets.json` in the persistent data path, (editor only) from the git-ignored `Assets/Tests/Helper/testsecrets.json`, or from the git-ignored `Assets/Resources/secrets.json`, which a build carries. See `Assets/Code/AI/AI_INTEGRATION.md`.
 - Unity version: check `ProjectSettings/ProjectVersion.txt` for the exact editor version.
 - When editing data models (`ConfigData`, etc.), ensure backwards compatibility with existing saved files.
 - **Twin names are limited to 11 characters** (`TwinNameValidator`: `^[a-zA-Z0-9_()-]{1,11}$`; the code comment claims 14 but the regex enforces 11). Invalid names fail silently apart from a toast — the New/Save-as buttons then simply don't switch modes.
 - `PartData.description` is the free-text field the user edits in the Part detail UI; `meaning`/`nameTool`/`colorTool` are stamped from the active tool by `PartManager.StoreCurrentPartInformation()`.
 - `PartManager.SaveData` serialises via `JsonUtility.ToJson(this)`; the `PartData.group` ↔ `GroupData.groupParts` cycle triggers "Serialization depth limit 10 exceeded" warnings — known/pre-existing behaviour, the saved format relies on it.
-- PlayMode tests can be launched from automation via **Tools → Template PoC → Run PlayMode Test** (`Assets/Tests/Editor/TemplatePoCRunner.cs`); results are written to `Temp/TemplatePoCResults.json`. The body-region template library is generated via **Tools → Template Library → Batch …** (output in `TemplateLibrary/`, see its README).
+- PlayMode tests can be launched from automation via **Tools → Template PoC → Run PlayMode Test** (`Assets/Tests/Editor/TemplatePoCRunner.cs`); results are written to `Temp/TemplatePoCResults.json`. The body-region template library is generated via **Tools → Template Library → Batch …** (output in `TemplateLibrary/`, workflow in the class comment of `TemplateLibraryGenerator.cs`).
 - A **new part** is started by a tool change, a paintable-texture change, leaving an Edit mode to Main/Shape/Move, or selecting a view — **not** by switching the current group (known bug, ticket pending: `PartManager.SetCurrentGroup` never sets `startNewPart`, and the `startNewPart = true` in `StartNewGroup` is unreachable dead code). Consequence: after switching groups without changing the tool, the next stroke is appended to the previous part and stays in the old group.
 - For programmatic painting in tests, read `Assets/Tests/PlayMode/NoAPICalls/CwPaintingTestGuide.md` first — especially the single-frame stroke gotcha.
-- Paint commands are recorded by `PaintCommandSerialization` (`Assets/Code/DataPersistence/`), the app-owned base class of `PartManager`. It is adopted from the PaintIn3D example script `CwCommandSerialization`, which is therefore unused and can be overwritten freely on CW updates. The target texture is a runtime binding (bound in `PartManager.LoadData`), not saved data; `PartData.group` is likewise re-linked on load instead of serialized (it would inline a cycle and bloat the file). The app saves on quit (`OnApplicationQuit → SaveConfig`) — never edit config files while the app runs. App Reset deletes all profiles.
+- Paint commands are recorded by `PaintCommandSerialization` (`Assets/Code/DataPersistence/`), the app-owned base class of `PartManager`. It is adopted from the PaintIn3D example script `CwCommandSerialization`, which is therefore unused and can be overwritten freely on CW updates. The target texture is a runtime binding (bound in `PartManager.LoadData`), not saved data; `PartData.group` is likewise re-linked on load instead of serialized (it would inline a cycle and bloat the file). The app saves on quit (`OnApplicationQuit → SaveConfig`), when it is sent to the background (`OnApplicationPause`), and every 120 s once painting has been idle for 5 s (`DataPersistenceManager.AutoSave`, TWIN-467) — never edit config files while the app runs. App Reset deletes all profiles.
 - **Undo/Redo works on parts, not on texture states.** `PartManager.Undo()` takes the last part
   painted in this session out of its group and replays the visible groups (`ClearRefreshAll`);
   `Redo()` puts it back at its old index. Parts that arrive with the twin are not undoable — they
@@ -323,9 +336,21 @@ Spec, target structure and the remaining steps:
   ids do.
 - **Document → Twin feature** (`Assets/Code/Proc/Document/`): the Upload button of the main
   screen offers a photo or a PDF, to be analysed and mapped onto the twin. Only the way in is
-  built so far — spec: `Assets/Code/Proc/Document/FEATURE_DOCUMENT_TO_TWIN.md`. Adding the fourth
-  bottom button meant tightening the bottom row's grid spacing from 95 to 70; the row is
-  ~593 units wide on a phone in portrait, so a fourth 80-unit button does not fit otherwise.
+  built so far — spec: `Assets/Code/Proc/Document/FEATURE_DOCUMENT_TO_TWIN.md`. Adding Upload as
+  the fourth bottom button meant tightening the bottom row's grid spacing from 95 to 70; the row is
+  ~593 units wide on a phone in portrait. Since TWIN-463 the row holds a fifth button (Versions),
+  so its width on a phone has to be checked again.
+- **The app says when it is busy** (`Assets/Code/View/BusyOverlay.cs`). A twin switch blocks the
+  main thread for about two seconds; `FileManager` runs it through `BusyOverlay.RunBlocking`, which
+  shows a localized message (`LOADING_TWIN`) and swallows taps meanwhile (TWIN-461). Every request
+  to the language model raises an animated logo in the same place (`BeginThinking`/`EndThinking`
+  in `AIService` and `AI.UploadDocumentCoroutine`, in a `finally`); it is counted, so a series of
+  requests does not blink and a failed one does not leave the logo standing (TWIN-475).
+- **Group detail and part page** (TWIN-466, TWIN-468, TWIN-474): the group detail panel has
+  buttons for the missing screenshots (`MissingScreenshotsButton`) and for describing the parts
+  that are missing a description or all of them (`PartsDescriptionButton`); each label carries the
+  number of parts a press would affect, and a part without a screenshot is never offered for a
+  description. The part page offers taking its picture, describing it and deleting it.
 - **UI belongs in the prefab, not in the scene instance.** Every panel under `Canvas` is a prefab
   instance, so new buttons and panels are added to the prefab asset (`Assets/Prefabs/GUI/…`).
   The scene keeps only what cannot live in a prefab: references to scene objects, above all the
