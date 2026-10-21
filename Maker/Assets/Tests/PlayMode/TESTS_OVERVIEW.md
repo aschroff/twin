@@ -5,12 +5,12 @@
 > `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
 > It replaced `TESTUEBERSICHT_FACHABTEILUNG.md` (TWIN-454).
 
-220 tests in three folders, sorted by what they cost
+227 tests in three folders
 
 | Folder | Tests | What it needs |
 |---|---|---|
 | `Assets/Tests/EditMode/` | 109 | nothing — no scene, no app, no network |
-| `Assets/Tests/PlayMode/NoAPICalls/` | 96 | the real app, no external service |
+| `Assets/Tests/PlayMode/NoAPICalls/` | 103 | the real app, no external service |
 | `Assets/Tests/PlayMode/APICalls/` | 15 | a key in `Assets/Tests/Helper/testsecrets.json`; costs tokens |
 
 Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs` (P01–P07,
@@ -48,6 +48,7 @@ the automation menu **Tools → Template PoC → …** (results are written to
 | **UndoRedoPlayModeTests** (2 tests) | P02 | Undo/redo in the editing header, through the real buttons of the prefab: a click takes the last painted part out of its group, off the body (pixel comparison) and out of the save data, the next click brings it back at its place and repaints it, new paint afterwards ends the redo history. The second test pins the configuration that keeps the body texture from being copied per stroke — `undoRedo: None` on the body, `storeStates` off on every tool, no PaintIn3D undo button left — and that painting leaves no texture states behind (that copying got the app killed on the seventh stroke on an iPad Air). |
 | **StickerPlayModeTests** (2 tests) | P02 | Sticker images per twin: the image behind a sticker slot — and the image its hash points at — follows the twin that is open, and an imported twin brings its own images for slots the open twin uses with different ones. |
 | **PartTemplateServiceTests** (11 tests) | P02 | The Text→Part service (`Assets/Code/Proc/Paint/`): painting a body region into the active group, tool override (colour, metadata, sticker rejection), current-tool resolution with marker fallback, the region catalog, region names per language (enmed/demed/demedlatin), and the save format (linear file growth, no texture references, part↔group and texture links restored on load). |
+| **RegionUiPlayModeTests** (7 tests) | P02 | The Region screen (Edit → Region, TWIN-477) — the screen in front of `PartTemplateService`, which until then had no test. It opens with one row per region of the template catalog, and reopening rebuilds the list rather than adding a second copy of every row; it switches off the camera gestures, so a swipe over the list does not turn the body. Tapping a row paints the region into the current group: one new part carrying the region key and the localized region name, linked to its group, and visible on the body (pixel comparison) — all of which survives leaving and reopening the twin. The region is painted with the marker picked before opening the screen (its name and colour go onto the part); with a sticker picked, which cannot carry a region template, it falls back to the first marker (`Blue`) instead of painting nothing. |
 | **ProgrammaticPaintingTests**<br>`PaintTemplateParts_ThreeRegions` | P02 | Regression test for driving the CW paint pipeline from code (marker stroke, filler area): parts get the right tool metadata, a stored view, and survive the save round trip. Foundation of the template library generator. |
 | **GroupDetailPlayModeTests**<br>`PaintingPerGroup_ShowsOnePartPerSelectedGroup` | P03 | Paints one part into every group of the LipEdema twin (a different marker each) plus one into a newly created group; then on the group detail page selects one group at a time and verifies exactly that group's single part is listed. |
 | **GroupPlayModeTests**<br>`HideAndShowGroup_KeepsItsParts` | P03 | Hiding and showing a group (overlay toggle) replays the visible groups; the hidden group keeps its parts, they stay bound to the paintable texture, and painting still works afterwards. |
@@ -186,6 +187,10 @@ is described in the class comment of `TemplateLibraryGenerator.cs`.
 - **Painting needs a framed body.** The paint position is the screen centre; a twin's saved
   camera may point somewhere else (LipEdema's shows the lower body, where the centre falls
   between the legs and hits nothing). Select a view first — `TwinPaintTestBase.BodyView`.
+- **The Region button reacts only to its icon.** In the Edit bar, unlike Marker, Filler and the
+  rest, only `Canvas/Edit UI/Bottom/Region/Icon` is wired to `InteractionController.EnableMode`;
+  its text and backgrounds carry no listener, in the real app too. Click the icon
+  (`RegionUiPlayModeTests.OpenRegionScreen`).
 - **A new part starts on a tool change**, not on a group change (known bug), so give each part
   its own marker when you need parts in different groups.
 - **A reset does not save the open twin.** `DataPersistenceManager.ResetApp` switches to a throwaway
