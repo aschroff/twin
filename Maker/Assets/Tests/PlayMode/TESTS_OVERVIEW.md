@@ -5,12 +5,12 @@
 > `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
 > It replaced `TESTUEBERSICHT_FACHABTEILUNG.md` (TWIN-454).
 
-218 tests in three folders, sorted by what they cost
+220 tests in three folders, sorted by what they cost
 
 | Folder | Tests | What it needs |
 |---|---|---|
 | `Assets/Tests/EditMode/` | 109 | nothing — no scene, no app, no network |
-| `Assets/Tests/PlayMode/NoAPICalls/` | 94 | the real app, no external service |
+| `Assets/Tests/PlayMode/NoAPICalls/` | 96 | the real app, no external service |
 | `Assets/Tests/PlayMode/APICalls/` | 15 | a key in `Assets/Tests/Helper/testsecrets.json`; costs tokens |
 
 Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs` (P01–P07,
@@ -67,6 +67,7 @@ the automation menu **Tools → Template PoC → …** (results are written to
 | **SkinProcessPlayModeTests**<br>`ExportSkin_WritesSkinPngForSelectedProfile` | P05 | Opens a twin's Menu screen, clicks "Export skin", and asserts `skin_<profile>.png` is written to the profile's data folder. |
 | **ImportTwinPlayModeTests** (10 tests) | P06 | Export/import of a twin: the paint is visible as soon as an imported twin is opened (it travels as `Texture.png` in the twin folder, because the in-app texture cache never leaves the device); groups, parts and their links survive the round trip; an import never overwrites a twin that is already there — it takes the id from its config when that is free and otherwise the first free `V01`, `V02`, … of exactly that id, and a returning twin keeps its suffix (`000V01` becomes `000V01V01`); the twin is named after its config, not after the zip file (which anything may rename); importing while a twin of the same name is open keeps both apart and leaves the open version marked in the list; a twin directory the app did not write (a copy, a second download) does not break the version list; and a broken archive leaves the existing twins untouched. |
 | **SettingsUiPlayModeTests**<br>`SettingsButton_EnablesSettingsMode` | P07 | Settings screen opens. |
+| **AppResetPlayModeTests** (2 tests) | P07 | The Reset button in Settings against the manual checklist (03 App reset, 05/01 step 4), TWIN-481. "Default" is recorded, not spelled out: the test resets once and reads the state as the reference, then changes all seven checklist items (creates a twin, opens LipEdema, paints a part, stores a view, turns and moves the twin, gives the Red marker a meaning, puts an image of its own behind a sticker slot), asserts that each change took, resets again and compares — `default.000` open, the twin list of a fresh app, the default pose (six numbers), no groups and no parts, only the default view, the default sticker images, and every saved text box at its default. The second test checks that a reset rewrites the sample twins from their shipped templates: a part and a view saved into LipEdema are gone when it is opened after the reset. |
 | **AutoSavePlayModeTests** (2 tests) | P07 | The twin is on disk before the app is taken away (TWIN-467): sending the app to the background writes the painted part to the file — iOS does not run `OnApplicationQuit` when it reclaims a backgrounded app — and the periodic save holds off while the user is still painting, since a save between two strokes would split one annotation into two parts. Both look at the file, not at a reload, because every route back into a twin saves on the way in. |
 | **BusyOverlayPlayModeTests** (2 tests) | P07 | While a twin loads (about two seconds of blocked main thread) the user is told so, in a localized message, and taps are swallowed so an impatient second tap does not start the switch again (TWIN-461); when the panel goes, the twin really is loaded. |
 | **ThinkingOverlayPlayModeTests** (4 tests) | P07 | The animated logo while the app asks the language model (TWIN-475): it sits where the loading message goes, plays its frames there and back again, is counted so a series of questions does not blink between them, and ends even when the request fails — a leaked count would leave the logo on screen for the rest of the session. |
@@ -187,5 +188,11 @@ is described in the class comment of `TemplateLibraryGenerator.cs`.
   between the legs and hits nothing). Select a view first — `TwinPaintTestBase.BodyView`.
 - **A new part starts on a tool change**, not on a group change (known bug), so give each part
   its own marker when you need parts in different groups.
+- **A reset does not save the open twin.** `DataPersistenceManager.ResetApp` switches to a throwaway
+  profile id before it deletes anything, so changes made just before are simply dropped. To test
+  what a reset does to a twin on disk, switch to another twin first; that switch saves the twin you
+  leave (`AppResetPlayModeTests.Reset_RestoresTheSampleTwinsAsShipped`).
+- **Twin names in tests stay at 11 characters or fewer.** `TwinNameValidator` rejects anything
+  longer, and the only sign of that is a toast: the screen stays in Save mode.
 - **Painting details and gotchas** (single-frame strokes, fill tools, replaying commands):
   `NoAPICalls/CwPaintingTestGuide.md`.

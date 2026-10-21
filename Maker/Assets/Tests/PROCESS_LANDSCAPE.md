@@ -67,10 +67,15 @@ the twin looks, not what is painted on it.
 |---|---|
 | Automated | `SaveTwinPlayModeTests` (1), `TwinNameValidationPlayModeTests` (5), `InfoDisplayPlayModeTests` (2 of its 5), `FileDataHandlerTests` (14), `DataPersistenceManagerTests` (9), `LoadEveryTwinTests` (1), `TwinLoadingMemoryTests` (1), `TwinActivityMemoryTests` (1), `TextureSaveCostTests` (2), `TextureSaveReadbackTests` (1) |
 | Manual | 02 Twin management (WIP) · 02/01 Create, name twins · 02/02 Delete twin · 03 App reset · 05/01 Twins save functionality · 05/02 Duplicated twin name · 05/03 Twin names |
-| **Gap** | **A** — a reset is checked by hand against seven separate expectations (blank twin, all twins gone, camera, groups, views, stickers, text boxes); automatically only the twin that is loaded afterwards (`InfoDisplayPlayModeTests`, filed under P07).<br>**B** — loading every twin in the list, and the memory a twin switch costs (TWIN-457, TWIN-459), are automated and have no manual counterpart. `TextureSaveCostTests` asserts nothing; it reports what each step of saving the paint costs. |
+| **Gap** | **B** — loading every twin in the list, and the memory a twin switch costs (TWIN-457, TWIN-459), are automated and have no manual counterpart. `TextureSaveCostTests` asserts nothing; it reports what each step of saving the paint costs. |
 
 Deleting a twin (02/02) is covered on the data side — `DataPersistenceManagerTests` keeps the open
 twin alive, `FileDataHandlerTests` removes the whole directory — but not through the twin list.
+
+The app reset (03 App reset) is automated by `AppResetPlayModeTests`, which checks all seven
+expectations (blank twin, all twins gone, camera, groups, views, stickers, text boxes) and that the
+sample twins come back as shipped. Like the reset case of `InfoDisplayPlayModeTests`, it is filed
+under **P07** and counted there.
 
 ### P02 — Mark up the body
 
@@ -97,7 +102,7 @@ not counted here.
 |---|---|
 | Automated | `ViewPlayModeTests` (3), `TourProcessPlayModeTests` (1, standard views only), `ShapePlayModeTests` (8) |
 | Manual | 01/01 Top navigation · 01/02 View and group window · 07/01 a Stored view after turning the twin · 06/07 Shape (filed under P2 in the catalogue) |
-| **Gap** | Storing a view, activating it, and activating it *after the twin has been turned* are covered since TWIN-456. Shape is covered since TWIN-473 — screen, button wiring, all five functions, and that a changed figure survives save and reload; what a test cannot say is whether the figure then *looks* plausible, so 06/07 stays a manual check. What is still by hand only: turning, moving and zooming as such. |
+| **Gap** | **A** — turning, moving and zooming as such are checked by hand only.<br>**A** — whether a changed figure *looks* plausible (06/07 Shape) is something no test can say; it stays a manual check. |
 
 ### P05 — Describe and report
 
@@ -105,7 +110,7 @@ not counted here.
 |---|---|
 | Automated | offline: `DocumentPromptPlayModeTests` (3), `DocumentApplyPlayModeTests` (7), `UploadPlayModeTests` (2), `PartsScreenshotProcessPlayModeTests` (1), `SkinProcessPlayModeTests` (1), `MissingScreenshotsButtonPlayModeTests` (1), `PartsDescriptionButtonPlayModeTests` (1), `PartsDescriptionPlayModeTests` (4), `PartMenuPlayModeTests` (3)<br>with a key: `DocumentMappingApiTests` (2), `PartDescriptionProcessTests` (1), `PartsDescriptionProcessTests` (1), `VersionProcessTests` (1) |
 | Manual | 08/01 Part descriptions · 08/02 Version description (with images) · 08/03 Version description · 09 Screenshots · 12 Turn a document into a twin · 12/01 Turn a photo into a twin |
-| **Gap** | The old gap **B** is closed: the catalogue now covers this process. What remains:<br>**A** — turning a *photo* into a twin (12/01) is checked end to end by hand only. The tests prove the photo entry is offered and that a PDF goes all the way to the review screen, not that a photo does.<br>**A** — whether the screenshot also lands in the Photos app (08/02, 09) is a device question; no test can see it.<br>Describing parts and versions for real is automated only *with a key*. Offline, the tests pin what the buttons offer ("missing images", "missing descriptions") and that a run never overwrites text that is already there. |
+| **Gap** | **A** — turning a *photo* into a twin (12/01) is checked end to end by hand only. The tests prove the photo entry is offered and that a PDF goes all the way to the review screen, not that a photo does.<br>**A** — whether the screenshot also lands in the Photos app (08/02, 09) is a device question; no test can see it.<br>Describing parts and versions for real is automated only *with a key*. Offline, the tests pin what the buttons offer ("missing images", "missing descriptions") and that a run never overwrites text that is already there. |
 
 ### P06 — Exchange twins
 
@@ -119,7 +124,7 @@ not counted here.
 
 | | |
 |---|---|
-| Automated | `SettingsUiPlayModeTests` (1), `InfoDisplayPlayModeTests` (1 of its 5, the reset case), `AutoSavePlayModeTests` (2), `BusyOverlayPlayModeTests` (2), `ThinkingOverlayPlayModeTests` (4) |
+| Automated | `SettingsUiPlayModeTests` (1), `AppResetPlayModeTests` (2, the 03 App reset checklist, which the catalogue files under P1), `InfoDisplayPlayModeTests` (1 of its 5, the reset case), `AutoSavePlayModeTests` (2), `BusyOverlayPlayModeTests` (2), `ThinkingOverlayPlayModeTests` (4) |
 | Manual | 04 Persistence · 12 Language |
 | **Gap** | **A** — switching the language (12 Language) is checked by hand only; `SettingsUiPlayModeTests` opens the screen and goes no further.<br>**B** — saving when the app is sent to the background (TWIN-467), the loading panel during a twin switch (TWIN-461) and the logo while the language model is asked (TWIN-475) are automated and have no manual counterpart. The manual tests 12 and 12/01 (P05) do check that "the loading indicator is visible". |
 
@@ -140,8 +145,7 @@ version report, with a key). K02, K03 and K04 have no test.
 | **B** | automated, not in the manual catalogue | no risk to the product; the business department cannot see what is already safe |
 | **C** | checked by neither | a real hole |
 
-**The only C today is the Region screen.** In order of value, the A gaps are: the reset checklist
-(P01), the remaining tools (P02), new and cloned versions (P06), the language switch (P07), and a
+**The only C today is the Region screen.** In order of value, the A gaps are: the remaining tools (P02), new and cloned versions (P06), the language switch (P07), and a
 photo turned into a twin (P05).
 
 ---
@@ -255,19 +259,21 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 | `P04_look_at_the_twin` | 12 |
 | `P05_describe_and_report` | 28 |
 | `P06_exchange_twins` | 53 |
-| `P07_app_frame` | 10 |
+| `P07_app_frame` | 12 |
 | `T00_technical` | 30 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **218** |
+| **total** | **220** |
 
-By cost: 109 in `EditMode/`, 94 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
+By cost: 109 in `EditMode/`, 96 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
 counted: the 15 `[Explicit]` tests described above.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now
 at twelve — the Shape screen brought eight with TWIN-473. `P01_manage_twins` gained
-`TwinNameValidationPlayModeTests` (5) with TWIN-469, which closed its twin-name gap. What has no
-test at all is K02, K03 and K04.
+`TwinNameValidationPlayModeTests` (5) with TWIN-469, which closed its twin-name gap.
+`P07_app_frame` gained `AppResetPlayModeTests` (2) with TWIN-481, which closed the reset gap of P01.
+What has no test at all is K02, K03 and K04.
 
 **Counted on 6 October 2026** (at `3dfbde0`, TWIN-473), by reflection over both test assemblies —
-the same walk the guard test makes; the five tests of TWIN-469 were added by hand on 21 October 2026.
+the same walk the guard test makes. The five tests of TWIN-469 and the two of TWIN-481 were added
+by hand on 21 October 2026.
