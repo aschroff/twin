@@ -48,8 +48,8 @@ mode, all of which make a run fail in ways that look like something else. A chan
 `unity status` means the editor restarted and anything you had started is gone.
 
 **Say how long it will take, then report while it runs.** A PlayMode test costs roughly 5-15 s
-including its scene load, so the 89 tests of the `NoAPICalls` suite take somewhere between 7
-and 20 minutes; `unity cmd list_tests` gives the count to base an estimate on. State the estimate *before* starting, then report at least
+including its scene load, so the 94 tests of the `NoAPICalls` suite take somewhere between 8
+and 24 minutes; `unity cmd list_tests` gives the count to base an estimate on. State the estimate *before* starting, then report at least
 once a minute. Two things make silence expensive: `test_status` answers only `running` with an
 empty summary until the very end (so it is no progress signal, and neither is
 `Temp/pipeline_test_status.json`, which has the same shape), and a backgrounded poller may never

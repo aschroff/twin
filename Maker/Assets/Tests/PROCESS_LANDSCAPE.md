@@ -65,9 +65,9 @@ the twin looks, not what is painted on it.
 
 | | |
 |---|---|
-| Automated | `SaveTwinPlayModeTests` (1), `InfoDisplayPlayModeTests` (2 of its 5), `FileDataHandlerTests` (14), `DataPersistenceManagerTests` (9), `LoadEveryTwinTests` (1), `TwinLoadingMemoryTests` (1), `TwinActivityMemoryTests` (1), `TextureSaveCostTests` (2), `TextureSaveReadbackTests` (1) |
+| Automated | `SaveTwinPlayModeTests` (1), `TwinNameValidationPlayModeTests` (5), `InfoDisplayPlayModeTests` (2 of its 5), `FileDataHandlerTests` (14), `DataPersistenceManagerTests` (9), `LoadEveryTwinTests` (1), `TwinLoadingMemoryTests` (1), `TwinActivityMemoryTests` (1), `TextureSaveCostTests` (2), `TextureSaveReadbackTests` (1) |
 | Manual | 02 Twin management (WIP) · 02/01 Create, name twins · 02/02 Delete twin · 03 App reset · 05/01 Twins save functionality · 05/02 Duplicated twin name · 05/03 Twin names |
-| **Gap** | **A** — name validation (valid and invalid characters, length, duplicates and their error messages) is checked by hand only. `TwinNameValidator` has no test at all.<br>**A** — a reset is checked by hand against seven separate expectations (blank twin, all twins gone, camera, groups, views, stickers, text boxes); automatically only the twin that is loaded afterwards (`InfoDisplayPlayModeTests`, filed under P07).<br>**B** — loading every twin in the list, and the memory a twin switch costs (TWIN-457, TWIN-459), are automated and have no manual counterpart. `TextureSaveCostTests` asserts nothing; it reports what each step of saving the paint costs. |
+| **Gap** | **A** — a reset is checked by hand against seven separate expectations (blank twin, all twins gone, camera, groups, views, stickers, text boxes); automatically only the twin that is loaded afterwards (`InfoDisplayPlayModeTests`, filed under P07).<br>**B** — loading every twin in the list, and the memory a twin switch costs (TWIN-457, TWIN-459), are automated and have no manual counterpart. `TextureSaveCostTests` asserts nothing; it reports what each step of saving the paint costs. |
 
 Deleting a twin (02/02) is covered on the data side — `DataPersistenceManagerTests` keeps the open
 twin alive, `FileDataHandlerTests` removes the whole directory — but not through the twin list.
@@ -140,9 +140,9 @@ version report, with a key). K02, K03 and K04 have no test.
 | **B** | automated, not in the manual catalogue | no risk to the product; the business department cannot see what is already safe |
 | **C** | checked by neither | a real hole |
 
-**The only C today is the Region screen.** In order of value, the A gaps are: twin names (P01),
-the reset checklist (P01), the remaining tools (P02), new and cloned versions (P06), the language
-switch (P07), and a photo turned into a twin (P05).
+**The only C today is the Region screen.** In order of value, the A gaps are: the reset checklist
+(P01), the remaining tools (P02), new and cloned versions (P06), the language switch (P07), and a
+photo turned into a twin (P05).
 
 ---
 
@@ -218,7 +218,6 @@ Known, and deliberately not covered by tests, because they are business decision
   versions sit in the version overview. Since TWIN-463 the main screen jumps to that overview
   directly, but once twins arrive unannounced over a server it still has to be decided how the user
   learns about them.
-- **Twin names are limited to 11 characters**, but the error message says 14.
 - **The twin that is currently open cannot be deleted**, so the twin list can never be emptied
   completely from inside the app.
 - **Export size.** Every export carries the body paint as an image (about 1.2 MB). Exports from
@@ -250,7 +249,7 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 
 | Address | Tests |
 |---|---|
-| `P01_manage_twins` | 32 |
+| `P01_manage_twins` | 37 |
 | `P02_mark_up_the_body` | 30 |
 | `P03_organise_into_groups` | 16 |
 | `P04_look_at_the_twin` | 12 |
@@ -260,14 +259,15 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 | `T00_technical` | 30 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **213** |
+| **total** | **218** |
 
-By cost: 109 in `EditMode/`, 89 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
+By cost: 109 in `EditMode/`, 94 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
 counted: the 15 `[Explicit]` tests described above.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now
-at twelve — the Shape screen brought eight with TWIN-473. What has no test at all is K02, K03 and
-K04.
+at twelve — the Shape screen brought eight with TWIN-473. `P01_manage_twins` gained
+`TwinNameValidationPlayModeTests` (5) with TWIN-469, which closed its twin-name gap. What has no
+test at all is K02, K03 and K04.
 
 **Counted on 6 October 2026** (at `3dfbde0`, TWIN-473), by reflection over both test assemblies —
-the same walk the guard test makes.
+the same walk the guard test makes; the five tests of TWIN-469 were added by hand on 21 October 2026.
