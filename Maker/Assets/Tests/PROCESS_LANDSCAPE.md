@@ -124,9 +124,9 @@ not counted here.
 
 | | |
 |---|---|
-| Automated | `SettingsUiPlayModeTests` (1), `AppResetPlayModeTests` (2, the 03 App reset checklist, which the catalogue files under P1), `InfoDisplayPlayModeTests` (1 of its 5, the reset case), `AutoSavePlayModeTests` (2), `BusyOverlayPlayModeTests` (2), `ThinkingOverlayPlayModeTests` (4) |
+| Automated | `SettingsUiPlayModeTests` (1), `LanguagePlayModeTests` (5), `AppResetPlayModeTests` (2, the 03 App reset checklist, which the catalogue files under P1), `InfoDisplayPlayModeTests` (1 of its 5, the reset case), `AutoSavePlayModeTests` (2), `BusyOverlayPlayModeTests` (2), `ThinkingOverlayPlayModeTests` (4) |
 | Manual | 04 Persistence · 12 Language |
-| **Gap** | **A** — switching the language (12 Language) is checked by hand only; `SettingsUiPlayModeTests` opens the screen and goes no further.<br>**B** — saving when the app is sent to the background (TWIN-467), the loading panel during a twin switch (TWIN-461) and the logo while the language model is asked (TWIN-475) are automated and have no manual counterpart. The manual tests 12 and 12/01 (P05) do check that "the loading indicator is visible". |
+| **Gap** | **A** — in another language, only the labels of the Main, Settings, Save and Edit screens and the sign-in status are checked automatically. The other screens (group detail, Region, Shape, upload and review, part detail) and texts set from code, such as toasts, are checked in each locale by hand only (12 Language).<br>**B** — saving when the app is sent to the background (TWIN-467), the loading panel during a twin switch (TWIN-461) and the logo while the language model is asked (TWIN-475) are automated and have no manual counterpart. The manual tests 12 and 12/01 (P05) do check that "the loading indicator is visible". |
 
 ### Chains
 
@@ -145,8 +145,9 @@ version report, with a key). K02, K03 and K04 have no test.
 | **B** | automated, not in the manual catalogue | no risk to the product; the business department cannot see what is already safe |
 | **C** | checked by neither | a real hole |
 
-**There is no C left** — the last one, the Region screen, was closed by TWIN-477. In order of value, the A gaps are: the remaining tools (P02), new and cloned versions (P06), the language switch (P07), and a
-photo turned into a twin (P05).
+**There is no C gap.** In order of value, the A gaps are: the remaining tools (P02), new and cloned
+versions (P06), a photo turned into a twin (P05), and the screens and code-set texts the language
+test does not walk (P07).
 
 ---
 
@@ -259,22 +260,21 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 | `P04_look_at_the_twin` | 12 |
 | `P05_describe_and_report` | 28 |
 | `P06_exchange_twins` | 53 |
-| `P07_app_frame` | 12 |
+| `P07_app_frame` | 17 |
 | `T00_technical` | 30 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **227** |
+| **total** | **232** |
 
-By cost: 109 in `EditMode/`, 103 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
+By cost: 109 in `EditMode/`, 108 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
 counted: the 15 `[Explicit]` tests described above.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now
 at twelve — the Shape screen brought eight with TWIN-473. `P01_manage_twins` gained
-`TwinNameValidationPlayModeTests` (5) with TWIN-469, which closed its twin-name gap.
-`P07_app_frame` gained `AppResetPlayModeTests` (2) with TWIN-481, which closed the reset gap of P01.
-`P02_mark_up_the_body` gained `RegionUiPlayModeTests` (7) with TWIN-477, which closed the last C
-gap, the Region screen. What has no test at all is K02, K03 and K04.
+`TwinNameValidationPlayModeTests` (5) with TWIN-469. `P07_app_frame` gained `AppResetPlayModeTests`
+(2) with TWIN-481 and `LanguagePlayModeTests` (5) with TWIN-483. `P02_mark_up_the_body` gained
+`RegionUiPlayModeTests` (7) with TWIN-477. What has no test at all is K02, K03 and K04.
 
 **Counted on 6 October 2026** (at `3dfbde0`, TWIN-473), by reflection over both test assemblies —
-the same walk the guard test makes. The five tests of TWIN-469, the two of TWIN-481 and the seven
-of TWIN-477 were added by hand on 21 October 2026.
+the same walk the guard test makes. The five tests of TWIN-469, the two of TWIN-481, the seven of
+TWIN-477 and the five of TWIN-483 were added by hand on 21 October 2026.

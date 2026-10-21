@@ -289,6 +289,11 @@ Spec, target structure and the remaining steps:
   `Temp/TemplatePoCResults.json` (`Assets/Tests/Editor/TemplatePoCRunner.cs`) — useful for
   running tests from outside the editor UI.
 - Writing painting tests: read `Assets/Tests/PlayMode/NoAPICalls/CwPaintingTestGuide.md` first.
+- The chosen language (`LocalizationSettings.SelectedLocale`) is static and outlives the scene, so
+  the temp data path does not isolate it: a test that switches it puts English back in its
+  teardown. It is saved as `ConfigData.languageID`, an index into the locale list — covered,
+  together with the labels in all five locales, by `LanguagePlayModeTests` (TWIN-483), which also
+  shows how to start the app a second time on the same data (`PlayModeTestBase.LoadAppScene()`).
 - The backend clients are covered by **EditMode** tests that run against a real HTTP server on
   loopback (`Assets/Tests/EditMode/FakeTwinApiServer.cs`), not against a mock: the ways an HTTP
   client can be wrong — a form-encoded body, a doubled `/v1`, a renamed JSON key — are all
