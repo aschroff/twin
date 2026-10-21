@@ -82,6 +82,25 @@ cache when there is one and otherwise reads the file and fills the cache from it
 - The app cannot delete the twin that is currently selected, so the twin list can never be emptied.
 - The `V99` ceiling fails an import with a log line and nothing on screen.
 
+### New and cloned versions
+
+Three buttons add a version to the open twin, all in `ConfigManager`:
+
+| Button | Method | Label | Result |
+|---|---|---|---|
+| **New Version**, main screen | `newConfigFromMainMenu` | the date (`DATE_VERSION_SMART`, `MM-dd-yy-mmss`), set automatically | an empty version |
+| **New**, versions screen | `newConfigFromInput` | from the input, which proposes the same date | an empty version |
+| **Save as**, versions screen | `cloneConfigFromInput` | from the input | a copy of the open version, groups and parts included |
+
+The two New buttons are meant to do the same thing and differ only in where the label comes from:
+an empty version has **no groups and no parts**. The main-screen button still keeps the groups
+(it clones and then deletes only the parts), so `NewVersionPlayModeTests.NewVersion_StartsAnEmptyVersion`
+fails until it does what the versions screen does.
+
+Saving onto a label that already exists **overwrites** that version — this is intended.
+`TwinNameValidator` refuses only `000` when `<name>.000` already exists, the version a twin is
+created with.
+
 ### Twin versions on the server
 
 Since TWIN-437 a twin version can be uploaded to the backend and listed back; since TWIN-463 one

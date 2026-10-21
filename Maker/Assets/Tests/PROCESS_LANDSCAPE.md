@@ -116,9 +116,9 @@ not counted here.
 
 | | |
 |---|---|
-| Automated | `ImportTwinPlayModeTests` (10), `TwinVersionsClientTests` (17), `TwinVersionRowTests` (9), `TwinAuthTests` (17) |
+| Automated | `ImportTwinPlayModeTests` (10), `NewVersionPlayModeTests` (5), `TwinVersionsClientTests` (17), `TwinVersionRowTests` (9), `TwinAuthTests` (17) |
 | Manual | 10/01 Export a zip · 10/02 Import a zip · 11/01 New version · 11/02 Clone version |
-| **Gap** | **A** — creating a new version and cloning one (11/01, 11/02) are checked by hand only.<br>**B** — uploading to and downloading from the server, and signing in to it, are automated at the level of the client and the version rows, and have no manual test. |
+| **Gap** | **B** — uploading to and downloading from the server, and signing in to it, are automated at the level of the client and the version rows, and have no manual test. |
 
 ### P07 — App frame
 
@@ -145,9 +145,8 @@ version report, with a key). K02, K03 and K04 have no test.
 | **B** | automated, not in the manual catalogue | no risk to the product; the business department cannot see what is already safe |
 | **C** | checked by neither | a real hole |
 
-**There is no C gap.** In order of value, the A gaps are: the remaining tools (P02), new and cloned
-versions (P06), a photo turned into a twin (P05), and the screens and code-set texts the language
-test does not walk (P07).
+**There is no C gap.** In order of value, the A gaps are: the remaining tools (P02), a photo turned into a
+twin (P05), and the screens and code-set texts the language test does not walk (P07).
 
 ---
 
@@ -259,14 +258,14 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 | `P03_organise_into_groups` | 16 |
 | `P04_look_at_the_twin` | 12 |
 | `P05_describe_and_report` | 28 |
-| `P06_exchange_twins` | 53 |
+| `P06_exchange_twins` | 58 |
 | `P07_app_frame` | 17 |
 | `T00_technical` | 30 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **232** |
+| **total** | **237** |
 
-By cost: 109 in `EditMode/`, 108 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
+By cost: 109 in `EditMode/`, 113 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
 counted: the 15 `[Explicit]` tests described above.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now
