@@ -5,12 +5,12 @@
 > `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
 > It replaced `TESTUEBERSICHT_FACHABTEILUNG.md` (TWIN-454).
 
-213 tests in three folders, sorted by what they cost (counted 6 October 2026, see the landscape):
+218 tests in three folders, sorted by what they cost
 
 | Folder | Tests | What it needs |
 |---|---|---|
 | `Assets/Tests/EditMode/` | 109 | nothing — no scene, no app, no network |
-| `Assets/Tests/PlayMode/NoAPICalls/` | 89 | the real app, no external service |
+| `Assets/Tests/PlayMode/NoAPICalls/` | 94 | the real app, no external service |
 | `Assets/Tests/PlayMode/APICalls/` | 15 | a key in `Assets/Tests/Helper/testsecrets.json`; costs tokens |
 
 Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs` (P01–P07,
@@ -38,6 +38,7 @@ the automation menu **Tools → Template PoC → …** (results are written to
 | Test | Category | What it checks |
 |------|----------|----------------|
 | **SaveTwinPlayModeTests**<br>`SaveButton_OpensSaveMode` | P01 | Save screen opens, its buttons are present, a new twin can be created and appears in the twin list. |
+| **TwinNameValidationPlayModeTests** (5 tests) | P01 | `TwinNameValidator` on the save screen: a duplicate name (through both "New" and "Save as"), invalid characters (non-ASCII letters, symbols, reserved punctuation), an empty or whitespace-only name, a name that already contains a dot (rejected by the dot-count check before the character regex runs, since the UI appends its own `.000`), and the 11/12-character length boundary. Each rejected name leaves the screen in Save mode and shows the matching localized toast (`TwinNameValidator.InvalidNameMessage` / `AlreadyExistingNameMessage`); the 11-character name succeeds and appears in the twin list. |
 | **InfoDisplayPlayModeTests** (5 tests) | P01 (2) · P02 · P03 · P07 | The status displays: the twin name in the header of every screen and the Twin/Version/Tool/Group block of the overview overlay — after a reset (the app falls back to `default.000`), after loading and after creating a twin, when a tool is picked and when the current group changes. The only class whose category sits on each test rather than on the class. |
 | **LoadEveryTwinTests**<br>`EveryTwinInTheList_LoadsWithoutError` | P01 | Loads every twin in the list, one after the other, twice round — written for a `NullReferenceException` in `Model.LoadData` that only a switch through the whole list showed. |
 | **TwinLoadingMemoryTests**<br>`LoadingTheSameTwinAgainAfterOthers_CostsNoMoreMemory` | P01 | Puts the app into the same state twice, with four other twins opened in between, and compares the memory retained — weighing every live texture, because the 8192×8192 body paint does not show up in `Texture.currentTextureMemory`. Catches growth per twin switch, which is what killed the app on an iPad Air; the absolute numbers belong to the editor. |
