@@ -531,6 +531,14 @@ PrefabInstance:
       propertyPath: m_Text
       value: ' Text '
       objectReference: {fileID: 0}
+    - target: {fileID: 3869464149622843303, guid: 2b5a11a46a7664c99a64609e2da36ca6, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 259368871170924544
+      objectReference: {fileID: 0}
+    - target: {fileID: 3869464149622843303, guid: 2b5a11a46a7664c99a64609e2da36ca6, type: 3}
+      propertyPath: m_StringReference.m_TableReference.m_TableCollectionName
+      value: GUID:d12d872ce99d54eb4977c7b9daa8702f
+      objectReference: {fileID: 0}
     - target: {fileID: 4029866872075018949, guid: 2b5a11a46a7664c99a64609e2da36ca6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
