@@ -375,12 +375,44 @@ PrefabInstance:
     m_TransformParent: {fileID: 8612250650782278752}
     m_Modifications:
     - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 4709246033920
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_UpdateString.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_StringReference.m_TableReference.m_TableCollectionName
+      value: GUID:d12d872ce99d54eb4977c7b9daa8702f
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_UpdateString.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_UpdateString.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 298922744386685460}
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_UpdateString.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_text
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_UpdateString.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.UI.Text, UnityEngine.UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_UpdateString.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4239298270747373838, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_Text
       value: Views
+      objectReference: {fileID: 0}
+    - target: {fileID: 4239298270747373838, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 4239298270747373839, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -541,49 +573,24 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4239298270747373836, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8691164380114295454}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
 --- !u!224 &298922744014361563 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4239298271117699265, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
   m_PrefabInstance: {fileID: 4535406265356466970}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &298922744386685462 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4239298270747373836, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+--- !u!114 &298922744386685460 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4239298270747373838, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
   m_PrefabInstance: {fileID: 4535406265356466970}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8691164380114295454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 298922744386685462}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: 
-    m_TableEntryReference:
-      m_KeyId: 0
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  m_FormatArguments: []
-  m_UpdateString:
-    m_PersistentCalls:
-      m_Calls: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!1001 &7680383084219250824
 PrefabInstance:
   m_ObjectHideFlags: 0

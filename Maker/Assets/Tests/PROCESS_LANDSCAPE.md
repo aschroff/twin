@@ -124,7 +124,7 @@ not counted here.
 
 | | |
 |---|---|
-| Automated | `SettingsUiPlayModeTests` (1), `LanguagePlayModeTests` (5), `AppResetPlayModeTests` (2, the 03 App reset checklist, which the catalogue files under P1), `InfoDisplayPlayModeTests` (1 of its 5, the reset case), `AutoSavePlayModeTests` (2), `BusyOverlayPlayModeTests` (2), `ThinkingOverlayPlayModeTests` (4) |
+| Automated | `SettingsUiPlayModeTests` (1), `LanguagePlayModeTests` (8), `AppResetPlayModeTests` (2, the 03 App reset checklist, which the catalogue files under P1), `InfoDisplayPlayModeTests` (1 of its 5, the reset case), `AutoSavePlayModeTests` (2), `BusyOverlayPlayModeTests` (2), `ThinkingOverlayPlayModeTests` (4) |
 | Manual | 04 Persistence · 12 Language |
 | **Gap** | **A** — in another language, only the labels of the Main, Settings, Save and Edit screens and the sign-in status are checked automatically. The other screens (group detail, Region, Shape, upload and review, part detail) and texts set from code, such as toasts, are checked in each locale by hand only (12 Language).<br>**B** — saving when the app is sent to the background (TWIN-467), the loading panel during a twin switch (TWIN-461) and the logo while the language model is asked (TWIN-475) are automated and have no manual counterpart. The manual tests 12 and 12/01 (P05) do check that "the loading indicator is visible". |
 
@@ -265,7 +265,7 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 | `K05_report_on_a_version` | 1 |
 | **total** | **237** |
 
-By cost: 109 in `EditMode/`, 113 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
+By cost: 109 in `EditMode/`, 111 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
 counted: the 15 `[Explicit]` tests described above.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now

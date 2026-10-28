@@ -21,13 +21,9 @@ public static class RegionNames
             return regionKey;
         }
 
-        StringTable table = LocalizationSettings.StringDatabase.GetTable(TableName);
-        if (table == null)
-        {
-            return regionKey;
-        }
-
-        StringTableEntry entry = table.GetEntry(KeyPrefix + regionKey);
+        // the database, not the table: only it follows the fallback chain when a register
+        // leaves a name empty (demedlatin → demed → de → en)
+        StringTableEntry entry = LocalizationSettings.StringDatabase.GetTableEntry(TableName, KeyPrefix + regionKey).Entry;
         if (entry == null || string.IsNullOrEmpty(entry.LocalizedValue))
         {
             return regionKey;

@@ -186,14 +186,13 @@ namespace Code
             notification.Pulse();
         }
 
-        /// <summary>Not StringLocalizer, which writes a console line on every successful lookup -
-        /// see Assets/Code/Localization/README.md §3.</summary>
+        /// <summary>Through the database rather than the table, so that an entry a register leaves
+        /// empty falls back
         private static string Localise(string key)
         {
-            var table = LocalizationSettings.StringDatabase != null
-                ? LocalizationSettings.StringDatabase.GetTable(TableName)
+            var entry = LocalizationSettings.StringDatabase != null
+                ? LocalizationSettings.StringDatabase.GetTableEntry(TableName, key).Entry
                 : null;
-            var entry = table != null ? table.GetEntry(key) : null;
             if (entry != null) return entry.GetLocalizedString();
 
             Debug.LogWarning("[PartsDescriptionProcess] No entry '" + key + "' in " + TableName + ".");
