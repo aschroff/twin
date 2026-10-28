@@ -91,9 +91,10 @@ namespace NoAPICalls
             }
         }
 
-        /// <summary>There is no fallback: a key missing from one table shows as "No translation
-        /// found" in that language only. This walks every screen in every language and compares
-        /// each localized label with its own entry.</summary>
+        /// <summary>A key filled in no table along a locale's fallback chain shows as "No
+        /// translation found" in that language only. This walks every screen in every language and
+        /// compares each localized label with its entry — its own, or the fallback's when it has
+        /// none.</summary>
         [UnityTest]
         public IEnumerator EveryLabelOnEveryScreen_ShowsItsEntryInEveryLanguage()
         {
@@ -118,6 +119,113 @@ namespace NoAPICalls
                 yield return ClickButtonByPath(EditBack);
                 yield return WaitForModeActive("Main");
             }
+        }
+
+        /// <summary>Menu entries — the Help, Menu, Part and Upload lists — are built at runtime by
+        /// <c>MenuManager</c>, which looks each entry's <c>text</c> up as a key and shows the raw
+        /// text when there is none. A text that is not a key reads like an untranslated English
+        /// label, and no LocalizeStringEvent exists for the walk above to find. An entry left
+        /// empty in a register is fine as long as its fallback has one.</summary>
+        [UnityTest]
+        public IEnumerator EveryMenuEntry_HasAnEntryInEveryLanguage()
+        {
+            yield return null;
+            MenuManager[] menus = Resources.FindObjectsOfTypeAll<MenuManager>()
+                .Where(menu => menu.gameObject.scene.IsValid())
+                .ToArray();
+            Assert.IsNotEmpty(menus, "Setup: the scene has no MenuManager.");
+
+            var missing = new List<string>();
+            foreach (MenuManager menu in menus)
+            {
+                foreach (MenuAction action in menu.menu.Values)
+                {
+                    foreach (string localeCode in LocaleCodes)
+                    {
+                        if (Expected(action.text, localeCode) == null)
+                        {
+                            missing.Add($"{GetTransformPath(menu.transform)}: '{action.text}' has no entry in {localeCode} or its fallbacks");
+                        }
+                    }
+                }
+            }
+            Assert.IsEmpty(missing, string.Join("\n", missing));
+        }
+
+        /// <summary>Text set from code goes through <c>StringLocalizer</c>, labels through the
+        /// string database. Both have to follow the same fallback chain — otherwise an entry left
+        /// empty in <c>demed</c> shows German on a label and nothing at all in a status line.</summary>
+        [UnityTest]
+        public IEnumerator TextSetFromCode_FallsBackLikeTheLabels()
+        {
+            var table = LocalizationSettings.StringDatabase.GetTable(TableName);
+            var wrong = new List<string>();
+            foreach (string localeCode in LocaleCodes)
+            {
+                LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.GetLocale(localeCode);
+                yield return null;
+                foreach (var shared in table.SharedData.Entries)
+                {
+                    string expected = Expected(shared.Key, localeCode);
+                    if (expected == null) continue; // a gap in every table, not the localizer's business
+                    string shown = StringLocalizer.localizeString(shared.Key);
+                    if (shown != expected)
+                    {
+                        wrong.Add($"{localeCode} '{shared.Key}': localizer gives '{shown}', fallback chain gives '{expected}'");
+                    }
+                }
+            }
+            Assert.IsEmpty(wrong, string.Join("\n", wrong));
+        }
+
+        /// <summary>Four places look text up without <c>StringLocalizer</c>: the region names and
+        /// the labels of the two group-detail buttons and the description summary. Every table is
+        /// filled for their keys today, so the gap is made here — one register entry emptied in
+        /// memory for the length of the test — and each lookup has to answer with its
+        /// fallback's text.</summary>
+        [UnityTest]
+        public IEnumerator DirectLookups_FallBackWhenARegisterIsEmpty()
+        {
+            var cases = new (string locale, string key, System.Func<string> lookup)[]
+            {
+                ("demedlatin", RegionNames.KeyPrefix + "chest_left", () => RegionNames.Get("chest_left")),
+                ("demed", PartsDescriptionButton.LabelKeyAll, () => Localise(typeof(PartsDescriptionButton), PartsDescriptionButton.LabelKeyAll)),
+                ("demed", "GROUP_DETAILS_CREATE_IMAGES", () => Localise(typeof(MissingScreenshotsButton), "GROUP_DETAILS_CREATE_IMAGES")),
+                ("enmed", Code.PartsDescriptionProcess.SummaryKey, () => Localise(typeof(Code.PartsDescriptionProcess), Code.PartsDescriptionProcess.SummaryKey)),
+            };
+
+            var wrong = new List<string>();
+            foreach (var (localeCode, key, lookup) in cases)
+            {
+                LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.GetLocale(localeCode);
+                yield return null;
+
+                var entry = LocalizationSettings.StringDatabase.GetTable(TableName).GetEntry(key);
+                Assert.IsNotNull(entry, $"Setup: '{key}' has no entry in {localeCode} to empty.");
+                string own = entry.Value;
+                entry.Value = "";
+                try
+                {
+                    string expected = Expected(key, localeCode);
+                    Assert.IsFalse(string.IsNullOrEmpty(expected), $"Setup: '{key}' has nothing to fall back to from {localeCode}.");
+                    string shown = lookup();
+                    if (shown != expected) wrong.Add($"{localeCode} '{key}' left empty: lookup gives '{shown}', fallback is '{expected}'");
+                }
+                finally
+                {
+                    entry.Value = own;
+                }
+            }
+            Assert.IsEmpty(wrong, string.Join("\n", wrong));
+        }
+
+        /// <summary>The class's own private <c>Localise(string)</c>.</summary>
+        static string Localise(System.Type owner, string key)
+        {
+            var method = owner.GetMethod("Localise",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            Assert.IsNotNull(method, $"Setup: {owner.Name} has no Localise(string) any more.");
+            return (string)method.Invoke(null, new object[] { key });
         }
 
         /// <summary>The sign-in status is set from code, not by a LocalizeStringEvent, and sits on
@@ -257,14 +365,14 @@ namespace NoAPICalls
                     checkedLabels++;
 
                     string key = KeyOf(localized);
-                    string expected = key == null ? null : Entry(key, localeCode);
+                    string expected = key == null ? null : Expected(key, localeCode);
                     if (localized.StringReference.IsEmpty)
                     {
                         wrong.Add($"{GetTransformPath(localized.transform)}: shows '{shown}' in every language — its LocalizeStringEvent names no key");
                     }
                     else if (expected == null)
                     {
-                        wrong.Add($"{GetTransformPath(localized.transform)}: no entry for '{key ?? localized.StringReference.TableEntryReference.ToString()}' in this language");
+                        wrong.Add($"{GetTransformPath(localized.transform)}: no entry for '{key ?? localized.StringReference.TableEntryReference.ToString()}' in this language or its fallbacks");
                     }
                     else if (shown != expected)
                     {
@@ -305,6 +413,27 @@ namespace NoAPICalls
             TMP_Text text => text.text,
             _ => null,
         };
+
+        /// <summary>What a locale should show for a key: its own entry, or — when that is missing
+        /// or empty — the first filled one along its fallback chain (<c>demedlatin → demed → de →
+        /// en</c>, <c>enmed → en</c>), as Unity walks it. Null when no table on the way has one.
+        /// Walked here by hand rather than asked of the database, which would answer a gap with
+        /// its "No translation found" text.</summary>
+        static string Expected(string key, string localeCode)
+        {
+            var queue = new Queue<UnityEngine.Localization.Locale>();
+            var seen = new HashSet<UnityEngine.Localization.Locale>();
+            queue.Enqueue(LocalizationSettings.AvailableLocales.GetLocale(localeCode));
+            while (queue.Count > 0)
+            {
+                var locale = queue.Dequeue();
+                if (locale == null || !seen.Add(locale)) continue;
+                string value = Entry(key, locale.Identifier.Code);
+                if (!string.IsNullOrEmpty(value)) return value;
+                foreach (var fallback in locale.GetFallbacks()) queue.Enqueue(fallback);
+            }
+            return null;
+        }
 
         /// <summary>The table's value for a key in one locale, or null when that table lacks it.</summary>
         static string Entry(string key, string localeCode)
