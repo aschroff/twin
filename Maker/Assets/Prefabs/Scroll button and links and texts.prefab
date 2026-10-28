@@ -188,15 +188,8 @@ MonoBehaviour:
     meaning: 
     textTool: 
     description: 
-    group:
-      groupParts: []
-      group: {fileID: 0}
-      id: 
-      name: 
-      visible: 0
-      selected: 0
+    regionKey: 
     pathScreenshot: 
-  parent: {fileID: 0}
   loadedTexture: {fileID: 0}
   references:
     version: 2
@@ -746,6 +739,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1150721589122173839}
     m_Modifications:
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 244262800429408257
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787767312543281959, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
+      propertyPath: m_StringReference.m_TableReference.m_TableCollectionName
+      value: GUID:d12d872ce99d54eb4977c7b9daa8702f
+      objectReference: {fileID: 0}
     - target: {fileID: 4239298270747373838, guid: 2af735dd9f1574faa9327ea9cdce07c3, type: 3}
       propertyPath: m_Text
       value: Delete

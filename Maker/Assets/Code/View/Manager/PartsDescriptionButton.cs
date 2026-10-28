@@ -197,12 +197,11 @@ public class PartsDescriptionButton : MonoBehaviour
     /// <summary>
     /// Look a key up in the current locale.
     /// </summary>
-    /// <remarks>Not <see cref="StringLocalizer"/>, which writes a console line on every
-    /// successful lookup - see Assets/Code/Localization/README.md §3.</remarks>
+    /// <remarks>Through the database rather than the table, so that an entry a register leaves
+    /// empty falls back </remarks>
     private static string Localise(string key)
     {
-        var table = LocalizationSettings.StringDatabase?.GetTable(TableName);
-        var entry = table?.GetEntry(key);
+        var entry = LocalizationSettings.StringDatabase?.GetTableEntry(TableName, key).Entry;
 
         if (entry != null) return entry.GetLocalizedString();
 
