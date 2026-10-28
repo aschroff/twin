@@ -49,16 +49,7 @@ public class ConfigManager : MonoBehaviour
 
         saveAsConfig(twin);
 
-        //deleting parts of cloned twin
-        foreach (PartManager.GroupData group in partManager.groups)
-        {
-            for(int i = group.groupParts.Count - 1; i >= 0; i--)
-            {
-                partManager.deletePart(group.groupParts[i]); 
-            }
-        }
         partManager.ClearRefreshAll();
-
     }
 
 

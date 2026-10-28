@@ -88,14 +88,13 @@ Three buttons add a version to the open twin, all in `ConfigManager`:
 
 | Button | Method | Label | Result |
 |---|---|---|---|
-| **New Version**, main screen | `newConfigFromMainMenu` | the date (`DATE_VERSION_SMART`, `MM-dd-yy-mmss`), set automatically | an empty version |
+| **New Version**, main screen | `newConfigFromMainMenu` | the date (`DATE_VERSION_SMART`, `MM-dd-yy-mmss`), set automatically | a copy of the open version, groups and parts included |
 | **New**, versions screen | `newConfigFromInput` | from the input, which proposes the same date | an empty version |
 | **Save as**, versions screen | `cloneConfigFromInput` | from the input | a copy of the open version, groups and parts included |
 
-The two New buttons are meant to do the same thing and differ only in where the label comes from:
-an empty version has **no groups and no parts**. The main-screen button still keeps the groups
-(it clones and then deletes only the parts), so `NewVersionPlayModeTests.NewVersion_StartsAnEmptyVersion`
-fails until it does what the versions screen does.
+New on the versions screen starts an empty version, with **no groups and no parts**. New Version
+on the main screen does what Save as does — it clones the open version with everything in it — and
+differs from it only in that the label is the date instead of the input.
 
 Saving onto a label that already exists **overwrites** that version — this is intended.
 `TwinNameValidator` refuses only `000` when `<name>.000` already exists, the version a twin is
