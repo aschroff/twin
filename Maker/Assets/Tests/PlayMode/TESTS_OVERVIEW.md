@@ -5,12 +5,12 @@
 > `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
 > It replaced `TESTUEBERSICHT_FACHABTEILUNG.md` (TWIN-454).
 
-232 tests in three folders
+238 tests in three folders
 
 | Folder | Tests | What it needs |
 |---|---|---|
 | `Assets/Tests/EditMode/` | 109 | nothing — no scene, no app, no network |
-| `Assets/Tests/PlayMode/NoAPICalls/` | 108 | the real app, no external service |
+| `Assets/Tests/PlayMode/NoAPICalls/` | 114 | the real app, no external service |
 | `Assets/Tests/PlayMode/APICalls/` | 15 | a key in `Assets/Tests/Helper/testsecrets.json`; costs tokens |
 
 Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs` (P01–P07,
@@ -35,6 +35,10 @@ the automation menu **Tools → Template PoC → …** (results are written to
 
 ## `NoAPICalls/` — app tests, no external services
 
+Tests of one tool of the Edit screen go into the subfolder `NoAPICalls/EditUITests/`, one class
+per tool. The subfolder only sorts them; the namespace stays `NoAPICalls`, the folder still means
+"no external service", and the category says the process (P02).
+
 | Test | Category | What it checks |
 |------|----------|----------------|
 | **SaveTwinPlayModeTests**<br>`SaveButton_OpensSaveMode` | P01 | Save screen opens, its buttons are present, a new twin can be created and appears in the twin list. |
@@ -46,6 +50,7 @@ the automation menu **Tools → Template PoC → …** (results are written to
 | **TextureSaveCostTests** (2 tests) | P01 | Breaks the cost of saving the painted texture down into its steps, and measures the same picture without the two steps that look unnecessary. **Asserts nothing** — the output is the point. |
 | **TextureSaveReadbackTests**<br>`ReadingBackDirectly_IsCheaperAndGivesTheSameImage` | P01 | That reading the paint back directly (`PaintTextureSaver`, TWIN-459) costs less than the route through a `Texture2D` and gives the same image, compared pixel by pixel at sample points. |
 | **UndoRedoPlayModeTests** (2 tests) | P02 | Undo/redo in the editing header, through the real buttons of the prefab: a click takes the last painted part out of its group, off the body (pixel comparison) and out of the save data, the next click brings it back at its place and repaints it, new paint afterwards ends the redo history. The second test pins the configuration that keeps the body texture from being copied per stroke — `undoRedo: None` on the body, `storeStates` off on every tool, no PaintIn3D undo button left — and that painting leaves no texture states behind (that copying got the app killed on the seventh stroke on an iPad Air). |
+| **MarkerPlayModeTests** (6 tests)<br>`EditUITests/` | P02 | The Marker tool of the Edit screen. Its panel offers 16 rows in a blank twin — 8 solid and 8 dotted markers, one of each per colour — and every row switches on its own tool and nothing else, carries no name yet and saves its name under an id of its own. Every marker paints in its own colour: a dot per marker, the average of the pixels it changed is closest to the colour of the marker's paint component and within 0.35 of it per channel, all 16 reported together. The body texture starts out **white**, so the dots go onto the same spot, each over the one before — a white dot on a blank body changes nothing. A marker name belongs to its twin: entered, changed and deleted in twin A, it shows and is stored in A only, never in B, across switches back and forth. A stroke becomes a part of the current group that knows its marker (kind, name, colour, the marker's name as meaning, its view); a second stroke with the same marker continues the part, another marker starts a new one. The dotted marker leaves gaps — the same stroke covers at most 60 % of the solid one's pixels (36 % measured); it is painted zoomed out, because in the body view the dots grow into each other (78 %). A painted marker comes back after a restart of the app, part and paint. |
 | **StickerPlayModeTests** (2 tests) | P02 | Sticker images per twin: the image behind a sticker slot — and the image its hash points at — follows the twin that is open, and an imported twin brings its own images for slots the open twin uses with different ones. |
 | **PartTemplateServiceTests** (11 tests) | P02 | The Text→Part service (`Assets/Code/Proc/Paint/`): painting a body region into the active group, tool override (colour, metadata, sticker rejection), current-tool resolution with marker fallback, the region catalog, region names per language (enmed/demed/demedlatin), and the save format (linear file growth, no texture references, part↔group and texture links restored on load). |
 | **RegionUiPlayModeTests** (7 tests) | P02 | The Region screen (Edit → Region, TWIN-477) — the screen in front of `PartTemplateService`, which until then had no test. It opens with one row per region of the template catalog, and reopening rebuilds the list rather than adding a second copy of every row; it switches off the camera gestures, so a swipe over the list does not turn the body. Tapping a row paints the region into the current group: one new part carrying the region key and the localized region name, linked to its group, and visible on the body (pixel comparison) — all of which survives leaving and reopening the twin. The region is painted with the marker picked before opening the screen (its name and colour go onto the part); with a sticker picked, which cannot carry a region template, it falls back to the first marker (`Blue`) instead of painting nothing. |
