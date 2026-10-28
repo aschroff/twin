@@ -11,10 +11,11 @@ namespace NoAPICalls
     /// <summary>
     /// Adding a version to the open twin (manual tests 11/01 New version, 11/02 Clone version).
     /// There are three ways to do it, all in <see cref="ConfigManager"/>:
-    /// the New Version button of the main screen and the New button of the versions screen both
-    /// start an empty version - no groups, no parts - and differ only in where the label comes
-    /// from; the Save as button of the versions screen clones the open version with everything
-    /// in it. In all three the version that was open has to stay as it was.
+    /// the New button of the versions screen starts an empty version - no groups, no parts -
+    /// under the label from the input; the New Version button of the main screen and the Save as
+    /// button of the versions screen both clone the open version with everything in it, and
+    /// differ only in where the label comes from. In all three the version that was open has to
+    /// stay as it was.
     /// </summary>
     [Category(Processes.ExchangeTwins)]
     public class NewVersionPlayModeTests : TwinPaintTestBase
@@ -34,15 +35,16 @@ namespace NoAPICalls
         /// <summary>A twin created in the test, short enough for TwinNameValidator.</summary>
         const string OwnTwin = "abc";
 
-        /// <summary>The New Version button of the main screen starts an empty version, named after
-        /// the date - the same as New on the versions screen, without asking for the label.
-        /// </summary>
+        /// <summary>The New Version button of the main screen clones the open version, groups
+        /// and parts included, and names the clone after the date - the same as Save as on the
+        /// versions screen, without asking for the label.</summary>
         [UnityTest]
-        public IEnumerator NewVersionOnMainScreen_StartsAnEmptyVersion()
+        public IEnumerator NewVersionOnMainScreen_ClonesTheOpenVersion()
         {
             yield return LoadLipEdemaTwin();
             yield return PaintOnePart("Red");
             string original = SelectedProfileId;
+            List<string> groupNames = GroupNames();
 
             yield return ClickButtonByPath(NewVersionButton);
             yield return WaitForModeActive("Main");
@@ -51,7 +53,7 @@ namespace NoAPICalls
             Assert.AreNotEqual(original, created, "The new version should be the open one.");
             Assert.AreEqual("LipEdema", NameOf(created), "The new version should belong to the same twin.");
             StringAssert.IsMatch(DateVersionPattern, VersionOf(created), "The new version should be named after the date.");
-            yield return AssertNewVersionIsEmpty(original, created);
+            yield return AssertNewVersionIsAClone(original, created, groupNames);
         }
 
         /// <summary>The New button of the versions screen takes the label from the input, which
@@ -74,9 +76,9 @@ namespace NoAPICalls
             yield return AssertNewVersionIsEmpty(original, "LipEdema." + proposed);
         }
 
-        /// <summary>What both New buttons have to leave behind: an open version without groups and
-        /// parts, on disk too, listed next to the version that was open - which keeps what it had.
-        /// Expects the new version to be the open one.</summary>
+        /// <summary>What New on the versions screen has to leave behind: an open version without
+        /// groups and parts, on disk too, listed next to the version that was open - which keeps
+        /// what it had. Expects the new version to be the open one.</summary>
         IEnumerator AssertNewVersionIsEmpty(string original, string created)
         {
             Assert.AreEqual(0, FindPartManager().groups.Count, "The new version should start without groups.");
@@ -108,6 +110,15 @@ namespace NoAPICalls
 
             string clone = "LipEdema." + CloneLabel;
             Assert.AreEqual(clone, SelectedProfileId, "The clone should be the open one.");
+            yield return AssertNewVersionIsAClone(original, clone, groupNames);
+        }
+
+        /// <summary>What New Version on the main screen and Save as have to leave behind: an open
+        /// version with the groups and the part of the version that was open, on disk too, listed
+        /// next to it - and the version that was open keeps what it had. Expects the clone to be
+        /// the open one.</summary>
+        IEnumerator AssertNewVersionIsAClone(string original, string clone, List<string> groupNames)
+        {
             CollectionAssert.AreEqual(groupNames, GroupNames(), "The clone should keep the groups.");
             Assert.AreEqual(1, PartCount(), "The clone should keep the part.");
             AssertPartsAreUsable(FindPartManager());
@@ -115,9 +126,10 @@ namespace NoAPICalls
             yield return OpenVersion(original);
             Assert.AreEqual(1, PartCount(), "The version that was cloned lost its part.");
             yield return OpenVersion(clone);
+            CollectionAssert.AreEqual(groupNames, GroupNames(), "The saved clone lost its groups.");
             Assert.AreEqual(1, PartCount(), "The saved clone lost its part.");
 
-            CollectionAssert.IsSubsetOf(new[] { VersionOf(original), CloneLabel }, VersionsOf("LipEdema"),
+            CollectionAssert.IsSubsetOf(new[] { VersionOf(original), VersionOf(clone) }, VersionsOf("LipEdema"),
                 "Both versions should be listed on the versions screen.");
             AssertConfigMatchesDirectory(clone);
         }
