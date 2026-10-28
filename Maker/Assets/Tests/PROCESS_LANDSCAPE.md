@@ -81,9 +81,9 @@ under **P07** and counted there.
 
 | | |
 |---|---|
-| Automated | `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests` (1), `PartTemplateServiceTests` (11), `RegionUiPlayModeTests` (7), `PartHistoryTests` (13), `InfoDisplayPlayModeTests` (1 of its 5) |
+| Automated | `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests` (1), `PartTemplateServiceTests` (11), `RegionUiPlayModeTests` (7), `TextUiPlayModeTests` (10), `PartHistoryTests` (13), `InfoDisplayPlayModeTests` (1 of its 5) |
 | Manual | 06/01 Edit navigation · 06/02 a Marker painting · 06/02 b Marker name · 06/03 a Sticker edit with default sticker · 06/03 b Importing a photo as sticker · 06/04 Delete · 06/05 Filler · 06/06 a Text colour and size · 06/08 Placement |
-| **Gap** | **A** — Text, Filler and Delete are checked by hand only, and so are naming a marker (06/02 b) and turning, flipping and resizing a sticker (06/03 a).<br>**B** — the **Region screen** is automated (`RegionUiPlayModeTests`, TWIN-477, on top of the 11 tests of the service behind it) and the manual catalogue does not mention it. 06/01 lists five tools; the Edit screen's bottom bar has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). Shape is the seventh but belongs to **P04**, where it is covered. |
+| **Gap** | **A** — Filler and Delete are checked by hand only, and so are naming a marker (06/02 b) and turning, flipping and resizing a sticker (06/03 a).<br>**B** — the **Region screen** is automated (`RegionUiPlayModeTests`, TWIN-477, on top of the 11 tests of the service behind it) and the manual catalogue does not mention it. 06/01 lists five tools; the Edit screen's bottom bar has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). Shape is the seventh but belongs to **P04**, where it is covered.<br> |
 
 `EditUiPlayModeTests`, which paints through the Edit screen, is the chain **K01** and is therefore
 not counted here.
@@ -255,7 +255,7 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 | Address | Tests |
 |---|---|
 | `P01_manage_twins` | 37 |
-| `P02_mark_up_the_body` | 37 |
+| `P02_mark_up_the_body` | 47 |
 | `P03_organise_into_groups` | 16 |
 | `P04_look_at_the_twin` | 12 |
 | `P05_describe_and_report` | 28 |
@@ -264,17 +264,18 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 | `T00_technical` | 30 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **232** |
+| **total** | **242** |
 
-By cost: 109 in `EditMode/`, 108 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
+By cost: 109 in `EditMode/`, 118 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
 counted: the 15 `[Explicit]` tests described above.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now
 at twelve — the Shape screen brought eight with TWIN-473. `P01_manage_twins` gained
 `TwinNameValidationPlayModeTests` (5) with TWIN-469. `P07_app_frame` gained `AppResetPlayModeTests`
 (2) with TWIN-481 and `LanguagePlayModeTests` (5) with TWIN-483. `P02_mark_up_the_body` gained
-`RegionUiPlayModeTests` (7) with TWIN-477. What has no test at all is K02, K03 and K04.
+`RegionUiPlayModeTests` (7) with TWIN-477 and `TextUiPlayModeTests` (10) with TWIN-489. What has no test at all is K02, K03 and K04.
 
 **Counted on 6 October 2026** (at `3dfbde0`, TWIN-473), by reflection over both test assemblies —
 the same walk the guard test makes. The five tests of TWIN-469, the two of TWIN-481, the seven of
-TWIN-477 and the five of TWIN-483 were added by hand on 21 October 2026.
+TWIN-477 and the five of TWIN-483 were added by hand on 21 October 2026, the ten of TWIN-489 on
+28 October 2026.
