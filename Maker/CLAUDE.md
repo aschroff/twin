@@ -25,7 +25,9 @@ string table.** The traps listed there are the expensive ones.
   twins. A test that needs no scene is a unit test and belongs in `Assets/Tests/EditMode/`.
 - Never edit config files while the app is running — it overwrites them on quit, when it is sent
   to the background, and every two minutes.
-- Every new UI string needs an entry in all five locale tables. There is no fallback.
+- Every new UI string needs an entry in `en` and `de`; the registers (`enmed`, `demed`,
+  `demedlatin`) fall back to those, so fill them only where the wording differs. Code that
+  reads a `StringTable` directly does not fall back — see `Assets/Code/Localization/README.md` §2.
 - Write the test. A fix is verified by watching it fail without the change.
 - Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs`;
   `TestCategoriesGuardTests` fails otherwise. A test that calls the language model goes into
@@ -48,7 +50,7 @@ mode, all of which make a run fail in ways that look like something else. A chan
 `unity status` means the editor restarted and anything you had started is gone.
 
 **Say how long it will take, then report while it runs.** A PlayMode test costs roughly 5-15 s
-including its scene load, so the 108 tests of the `NoAPICalls` suite take somewhere between 9
+including its scene load, so the 111 tests of the `NoAPICalls` suite take somewhere between 9
 and 27 minutes; `unity cmd list_tests` gives the count to base an estimate on. State the estimate *before* starting, then report at least
 once a minute. Two things make silence expensive: `test_status` answers only `running` with an
 empty summary until the very end (so it is no progress signal, and neither is
