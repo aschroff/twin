@@ -29,8 +29,9 @@ additionally uses Latin anatomy. As of October 2026, 15 of 212 keys differ betwe
 
 **What this means for a new key.** If its text names a domain concept — twin,
 group, view, edit, a body part — it needs different wording per register. If it
-names something outside the domain — account, password, server, a date — the
-same value belongs in all five tables, and that is not laziness.
+names something outside the domain — account, password, server, a date — it
+needs `en` and `de` only; the registers take it from there through the fallback
+(§2).
 
 That distinction is easy to get wrong in one direction: `LOGIN_TITLE` was first
 drafted as "Twin account" / "Twin-Konto", which contains exactly the word that
@@ -38,22 +39,41 @@ drafted as "Twin account" / "Twin-Konto", which contains exactly the word that
 patient's, "Patient account" would have been wrong too — so the title avoids the
 word entirely and reads "Account" / "Konto".
 
-## 2. There is no fallback
+## 2. Fallback: registers inherit from their language
 
-`m_UseFallback` is `0` for both the string and the asset database, and every
-Locale asset has empty metadata, so there is no fallback chain either. `demed`
-inherits **nothing** from `de`.
+`m_UseFallback` is `1` for the string database (the asset database still has `0`),
+and each Locale asset names its fallback in its metadata:
 
-A key that is missing in one table is not silently filled from another one. The
-user sees, literally:
+| Locale | Falls back to |
+|---|---|
+| `demedlatin` | `demed` |
+| `demed` | `de` |
+| `de` | `en` |
+| `enmed` | `en` |
+
+An entry that is **missing or empty** in a table is taken from the next locale on
+that chain. So a key whose wording is the same in a register as in its language
+only needs `en` and `de`; `enmed`, `demed` and `demedlatin` carry just the words
+that differ (`GROUPS` → "Akten", `region.*` in Latin). A value of a single space
+is not empty and does not fall back.
+
+Only a key filled in no table along the chain still shows, literally:
 
 ```
 No translation found for 'IMPORT_TWIN' in TwinLocalTables
 ```
 
-So: fill every new key in all five tables. It can look as if fallbacks exist,
-only because almost every key is filled — `IMPORT_TWIN` is the exception today:
-it has no entry in `demedlatin`, which is exactly the message above.
+The fallback lives in `LocalizationSettings.StringDatabase`, not in the tables. A
+`LocalizeStringEvent`, `StringLocalizer.localizeString`, `RegionNames.Get` and the
+`Localise` helpers of `PartsDescriptionProcess`, `PartsDescriptionButton` and
+`MissingScreenshotsButton` go through the database
+(`StringDatabase.GetTableEntry(table, key).Entry`) and follow it. Code that reads a
+`StringTable` directly with `GetTable(…).GetEntry(key)` does not — don't write new
+lookups that way.
+
+The fallback has a price: a register entry that was forgotten no longer shows up
+as an error, it quietly shows the plain wording ("Gruppen" instead of "Akten").
+For a key that names a domain concept (§1), fill the registers on purpose.
 
 ## 3. Adding a key
 

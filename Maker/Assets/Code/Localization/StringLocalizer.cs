@@ -8,15 +8,16 @@ public class StringLocalizer
     public static string localizeString(string key)
     {
         string tableName = "TwinLocalTables";
-        // Load the specific String Table by its name
-        var stringTable = LocalizationSettings.StringDatabase.GetTable(tableName);
+        // Ask the database, not the table: only the database follows the fallback chain
+        // (demedlatin → demed → de → en, enmed → en) when an entry is missing or empty
+        var result = LocalizationSettings.StringDatabase.GetTableEntry(tableName, key);
 
 
-        if (stringTable != null)
+        if (result.Table != null)
         {
 
             // Retrieve the entry by key
-            StringTableEntry entry = stringTable.GetEntry(key);
+            StringTableEntry entry = result.Entry;
 
             if (entry != null)
             {
