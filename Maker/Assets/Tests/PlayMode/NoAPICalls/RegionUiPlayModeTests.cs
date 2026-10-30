@@ -265,34 +265,5 @@ namespace NoAPICalls
             Assert.IsNotNull(touch, "EditRegionMode has no Touch object wired.");
             return touch;
         }
-
-        private static Color32[] BodyPixels()
-        {
-            Body body = Object.FindObjectOfType<Body>();
-            Assert.IsNotNull(body, "No Body found in the scene.");
-            CwPaintableTexture texture = body.GetComponent<CwPaintableTexture>();
-            Assert.IsNotNull(texture, "The Body has no paintable texture.");
-            Texture2D copy = texture.GetReadableCopy();
-            Assert.IsNotNull(copy, "Could not read the body texture.");
-            Color32[] pixels = copy.GetPixels32();
-            Object.DestroyImmediate(copy);
-            return pixels;
-        }
-
-        private static int DifferingPixels(Color32[] before, Color32[] after)
-        {
-            Assert.AreEqual(before.Length, after.Length, "The body texture changed its size.");
-            int differing = 0;
-            for (int i = 0; i < before.Length; i++)
-            {
-                Color32 a = before[i];
-                Color32 b = after[i];
-                if (a.r != b.r || a.g != b.g || a.b != b.b || a.a != b.a)
-                {
-                    differing++;
-                }
-            }
-            return differing;
-        }
     }
 }
