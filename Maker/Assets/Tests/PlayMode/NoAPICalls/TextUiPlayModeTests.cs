@@ -230,33 +230,33 @@ namespace NoAPICalls
 
         // /// <summary>Two texts stamped one after the other in the same colour are two findings:
         // /// each becomes a part of its own and keeps its own text.</summary>
-        // [UnityTest]
-        // public IEnumerator TwoTextsInTheSameColour_AreTwoPartsWithTheirOwnText()
-        // {
-        //     yield return LoadLipEdemaTwin();
-        //     var partManager = FindPartManager();
-        //     var swell = partManager.groups.First(g => g.name == "Swell");
-        //     yield return SelectGroupForPainting(swell);
-        //     int partsBefore = swell.groupParts.Count;
+        [UnityTest]
+        public IEnumerator TwoTextsInTheSameColour_AreTwoPartsWithTheirOwnText()
+        {
+            yield return LoadLipEdemaTwin();
+            var partManager = FindPartManager();
+            var swell = partManager.groups.First(g => g.name == "Swell");
+            yield return SelectGroupForPainting(swell);
+            int partsBefore = swell.groupParts.Count;
 
-        //     yield return ClickButtonByName("Edit Button");
-        //     yield return WaitForModeActive("Edit");
-        //     yield return SelectView(BodyView);
-        //     yield return OpenTextScreen();
-        //     yield return ClickColour("Red");
-        //     yield return TypeText("Knee");
-        //     yield return StampText();
-        //     yield return TypeText("Hip");
-        //     yield return StampText();
+            yield return ClickButtonByName("Edit Button");
+            yield return WaitForModeActive("Edit");
+            yield return SelectView(BodyView);
+            yield return OpenTextScreen();
+            yield return ClickColour("Red");
+            yield return TypeText("Knee");
+            yield return StampText();
+            yield return TypeText("Hip");
+            yield return StampText();
 
-        //     yield return LeaveTextScreen();
-        //     yield return ClickButtonByPath("Canvas/Edit UI/Top/GameObject/Back Button");
-        //     yield return WaitForModeActive("Main");
+            yield return LeaveTextScreen();
+            yield return ClickButtonByPath("Canvas/Edit UI/Top/GameObject/Back Button");
+            yield return WaitForModeActive("Main");
 
-        //     var texts = swell.groupParts.Skip(partsBefore).Select(p => p.textTool).ToArray();
-        //     CollectionAssert.AreEqual(new[] { "Knee", "Hip" }, texts,
-        //         "Each stamped text should be a part of its own, carrying the text it was stamped with.");
-        // }
+            var texts = swell.groupParts.Skip(partsBefore).Select(p => p.textTool).ToArray();
+            CollectionAssert.AreEqual(new[] { "Knee", "Hip" }, texts,
+                "Each stamped text should be a part of its own, carrying the text it was stamped with.");
+        }
 
 
         /// <summary>A placed text keeps its own text when the body is redrawn from the recorded
