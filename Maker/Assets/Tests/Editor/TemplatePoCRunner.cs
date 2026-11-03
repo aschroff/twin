@@ -129,7 +129,15 @@ public static class TemplatePoCRunner
     public static void RunStickerTests()
     {
         Run("NoAPICalls.StickerPlayModeTests.StickerImage_FollowsTheTwinThatIsOpen",
-            "NoAPICalls.StickerPlayModeTests.ImportedTwin_BringsAllItsStickerImages");
+            "NoAPICalls.StickerPlayModeTests.ImportedTwin_BringsAllItsStickerImages",
+            "NoAPICalls.StickerPlayModeTests.StickerPanel_OffersTenDefaultStickers",
+            "NoAPICalls.StickerPlayModeTests.EverySticker_PaintsItsOwnImage",
+            "NoAPICalls.StickerPlayModeTests.StickerName_BelongsToTheTwinItWasGivenIn",
+            "NoAPICalls.StickerPlayModeTests.EditButtons_TurnFlipAndResizeTheSelectedStickerOnly",
+            "NoAPICalls.StickerPlayModeTests.EditButtons_ShowOnTheBody",
+            "NoAPICalls.StickerPlayModeTests.Sticker_BecomesAPartThatKnowsItsSlot",
+            "NoAPICalls.StickerPlayModeTests.UndoAndRedo_TakeBackAndRestoreASticker",
+            "NoAPICalls.StickerPlayModeTests.PlacedSticker_SurvivesARestartPixelForPixel");
     }
 
     [MenuItem("Tools/Template PoC/Run SaveTwin Baseline Test")]
