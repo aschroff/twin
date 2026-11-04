@@ -360,7 +360,8 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 			GroupData firstGroup = new GroupData();
 			firstGroup.group = group;
 			groups.Add(firstGroup);
-			CurrentGroup = firstGroup;
+			// through the setter, which clears the flag of the group that was current
+			currentGroup = firstGroup;
 			return firstGroup;
 		}
 		else
@@ -369,7 +370,7 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 			nextGroup.group = group;
 			nextGroup.visible = true;
 			groups.Add(nextGroup);
-			CurrentGroup = nextGroup;
+			currentGroup = nextGroup;
 			return nextGroup;
 		}
 		startNewPart = true;
@@ -380,7 +381,7 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 		GroupData nextGroup = new GroupData();
 		nextGroup.group = group;
 		groups.Add(nextGroup);
-		CurrentGroup = nextGroup;
+		currentGroup = nextGroup;
 		return nextGroup;
 
 	}
@@ -426,6 +427,8 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 			}
 			else
 			{
+				CurrentGroup = null;
+				currentPart = null;
 				JsonUtility.FromJsonOverwrite(json, this);
 			}
 			viewManager = viewManagerTemp;
