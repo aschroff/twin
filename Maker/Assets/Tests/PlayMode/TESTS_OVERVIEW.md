@@ -5,7 +5,7 @@
 > `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
 > It replaced `TESTUEBERSICHT_FACHABTEILUNG.md` (TWIN-454).
 
-232 tests in three folders
+242 tests in three folders
 
 | Folder | Tests | What it needs |
 |---|---|---|
@@ -49,6 +49,7 @@ the automation menu **Tools → Template PoC → …** (results are written to
 | **StickerPlayModeTests** (2 tests) | P02 | Sticker images per twin: the image behind a sticker slot — and the image its hash points at — follows the twin that is open, and an imported twin brings its own images for slots the open twin uses with different ones. |
 | **PartTemplateServiceTests** (11 tests) | P02 | The Text→Part service (`Assets/Code/Proc/Paint/`): painting a body region into the active group, tool override (colour, metadata, sticker rejection), current-tool resolution with marker fallback, the region catalog, region names per language (enmed/demed/demedlatin), and the save format (linear file growth, no texture references, part↔group and texture links restored on load). |
 | **RegionUiPlayModeTests** (7 tests) | P02 | The Region screen (Edit → Region, TWIN-477) — the screen in front of `PartTemplateService`, which until then had no test. It opens with one row per region of the template catalog, and reopening rebuilds the list rather than adding a second copy of every row; it switches off the camera gestures, so a swipe over the list does not turn the body. Tapping a row paints the region into the current group: one new part carrying the region key and the localized region name, linked to its group, and visible on the body (pixel comparison) — all of which survives leaving and reopening the twin. The region is painted with the marker picked before opening the screen (its name and colour go onto the part); with a sticker picked, which cannot carry a region template, it falls back to the first marker (`Blue`) instead of painting nothing. |
+| **TextUiPlayModeTests** (10 tests) | P02 | The Text screen (Edit → Text, mode `EditText`, TWIN-489), which until then was checked by hand only (06/06 a). It opens with the text field, the size dropdown and one row per text colour, and its Edit button leads back; it switches off the camera gestures. What is typed is what the decal camera renders (`Dynamic Decal/Decal Canvas/Decal Text`). Each colour row makes its own `<Colour> Tool Paint Dynamic Decal` the only active tool, and a size from the dropdown goes onto all eight text tools (option n → radius n / 100). Stamping a text adds one part to the current group, visible on the body (pixel comparison), carrying the text, colour, tool and the row's meaning — and all of that survives leaving and reopening the twin. |
 | **ProgrammaticPaintingTests**<br>`PaintTemplateParts_ThreeRegions` | P02 | Regression test for driving the CW paint pipeline from code (marker stroke, filler area): parts get the right tool metadata, a stored view, and survive the save round trip. Foundation of the template library generator. |
 | **GroupDetailPlayModeTests**<br>`PaintingPerGroup_ShowsOnePartPerSelectedGroup` | P03 | Paints one part into every group of the LipEdema twin (a different marker each) plus one into a newly created group; then on the group detail page selects one group at a time and verifies exactly that group's single part is listed. |
 | **GroupPlayModeTests**<br>`HideAndShowGroup_KeepsItsParts` | P03 | Hiding and showing a group (overlay toggle) replays the visible groups; the hidden group keeps its parts, they stay bound to the paintable texture, and painting still works afterwards. |
@@ -192,6 +193,13 @@ is described in the class comment of `TemplateLibraryGenerator.cs`.
   rest, only `Canvas/Edit UI/Bottom/Region/Icon` is wired to `InteractionController.EnableMode`;
   its text and backgrounds carry no listener, in the real app too. Click the icon
   (`RegionUiPlayModeTests.OpenRegionScreen`).
+- **Texts and stickers paint on release.** Their hit-screens are `OnceOnRelease`, and
+  `DragOnCanvas` never sends the release (`up = true`), so with it a text or sticker is only
+  previewed and no part appears. Send down and up yourself (`TextUiPlayModeTests.StampText`).
+- **A part's tool information is written when the part is closed** — by the next part, a save,
+  or leaving Edit for Main, Shape or Move (`PartManager.StoreCurrentPartInformation`). Until
+  then `typeTool`, `nameTool`, `colorTool` and `textTool` of the newest part are not filled in;
+  leave to Main before reading them.
 - **A new part starts on a tool change**, not on a group change (known bug), so give each part
   its own marker when you need parts in different groups.
 - **The chosen language outlives the test.** `LocalizationSettings.SelectedLocale` is static and

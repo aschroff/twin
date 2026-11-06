@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using NUnit.Framework;
+using PaintCore;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -137,6 +138,36 @@ namespace NoAPICalls
             Assert.IsNotEmpty(had, $"'{toolName}' was expected to carry a meaning before being freed.");
             input.text = "";
             return had;
+        }
+
+        /// <summary>A readable copy of the body's paint texture.</summary>
+        protected static Color32[] BodyPixels()
+        {
+            Body body = Object.FindObjectOfType<Body>();
+            Assert.IsNotNull(body, "No Body found in the scene.");
+            CwPaintableTexture texture = body.GetComponent<CwPaintableTexture>();
+            Assert.IsNotNull(texture, "The Body has no paintable texture.");
+            Texture2D copy = texture.GetReadableCopy();
+            Assert.IsNotNull(copy, "Could not read the body texture.");
+            Color32[] pixels = copy.GetPixels32();
+            Object.DestroyImmediate(copy);
+            return pixels;
+        }
+
+        protected static int DifferingPixels(Color32[] before, Color32[] after)
+        {
+            Assert.AreEqual(before.Length, after.Length, "The body texture changed its size.");
+            int differing = 0;
+            for (int i = 0; i < before.Length; i++)
+            {
+                Color32 a = before[i];
+                Color32 b = after[i];
+                if (a.r != b.r || a.g != b.g || a.b != b.b || a.a != b.a)
+                {
+                    differing++;
+                }
+            }
+            return differing;
         }
 
         /// <summary>Asserts that every part is linked to its group and that its commands are
