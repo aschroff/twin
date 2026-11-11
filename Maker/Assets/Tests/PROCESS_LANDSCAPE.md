@@ -81,9 +81,12 @@ under **P07** and counted there.
 
 | | |
 |---|---|
-| Automated | `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests` (1), `PartTemplateServiceTests` (11), `RegionUiPlayModeTests` (7), `PartHistoryTests` (13), `InfoDisplayPlayModeTests` (1 of its 5) |
+| Automated | `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (10), `ProgrammaticPaintingTests` (1), `PartTemplateServiceTests` (11), `RegionUiPlayModeTests` (7), `PartHistoryTests` (13), `InfoDisplayPlayModeTests` (1 of its 5) |
 | Manual | 06/01 Edit navigation · 06/02 a Marker painting · 06/02 b Marker name · 06/03 a Sticker edit with default sticker · 06/03 b Importing a photo as sticker · 06/04 Delete · 06/05 Filler · 06/06 a Text colour and size · 06/08 Placement |
-| **Gap** | **A** — Text, Filler and Delete are checked by hand only, and so are naming a marker (06/02 b) and turning, flipping and resizing a sticker (06/03 a).<br>**B** — the **Region screen** is automated (`RegionUiPlayModeTests`, TWIN-477, on top of the 11 tests of the service behind it) and the manual catalogue does not mention it. 06/01 lists five tools; the Edit screen's bottom bar has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). Shape is the seventh but belongs to **P04**, where it is covered. |
+| **Gap** | **A** — Text, Filler and Delete are checked by hand only, and so are naming a marker (06/02 b) and picking a photo as a sticker in the device's gallery (06/03 b), including that a new photo puts the sticker back to unturned and default size (the tests start from the picked image).<br>**B** — the **Region screen** is automated (`RegionUiPlayModeTests`, TWIN-477, on top of the 11 tests of the service behind it) and the manual catalogue does not mention it. 06/01 lists five tools; the Edit screen's bottom bar has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). Shape is the seventh but belongs to **P04**, where it is covered. |
+
+The **Sticker** (06/03 a, 06/03 b from the picked image on) is automated by
+`StickerPlayModeTests`, including turning, flipping and resizing.
 
 `EditUiPlayModeTests`, which paints through the Edit screen, is the chain **K01** and is therefore
 not counted here.
