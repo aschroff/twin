@@ -5,12 +5,12 @@
 > `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
 > It replaced `TESTUEBERSICHT_FACHABTEILUNG.md` (TWIN-454).
 
-237 tests in three folders
+240 tests in three folders
 
 | Folder | Tests | What it needs |
 |---|---|---|
 | `Assets/Tests/EditMode/` | 109 | nothing — no scene, no app, no network |
-| `Assets/Tests/PlayMode/NoAPICalls/` | 111 | the real app, no external service |
+| `Assets/Tests/PlayMode/NoAPICalls/` | 116 | the real app, no external service |
 | `Assets/Tests/PlayMode/APICalls/` | 15 | a key in `Assets/Tests/Helper/testsecrets.json`; costs tokens |
 
 Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs` (P01–P07,

@@ -259,21 +259,23 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 | `P04_look_at_the_twin` | 12 |
 | `P05_describe_and_report` | 28 |
 | `P06_exchange_twins` | 58 |
-| `P07_app_frame` | 17 |
+| `P07_app_frame` | 20 |
 | `T00_technical` | 30 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **237** |
+| **total** | **240** |
 
-By cost: 109 in `EditMode/`, 111 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
+By cost: 109 in `EditMode/`, 116 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
 counted: the 15 `[Explicit]` tests described above.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now
 at twelve — the Shape screen brought eight with TWIN-473. `P01_manage_twins` gained
 `TwinNameValidationPlayModeTests` (5) with TWIN-469. `P07_app_frame` gained `AppResetPlayModeTests`
-(2) with TWIN-481 and `LanguagePlayModeTests` (5) with TWIN-483. `P02_mark_up_the_body` gained
+(2) with TWIN-481 and `LanguagePlayModeTests` (5 with TWIN-483, 8 since TWIN-482).
+`P06_exchange_twins` gained `NewVersionPlayModeTests` (5) with TWIN-491. `P02_mark_up_the_body` gained
 `RegionUiPlayModeTests` (7) with TWIN-477. What has no test at all is K02, K03 and K04.
 
 **Counted on 6 October 2026** (at `3dfbde0`, TWIN-473), by reflection over both test assemblies —
 the same walk the guard test makes. The five tests of TWIN-469, the two of TWIN-481, the seven of
-TWIN-477 and the five of TWIN-483 were added by hand on 21 October 2026.
+TWIN-477 and the five of TWIN-483 were added by hand on 21 October 2026. **Recounted on 11 November
+2026** (at `4e6395c4`, TWIN-491) from the editor's `list_tests`, leaving out the `[Explicit]` ones.
