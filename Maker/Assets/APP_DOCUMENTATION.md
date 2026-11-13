@@ -82,6 +82,24 @@ cache when there is one and otherwise reads the file and fills the cache from it
 - The app cannot delete the twin that is currently selected, so the twin list can never be emptied.
 - The `V99` ceiling fails an import with a log line and nothing on screen.
 
+### New and cloned versions
+
+Three buttons add a version to the open twin, all in `ConfigManager`:
+
+| Button | Method | Label | Result |
+|---|---|---|---|
+| **New Version**, main screen | `newConfigFromMainMenu` | the date (`DATE_VERSION_SMART`, `MM-dd-yy-mmss`), set automatically | a copy of the open version, groups and parts included |
+| **New**, versions screen | `newConfigFromInput` | from the input, which proposes the same date | an empty version |
+| **Save as**, versions screen | `cloneConfigFromInput` | from the input | a copy of the open version, groups and parts included |
+
+New on the versions screen starts an empty version, with **no groups and no parts**. New Version
+on the main screen does what Save as does — it clones the open version with everything in it — and
+differs from it only in that the label is the date instead of the input.
+
+Saving onto a label that already exists **overwrites** that version — this is intended.
+`TwinNameValidator` refuses only `000` when `<name>.000` already exists, the version a twin is
+created with.
+
 ### Twin versions on the server
 
 Since TWIN-437 a twin version can be uploaded to the backend and listed back; since TWIN-463 one
@@ -362,6 +380,7 @@ Spec, target structure and the remaining steps:
   `Maker` object (`InteractionController`) that button clicks target. `Canvas` itself is not a
   prefab, so panels are children of it in the scene.
 - **Text → Part feature** (`Assets/Code/Proc/Paint/`): `PartTemplateService.PaintRegion(twin, region)` paints a pre-painted body-region template (bundled twins under `Resources/templates/`, 98 regions — catalog in `Assets/Resources/BODY_REGIONS.md`) into the twin's active group, optionally as a chosen marker/filler tool. The part carries `regionKey` plus the localized region name as its description. Region names live in `TwinLocalTables` under `region.<key>` for `enmed`/`demed`/`demedlatin` and are imported from `Assets/Resources/region_names.tsv` via **Tools → Localization → Import Region Names**. Manual selection UI: the Region screen (Edit → Region, mode `EditRegion`, `EditRegionMode` + `RegionManager`), which rebuilds its list of all catalog regions every time it opens and switches off the camera gestures; tapping a row's icon paints that region with the current tool via `PartTemplateService.PaintRegionWithCurrentTool`, falling back to the first marker when the current tool is a sticker. In the Edit bar only the Region button's `Icon` child is wired to `EnableMode` — its text and backgrounds do nothing. Covered by `RegionUiPlayModeTests` (TWIN-477). Spec and findings: `Assets/Code/Proc/Paint/FEATURE_TEXT_TO_PART.md`. Generation tooling: `Assets/Tests/PlayMode/TemplateLibraryTools/` (marked `[Explicit]` — not part of the app test suite).
+- **Text screen** (Edit → Text, mode `EditText`, `EditTextMode`): a text field, a size dropdown and eight colour rows. Each row isolates one `Tools/<Colour> Tool Paint Dynamic Decal`; the text field writes into `Dynamic Decal/Decal Canvas/Decal Text`, which `Decal Camera` renders into the decal's `Shape`, and the dropdown (`SetFontSize`) sets the `Radius` of all eight text tools to (index + 1) × 0.1. A text tool paints `OnceOnRelease`. The part's `textTool`, `colorTool` and `nameTool` are written when the part is closed, and `textTool` is read from `PartManager.currentText` at that moment. **Known faults**, each pinned by a test in `TextUiPlayModeTests` (TWIN-489) that is `[Ignore]`d until its ticket is fixed: the dropdown's serialized value is 40 for ten options, so it shows 100 while the tools stamp at 0.5 (TWIN-501); since a new part starts only on a tool change, two texts placed one after the other in the same colour become one part carrying only the last text (TWIN-503); and a placed text has no picture of its own — the paint command refers to the one live RenderTexture, so every redraw of the body (screenshots, hiding a group, undo, reopening the twin) paints all placed texts with the text typed last. A fix needs a copy of the RenderTexture per placed text, saved with the twin and registered under its own hash, like sticker images (TWIN-497, TWIN-498). Remove the `Ignore` when the ticket is fixed.
 
 ---
 

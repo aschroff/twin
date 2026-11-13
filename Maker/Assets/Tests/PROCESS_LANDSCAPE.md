@@ -81,9 +81,9 @@ under **P07** and counted there.
 
 | | |
 |---|---|
-| Automated | `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests` (1), `PartTemplateServiceTests` (11), `RegionUiPlayModeTests` (7), `PartHistoryTests` (13), `InfoDisplayPlayModeTests` (1 of its 5) |
+| Automated | `UndoRedoPlayModeTests` (2), `StickerPlayModeTests` (2), `ProgrammaticPaintingTests` (1), `PartTemplateServiceTests` (11), `RegionUiPlayModeTests` (7), `TextUiPlayModeTests` (10), `PartHistoryTests` (13), `InfoDisplayPlayModeTests` (1 of its 5) |
 | Manual | 06/01 Edit navigation · 06/02 a Marker painting · 06/02 b Marker name · 06/03 a Sticker edit with default sticker · 06/03 b Importing a photo as sticker · 06/04 Delete · 06/05 Filler · 06/06 a Text colour and size · 06/08 Placement |
-| **Gap** | **A** — Text, Filler and Delete are checked by hand only, and so are naming a marker (06/02 b) and turning, flipping and resizing a sticker (06/03 a).<br>**B** — the **Region screen** is automated (`RegionUiPlayModeTests`, TWIN-477, on top of the 11 tests of the service behind it) and the manual catalogue does not mention it. 06/01 lists five tools; the Edit screen's bottom bar has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). Shape is the seventh but belongs to **P04**, where it is covered. |
+| **Gap** | **A** — Filler and Delete are checked by hand only, and so are naming a marker (06/02 b) and turning, flipping and resizing a sticker (06/03 a).<br>**B** — the **Region screen** is automated (`RegionUiPlayModeTests`, TWIN-477, on top of the 11 tests of the service behind it) and the manual catalogue does not mention it. 06/01 lists five tools; the Edit screen's bottom bar has seven (Marker, Filler, Sticker, Text, Delete, Region, Shape). Shape is the seventh but belongs to **P04**, where it is covered.|
 
 `EditUiPlayModeTests`, which paints through the Edit screen, is the chain **K01** and is therefore
 not counted here.
@@ -116,9 +116,9 @@ not counted here.
 
 | | |
 |---|---|
-| Automated | `ImportTwinPlayModeTests` (10), `TwinVersionsClientTests` (17), `TwinVersionRowTests` (9), `TwinAuthTests` (17) |
+| Automated | `ImportTwinPlayModeTests` (10), `NewVersionPlayModeTests` (5), `TwinVersionsClientTests` (17), `TwinVersionRowTests` (9), `TwinAuthTests` (17) |
 | Manual | 10/01 Export a zip · 10/02 Import a zip · 11/01 New version · 11/02 Clone version |
-| **Gap** | **A** — creating a new version and cloning one (11/01, 11/02) are checked by hand only.<br>**B** — uploading to and downloading from the server, and signing in to it, are automated at the level of the client and the version rows, and have no manual test. |
+| **Gap** | **B** — uploading to and downloading from the server, and signing in to it, are automated at the level of the client and the version rows, and have no manual test. |
 
 ### P07 — App frame
 
@@ -145,9 +145,8 @@ version report, with a key). K02, K03 and K04 have no test.
 | **B** | automated, not in the manual catalogue | no risk to the product; the business department cannot see what is already safe |
 | **C** | checked by neither | a real hole |
 
-**There is no C gap.** In order of value, the A gaps are: the remaining tools (P02), new and cloned
-versions (P06), a photo turned into a twin (P05), and the screens and code-set texts the language
-test does not walk (P07).
+**There is no C gap.** In order of value, the A gaps are: the remaining tools (P02), a photo turned into a
+twin (P05), and the screens and code-set texts the language test does not walk (P07).
 
 ---
 
@@ -255,26 +254,28 @@ listed in `PlayMode/TESTS_OVERVIEW.md`, which stays the technical inventory.
 | Address | Tests |
 |---|---|
 | `P01_manage_twins` | 37 |
-| `P02_mark_up_the_body` | 37 |
+| `P02_mark_up_the_body` | 47 |
 | `P03_organise_into_groups` | 16 |
 | `P04_look_at_the_twin` | 12 |
 | `P05_describe_and_report` | 28 |
-| `P06_exchange_twins` | 53 |
-| `P07_app_frame` | 17 |
+| `P06_exchange_twins` | 58 |
+| `P07_app_frame` | 20 |
 | `T00_technical` | 30 |
 | `K01_new_twin_first_parts` | 1 |
 | `K05_report_on_a_version` | 1 |
-| **total** | **232** |
+| **total** | **250** |
 
-By cost: 109 in `EditMode/`, 111 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
+By cost: 109 in `EditMode/`, 126 in `PlayMode/NoAPICalls/`, 15 in `PlayMode/APICalls/`. Not
 counted: the 15 `[Explicit]` tests described above.
 
 `P04_look_at_the_twin` stood at one test until TWIN-456, went to four with stored views, and is now
 at twelve — the Shape screen brought eight with TWIN-473. `P01_manage_twins` gained
 `TwinNameValidationPlayModeTests` (5) with TWIN-469. `P07_app_frame` gained `AppResetPlayModeTests`
-(2) with TWIN-481 and `LanguagePlayModeTests` (5) with TWIN-483. `P02_mark_up_the_body` gained
-`RegionUiPlayModeTests` (7) with TWIN-477. What has no test at all is K02, K03 and K04.
+(2) with TWIN-481 and `LanguagePlayModeTests` (5 with TWIN-483, 8 since TWIN-482).
+`P06_exchange_twins` gained `NewVersionPlayModeTests` (5) with TWIN-491. `P02_mark_up_the_body` gained
+`RegionUiPlayModeTests` (7) with TWIN-477 and `TextUiPlayModeTests` (10, three of them `[Ignore]`d) with TWIN-489. What has no test at all is K02, K03 and K04.
 
 **Counted on 6 October 2026** (at `3dfbde0`, TWIN-473), by reflection over both test assemblies —
 the same walk the guard test makes. The five tests of TWIN-469, the two of TWIN-481, the seven of
-TWIN-477 and the five of TWIN-483 were added by hand on 21 October 2026.
+TWIN-477 and the five of TWIN-483 were added by hand on 21 October 2026. **Recounted on 11 November
+2026** (at `4e6395c4`, TWIN-491) from the editor's `list_tests`, leaving out the `[Explicit]` ones. The ten tests of TWIN-489 were added by hand on 11 November 2026; `[Ignore]`d tests are counted.
