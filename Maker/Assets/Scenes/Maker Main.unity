@@ -3981,7 +3981,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5960694104138595944, guid: 570be41bf7ac241c2a2ff15fbbbcca67, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: Version
+      value: Main
       objectReference: {fileID: 0}
     - target: {fileID: 6446188297043598189, guid: 570be41bf7ac241c2a2ff15fbbbcca67, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11409,6 +11409,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8038675664049359812}
     m_Modifications:
+    - target: {fileID: 1339833614156929834, guid: 26dfa5c093ce448ef9abe742f63882da, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5513377015833497343}
+    - target: {fileID: 1339833614156929834, guid: 26dfa5c093ce448ef9abe742f63882da, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EnableMode
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339833614156929834, guid: 26dfa5c093ce448ef9abe742f63882da, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InteractionController, Maker.Runtime
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339833614156929834, guid: 26dfa5c093ce448ef9abe742f63882da, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Help
+      objectReference: {fileID: 0}
     - target: {fileID: 2882719511279061501, guid: 26dfa5c093ce448ef9abe742f63882da, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
