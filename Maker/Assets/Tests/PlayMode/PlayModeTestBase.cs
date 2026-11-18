@@ -74,6 +74,14 @@ public abstract class PlayModeTestBase : TestBase
         yield return ClickButtonByPath("Canvas/Settings UI/SettingsPanel/Reset");
     }
 
+    /// <summary>Selecting a twin leaves the app on the twin list; this goes back to the main
+    /// screen.</summary>
+    protected IEnumerator BackToMain()
+    {
+        yield return ClickButtonByPath("Canvas/Save UI/Top/GameObject/Back Button");
+        yield return WaitForModeActive("Main");
+    }
+
     protected IEnumerator WaitForModeActive(string modeName, float timeout = 10f)
     {
         Assert.IsTrue(
