@@ -48,6 +48,15 @@ namespace NoAPICalls
             yield return WaitWhileLoading();
         }
 
+        /// <summary>Opens a twin through the twin list and comes back to the main screen. Not to
+        /// be mistaken for a test's own <c>OpenTwin(profileId)</c>, which switches the profile
+        /// directly without the UI.</summary>
+        protected IEnumerator OpenTwinFromList(string twinName)
+        {
+            yield return SelectTwin(twinName);
+            yield return BackToMain();
+        }
+
         /// <summary>Selects a stored view, which frames the body for painting.</summary>
         protected IEnumerator SelectView(string viewName)
         {
