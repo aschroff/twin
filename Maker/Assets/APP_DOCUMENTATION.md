@@ -346,6 +346,22 @@ Spec, target structure and the remaining steps:
   stroke copied the 8192² body texture (256 MiB), so an iPad Air was killed by iOS on the seventh
   stroke; it also left the texture and the saved parts disagreeing, so undone strokes came back on
   the next load. Pinned by `UndoRedoPlayModeTests.Painting_StoresNoTextureCopies`.
+- **The eraser is `Tools/Original`**, a `CwPaintSphere` in blend mode `REPLACE_ORIGINAL` that
+  paints the body's original texture back (`Tools/Delete` is an unused leftover). A tap on the
+  Delete button of the Edit bar does two things: its `Button.onClick` opens the Delete screen, and
+  a `CwDemoButton` (Isolate) selects the eraser. Every part of the button — `Delete`, `Icon`,
+  `Icon Background`, `Text Background` and the label `Text Background/Text` — needs its own
+  `CwDemoButton`, because the topmost part with a `Button` takes the pointer-down; the label lacked
+  one until TWIN-488, so tapping the word "Delete" opened the screen with no tool active. The
+  components live in `Edit UI.prefab`, but their `isolateTarget` is set as an override in *Maker
+  Main*, because a prefab cannot reference the scene object `Tools/Original`. The eraser carries no
+  `ToolTracker` (it has no meaning to read), so `PartManager.StoreCurrentPartInformation` must not
+  assume one; an erase stroke becomes a part of tool type `Delete` in the current group. Covered by
+  `DeleteUiPlayModeTests`.
+  **Known limit:** a repaint replays the visible groups one after the other, in list order, not in
+  the order the strokes were made. An erase stroke in a group that comes *before* the group of the
+  paint it erased is replayed first, so the paint comes back on the next repaint (hiding/showing a
+  group, Undo). Erasing in the same group as the paint is not affected.
 - **Sticker images and their hashes**: a sticker *slot* (`Sticker` + `Item` in the EditSticker UI,
   10 of them) has a fixed `Item.id`, its image is `<Item.id>.png` in the twin directory, and its
   hash is `sum of the id characters % 100` (`Item.getHash`). Paint commands store that hash, so the

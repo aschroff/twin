@@ -755,7 +755,10 @@ public class PartManager : PaintCommandSerialization, IDataPersistence, ItemFile
 
 		if (activeTool != null && currentPart != null)
 		{
-			GameObject selected = activeTool.GetComponent<ToolTracker>().myButton.gameObject;
+			// The eraser (Tools/Original) has no ToolTracker: it has no meaning to read, and its
+			// part needs only its tool type.
+			ToolTracker tracker = activeTool.GetComponent<ToolTracker>();
+			GameObject selected = tracker != null ? tracker.myButton : null;
 			currentPart.typeTool = DeriveType(activeTool);
 			if (currentPart.typeTool == Tool.MarkerLine || currentPart.typeTool == Tool.MarkerDotted || currentPart.typeTool == Tool.Filler)
 			{
