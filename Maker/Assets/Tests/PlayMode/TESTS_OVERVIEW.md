@@ -5,12 +5,12 @@
 > `Assets/Tests/PROCESS_LANDSCAPE.md`, which is also the document the business department reads.
 > It replaced `TESTUEBERSICHT_FACHABTEILUNG.md` (TWIN-454).
 
-250 tests in three folders
+262 tests in three folders
 
 | Folder | Tests | What it needs |
 |---|---|---|
 | `Assets/Tests/EditMode/` | 109 | nothing — no scene, no app, no network |
-| `Assets/Tests/PlayMode/NoAPICalls/` | 126 | the real app, no external service |
+| `Assets/Tests/PlayMode/NoAPICalls/` | 138 | the real app, no external service |
 | `Assets/Tests/PlayMode/APICalls/` | 15 | a key in `Assets/Tests/Helper/testsecrets.json`; costs tokens |
 
 Every test carries exactly one category from `Assets/Tests/Helper/TestCategories.cs` (P01–P07,
@@ -30,7 +30,7 @@ the automation menu **Tools → Template PoC → …** (results are written to
 
 | File | Purpose |
 |------|---------|
-| `PlayModeTestBase.cs` | Scene loading, temp data path, UI helpers (click by name/path, wait for mode, find list entries, `DragOnCanvas` for painting). `LoadAppScene()` is the scene load on its own, for a test that starts the app a second time on the same data path. |
+| `PlayModeTestBase.cs` | Scene loading, temp data path, UI helpers (click by name/path, `TapByPath` for a full pointer tap, wait for mode, find list entries, `DragOnCanvas` for painting). `LoadAppScene()` is the scene load on its own, for a test that starts the app a second time on the same data path. |
 | `NoAPICalls/TwinPaintTestBase.cs` | App flows shared by painting tests: load the LipEdema twin, select a view, choose the current group, paint with a marker, show/hide a group, assert parts are usable. |
 
 ## `NoAPICalls/` — app tests, no external services
@@ -50,6 +50,7 @@ the automation menu **Tools → Template PoC → …** (results are written to
 | **PartTemplateServiceTests** (11 tests) | P02 | The Text→Part service (`Assets/Code/Proc/Paint/`): painting a body region into the active group, tool override (colour, metadata, sticker rejection), current-tool resolution with marker fallback, the region catalog, region names per language (enmed/demed/demedlatin), and the save format (linear file growth, no texture references, part↔group and texture links restored on load). |
 | **RegionUiPlayModeTests** (7 tests) | P02 | The Region screen (Edit → Region, TWIN-477) — the screen in front of `PartTemplateService`, which until then had no test. It opens with one row per region of the template catalog, and reopening rebuilds the list rather than adding a second copy of every row; it switches off the camera gestures, so a swipe over the list does not turn the body. Tapping a row paints the region into the current group: one new part carrying the region key and the localized region name, linked to its group, and visible on the body (pixel comparison) — all of which survives leaving and reopening the twin. The region is painted with the marker picked before opening the screen (its name and colour go onto the part); with a sticker picked, which cannot carry a region template, it falls back to the first marker (`Blue`) instead of painting nothing. |
 | **TextUiPlayModeTests** (10 tests) | P02 | The Text screen (Edit → Text, mode `EditText`, TWIN-489), which until then was checked by hand only (06/06 a). It opens with the text field, the size dropdown and one row per text colour, and its Edit button leads back; it switches off the camera gestures. What is typed is what the decal camera renders (`Dynamic Decal/Decal Canvas/Decal Text`). Each colour row makes its own `<Colour> Tool Paint Dynamic Decal` the only active tool, and a size from the dropdown goes onto all eight text tools (option n → radius n / 100). Stamping a text adds one part to the current group, visible on the body (pixel comparison), carrying the text, colour, tool and the row's meaning — and all of that survives leaving and reopening the twin. Three tests pin known faults and are `[Ignore]`d until their tickets are fixed: the dropdown shows a different size than the tools stamp with (TWIN-501), two texts in the same colour become one part (TWIN-503), and a redraw of the body paints every placed text with the text typed last (TWIN-497/TWIN-498). |
+| **DeleteUiPlayModeTests** (12 tests) | P02 | The Delete screen (Edit → Delete, mode `EditDelete`) and its eraser `Tools/Original`, a sphere in blend mode `REPLACE_ORIGINAL` that paints the body's original texture back; until then checked by hand only (06/04). Every part of the Delete button (icon, its background, the label and the label's background) opens the screen with the eraser as the only active tool, and the screen switches off the camera gestures. The size dropdown shows the eraser's size and sets its radius (entry n → radius (n + 1) × 0.01). Erasing over a marker stroke takes the paint off the body (pixel comparison), is recorded as a part of its own, of tool type `Delete`, in the current group, survives leaving and reopening the twin, and is taken back by Undo. |
 | **ProgrammaticPaintingTests**<br>`PaintTemplateParts_ThreeRegions` | P02 | Regression test for driving the CW paint pipeline from code (marker stroke, filler area): parts get the right tool metadata, a stored view, and survive the save round trip. Foundation of the template library generator. |
 | **GroupDetailPlayModeTests**<br>`PaintingPerGroup_ShowsOnePartPerSelectedGroup` | P03 | Paints one part into every group of the LipEdema twin (a different marker each) plus one into a newly created group; then on the group detail page selects one group at a time and verifies exactly that group's single part is listed. |
 | **GroupPlayModeTests**<br>`HideAndShowGroup_KeepsItsParts` | P03 | Hiding and showing a group (overlay toggle) replays the visible groups; the hidden group keeps its parts, they stay bound to the paintable texture, and painting still works afterwards. |
@@ -194,6 +195,7 @@ is described in the class comment of `TemplateLibraryGenerator.cs`.
   rest, only `Canvas/Edit UI/Bottom/Region/Icon` is wired to `InteractionController.EnableMode`;
   its text and backgrounds carry no listener, in the real app too. Click the icon
   (`RegionUiPlayModeTests.OpenRegionScreen`).
+- **Some buttons need a real tap.** `ClickButtonByPath` invokes only `Button.onClick`. A `CwDemoButton` that selects a tool listens to pointer-down instead, so the click opens the screen and the tool stays off — the Delete button opens its screen through `onClick` and selects the eraser through a `CwDemoButton`. `TapByPath` sends pointer down, up and click to the nearest handler up the hierarchy, as the EventSystem does (`DeleteUiPlayModeTests.OpenDeleteScreen`).
 - **Texts and stickers paint on release.** Their hit-screens are `OnceOnRelease`, and
   `DragOnCanvas` never sends the release (`up = true`), so with it a text or sticker is only
   previewed and no part appears. Send down and up yourself (`TextUiPlayModeTests.StampText`).
