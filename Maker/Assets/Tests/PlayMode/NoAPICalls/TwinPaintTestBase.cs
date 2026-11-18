@@ -22,6 +22,10 @@ namespace NoAPICalls
         /// nothing — so a view has to be selected before painting.</summary>
         protected const string BodyView = "Upper body";
 
+        /// <summary>The scene object whose children are the paint tools; exactly one of them is
+        /// switched on at a time.</summary>
+        protected const string ToolsRoot = "Tools";
+
         protected static PartManager FindPartManager()
         {
             var partManager = Object.FindObjectOfType<PartManager>();
@@ -46,6 +50,15 @@ namespace NoAPICalls
             Assert.IsNotNull(twinEntry, $"Twin '{twinName}' not found in the twin list.");
             yield return ClickButtonByPath(path: "Unselect", root: twinEntry);
             yield return WaitWhileLoading();
+        }
+
+        /// <summary>Opens a twin through the twin list and comes back to the main screen. Not to
+        /// be mistaken for a test's own <c>OpenTwin(profileId)</c>, which switches the profile
+        /// directly without the UI.</summary>
+        protected IEnumerator OpenTwinFromList(string twinName)
+        {
+            yield return SelectTwin(twinName);
+            yield return BackToMain();
         }
 
         /// <summary>Selects a stored view, which frames the body for painting.</summary>
@@ -138,6 +151,38 @@ namespace NoAPICalls
             Assert.IsNotEmpty(had, $"'{toolName}' was expected to carry a meaning before being freed.");
             input.text = "";
             return had;
+        }
+
+        /// <summary>Asserts that the given tool is switched on and that it is the only one.</summary>
+        protected void AssertOnlyActiveTool(GameObject tool)
+        {
+            Assert.IsTrue(tool.activeInHierarchy, $"The row of '{tool.name}' did not switch its tool on.");
+            string[] active = FindGameObjectByPath(ToolsRoot).transform.Cast<Transform>()
+                .Where(child => child.gameObject.activeSelf)
+                .Select(child => child.name)
+                .ToArray();
+            CollectionAssert.AreEqual(new[] { tool.name }, active,
+                $"Only '{tool.name}' should be switched on.");
+        }
+
+        protected static Vector2 ScreenCentre()
+        {
+            return new Vector2(Screen.width / 2f, Screen.height / 2f);
+        }
+
+        /// <summary>A horizontal stroke through the screen centre, shifted up or down by
+        /// <paramref name="offsetY"/> pixels.</summary>
+        protected static Vector2[] Stroke(float offsetY)
+        {
+            const int points = 25;
+            const float halfLength = 120f;
+            Vector2 centre = ScreenCentre() + new Vector2(0f, offsetY);
+            var stroke = new Vector2[points];
+            for (int i = 0; i < points; i++)
+            {
+                stroke[i] = centre + new Vector2(Mathf.Lerp(-halfLength, halfLength, i / (points - 1f)), 0f);
+            }
+            return stroke;
         }
 
         /// <summary>A readable copy of the body's paint texture.</summary>
