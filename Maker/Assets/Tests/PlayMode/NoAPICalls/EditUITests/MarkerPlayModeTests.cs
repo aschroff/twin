@@ -23,14 +23,10 @@ namespace NoAPICalls
     /// same spot, each one over the one before.
     /// </summary>
     [Category(Processes.MarkUpTheBody)]
-    public class MarkerPlayModeTests : TwinPaintTestBase
+    public class MarkerPlayModeTests : EditUiTestBase
     {
         private const string MarkerPanel = "Canvas/EditMarker UI/Bottom/Scroll/Panel";
-        private const string ToolsRoot = "Tools";
         private const int MarkersPerKind = 8;
-
-        /// <summary>Time for a replay of the body to reach the texture (see the painting guide).</summary>
-        private const float SettleSeconds = 0.5f;
 
         /// <summary>Largest distance per colour channel between the average of the painted pixels
         /// and the marker's colour. The soft rim of a dot blends with what was there before; measured
@@ -151,7 +147,7 @@ namespace NoAPICalls
             string twinB = DataPersistenceManager.instance.selectedProfileId;
             string id = MarkerRows().First(row => row.Tool.name == "Red").Item.id;
 
-            yield return OpenTwin(TwinA);
+            yield return OpenTwinFromList(TwinA);
             yield return EnterMarkerName("Red", "Pain");
             yield return AssertMarkerName(TwinB, twinB, id, "", "after naming it in the other twin");
             yield return AssertMarkerName(TwinA, twinA, id, "Pain", "after entering it");
@@ -290,29 +286,10 @@ namespace NoAPICalls
         /// marker panel open.</summary>
         private IEnumerator PrepareToPaint()
         {
-            yield return LoadLipEdemaTwin();
-            yield return BackToMain();
-            yield return ClickButtonByName("Edit Button");
-            yield return WaitForModeActive("Edit");
-            yield return SelectView(BodyView);
-            yield return SelectGroupForPainting(FindPartManager().groups[0]);
+            yield return PrepareToPaintInEditMode();
             yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Marker/Text Background/Text");
             yield return WaitForModeActive("EditMarker");
             yield return new WaitForSeconds(SettleSeconds);
-        }
-
-        /// <summary>Opens a twin through the twin list and comes back to the main screen.</summary>
-        private IEnumerator OpenTwin(string twinName)
-        {
-            yield return SelectTwin(twinName);
-            yield return BackToMain();
-        }
-
-        /// <summary>Selecting a twin leaves the app on the twin list.</summary>
-        private IEnumerator BackToMain()
-        {
-            yield return ClickButtonByPath("Canvas/Save UI/Top/GameObject/Back Button");
-            yield return WaitForModeActive("Main");
         }
 
         /// <summary>Creates a twin through the save screen and leaves the app on it.</summary>
@@ -328,8 +305,7 @@ namespace NoAPICalls
         /// <summary>From the main screen to the marker panel of the Edit screen.</summary>
         private IEnumerator OpenMarkerPanel()
         {
-            yield return ClickButtonByName("Edit Button");
-            yield return WaitForModeActive("Edit");
+            yield return OpenEditScreen();
             yield return ClickButtonByPath("Canvas/Edit UI/Bottom/Marker/Text Background/Text");
             yield return WaitForModeActive("EditMarker");
         }
@@ -367,7 +343,7 @@ namespace NoAPICalls
         /// the name stored in the twin's file. Leaves the app on the main screen.</summary>
         private IEnumerator AssertMarkerName(string twinName, string profileId, string itemId, string expected, string when)
         {
-            yield return OpenTwin(twinName);
+            yield return OpenTwinFromList(twinName);
 
             Assert.AreEqual(expected, FindToolMeaningField("Red").text,
                 $"The name shown for the marker in twin {twinName} {when}.");
@@ -375,18 +351,6 @@ namespace NoAPICalls
             ConfigData saved = DataPersistenceManager.instance.GetAllProfilesGameData()[profileId];
             saved.itemTexts.TryGetValue(itemId, out string stored);
             Assert.AreEqual(expected, stored ?? "", $"The name stored for the marker in twin {twinName} {when}.");
-        }
-
-        /// <summary>Moves the camera further away from the body by the given factor, keeping what
-        /// is in the centre of the screen.</summary>
-        private static IEnumerator ZoomOut(float factor)
-        {
-            ViewManager viewManager = Object.FindFirstObjectByType<ViewManager>(FindObjectsInactive.Include);
-            Assert.IsNotNull(viewManager, "No ViewManager in the scene.");
-            var view = viewManager.shootView();
-            view.sizeCamera *= factor;
-            viewManager.select(view);
-            yield return new WaitForSeconds(SettleSeconds);
         }
 
         /// <summary>Saves, closes and starts the app again on the same data, like a user quitting
@@ -449,115 +413,9 @@ namespace NoAPICalls
             return rows;
         }
 
-        private void AssertOnlyActiveTool(GameObject tool)
-        {
-            Assert.IsTrue(tool.activeInHierarchy, $"The row of '{tool.name}' did not switch its tool on.");
-            string[] active = FindGameObjectByPath(ToolsRoot).transform.Cast<Transform>()
-                .Where(child => child.gameObject.activeSelf)
-                .Select(child => child.name)
-                .ToArray();
-            CollectionAssert.AreEqual(new[] { tool.name }, active,
-                $"Only '{tool.name}' should be switched on.");
-        }
-
         private static string Names(IEnumerable<MarkerRow> rows)
         {
             return string.Join(", ", rows.Select(row => row.Tool.name));
-        }
-
-        // ------------------------------------------------------------------------------------
-        // Painting and reading the paint
-        // ------------------------------------------------------------------------------------
-
-        private static Vector2 ScreenCentre()
-        {
-            return new Vector2(Screen.width / 2f, Screen.height / 2f);
-        }
-
-        /// <summary>A horizontal stroke through the screen centre, shifted up or down by
-        /// <paramref name="offsetY"/> pixels.</summary>
-        private static Vector2[] Stroke(float offsetY)
-        {
-            const int points = 25;
-            const float halfLength = 120f;
-            Vector2 centre = ScreenCentre() + new Vector2(0f, offsetY);
-            var stroke = new Vector2[points];
-            for (int i = 0; i < points; i++)
-            {
-                stroke[i] = centre + new Vector2(Mathf.Lerp(-halfLength, halfLength, i / (points - 1f)), 0f);
-            }
-            return stroke;
-        }
-
-        /// <summary>Drives the paint pipeline of the active tool through the given screen
-        /// positions - down on the first, up on the last. The whole stroke has to happen within one
-        /// frame: between frames the real mouse, which is not pressed, ends the synthetic finger
-        /// (see the painting guide).</summary>
-        private static IEnumerator PaintInOneFrame(params Vector2[] screenPoints)
-        {
-            CwHitScreen[] hitScreens = Object.FindObjectsOfType<CwHitScreen>(false);
-            Assert.Greater(hitScreens.Length, 0, "No active CwHitScreen - is a marker selected?");
-
-            foreach (CwHitScreen hitScreen in hitScreens)
-            {
-                CwPointerMouse pointerMouse = hitScreen.GetComponent<CwPointerMouse>();
-                if (pointerMouse == null) continue;
-                hitScreen.GuiLayers = 0; // bypass the "started over GUI" guard
-
-                for (int i = 0; i < screenPoints.Length; i++)
-                {
-                    pointerMouse.GetFinger(1, screenPoints[i], 1.0f, true, out CwInputManager.Finger finger);
-                    hitScreen.HandleFingerUpdate(finger, i == 0, i == screenPoints.Length - 1);
-                }
-                pointerMouse.TryNullFinger(1);
-            }
-
-            yield return null;
-            yield return null; // CwPaintableManager flushes the commands in LateUpdate
-        }
-
-        private static Color32[] BodyPixels()
-        {
-            Body body = Object.FindObjectOfType<Body>();
-            Assert.IsNotNull(body, "No Body found in the scene.");
-            CwPaintableTexture texture = body.GetComponent<CwPaintableTexture>();
-            Assert.IsNotNull(texture, "The Body has no paintable texture.");
-            Texture2D copy = texture.GetReadableCopy();
-            Assert.IsNotNull(copy, "Could not read the body texture.");
-            Color32[] pixels = copy.GetPixels32();
-            Object.DestroyImmediate(copy);
-            return pixels;
-        }
-
-        /// <summary>How many pixels differ between two reads of the body texture, and the average
-        /// colour of those pixels in the second read.</summary>
-        private static int ChangedPixels(Color32[] before, Color32[] after, out Color average)
-        {
-            Assert.AreEqual(before.Length, after.Length, "The body texture changed its size.");
-            long r = 0, g = 0, b = 0;
-            int changed = 0;
-            for (int i = 0; i < before.Length; i++)
-            {
-                Color32 x = before[i];
-                Color32 y = after[i];
-                if (x.r == y.r && x.g == y.g && x.b == y.b && x.a == y.a) continue;
-                changed++;
-                r += y.r;
-                g += y.g;
-                b += y.b;
-            }
-            average = changed == 0
-                ? Color.clear
-                : new Color(r / (255f * changed), g / (255f * changed), b / (255f * changed));
-            return changed;
-        }
-
-        private static Color Nearest(Color[] palette, Color colour)
-        {
-            return palette.OrderBy(candidate =>
-                Mathf.Pow(candidate.r - colour.r, 2) +
-                Mathf.Pow(candidate.g - colour.g, 2) +
-                Mathf.Pow(candidate.b - colour.b, 2)).First();
         }
     }
 }
