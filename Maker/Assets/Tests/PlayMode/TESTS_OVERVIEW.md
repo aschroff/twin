@@ -30,8 +30,9 @@ the automation menu **Tools → Template PoC → …** (results are written to
 
 | File | Purpose |
 |------|---------|
-| `PlayModeTestBase.cs` | Scene loading, temp data path, UI helpers (click by name/path, wait for mode, find list entries, `DragOnCanvas` for painting). `LoadAppScene()` is the scene load on its own, for a test that starts the app a second time on the same data path. |
-| `NoAPICalls/TwinPaintTestBase.cs` | App flows shared by painting tests: load the LipEdema twin, select a view, choose the current group, paint with a marker, show/hide a group, assert parts are usable. |
+| `PlayModeTestBase.cs` | Scene loading, temp data path, UI helpers (click by name/path, wait for mode, find list entries, `DragOnCanvas` for painting, `BackToMain`). `LoadAppScene()` is the scene load on its own, for a test that starts the app a second time on the same data path. |
+| `NoAPICalls/TwinPaintTestBase.cs` | App flows shared by painting tests: load the LipEdema twin, select a view, choose the current group, paint with a marker, show/hide a group, assert parts are usable, `OpenTwinFromList`, `AssertOnlyActiveTool`, `Stroke`. |
+| `NoAPICalls/EditUITests/EditUiTestBase.cs` | Base of the Edit-screen tool tests (derives from `TwinPaintTestBase`): `OpenEditScreen`, `PrepareToPaintInEditMode`, `ZoomOut`, `PaintInOneFrame` (a whole stroke within one frame), `ChangedPixels`, `Nearest`. |
 
 ## `NoAPICalls/` — app tests, no external services
 
