@@ -236,6 +236,33 @@ public abstract class PlayModeTestBase : TestBase
     }
 
     /// <summary>
+    /// A real tap: pointer down, up and click, each delivered to the nearest handler up the
+    /// hierarchy, as the EventSystem does.
+    /// </summary>
+    /// <remarks>Use this instead of <see cref="ClickButtonByPath"/> when an object reacts to more
+    /// than <c>Button.onClick</c>. ClickButtonByPath only invokes onClick, so it skips
+    /// <c>IPointerDownHandler</c>s such as the <c>CwDemoButton</c> that selects a tool — the Delete
+    /// button opens its screen through onClick but selects the eraser through a CwDemoButton.</remarks>
+    protected IEnumerator TapByPath(string path, float timeout = 10f, GameObject root = null)
+    {
+        GameObject target = FindGameObjectByPath(path, root);
+        float elapsed = 0f;
+        while (!target.activeInHierarchy && elapsed < timeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        Assert.IsTrue(target.activeInHierarchy, $"'{path}' is not active after {timeout}s.");
+
+        var data = new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Left };
+        ExecuteEvents.ExecuteHierarchy(target, data, ExecuteEvents.pointerDownHandler);
+        ExecuteEvents.ExecuteHierarchy(target, data, ExecuteEvents.pointerUpHandler);
+        ExecuteEvents.ExecuteHierarchy(target, data, ExecuteEvents.pointerClickHandler);
+        yield return null;
+        yield return null;
+    }
+
+    /// <summary>
     /// Waits for an operation that shows the busy panel to finish.
     /// </summary>
     /// <remarks>Loading a twin used to be over by the time the click returned. It now starts two
